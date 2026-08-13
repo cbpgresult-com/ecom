@@ -1,0 +1,2684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+<title>My Account | MyStore</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* =========================================
+   RESET
+========================================= */
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+  background:#f5f6f8;
+  color:#111;
+}
+
+button,
+input{
+  font-family:inherit;
+}
+
+button{
+  -webkit-tap-highlight-color:transparent;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.header{
+
+  height:70px;
+
+  background:#fff;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:25px;
+
+  padding:
+    0 5%;
+
+  border-bottom:
+    1px solid #e9e9e9;
+
+  position:sticky;
+
+  top:0;
+
+  z-index:100;
+
+}
+
+.logo{
+
+  font-size:25px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+  white-space:nowrap;
+
+}
+
+.search{
+
+  flex:1;
+
+}
+
+.search input{
+
+  width:100%;
+
+  height:44px;
+
+  border:
+    1px solid #ddd;
+
+  border-radius:12px;
+
+  padding:
+    0 16px;
+
+  background:#f7f7f8;
+
+  outline:none;
+
+  font-size:14px;
+
+}
+
+.cart-btn{
+
+  border:0;
+
+  background:#111;
+
+  color:#fff;
+
+  padding:
+    12px 18px;
+
+  border-radius:10px;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  white-space:nowrap;
+
+}
+
+.cart-count{
+
+  background:#fff;
+
+  color:#111;
+
+  border-radius:20px;
+
+  padding:
+    2px 7px;
+
+  margin-left:4px;
+
+}
+
+
+/* =========================================
+   PAGE
+========================================= */
+
+.page{
+
+  width:100%;
+
+  max-width:1400px;
+
+  margin:auto;
+
+  padding:
+    35px 5% 70px;
+
+}
+
+.page-heading{
+
+  margin-bottom:22px;
+
+}
+
+.page-heading h1{
+
+  margin:0;
+
+  font-size:32px;
+
+  font-weight:900;
+
+}
+
+.page-heading p{
+
+  margin:
+    7px 0 0;
+
+  color:#777;
+
+  font-size:14px;
+
+}
+
+
+/* =========================================
+   LOGGED USER HERO
+========================================= */
+
+.profile-hero{
+
+  position:relative;
+
+  overflow:hidden;
+
+  background:#111;
+
+  color:#fff;
+
+  border-radius:22px;
+
+  padding:30px;
+
+  margin-bottom:22px;
+
+  box-shadow:
+    0 12px 35px
+    rgba(0,0,0,.12);
+
+}
+
+.profile-hero::before{
+
+  content:"";
+
+  position:absolute;
+
+  width:240px;
+
+  height:240px;
+
+  border-radius:50%;
+
+  background:
+    rgba(255,255,255,.07);
+
+  right:-70px;
+
+  top:-100px;
+
+}
+
+.profile-hero::after{
+
+  content:"";
+
+  position:absolute;
+
+  width:160px;
+
+  height:160px;
+
+  border-radius:50%;
+
+  background:
+    rgba(255,255,255,.05);
+
+  right:120px;
+
+  bottom:-100px;
+
+}
+
+.profile-content{
+
+  position:relative;
+
+  z-index:2;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:25px;
+
+}
+
+.profile-left{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:18px;
+
+}
+
+.avatar{
+
+  width:72px;
+
+  height:72px;
+
+  border-radius:50%;
+
+  background:#fff;
+
+  color:#111;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  font-size:27px;
+
+  font-weight:900;
+
+  flex-shrink:0;
+
+}
+
+.hello{
+
+  font-size:13px;
+
+  color:#cfcfcf;
+
+  margin-bottom:5px;
+
+}
+
+.profile-name{
+
+  font-size:25px;
+
+  font-weight:900;
+
+  margin-bottom:5px;
+
+}
+
+.profile-info{
+
+  font-size:13px;
+
+  color:#c8c8c8;
+
+  line-height:1.6;
+
+}
+
+.profile-actions{
+
+  display:flex;
+
+  gap:10px;
+
+  flex-shrink:0;
+
+}
+
+.edit-btn{
+
+  border:1px solid #555;
+
+  background:#fff;
+
+  color:#111;
+
+  padding:
+    11px 16px;
+
+  border-radius:10px;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+}
+
+.logout-btn{
+
+  border:1px solid #555;
+
+  background:transparent;
+
+  color:#fff;
+
+  padding:
+    11px 16px;
+
+  border-radius:10px;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+}
+
+
+/* =========================================
+   SECTION
+========================================= */
+
+.section-title{
+
+  font-size:20px;
+
+  font-weight:900;
+
+  margin:
+    28px 0 14px;
+
+}
+
+
+/* =========================================
+   QUICK CARDS
+========================================= */
+
+.quick-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap:15px;
+
+}
+
+.quick-card{
+
+  background:#fff;
+
+  border-radius:17px;
+
+  padding:22px;
+
+  border:
+    1px solid #eee;
+
+  cursor:pointer;
+
+  transition:
+    transform .2s,
+    box-shadow .2s;
+
+}
+
+.quick-card:hover{
+
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    0 10px 30px
+    rgba(0,0,0,.07);
+
+}
+
+.quick-icon{
+
+  width:45px;
+
+  height:45px;
+
+  border-radius:12px;
+
+  background:#f3f3f3;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  font-size:21px;
+
+  margin-bottom:14px;
+
+}
+
+.quick-title{
+
+  font-size:15px;
+
+  font-weight:900;
+
+  margin-bottom:5px;
+
+}
+
+.quick-text{
+
+  font-size:12px;
+
+  color:#777;
+
+  line-height:1.4;
+
+}
+
+
+/* =========================================
+   ACCOUNT SETTINGS
+========================================= */
+
+.settings{
+
+  background:#fff;
+
+  border-radius:18px;
+
+  border:
+    1px solid #eee;
+
+  overflow:hidden;
+
+}
+
+.setting-row{
+
+  min-height:68px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:20px;
+
+  padding:
+    15px 20px;
+
+  border-bottom:
+    1px solid #eee;
+
+  cursor:pointer;
+
+}
+
+.setting-row:last-child{
+
+  border-bottom:0;
+
+}
+
+.setting-left{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:13px;
+
+}
+
+.setting-icon{
+
+  width:38px;
+
+  height:38px;
+
+  background:#f4f4f4;
+
+  border-radius:10px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+}
+
+.setting-name{
+
+  font-size:14px;
+
+  font-weight:800;
+
+}
+
+.setting-desc{
+
+  font-size:11px;
+
+  color:#888;
+
+  margin-top:3px;
+
+}
+
+.arrow{
+
+  color:#999;
+
+  font-size:18px;
+
+}
+
+
+/* =========================================
+   LOGGED OUT
+========================================= */
+
+.logged-out{
+
+  display:none;
+
+}
+
+.login-box{
+
+  background:#fff;
+
+  max-width:600px;
+
+  margin:
+    30px auto;
+
+  border-radius:24px;
+
+  padding:
+    55px 30px;
+
+  text-align:center;
+
+  box-shadow:
+    0 12px 40px
+    rgba(0,0,0,.06);
+
+}
+
+.login-icon{
+
+  width:85px;
+
+  height:85px;
+
+  margin:
+    0 auto 20px;
+
+  border-radius:50%;
+
+  background:#f1f1f1;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  font-size:38px;
+
+}
+
+.login-box h2{
+
+  margin:
+    0 0 8px;
+
+  font-size:27px;
+
+}
+
+.login-box p{
+
+  margin:
+    0 auto 25px;
+
+  max-width:420px;
+
+  color:#777;
+
+  font-size:14px;
+
+  line-height:1.6;
+
+}
+
+.login-buttons{
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:10px;
+
+}
+
+.login-main{
+
+  border:0;
+
+  background:#111;
+
+  color:#fff;
+
+  padding:
+    13px 28px;
+
+  border-radius:11px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+}
+
+.register-main{
+
+  border:
+    1px solid #ddd;
+
+  background:#fff;
+
+  color:#111;
+
+  padding:
+    13px 24px;
+
+  border-radius:11px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+}
+
+
+/* =========================================
+   EDIT PROFILE MODAL
+========================================= */
+
+.modal{
+
+  display:none;
+
+  position:fixed;
+
+  inset:0;
+
+  background:
+    rgba(0,0,0,.55);
+
+  z-index:999;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:15px;
+
+}
+
+.modal.show{
+
+  display:flex;
+
+}
+
+.modal-box{
+
+  width:100%;
+
+  max-width:450px;
+
+  background:#fff;
+
+  border-radius:20px;
+
+  padding:25px;
+
+  box-shadow:
+    0 20px 60px
+    rgba(0,0,0,.2);
+
+}
+
+.modal-header{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin-bottom:22px;
+
+}
+
+.modal-header h2{
+
+  margin:0;
+
+  font-size:20px;
+
+}
+
+.close-btn{
+
+  width:35px;
+
+  height:35px;
+
+  border:0;
+
+  border-radius:50%;
+
+  background:#f2f2f2;
+
+  cursor:pointer;
+
+  font-size:18px;
+
+}
+
+.modal-field{
+
+  margin-bottom:15px;
+
+}
+
+.modal-field label{
+
+  display:block;
+
+  font-size:12px;
+
+  font-weight:800;
+
+  margin-bottom:7px;
+
+}
+
+.modal-field input{
+
+  width:100%;
+
+  height:45px;
+
+  border:
+    1px solid #ddd;
+
+  border-radius:10px;
+
+  padding:
+    0 13px;
+
+  outline:none;
+
+}
+
+.modal-field input:focus{
+
+  border-color:#111;
+
+}
+
+.save-profile{
+
+  width:100%;
+
+  height:48px;
+
+  border:0;
+
+  border-radius:10px;
+
+  background:#111;
+
+  color:#fff;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+}
+
+.modal-message{
+
+  font-size:12px;
+
+  margin-top:10px;
+
+  text-align:center;
+
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+.toast{
+
+  position:fixed;
+
+  bottom:25px;
+
+  left:50%;
+
+  transform:
+    translate(-50%,30px);
+
+  background:#111;
+
+  color:#fff;
+
+  padding:
+    13px 20px;
+
+  border-radius:10px;
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.3s;
+
+  z-index:2000;
+
+  font-size:13px;
+
+  max-width:
+    calc(100% - 30px);
+
+  text-align:center;
+
+}
+
+.toast.show{
+
+  opacity:1;
+
+  transform:
+    translate(-50%,0);
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:900px){
+
+  .quick-grid{
+
+    grid-template-columns:
+      repeat(2,1fr);
+
+  }
+
+}
+
+@media(max-width:650px){
+
+  .header{
+
+    height:auto;
+
+    padding:
+      11px 12px;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+  }
+
+  .logo{
+
+    font-size:21px;
+
+  }
+
+  .search{
+
+    order:3;
+
+    flex-basis:100%;
+
+  }
+
+  .cart-btn{
+
+    padding:
+      10px 13px;
+
+  }
+
+  .page{
+
+    padding:
+      22px 12px 50px;
+
+  }
+
+  .page-heading h1{
+
+    font-size:27px;
+
+  }
+
+  .profile-hero{
+
+    padding:22px;
+
+    border-radius:18px;
+
+  }
+
+  .profile-content{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+  }
+
+  .profile-left{
+
+    width:100%;
+
+  }
+
+  .profile-actions{
+
+    width:100%;
+
+  }
+
+  .edit-btn,
+  .logout-btn{
+
+    flex:1;
+
+  }
+
+}
+
+@media(max-width:480px){
+
+  .profile-left{
+
+    align-items:flex-start;
+
+  }
+
+  .avatar{
+
+    width:58px;
+
+    height:58px;
+
+    font-size:22px;
+
+  }
+
+  .profile-name{
+
+    font-size:20px;
+
+  }
+
+  .profile-info{
+
+    font-size:11px;
+
+    word-break:break-word;
+
+  }
+
+  .quick-grid{
+
+    grid-template-columns:1fr 1fr;
+
+    gap:10px;
+
+  }
+
+  .quick-card{
+
+    padding:16px;
+
+  }
+
+  .quick-icon{
+
+    width:40px;
+
+    height:40px;
+
+    font-size:18px;
+
+  }
+
+  .quick-title{
+
+    font-size:13px;
+
+  }
+
+  .quick-text{
+
+    font-size:10px;
+
+  }
+
+  .login-box{
+
+    padding:
+      40px 20px;
+
+    border-radius:18px;
+
+  }
+
+  .login-buttons{
+
+    flex-direction:column;
+
+  }
+
+  .login-main,
+  .register-main{
+
+    width:100%;
+
+  }
+
+  .setting-row{
+
+    padding:
+      14px;
+
+  }
+
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.loading{
+
+  text-align:center;
+
+  padding:80px 20px;
+
+  color:#777;
+
+}
+
+.spinner{
+
+  width:35px;
+
+  height:35px;
+
+  border:
+    3px solid #ddd;
+
+  border-top-color:#111;
+
+  border-radius:50%;
+
+  animation:
+    spin .8s linear infinite;
+
+  margin:
+    0 auto 15px;
+
+}
+
+@keyframes spin{
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================
+     HEADER
+===================================== -->
+
+<header class="header">
+
+
+  <div
+    class="logo"
+    onclick="location.href='index.html'">
+
+    MyStore
+
+  </div>
+
+
+  <div class="search">
+
+    <input
+      type="text"
+      placeholder="Search products..."
+      onclick="location.href='index.html'">
+
+  </div>
+
+
+  <button
+    class="cart-btn"
+    onclick="location.href='cart.html'">
+
+    🛒 Cart
+
+    <span
+      id="cartCount"
+      class="cart-count">
+
+      0
+
+    </span>
+
+  </button>
+
+
+</header>
+
+
+
+<!-- =====================================
+     PAGE
+===================================== -->
+
+<main class="page">
+
+
+  <!-- LOADING -->
+
+  <div
+    id="loading"
+    class="loading">
+
+    <div class="spinner"></div>
+
+    Loading account...
+
+  </div>
+
+
+
+  <!-- ===================================
+       LOGGED IN
+  ==================================== -->
+
+  <section
+    id="loggedIn"
+    style="display:none;">
+
+
+    <div class="page-heading">
+
+      <h1>
+        My Account
+      </h1>
+
+      <p>
+        Manage your profile, orders and shopping preferences.
+      </p>
+
+    </div>
+
+
+
+    <!-- PROFILE HERO -->
+
+    <div class="profile-hero">
+
+
+      <div class="profile-content">
+
+
+        <div class="profile-left">
+
+
+          <div
+            id="avatar"
+            class="avatar">
+
+            S
+
+          </div>
+
+
+          <div>
+
+
+            <div class="hello">
+
+              👋 Hello,
+
+            </div>
+
+
+            <div
+              id="profileName"
+              class="profile-name">
+
+              Customer
+
+            </div>
+
+
+            <div
+              id="profileInfo"
+              class="profile-info">
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+        <div class="profile-actions">
+
+
+          <button
+            class="edit-btn"
+            onclick="openEditProfile()">
+
+            ✏️ Edit Profile
+
+          </button>
+
+
+          <button
+            class="logout-btn"
+            onclick="logout()">
+
+            Logout
+
+          </button>
+
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="section-title">
+
+      Quick Access
+
+    </div>
+
+
+    <div class="quick-grid">
+
+
+      <div
+        class="quick-card"
+        onclick="openOrders()">
+
+
+        <div class="quick-icon">
+
+          📦
+
+        </div>
+
+
+        <div class="quick-title">
+
+          My Orders
+
+        </div>
+
+
+        <div class="quick-text">
+
+          Track and manage your orders.
+
+        </div>
+
+
+      </div>
+
+
+
+      <div
+        class="quick-card"
+        onclick="openAddresses()">
+
+
+        <div class="quick-icon">
+
+          📍
+
+        </div>
+
+
+        <div class="quick-title">
+
+          Saved Addresses
+
+        </div>
+
+
+        <div class="quick-text">
+
+          Manage your delivery addresses.
+
+        </div>
+
+
+      </div>
+
+
+
+      <div
+        class="quick-card"
+        onclick="openEditProfile()">
+
+
+        <div class="quick-icon">
+
+          👤
+
+        </div>
+
+
+        <div class="quick-title">
+
+          Profile
+
+        </div>
+
+
+        <div class="quick-text">
+
+          Update your personal details.
+
+        </div>
+
+
+      </div>
+
+
+
+      <div
+        class="quick-card"
+        onclick="openHelp()">
+
+
+        <div class="quick-icon">
+
+          ❓
+
+        </div>
+
+
+        <div class="quick-title">
+
+          Help & Support
+
+        </div>
+
+
+        <div class="quick-text">
+
+          Get help with your account.
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- SETTINGS -->
+
+    <div class="section-title">
+
+      Account Settings
+
+    </div>
+
+
+    <div class="settings">
+
+
+      <div
+        class="setting-row"
+        onclick="openEditProfile()">
+
+
+        <div class="setting-left">
+
+
+          <div class="setting-icon">
+
+            👤
+
+          </div>
+
+
+          <div>
+
+            <div class="setting-name">
+
+              Personal Information
+
+            </div>
+
+            <div class="setting-desc">
+
+              Name and mobile number
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+        <div class="arrow">
+
+          ›
+
+        </div>
+
+
+      </div>
+
+
+
+      <div
+        class="setting-row"
+        onclick="openAddresses()">
+
+
+        <div class="setting-left">
+
+
+          <div class="setting-icon">
+
+            📍
+
+          </div>
+
+
+          <div>
+
+            <div class="setting-name">
+
+              Delivery Addresses
+
+            </div>
+
+            <div class="setting-desc">
+
+              Manage your saved addresses
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+        <div class="arrow">
+
+          ›
+
+        </div>
+
+
+      </div>
+
+
+
+      <div
+        class="setting-row"
+        onclick="openSecurity()">
+
+
+        <div class="setting-left">
+
+
+          <div class="setting-icon">
+
+            🔐
+
+          </div>
+
+
+          <div>
+
+            <div class="setting-name">
+
+              Login & Security
+
+            </div>
+
+            <div class="setting-desc">
+
+              Manage your account security
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+        <div class="arrow">
+
+          ›
+
+        </div>
+
+
+      </div>
+
+
+
+      <div
+        class="setting-row"
+        onclick="openHelp()">
+
+
+        <div class="setting-left">
+
+
+          <div class="setting-icon">
+
+            💬
+
+          </div>
+
+
+          <div>
+
+            <div class="setting-name">
+
+              Help & Support
+
+            </div>
+
+            <div class="setting-desc">
+
+              Need help? Contact support
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+        <div class="arrow">
+
+          ›
+
+        </div>
+
+
+      </div>
+
+
+
+      <div
+        class="setting-row"
+        onclick="logout()">
+
+
+        <div class="setting-left">
+
+
+          <div class="setting-icon">
+
+            🚪
+
+          </div>
+
+
+          <div>
+
+            <div class="setting-name">
+
+              Logout
+
+            </div>
+
+            <div class="setting-desc">
+
+              Sign out of this account
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+        <div class="arrow">
+
+          ›
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+  </section>
+
+
+
+  <!-- ===================================
+       LOGGED OUT
+  ==================================== -->
+
+  <section
+    id="loggedOut"
+    class="logged-out">
+
+
+    <div class="page-heading">
+
+      <h1>
+        My Account
+      </h1>
+
+      <p>
+        Sign in to access your account.
+      </p>
+
+    </div>
+
+
+    <div class="login-box">
+
+
+      <div class="login-icon">
+
+        👤
+
+      </div>
+
+
+      <h2>
+
+        Welcome to MyStore
+
+      </h2>
+
+
+      <p>
+
+        Login to view your orders, manage
+        saved addresses, edit your profile
+        and enjoy a faster checkout experience.
+
+      </p>
+
+
+      <div class="login-buttons">
+
+
+        <button
+          class="login-main"
+          onclick="location.href='login.html'">
+
+          LOGIN
+
+        </button>
+
+
+        <button
+          class="register-main"
+          onclick="location.href='register.html'">
+
+          CREATE ACCOUNT
+
+        </button>
+
+
+      </div>
+
+
+    </div>
+
+
+  </section>
+
+
+</main>
+
+
+
+<!-- =====================================
+     EDIT PROFILE MODAL
+===================================== -->
+
+<div
+  id="profileModal"
+  class="modal">
+
+
+  <div class="modal-box">
+
+
+    <div class="modal-header">
+
+
+      <h2>
+        Edit Profile
+      </h2>
+
+
+      <button
+        class="close-btn"
+        onclick="closeEditProfile()">
+
+        ×
+
+      </button>
+
+
+    </div>
+
+
+    <div class="modal-field">
+
+      <label>
+        Full Name
+      </label>
+
+      <input
+        id="editName"
+        type="text"
+        placeholder="Your name">
+
+    </div>
+
+
+    <div class="modal-field">
+
+      <label>
+        Mobile Number
+      </label>
+
+      <input
+        id="editMobile"
+        type="tel"
+        inputmode="numeric"
+        maxlength="10"
+        placeholder="10-digit mobile">
+
+    </div>
+
+
+    <div class="modal-field">
+
+      <label>
+        Email
+      </label>
+
+      <input
+        id="editEmail"
+        type="email"
+        disabled>
+
+    </div>
+
+
+    <button
+      id="saveProfileBtn"
+      class="save-profile"
+      onclick="saveProfile()">
+
+      SAVE CHANGES
+
+    </button>
+
+
+    <div
+      id="modalMessage"
+      class="modal-message">
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast">
+
+</div>
+
+
+
+<script>
+
+/* =========================================
+   SUPABASE CONFIG
+   ========================================= */
+
+const SUPABASE_URL =
+  "https://bszojvhitsoamhksyjul.supabase.co";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+
+/* =========================================
+   GLOBAL
+========================================= */
+
+let currentUser = null;
+
+let currentAccount = null;
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const loading =
+  document.getElementById(
+    "loading"
+  );
+
+const loggedIn =
+  document.getElementById(
+    "loggedIn"
+  );
+
+const loggedOut =
+  document.getElementById(
+    "loggedOut"
+  );
+
+
+/* =========================================
+   INIT
+========================================= */
+
+async function initAccount(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth
+        .getUser();
+
+
+    if(
+      error ||
+      !data.user
+    ){
+
+      showLoggedOut();
+
+      return;
+
+    }
+
+
+    currentUser =
+      data.user;
+
+
+    await loadAccount();
+
+    showLoggedIn();
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    showLoggedOut();
+
+  }
+
+}
+
+
+/* =========================================
+   LOAD ACCOUNT
+========================================= */
+
+async function loadAccount(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("accounts")
+      .select(
+        "id,email,full_name,mobile,avatar_url,created_at"
+      )
+      .eq(
+        "id",
+        currentUser.id
+      )
+      .maybeSingle();
+
+
+  if(error){
+
+    console.error(
+      "Account error:",
+      error
+    );
+
+  }
+
+
+  currentAccount =
+    data || {
+
+      id:
+        currentUser.id,
+
+      email:
+        currentUser.email,
+
+      full_name:
+        currentUser.user_metadata
+          ?.full_name || "Customer",
+
+      mobile:
+        currentUser.user_metadata
+          ?.mobile || ""
+
+    };
+
+
+  renderProfile();
+
+}
+
+
+/* =========================================
+   RENDER PROFILE
+========================================= */
+
+function renderProfile(){
+
+  const name =
+    currentAccount.full_name ||
+    "Customer";
+
+
+  const email =
+    currentAccount.email ||
+    currentUser.email ||
+    "";
+
+
+  const mobile =
+    currentAccount.mobile ||
+    currentUser.user_metadata
+      ?.mobile ||
+    "";
+
+
+  document.getElementById(
+    "profileName"
+  ).textContent =
+    name;
+
+
+  document.getElementById(
+    "profileInfo"
+  ).textContent =
+
+    email +
+
+    (
+      mobile
+        ? "  •  " + mobile
+        : ""
+    );
+
+
+  const firstLetter =
+    name
+      .trim()
+      .charAt(0)
+      .toUpperCase() ||
+    "M";
+
+
+  document.getElementById(
+    "avatar"
+  ).textContent =
+    firstLetter;
+
+
+  updateCartCount();
+
+}
+
+
+/* =========================================
+   SHOW LOGGED IN
+========================================= */
+
+function showLoggedIn(){
+
+  loading.style.display =
+    "none";
+
+  loggedOut.style.display =
+    "none";
+
+  loggedIn.style.display =
+    "block";
+
+}
+
+
+/* =========================================
+   SHOW LOGGED OUT
+========================================= */
+
+function showLoggedOut(){
+
+  loading.style.display =
+    "none";
+
+  loggedIn.style.display =
+    "none";
+
+  loggedOut.style.display =
+    "block";
+
+  updateCartCount();
+
+}
+
+
+/* =========================================
+   EDIT PROFILE
+========================================= */
+
+function openEditProfile(){
+
+  if(!currentAccount){
+
+    return;
+
+  }
+
+
+  document.getElementById(
+    "editName"
+  ).value =
+    currentAccount.full_name ||
+    "";
+
+
+  document.getElementById(
+    "editMobile"
+  ).value =
+    currentAccount.mobile ||
+    "";
+
+
+  document.getElementById(
+    "editEmail"
+  ).value =
+    currentAccount.email ||
+    currentUser.email ||
+    "";
+
+
+  document.getElementById(
+    "modalMessage"
+  ).textContent =
+    "";
+
+
+  document.getElementById(
+    "profileModal"
+  ).classList.add(
+    "show"
+  );
+
+}
+
+
+function closeEditProfile(){
+
+  document.getElementById(
+    "profileModal"
+  ).classList.remove(
+    "show"
+  );
+
+}
+
+
+/* =========================================
+   SAVE PROFILE
+========================================= */
+
+async function saveProfile(){
+
+  const name =
+    document.getElementById(
+      "editName"
+    ).value.trim();
+
+
+  const mobile =
+    document.getElementById(
+      "editMobile"
+    ).value.trim();
+
+
+  const button =
+    document.getElementById(
+      "saveProfileBtn"
+    );
+
+
+  const modalMessage =
+    document.getElementById(
+      "modalMessage"
+    );
+
+
+  if(name.length < 2){
+
+    modalMessage.textContent =
+      "Please enter a valid name.";
+
+    modalMessage.style.color =
+      "#c62828";
+
+    return;
+
+  }
+
+
+  if(
+    mobile &&
+    !/^[0-9]{10}$/.test(
+      mobile
+    )
+  ){
+
+    modalMessage.textContent =
+      "Enter a valid 10-digit mobile number.";
+
+    modalMessage.style.color =
+      "#c62828";
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "SAVING...";
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("accounts")
+      .update({
+
+        full_name:
+          name,
+
+        mobile:
+          mobile,
+
+        updated_at:
+          new Date().toISOString()
+
+      })
+      .eq(
+        "id",
+        currentUser.id
+      );
+
+
+  if(error){
+
+    console.error(
+      error
+    );
+
+
+    modalMessage.textContent =
+      "Profile update failed.";
+
+    modalMessage.style.color =
+      "#c62828";
+
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "SAVE CHANGES";
+
+
+    return;
+
+  }
+
+
+  /*
+    Also update Auth metadata
+    so name/mobile are available
+    everywhere.
+  */
+
+
+  await supabaseClient.auth
+    .updateUser({
+
+      data: {
+
+        full_name:
+          name,
+
+        mobile:
+          mobile
+
+      }
+
+    });
+
+
+  currentAccount.full_name =
+    name;
+
+
+  currentAccount.mobile =
+    mobile;
+
+
+  renderProfile();
+
+
+  modalMessage.textContent =
+    "Profile updated successfully.";
+
+  modalMessage.style.color =
+    "#16803c";
+
+
+  button.disabled =
+    false;
+
+  button.textContent =
+    "SAVE CHANGES";
+
+
+  setTimeout(
+    () => {
+
+      closeEditProfile();
+
+    },
+    700
+  );
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+async function logout(){
+
+  const confirmed =
+    confirm(
+      "Do you want to logout?"
+    );
+
+
+  if(!confirmed){
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient.auth
+      .signOut();
+
+
+  if(error){
+
+    showToast(
+      "Logout failed. Please try again."
+    );
+
+    return;
+
+  }
+
+
+  currentUser =
+    null;
+
+  currentAccount =
+    null;
+
+
+  showLoggedOut();
+
+
+  showToast(
+    "You have been logged out."
+  );
+
+}
+
+
+/* =========================================
+   QUICK ACTIONS
+========================================= */
+
+function openOrders(){
+
+  /*
+    Orders page will be connected
+    after order system is ready.
+  */
+
+  showToast(
+    "My Orders will be connected next."
+  );
+
+}
+
+
+function openAddresses(){
+
+  /*
+    Saved address page will be connected
+    with checkout/address system.
+  */
+
+  showToast(
+    "Saved Addresses will be connected next."
+  );
+
+}
+
+
+function openHelp(){
+
+  showToast(
+    "Help & Support page will be connected next."
+  );
+
+}
+
+
+function openSecurity(){
+
+  showToast(
+    "Security settings will be added later."
+  );
+
+}
+
+
+/* =========================================
+   CART COUNT
+========================================= */
+
+function updateCartCount(){
+
+  const cart =
+    JSON.parse(
+      localStorage.getItem(
+        "cart"
+      ) || "[]"
+    );
+
+
+  const count =
+    cart.reduce(
+      (
+        total,
+        item
+      ) => {
+
+        return total +
+          Number(
+            item.quantity || 0
+          );
+
+      },
+      0
+    );
+
+
+  document.getElementById(
+    "cartCount"
+  ).textContent =
+    count;
+
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+let toastTimer;
+
+
+function showToast(
+  text
+){
+
+  const toast =
+    document.getElementById(
+      "toast"
+    );
+
+
+  toast.textContent =
+    text;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2500
+    );
+
+}
+
+
+/* =========================================
+   MODAL CLICK OUTSIDE
+========================================= */
+
+document
+  .getElementById(
+    "profileModal"
+  )
+  .addEventListener(
+    "click",
+    function(event){
+
+      if(
+        event.target === this
+      ){
+
+        closeEditProfile();
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   MOBILE INPUT
+========================================= */
+
+document
+  .getElementById(
+    "editMobile"
+  )
+  .addEventListener(
+    "input",
+    function(){
+
+      this.value =
+        this.value
+          .replace(/\D/g,"")
+          .slice(0,10);
+
+    }
+  );
+
+
+/* =========================================
+   START
+========================================= */
+
+initAccount();
+
+</script>
+
+</body>
+
+</html>
