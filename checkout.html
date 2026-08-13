@@ -941,7 +941,7 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   async function loadSavedAddresses(){
-    var res=await window.__MY_STORE_SUPABASE__.from('customer_addresses')
+    var res=await window.__MY_STORE_SUPABASE__.from('saved_addresses')
       .select('*')
       .eq('user_id',currentUser.id)
       .order('id',{ascending:false});
