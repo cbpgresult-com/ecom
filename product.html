@@ -3,844 +3,267 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Product | MyStore</title>
 
   <link rel="stylesheet" href="style.css">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-
-    /* =========================================
-       PRODUCT PAGE
-       ========================================= */
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #f5f6f8;
-      color: #151515;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
     .product-page {
-      max-width: 1400px;
-      margin: auto;
-      padding: 25px 5% 60px;
-    }
-
-    /* TOP NAV */
-
-    .product-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
     }
 
     .back-btn {
-      border: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
       background: white;
-      padding: 11px 17px;
+      padding: 10px 15px;
       border-radius: 10px;
       cursor: pointer;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+      margin-bottom: 25px;
+      font-weight: 600;
+      transition: opacity 0.15s ease;
     }
 
     .back-btn:hover {
-      transform: translateX(-2px);
+      opacity: 0.7;
     }
-
-    /* MAIN PRODUCT */
 
     .product-detail {
       display: grid;
-      grid-template-columns: minmax(420px, 1fr) minmax(400px, .95fr);
-      gap: 55px;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
       background: white;
-      border-radius: 24px;
-      padding: 32px;
-      box-shadow: 0 8px 35px rgba(0,0,0,.05);
+      padding: 30px;
+      border-radius: 22px;
     }
 
-    /* =========================================
-       IMAGE AREA
-       ========================================= */
-
-    .gallery {
-      position: sticky;
-      top: 90px;
-      align-self: start;
-    }
-
-    .main-image-wrap {
+    .product-detail-image {
       width: 100%;
-      height: 570px;
-      background: #f6f6f7;
-      border-radius: 20px;
+      max-height: 600px;
+      object-fit: contain;
+      border-radius: 18px;
+      background: #f5f5f5;
+    }
+
+    .detail-info {
+      padding: 10px;
+    }
+
+    .detail-badge {
+      display: inline-block;
+      background: #111;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 15px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .detail-title {
+      font-size: 34px;
+      line-height: 1.2;
+      margin-bottom: 15px;
+    }
+
+    .detail-rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      font-size: 15px;
+      color: #333;
+    }
+
+    .detail-rating svg {
+      width: 16px;
+      height: 16px;
+      fill: #f5a623;
+      flex-shrink: 0;
+    }
+
+    .detail-price {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .detail-mrp {
+      color: #999;
+      text-decoration: line-through;
+      margin-right: 10px;
+    }
+
+    .detail-discount {
+      color: #16803c;
+      font-weight: 700;
+    }
+
+    .detail-description {
+      color: #666;
+      line-height: 1.7;
+      margin: 25px 0;
+    }
+
+    .stock {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .stock.in-stock {
+      color: #16803c;
+    }
+
+    .stock.out-stock {
+      color: #b91c1c;
+    }
+
+    .stock svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .detail-cart {
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .main-product-image {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      transition: transform .3s ease;
-    }
-
-    .main-image-wrap:hover .main-product-image {
-      transform: scale(1.03);
-    }
-
-    .image-wishlist {
-      position: absolute;
-      right: 18px;
-      top: 18px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 0;
-      background: white;
-      box-shadow: 0 4px 18px rgba(0,0,0,.12);
-      cursor: pointer;
-      font-size: 23px;
-      z-index: 5;
-    }
-
-    .image-wishlist.active {
-      color: #e53935;
-    }
-
-    .image-share {
-      position: absolute;
-      right: 18px;
-      top: 76px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 0;
-      background: white;
-      box-shadow: 0 4px 18px rgba(0,0,0,.12);
-      cursor: pointer;
-      font-size: 20px;
-      z-index: 5;
-    }
-
-    .thumbnail-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 15px;
-      overflow-x: auto;
-      padding-bottom: 5px;
-    }
-
-    .thumbnail {
-      width: 78px;
-      height: 78px;
-      min-width: 78px;
-      border-radius: 12px;
-      border: 2px solid transparent;
-      background: #f5f5f5;
-      cursor: pointer;
-      overflow: hidden;
-    }
-
-    .thumbnail.active {
-      border-color: #111;
-    }
-
-    .thumbnail img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    /* =========================================
-       PRODUCT INFO
-       ========================================= */
-
-    .detail-info {
-      padding: 5px 5px 0;
-    }
-
-    .badge {
-      display: inline-flex;
-      background: #111;
-      color: white;
-      padding: 7px 11px;
-      border-radius: 7px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .3px;
-      margin-bottom: 14px;
-    }
-
-    .product-title {
-      font-size: 36px;
-      line-height: 1.2;
-      margin: 0 0 14px;
-      font-weight: 800;
-    }
-
-    .rating-row {
-      display: flex;
-      align-items: center;
       gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .rating-box {
-      background: #16803c;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 7px;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .review-text {
-      color: #555;
-      font-size: 14px;
-    }
-
-    .separator {
-      color: #ccc;
-    }
-
-    /* PRICE */
-
-    .price-row-main {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 11px;
-      margin-bottom: 6px;
-    }
-
-    .current-price {
-      font-size: 34px;
-      font-weight: 900;
-    }
-
-    .old-price {
-      color: #999;
-      text-decoration: line-through;
-      font-size: 17px;
-    }
-
-    .discount-price {
-      color: #16803c;
-      font-weight: 800;
-      font-size: 15px;
-    }
-
-    .tax-text {
-      color: #777;
-      font-size: 12px;
-      margin-bottom: 22px;
-    }
-
-    /* OFFERS */
-
-    .offers-box {
-      border: 1px solid #e8e8e8;
-      border-radius: 15px;
-      overflow: hidden;
-      margin: 20px 0;
-    }
-
-    .offers-title {
-      padding: 15px;
-      font-weight: 800;
-      border-bottom: 1px solid #eee;
-      font-size: 16px;
-    }
-
-    .offer {
-      padding: 13px 15px;
-      display: flex;
-      gap: 12px;
-      border-bottom: 1px solid #f0f0f0;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .offer:last-child {
-      border-bottom: 0;
-    }
-
-    .offer-icon {
-      font-size: 19px;
-    }
-
-    .offer strong {
-      display: block;
-      margin-bottom: 3px;
-    }
-
-    /* STOCK */
-
-    .stock-status {
-      margin: 18px 0;
-      font-weight: 800;
-      font-size: 15px;
-    }
-
-    .in-stock {
-      color: #16803c;
-    }
-
-    .out-stock {
-      color: #d32f2f;
-    }
-
-    /* QUANTITY */
-
-    .quantity-area {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin: 20px 0;
-    }
-
-    .quantity-title {
-      font-weight: 700;
-    }
-
-    .quantity-box {
-      display: flex;
-      align-items: center;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .quantity-box button {
-      width: 40px;
-      height: 40px;
-      border: 0;
-      background: #f7f7f7;
-      cursor: pointer;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .quantity-box span {
-      width: 45px;
-      text-align: center;
-      font-weight: 800;
-    }
-
-    /* BUTTONS */
-
-    .action-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 13px;
-      margin: 20px 0;
-    }
-
-    .add-cart-btn,
-    .buy-now-btn {
-      border: 0;
+      width: 100%;
       padding: 16px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 800;
-      transition: .2s ease;
-    }
-
-    .add-cart-btn {
-      background: #fff;
-      color: #111;
-      border: 2px solid #111;
-    }
-
-    .buy-now-btn {
       background: #111;
       color: white;
-    }
-
-    .add-cart-btn:hover,
-    .buy-now-btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .buy-now-btn:hover {
-      box-shadow: 0 8px 22px rgba(0,0,0,.15);
-    }
-
-    /* DELIVERY */
-
-    .delivery-box {
-      border-top: 1px solid #eee;
-      padding-top: 20px;
-      margin-top: 20px;
-    }
-
-    .delivery-title {
-      font-size: 17px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .pincode-row {
-      display: flex;
-      max-width: 420px;
-    }
-
-    .pincode-row input {
-      flex: 1;
-      height: 45px;
-      border: 1px solid #ddd;
-      border-right: 0;
-      border-radius: 9px 0 0 9px;
-      padding: 0 13px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .pincode-row button {
-      width: 100px;
-      border: 0;
-      background: #111;
-      color: white;
-      border-radius: 0 9px 9px 0;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    #deliveryResult {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #16803c;
-      font-weight: 700;
-    }
-
-    /* BENEFITS */
-
-    .benefits {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    .benefit {
-      border: 1px solid #eee;
-      padding: 14px 10px;
+      border: none;
       border-radius: 12px;
-      text-align: center;
-      font-size: 12px;
-      line-height: 1.4;
-    }
-
-    .benefit-icon {
-      display: block;
-      font-size: 22px;
-      margin-bottom: 7px;
-    }
-
-    /* BELOW PRODUCT */
-
-    .below-product {
-      margin-top: 20px;
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-    }
-
-    .section-heading {
-      font-size: 22px;
-      margin: 0 0 15px;
-    }
-
-    .description-text {
-      color: #555;
-      line-height: 1.8;
-      white-space: pre-line;
-    }
-
-    .spec-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .spec-item {
-      padding: 14px;
-      background: #f7f7f7;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-
-    .spec-item strong {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    /* LOADING */
-
-    .loading-product {
-      text-align: center;
-      padding: 120px 20px;
       font-size: 16px;
-      color: #777;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
     }
 
-    .loader-circle {
-      width: 45px;
-      height: 45px;
-      border: 4px solid #ddd;
-      border-top-color: #111;
-      border-radius: 50%;
-      margin: 0 auto 15px;
-      animation: spin 1s linear infinite;
+    .detail-cart svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+    .detail-cart:hover {
+      opacity: .85;
     }
 
+    .detail-cart:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .loading-product,
     .error-product {
       text-align: center;
       padding: 100px 20px;
     }
 
-    /* TOAST */
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 30px;
-      transform: translate(-50%, 30px);
-      background: #111;
-      color: white;
-      padding: 13px 20px;
-      border-radius: 10px;
-      opacity: 0;
-      pointer-events: none;
-      transition: .3s ease;
-      z-index: 9999;
-      font-size: 14px;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    /* MOBILE ACTION BAR */
-
-    .mobile-actions {
-      display: none;
-    }
-
-    /* =========================================
-       TABLET
-       ========================================= */
-
-    @media (max-width: 1000px) {
-
-      .product-detail {
-        grid-template-columns: 1fr;
-      }
-
-      .gallery {
-        position: relative;
-        top: 0;
-      }
-
-      .main-image-wrap {
-        height: 500px;
-      }
-
-    }
-
-    /* =========================================
-       MOBILE
-       ========================================= */
-
-    @media (max-width: 650px) {
-
+    @media (max-width: 700px) {
       .product-page {
-        padding: 10px 10px 95px;
+        margin: 15px auto;
+        padding: 12px;
       }
 
       .product-detail {
-        display: block;
-        padding: 12px;
-        border-radius: 17px;
-      }
-
-      .product-topbar {
-        margin-bottom: 10px;
-      }
-
-      .back-btn {
-        padding: 9px 13px;
-      }
-
-      .main-image-wrap {
-        height: 360px;
-        border-radius: 15px;
-      }
-
-      .image-wishlist,
-      .image-share {
-        width: 42px;
-        height: 42px;
-      }
-
-      .image-wishlist {
-        right: 12px;
-        top: 12px;
-      }
-
-      .image-share {
-        right: 12px;
-        top: 63px;
-      }
-
-      .thumbnail {
-        width: 64px;
-        height: 64px;
-        min-width: 64px;
-      }
-
-      .detail-info {
-        padding: 18px 4px 0;
-      }
-
-      .product-title {
-        font-size: 24px;
-      }
-
-      .current-price {
-        font-size: 28px;
-      }
-
-      .old-price {
-        font-size: 14px;
-      }
-
-      .discount-price {
-        font-size: 13px;
-      }
-
-      .offers-box {
-        margin-top: 15px;
-      }
-
-      .action-buttons {
-        display: none;
-      }
-
-      .benefits {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .below-product {
-        padding: 20px;
-        border-radius: 17px;
-      }
-
-      .spec-grid {
         grid-template-columns: 1fr;
+        gap: 25px;
+        padding: 15px;
       }
 
-      .mobile-actions {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        padding: 10px;
-        background: white;
-        box-shadow: 0 -5px 20px rgba(0,0,0,.12);
-        z-index: 500;
+      .detail-title {
+        font-size: 25px;
       }
 
-      .mobile-actions button {
-        height: 48px;
-        border-radius: 10px;
-        border: 0;
-        font-weight: 800;
-        font-size: 14px;
+      .detail-price {
+        font-size: 27px;
       }
-
-      .mobile-cart {
-        background: white;
-        border: 2px solid #111 !important;
-      }
-
-      .mobile-buy {
-        background: #111;
-        color: white;
-      }
-
-      .pincode-row {
-        max-width: 100%;
-      }
-
     }
-
   </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-
   <header class="header">
-
-    <div
-      class="logo"
-      onclick="window.location.href='index.html'"
-      style="cursor:pointer;">
+    <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;">
       MyStore
     </div>
 
     <div class="search">
-      <input
-        type="text"
-        placeholder="Search products..."
-        onclick="window.location.href='index.html'"
-      >
+      <input type="text" placeholder="Search products..." onclick="window.location.href='index.html'">
     </div>
 
-    <button
-      class="cart-btn"
-      onclick="window.location.href='cart.html'">
-
-      🛒 Cart
+    <button class="cart-btn" onclick="window.location.href='index.html'">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      Cart
       <span id="cartCount">0</span>
-
     </button>
-
   </header>
 
 
-  <!-- PAGE -->
-
   <main class="product-page">
 
-    <div class="product-topbar">
+    <button class="back-btn" onclick="history.back()">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"></path>
+      </svg>
+      Back
+    </button>
 
-      <button
-        class="back-btn"
-        onclick="history.back()">
-
-        ← Back
-
-      </button>
-
-    </div>
-
-
-    <!-- LOADING -->
-
-    <div
-      id="loadingProduct"
-      class="loading-product">
-
-      <div class="loader-circle"></div>
-
+    <div id="loadingProduct" class="loading-product">
       Loading product...
-
     </div>
 
+    <div id="productContainer" style="display:none;"></div>
 
-    <!-- PRODUCT -->
-
-    <div
-      id="productContainer"
-      style="display:none;">
-    </div>
-
-
-    <!-- ERROR -->
-
-    <div
-      id="errorProduct"
-      class="error-product"
-      style="display:none;">
-
+    <div id="errorProduct" class="error-product" style="display:none;">
       <h2>Product not found</h2>
-
-      <p>
-        This product is unavailable or has been removed.
-      </p>
-
+      <p>This product is unavailable or has been removed.</p>
       <br>
-
-      <button
-        class="buy-now-btn"
-        onclick="window.location.href='index.html'">
-
+      <button class="detail-cart" onclick="window.location.href='index.html'">
         Continue Shopping
-
       </button>
-
     </div>
 
   </main>
 
 
-  <!-- TOAST -->
-
-  <div
-    id="toast"
-    class="toast">
-  </div>
-
-
-  <!-- MOBILE BOTTOM ACTIONS -->
-
-  <div
-    id="mobileActions"
-    class="mobile-actions"
-    style="display:none;">
-
-    <button
-      class="mobile-cart"
-      onclick="addToCart()">
-
-      🛒 Add to Cart
-
-    </button>
-
-    <button
-      class="mobile-buy"
-      onclick="buyNow()">
-
-      ⚡ Buy Now
-
-    </button>
-
-  </div>
-
-
   <script>
 
-  /* =========================================
+    /* =========================================
+       ICONS
+       ========================================= */
+
+    const ICONS = {
+      star: `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
+
+      check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+
+      cross: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+
+      cart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`
+    };
+
+
+
+/* =========================================
    SUPABASE CONFIG
    ========================================= */
 
@@ -863,20 +286,8 @@ const supabaseClient =
        PRODUCT ID
        ========================================= */
 
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
-
-    const productId =
-      params.get("id");
-
-
-    let currentProduct = null;
-
-    let quantity = 1;
-
-    let productImages = [];
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id");
 
 
     /* =========================================
@@ -884,43 +295,25 @@ const supabaseClient =
        ========================================= */
 
     async function loadProduct() {
-
       if (!productId) {
-
         showError();
-
         return;
-
       }
 
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("products")
-          .select("*")
-          .eq("id", productId)
-          .eq("is_active", true)
-          .single();
-
+      const { data, error } = await supabaseClient
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .eq("is_active", true)
+        .single();
 
       if (error || !data) {
-
         console.error(error);
-
         showError();
-
         return;
-
       }
 
-
-      currentProduct = data;
-
       showProduct(data);
-
     }
 
 
@@ -929,664 +322,82 @@ const supabaseClient =
        ========================================= */
 
     function showProduct(product) {
+      document.title = product.name + " | MyStore";
 
-      document.title =
-        product.name + " | MyStore";
+      const container = document.getElementById("productContainer");
 
+      const image = product.main_image || "https://placehold.co/600x600/png?text=Product";
 
-      const mainImage =
-        product.main_image ||
-        "https://placehold.co/800x800/png?text=Product";
+      const price = Number(product.price || 0).toLocaleString("en-IN");
 
+      const mrp = product.mrp
+        ? Number(product.mrp).toLocaleString("en-IN")
+        : "";
 
-      productImages = [];
-
-
-      /* Main image */
-
-      productImages.push(mainImage);
-
-
-      /* Additional images */
-
-      if (Array.isArray(product.images)) {
-
-        product.images.forEach(image => {
-
-          if (
-            image &&
-            !productImages.includes(image)
-          ) {
-
-            productImages.push(image);
-
-          }
-
-        });
-
-      }
-
-
-      const price =
-        Number(product.price || 0)
-          .toLocaleString("en-IN");
-
-
-      const mrp =
-        product.mrp
-          ? Number(product.mrp)
-              .toLocaleString("en-IN")
-          : "";
-
-
-      const container =
-        document.getElementById(
-          "productContainer"
-        );
-
+      const inStock = Number(product.stock) > 0;
 
       container.innerHTML = `
-
         <div class="product-detail">
 
-
-          <!-- GALLERY -->
-
-          <div class="gallery">
-
-            <div class="main-image-wrap">
-
-              <img
-                id="mainProductImage"
-                class="main-product-image"
-                src="${mainImage}"
-                alt="${escapeHTML(product.name)}"
-              >
-
-
-              <button
-                id="wishlistBtn"
-                class="image-wishlist"
-                onclick="toggleWishlist()">
-
-                ♡
-
-              </button>
-
-
-              <button
-                class="image-share"
-                onclick="shareProduct()">
-
-                ↗
-
-              </button>
-
-            </div>
-
-
-            <div
-              id="thumbnailRow"
-              class="thumbnail-row">
-            </div>
-
+          <div>
+            <img
+              class="product-detail-image"
+              src="${image}"
+              alt="${escapeHTML(product.name)}"
+            >
           </div>
-
-
-          <!-- PRODUCT INFORMATION -->
 
           <div class="detail-info">
 
-
             ${
               product.badge
-                ? `
-                  <span class="badge">
-                    ${escapeHTML(product.badge)}
-                  </span>
-                `
+                ? `<span class="detail-badge">${escapeHTML(product.badge)}</span>`
                 : ""
             }
 
+            <h1 class="detail-title">${escapeHTML(product.name)}</h1>
 
-            <h1 class="product-title">
-
-              ${escapeHTML(product.name)}
-
-            </h1>
-
-
-            <div class="rating-row">
-
-              <span class="rating-box">
-
-                ⭐ ${product.rating || 0}
-
-              </span>
-
-
-              <span class="review-text">
-
-                ${
-                  product.review_count || 0
-                } Reviews
-
-              </span>
-
-
-              ${
-                product.brand
-                  ? `
-                    <span class="separator">•</span>
-
-                    <span class="review-text">
-
-                      ${escapeHTML(product.brand)}
-
-                    </span>
-                  `
-                  : ""
-              }
-
+            <div class="detail-rating">
+              ${ICONS.star}
+              ${product.rating || 0}
+              ${product.review_count ? `(${product.review_count} reviews)` : ""}
             </div>
 
+            <div class="detail-price">₹${price}</div>
 
-            <!-- PRICE -->
-
-            <div class="price-row-main">
-
-              <span class="current-price">
-
-                ₹${price}
-
-              </span>
-
-
-              ${
-                mrp
-                  ? `
-                    <span class="old-price">
-
-                      ₹${mrp}
-
-                    </span>
-                  `
-                  : ""
-              }
-
-
+            <div>
+              ${mrp ? `<span class="detail-mrp">₹${mrp}</span>` : ""}
               ${
                 product.discount_percent
-                  ? `
-                    <span class="discount-price">
-
-                      ${product.discount_percent}% OFF
-
-                    </span>
-                  `
+                  ? `<span class="detail-discount">${product.discount_percent}% OFF</span>`
                   : ""
               }
-
             </div>
 
+            <p class="detail-description">
+              ${escapeHTML(product.description || "No description available.")}
+            </p>
 
-            <div class="tax-text">
-
-              Inclusive of all applicable taxes
-
+            <div class="stock ${inStock ? "in-stock" : "out-stock"}">
+              ${inStock ? ICONS.check : ICONS.cross}
+              ${inStock ? `In Stock (${product.stock} available)` : "Out of Stock"}
             </div>
 
-
-            <!-- OFFERS -->
-
-            <div class="offers-box">
-
-              <div class="offers-title">
-
-                🏷️ Available Offers
-
-              </div>
-
-
-              <div class="offer">
-
-                <span class="offer-icon">💳</span>
-
-                <div>
-
-                  <strong>Bank Offer</strong>
-
-                  Get extra discount on selected bank cards.
-
-                </div>
-
-              </div>
-
-
-              <div class="offer">
-
-                <span class="offer-icon">💰</span>
-
-                <div>
-
-                  <strong>Special Price</strong>
-
-                  Extra savings available on this product.
-
-                </div>
-
-              </div>
-
-
-              <div class="offer">
-
-                <span class="offer-icon">🎁</span>
-
-                <div>
-
-                  <strong>Easy Payment</strong>
-
-                  Multiple secure payment options available.
-
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <!-- STOCK -->
-
-            <div
-              class="stock-status
-              ${
-                Number(product.stock) > 0
-                  ? "in-stock"
-                  : "out-stock"
-              }">
-
-              ${
-                Number(product.stock) > 0
-
-                  ? `✓ In Stock • ${product.stock} available`
-
-                  : "✕ Currently Out of Stock"
-              }
-
-            </div>
-
-
-            <!-- QUANTITY -->
-
-            <div class="quantity-area">
-
-              <span class="quantity-title">
-
-                Quantity:
-
-              </span>
-
-
-              <div class="quantity-box">
-
-                <button onclick="changeQuantity(-1)">
-                  −
-                </button>
-
-
-                <span id="quantity">
-
-                  1
-
-                </span>
-
-
-                <button onclick="changeQuantity(1)">
-                  +
-                </button>
-
-              </div>
-
-            </div>
-
-
-            <!-- BUTTONS -->
-
-            <div class="action-buttons">
-
-              <button
-                class="add-cart-btn"
-                onclick="addToCart()"
-                ${
-                  Number(product.stock) <= 0
-                    ? "disabled"
-                    : ""
-                }>
-
-                🛒 Add to Cart
-
-              </button>
-
-
-              <button
-                class="buy-now-btn"
-                onclick="buyNow()"
-                ${
-                  Number(product.stock) <= 0
-                    ? "disabled"
-                    : ""
-                }>
-
-                ⚡ Buy Now
-
-              </button>
-
-            </div>
-
-
-            <!-- DELIVERY -->
-
-            <div class="delivery-box">
-
-              <div class="delivery-title">
-
-                🚚 Delivery Information
-
-              </div>
-
-
-              <div class="pincode-row">
-
-                <input
-                  id="pincode"
-                  maxlength="6"
-                  inputmode="numeric"
-                  placeholder="Enter 6-digit pincode"
-                >
-
-
-                <button
-                  onclick="checkDelivery()">
-
-                  Check
-
-                </button>
-
-              </div>
-
-
-              <div
-                id="deliveryResult">
-              </div>
-
-            </div>
-
-
-            <!-- BENEFITS -->
-
-            <div class="benefits">
-
-              <div class="benefit">
-
-                <span class="benefit-icon">
-                  🚚
-                </span>
-
-                Fast Delivery
-
-              </div>
-
-
-              <div class="benefit">
-
-                <span class="benefit-icon">
-                  ↩️
-                </span>
-
-                Easy Returns
-
-              </div>
-
-
-              <div class="benefit">
-
-                <span class="benefit-icon">
-                  🛡️
-                </span>
-
-                Secure Payment
-
-              </div>
-
-            </div>
-
+            <button
+              class="detail-cart"
+              ${!inStock ? "disabled" : ""}
+              onclick="addToCart(${product.id})">
+              ${inStock ? ICONS.cart : ""}
+              ${inStock ? "Add to Cart" : "Out of Stock"}
+            </button>
 
           </div>
 
         </div>
-
-
-        <!-- DESCRIPTION -->
-
-        <div class="below-product">
-
-          <h2 class="section-heading">
-
-            Product Details
-
-          </h2>
-
-
-          <div class="description-text">
-
-            ${
-              escapeHTML(
-                product.description ||
-                "No description available."
-              )
-            }
-
-          </div>
-
-
-          <div class="spec-grid">
-
-
-            ${
-              product.brand
-                ? `
-                  <div class="spec-item">
-
-                    <strong>Brand</strong>
-
-                    ${escapeHTML(product.brand)}
-
-                  </div>
-                `
-                : ""
-            }
-
-
-            ${
-              product.category
-                ? `
-                  <div class="spec-item">
-
-                    <strong>Category</strong>
-
-                    ${escapeHTML(product.category)}
-
-                  </div>
-                `
-                : ""
-            }
-
-
-            <div class="spec-item">
-
-              <strong>Availability</strong>
-
-              ${
-                Number(product.stock) > 0
-                  ? "In Stock"
-                  : "Out of Stock"
-              }
-
-            </div>
-
-
-            <div class="spec-item">
-
-              <strong>Product Rating</strong>
-
-              ⭐ ${product.rating || 0} / 5
-
-            </div>
-
-
-          </div>
-
-        </div>
-
       `;
 
-
-      createThumbnails();
-
-
-      document.getElementById(
-        "loadingProduct"
-      ).style.display = "none";
-
-
+      document.getElementById("loadingProduct").style.display = "none";
       container.style.display = "block";
-
-
-      document.getElementById(
-        "mobileActions"
-      ).style.display =
-        Number(product.stock) > 0
-          ? "grid"
-          : "none";
-
-    }
-
-
-    /* =========================================
-       THUMBNAILS
-       ========================================= */
-
-    function createThumbnails() {
-
-      const row =
-        document.getElementById(
-          "thumbnailRow"
-        );
-
-
-      if (!row) return;
-
-
-      row.innerHTML = "";
-
-
-      productImages.forEach(
-        (image, index) => {
-
-          const button =
-            document.createElement("button");
-
-
-          button.className =
-            "thumbnail" +
-            (
-              index === 0
-                ? " active"
-                : ""
-            );
-
-
-          button.innerHTML = `
-
-            <img
-              src="${image}"
-              alt="Product image ${index + 1}"
-            >
-
-          `;
-
-
-          button.onclick = () => {
-
-            document
-              .querySelectorAll(".thumbnail")
-              .forEach(
-                thumbnail =>
-                  thumbnail.classList.remove(
-                    "active"
-                  )
-              );
-
-
-            button.classList.add("active");
-
-
-            document.getElementById(
-              "mainProductImage"
-            ).src = image;
-
-          };
-
-
-          row.appendChild(button);
-
-        }
-      );
-
-    }
-
-
-    /* =========================================
-       QUANTITY
-       ========================================= */
-
-    function changeQuantity(change) {
-
-      if (!currentProduct) return;
-
-
-      quantity += change;
-
-
-      if (quantity < 1) {
-
-        quantity = 1;
-
-      }
-
-
-      const maxStock =
-        Number(currentProduct.stock || 0);
-
-
-      if (
-        maxStock > 0 &&
-        quantity > maxStock
-      ) {
-
-        quantity = maxStock;
-
-        showToast(
-          "Maximum available stock reached"
-        );
-
-      }
-
-
-      document.getElementById(
-        "quantity"
-      ).textContent = quantity;
-
     }
 
 
@@ -1594,133 +405,37 @@ const supabaseClient =
        ADD TO CART
        ========================================= */
 
-    function addToCart() {
+    async function addToCart(id) {
+      const { data, error } = await supabaseClient
+        .from("products")
+        .select("*")
+        .eq("id", id)
+        .single();
 
-      if (!currentProduct) return;
-
-
-      if (
-        Number(currentProduct.stock) <= 0
-      ) {
-
-        showToast(
-          "Product is out of stock"
-        );
-
+      if (error || !data) {
+        alert("Product unavailable.");
         return;
-
       }
 
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-      let cart =
-        JSON.parse(
-          localStorage.getItem("cart") ||
-          "[]"
-        );
-
-
-      const existing =
-        cart.find(
-          item =>
-            item.id === currentProduct.id
-        );
-
+      const existing = cart.find(item => item.id === data.id);
 
       if (existing) {
-
-        existing.quantity += quantity;
-
+        existing.quantity += 1;
       } else {
-
         cart.push({
-
-          id: currentProduct.id,
-
-          name: currentProduct.name,
-
-          price: currentProduct.price,
-
-          mrp: currentProduct.mrp,
-
-          image: currentProduct.main_image,
-
-          quantity: quantity
-
+          id: data.id,
+          name: data.name,
+          price: data.price,
+          image: data.main_image,
+          quantity: 1
         });
-
       }
 
-
-      localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-      );
-
-
+      localStorage.setItem("cart", JSON.stringify(cart));
       updateCartCount();
-
-
-      showToast(
-        `${quantity} item added to cart`
-      );
-
-    }
-
-
-    /* =========================================
-       BUY NOW
-       ========================================= */
-
-    function buyNow() {
-
-      if (!currentProduct) return;
-
-
-      if (
-        Number(currentProduct.stock) <= 0
-      ) {
-
-        showToast(
-          "Product is out of stock"
-        );
-
-        return;
-
-      }
-
-
-      const buyNowProduct = {
-
-        id: currentProduct.id,
-
-        name: currentProduct.name,
-
-        price: currentProduct.price,
-
-        mrp: currentProduct.mrp,
-
-        image: currentProduct.main_image,
-
-        quantity: quantity
-
-      };
-
-
-      localStorage.setItem(
-        "buyNow",
-        JSON.stringify(
-          buyNowProduct
-        )
-      );
-
-
-      /*
-        Checkout page next phase
-      */
-
-      window.location.href =
-        "checkout.html";
-
+      alert("Product added to cart!");
     }
 
 
@@ -1729,241 +444,9 @@ const supabaseClient =
        ========================================= */
 
     function updateCartCount() {
-
-      const cart =
-        JSON.parse(
-          localStorage.getItem("cart") ||
-          "[]"
-        );
-
-
-      const count =
-        cart.reduce(
-          (total, item) =>
-            total +
-            Number(item.quantity || 0),
-          0
-        );
-
-
-      document.getElementById(
-        "cartCount"
-      ).textContent = count;
-
-    }
-
-
-    /* =========================================
-       WISHLIST
-       ========================================= */
-
-    function toggleWishlist() {
-
-      const button =
-        document.getElementById(
-          "wishlistBtn"
-        );
-
-
-      let wishlist =
-        JSON.parse(
-          localStorage.getItem(
-            "wishlist"
-          ) ||
-          "[]"
-        );
-
-
-      const exists =
-        wishlist.includes(
-          currentProduct.id
-        );
-
-
-      if (exists) {
-
-        wishlist =
-          wishlist.filter(
-            id =>
-              id !==
-              currentProduct.id
-          );
-
-        button.textContent = "♡";
-
-        button.classList.remove(
-          "active"
-        );
-
-        showToast(
-          "Removed from wishlist"
-        );
-
-      } else {
-
-        wishlist.push(
-          currentProduct.id
-        );
-
-        button.textContent = "♥";
-
-        button.classList.add(
-          "active"
-        );
-
-        showToast(
-          "Added to wishlist"
-        );
-
-      }
-
-
-      localStorage.setItem(
-        "wishlist",
-        JSON.stringify(
-          wishlist
-        )
-      );
-
-    }
-
-
-    /* =========================================
-       SHARE
-       ========================================= */
-
-    async function shareProduct() {
-
-      const shareData = {
-
-        title: currentProduct.name,
-
-        text:
-          `${currentProduct.name} - ₹${currentProduct.price}`,
-
-        url:
-          window.location.href
-
-      };
-
-
-      try {
-
-        if (
-          navigator.share
-        ) {
-
-          await navigator.share(
-            shareData
-          );
-
-        } else {
-
-          await navigator.clipboard.writeText(
-            window.location.href
-          );
-
-          showToast(
-            "Product link copied"
-          );
-
-        }
-
-      } catch (error) {
-
-        console.log(error);
-
-      }
-
-    }
-
-
-    /* =========================================
-       PINCODE
-       ========================================= */
-
-    function checkDelivery() {
-
-      const pincode =
-        document.getElementById(
-          "pincode"
-        ).value.trim();
-
-
-      const result =
-        document.getElementById(
-          "deliveryResult"
-        );
-
-
-      if (
-        !/^[0-9]{6}$/.test(
-          pincode
-        )
-      ) {
-
-        result.style.color =
-          "#d32f2f";
-
-        result.textContent =
-          "Please enter a valid 6-digit pincode.";
-
-        return;
-
-      }
-
-
-      result.style.color =
-        "#16803c";
-
-
-      result.textContent =
-        "✓ Delivery available. Estimated delivery: 3–6 days.";
-
-    }
-
-
-    /* =========================================
-       TOAST
-       ========================================= */
-
-    let toastTimer;
-
-
-    function showToast(message) {
-
-      const toast =
-        document.getElementById(
-          "toast"
-        );
-
-
-      toast.textContent =
-        message;
-
-
-      toast.classList.add(
-        "show"
-      );
-
-
-      clearTimeout(
-        toastTimer
-      );
-
-
-      toastTimer =
-        setTimeout(
-          () => {
-
-            toast.classList.remove(
-              "show"
-            );
-
-          },
-          2200
-        );
-
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const count = cart.reduce((total, item) => total + item.quantity, 0);
+      document.getElementById("cartCount").textContent = count;
     }
 
 
@@ -1972,18 +455,8 @@ const supabaseClient =
        ========================================= */
 
     function showError() {
-
-      document.getElementById(
-        "loadingProduct"
-      ).style.display =
-        "none";
-
-
-      document.getElementById(
-        "errorProduct"
-      ).style.display =
-        "block";
-
+      document.getElementById("loadingProduct").style.display = "none";
+      document.getElementById("errorProduct").style.display = "block";
     }
 
 
@@ -1992,38 +465,16 @@ const supabaseClient =
        ========================================= */
 
     function escapeHTML(value) {
-
       return String(value || "")
-        .replaceAll(
-          "&",
-          "&amp;"
-        )
-        .replaceAll(
-          "<",
-          "&lt;"
-        )
-        .replaceAll(
-          ">",
-          "&gt;"
-        )
-        .replaceAll(
-          '"',
-          "&quot;"
-        )
-        .replaceAll(
-          "'",
-          "&#039;"
-        );
-
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
 
-    /* =========================================
-       START
-       ========================================= */
-
     updateCartCount();
-
     loadProduct();
 
   </script>
