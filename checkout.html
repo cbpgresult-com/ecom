@@ -734,8 +734,8 @@ body{padding:0 !important;margin:0 !important;}
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
 (function(){
-  var SUPABASE_URL = 'https://cblfmqcszdungpkbfrof.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNibGZtcWNzemR1bmdwa2Jmcm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMjU2MTAsImV4cCI6MjEwMDgwMTYxMH0._pOV5pHVGlE-Fl73hZ6VouR0atfq3xRVoui3WxESy9g';
+  var SUPABASE_URL = 'https://bszojvhitsoamhksyjul.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE';
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var RAZORPAY_KEY_ID = 'rzp_test_TMoz4c23Z6FKfg';
@@ -914,6 +914,10 @@ body{padding:0 !important;margin:0 !important;}
     var res = await sb.auth.getSession();
     var session = res && res.data && res.data.session;
     if(!session){
+      var refreshed = await sb.auth.refreshSession();
+      session = refreshed && refreshed.data && refreshed.data.session;
+    }
+    if(!session){
       showOnly('ckPanelLoginGate');
       document.getElementById('ckStepper').style.display = 'none';
       document.getElementById('ckHeaderTitle').textContent = 'Login required';
@@ -987,11 +991,30 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   async function ckLoadSavedAddresses(){
-    var res = await sb.from('saved_addresses')
+    var res = await sb.from('customer_addresses')
       .select('*')
       .eq('user_id', currentUser.id)
       .order('created_at', {ascending:false});
-    savedAddresses = res.data || [];
+    if(res.error){
+      console.error('Saved address load error:', res.error);
+      savedAddresses = [];
+      return;
+    }
+    savedAddresses = (res.data || []).map(function(a){
+      return Object.assign({}, a, {
+        id: a.id,
+        name: a.name || a.full_name || '',
+        phone: a.phone || a.mobile || '',
+        pincode: a.pincode || '',
+        city: a.city || '',
+        district: a.district || '',
+        state: a.state || '',
+        address: a.address || a.house || '',
+        landmark: a.landmark || '',
+        type: a.address_type || a.type || 'Home',
+        is_default: !!a.is_default
+      });
+    });
   }
 
   function escapeHtml(str){
@@ -1115,7 +1138,7 @@ body{padding:0 !important;margin:0 !important;}
 
     var saveCheck = document.getElementById('ckSaveAddrCheck');
     if(saveCheck && saveCheck.checked){
-      sb.from('saved_addresses').insert({
+      sb.from('customer_addresses').insert({
         user_id: currentUser.id,
         name: addr.name, phone: addr.phone, pincode: addr.pincode,
         state: addr.state, city: addr.city, house: addr.house, road: addr.road,
