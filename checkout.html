@@ -1,1512 +1,3390 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Checkout | MyStore</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f6f8;
-      color: #151515;
-    }
-
-    button,
-    input,
-    textarea,
-    select {
-      font-family: inherit;
-    }
-
-    /* =========================
-       HEADER
-    ========================= */
-
-    .header {
-      height: 70px;
-      background: white;
-      display: flex;
-      align-items: center;
-      gap: 25px;
-      padding: 0 5%;
-      border-bottom: 1px solid #eee;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 900;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .search {
-      flex: 1;
-    }
-
-    .search input {
-      width: 100%;
-      height: 44px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 0 16px;
-      background: #f7f7f8;
-      outline: none;
-    }
-
-    .header-cart {
-      background: #111;
-      color: white;
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .cart-count {
-      background: white;
-      color: #111;
-      padding: 2px 7px;
-      border-radius: 20px;
-      margin-left: 4px;
-    }
-
-    /* =========================
-       PAGE
-    ========================= */
-
-    .page {
-      max-width: 1350px;
-      margin: auto;
-      padding: 30px 5% 70px;
-    }
-
-    .page-title {
-      font-size: 32px;
-      font-weight: 900;
-      margin: 0 0 7px;
-    }
-
-    .page-subtitle {
-      color: #777;
-      font-size: 14px;
-      margin-bottom: 25px;
-    }
-
-    .checkout-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.5fr) minmax(320px, .75fr);
-      gap: 22px;
-      align-items: start;
-    }
-
-    /* =========================
-       CARD
-    ========================= */
-
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      margin-bottom: 18px;
-      box-shadow: 0 6px 25px rgba(0,0,0,.04);
-    }
-
-    .card-title {
-      margin: 0 0 20px;
-      font-size: 20px;
-      font-weight: 900;
-    }
-
-    /* =========================
-       ADDRESS
-    ========================= */
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .field label {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .field input,
-    .field textarea,
-    .field select {
-      width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 13px;
-      font-size: 14px;
-      outline: none;
-      background: #fff;
-    }
-
-    .field input:focus,
-    .field textarea:focus,
-    .field select:focus {
-      border-color: #777;
-    }
-
-    .field textarea {
-      min-height: 95px;
-      resize: vertical;
-    }
-
-    .address-type {
-      display: flex;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .address-type label {
-      cursor: pointer;
-    }
-
-    .address-type input {
-      display: none;
-    }
-
-    .address-type span {
-      display: block;
-      padding: 9px 15px;
-      border: 1px solid #ddd;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .address-type input:checked + span {
-      background: #111;
-      color: white;
-      border-color: #111;
-    }
-
-    /* =========================
-       PAYMENT
-    ========================= */
-
-    .payment-option {
-      border: 1px solid #ddd;
-      border-radius: 13px;
-      padding: 15px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: .2s;
-    }
-
-    .payment-option:hover {
-      border-color: #999;
-    }
-
-    .payment-option.selected {
-      border-color: #111;
-      background: #fafafa;
-    }
-
-    .payment-option label {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
-
-    .payment-option input {
-      width: 18px;
-      height: 18px;
-      accent-color: #111;
-    }
-
-    .payment-name {
-      font-weight: 800;
-      font-size: 14px;
-    }
-
-    .payment-description {
-      color: #777;
-      font-size: 12px;
-      margin-left: 30px;
-      margin-top: 4px;
-    }
-
-    /* =========================
-       ORDER ITEMS
-    ========================= */
-
-    .order-item {
-      display: grid;
-      grid-template-columns: 65px 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .order-item:last-child {
-      border-bottom: 0;
-    }
-
-    .order-image {
-      width: 65px;
-      height: 65px;
-      border-radius: 10px;
-      background: #f5f5f5;
-      object-fit: contain;
-    }
-
-    .order-name {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.4;
-    }
-
-    .order-quantity {
-      color: #777;
-      font-size: 11px;
-      margin-top: 5px;
-    }
-
-    .order-price {
-      font-size: 13px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    /* =========================
-       SUMMARY
-    ========================= */
-
-    .summary {
-      position: sticky;
-      top: 95px;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      margin: 14px 0;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .summary-row.discount {
-      color: #16803c;
-    }
-
-    .divider {
-      border: 0;
-      border-top: 1px solid #eee;
-      margin: 20px 0;
-    }
-
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 21px;
-      font-weight: 900;
-    }
-
-    /* =========================
-       PLACE ORDER
-    ========================= */
-
-    .place-order {
-      width: 100%;
-      height: 54px;
-      margin-top: 22px;
-      border: 0;
-      border-radius: 12px;
-      background: #111;
-      color: white;
-      font-size: 16px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: .2s;
-    }
-
-    .place-order:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(0,0,0,.16);
-    }
-
-    .place-order:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .secure {
-      text-align: center;
-      color: #777;
-      font-size: 12px;
-      margin-top: 13px;
-      line-height: 1.5;
-    }
-
-    /* =========================
-       EMPTY
-    ========================= */
-
-    .empty {
-      background: white;
-      border-radius: 20px;
-      padding: 90px 20px;
-      text-align: center;
-    }
-
-    .empty-icon {
-      font-size: 60px;
-    }
-
-    .empty h2 {
-      margin: 15px 0 7px;
-    }
-
-    .empty p {
-      color: #777;
-    }
-
-    .empty button {
-      margin-top: 15px;
-      border: 0;
-      background: #111;
-      color: white;
-      padding: 13px 22px;
-      border-radius: 10px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    /* =========================
-       TOAST
-    ========================= */
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 30px;
-      transform: translate(-50%, 30px);
-      background: #111;
-      color: white;
-      padding: 13px 20px;
-      border-radius: 10px;
-      opacity: 0;
-      pointer-events: none;
-      transition: .3s;
-      z-index: 9999;
-      font-size: 14px;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 850px) {
-
-      .header {
-        height: auto;
-        padding: 12px;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      .logo {
-        font-size: 21px;
-      }
-
-      .search {
-        order: 3;
-        flex-basis: 100%;
-      }
-
-      .header-cart {
-        padding: 10px 13px;
-      }
-
-      .page {
-        padding: 22px 12px 45px;
-      }
-
-      .page-title {
-        font-size: 26px;
-      }
-
-      .checkout-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .summary {
-        position: static;
-      }
-
-      .card {
-        padding: 19px;
-        border-radius: 16px;
-      }
-    }
-
-    @media (max-width: 550px) {
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field.full {
-        grid-column: auto;
-      }
-
-      .card-title {
-        font-size: 18px;
-      }
-
-      .address-type span {
-        padding: 8px 12px;
-      }
-
-      .order-item {
-        grid-template-columns: 55px 1fr auto;
-      }
-
-      .order-image {
-        width: 55px;
-        height: 55px;
-      }
-
-      .total-row {
-        font-size: 19px;
-      }
-
-      .place-order {
-        height: 51px;
-      }
-    }
-  </style>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+<title>Checkout | MyStore</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f6f8;
+  color:#111;
+}
+
+button,
+input,
+textarea,
+select{
+  font-family:inherit;
+}
+
+button{
+  -webkit-tap-highlight-color:transparent;
+}
+
+
+/* =========================================
+   TOP CHECKOUT BAR
+========================================= */
+
+.checkout-bar{
+  height:68px;
+  background:#fff;
+  border-bottom:1px solid #e7e7e7;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 5%;
+
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.checkout-logo{
+  font-size:22px;
+  font-weight:900;
+}
+
+.secure{
+  font-size:12px;
+  color:#777;
+
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+
+/* =========================================
+   PAGE
+========================================= */
+
+.page{
+  width:100%;
+  max-width:1350px;
+  margin:auto;
+
+  padding:28px 5% 60px;
+}
+
+.page-title{
+  margin-bottom:22px;
+}
+
+.page-title h1{
+  margin:0;
+  font-size:30px;
+  font-weight:900;
+}
+
+.page-title p{
+  margin:6px 0 0;
+  color:#777;
+  font-size:13px;
+}
+
+
+/* =========================================
+   MAIN GRID
+========================================= */
+
+.checkout-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 390px;
+  gap:20px;
+  align-items:start;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.card{
+  background:#fff;
+  border:1px solid #e9e9e9;
+  border-radius:18px;
+  overflow:hidden;
+  margin-bottom:18px;
+}
+
+.card-header{
+  min-height:62px;
+
+  padding:16px 20px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  border-bottom:1px solid #eee;
+}
+
+.card-title{
+  font-size:17px;
+  font-weight:900;
+
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.card-body{
+  padding:20px;
+}
+
+
+/* =========================================
+   ADDRESS
+========================================= */
+
+.address-list{
+  display:grid;
+  gap:12px;
+}
+
+.address-option{
+  position:relative;
+
+  border:1px solid #ddd;
+  border-radius:14px;
+
+  padding:16px;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.address-option:hover{
+  border-color:#aaa;
+}
+
+.address-option.selected{
+  border:2px solid #111;
+  background:#fafafa;
+}
+
+.address-option input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.address-option-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.address-label{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+
+  font-size:11px;
+  font-weight:900;
+
+  background:#f1f1f1;
+
+  padding:6px 9px;
+
+  border-radius:7px;
+}
+
+.default-badge{
+  font-size:10px;
+  font-weight:900;
+
+  background:#111;
+  color:#fff;
+
+  padding:6px 8px;
+
+  border-radius:7px;
+}
+
+.address-name{
+  font-size:14px;
+  font-weight:900;
+
+  margin-top:12px;
+}
+
+.address-mobile{
+  color:#555;
+  font-size:12px;
+
+  margin-top:5px;
+}
+
+.address-text{
+  color:#666;
+  font-size:12px;
+
+  line-height:1.6;
+
+  margin-top:9px;
+}
+
+.selected-check{
+  display:none;
+
+  position:absolute;
+
+  right:15px;
+  bottom:15px;
+
+  width:25px;
+  height:25px;
+
+  border-radius:50%;
+
+  background:#111;
+  color:#fff;
+
+  align-items:center;
+  justify-content:center;
+
+  font-size:13px;
+}
+
+.address-option.selected .selected-check{
+  display:flex;
+}
+
+
+/* =========================================
+   ADD ADDRESS BUTTON
+========================================= */
+
+.add-new-address{
+  width:100%;
+
+  margin-top:14px;
+
+  border:1px dashed #bbb;
+
+  background:#fff;
+
+  padding:14px;
+
+  border-radius:12px;
+
+  font-weight:900;
+
+  font-size:13px;
+
+  cursor:pointer;
+}
+
+.add-new-address:hover{
+  background:#f8f8f8;
+}
+
+
+/* =========================================
+   NEW ADDRESS FORM
+========================================= */
+
+.new-address{
+  display:none;
+
+  margin-top:15px;
+
+  border:1px solid #e5e5e5;
+
+  border-radius:15px;
+
+  padding:18px;
+
+  background:#fafafa;
+}
+
+.new-address.show{
+  display:block;
+}
+
+.form-grid{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:13px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+.field label{
+  font-size:11px;
+  font-weight:900;
+}
+
+.field input,
+.field textarea,
+.field select{
+
+  width:100%;
+
+  border:1px solid #ddd;
+
+  background:#fff;
+
+  border-radius:9px;
+
+  padding:11px 12px;
+
+  outline:none;
+
+  font-size:13px;
+}
+
+.field input{
+  height:44px;
+}
+
+.field textarea{
+  min-height:85px;
+  resize:vertical;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+  border-color:#111;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(0,0,0,.04);
+}
+
+
+/* =========================================
+   PINCODE
+========================================= */
+
+.pincode-wrap{
+  position:relative;
+}
+
+.pincode-status{
+
+  position:absolute;
+
+  right:10px;
+  top:14px;
+
+  font-size:10px;
+  font-weight:900;
+}
+
+.pincode-status.loading{
+  color:#777;
+}
+
+.pincode-status.success{
+  color:#16803c;
+}
+
+.pincode-status.error{
+  color:#c62828;
+}
+
+.location-info{
+  display:none;
+
+  color:#16803c;
+
+  font-size:10px;
+
+  margin-top:4px;
+}
+
+.location-info.show{
+  display:block;
+}
+
+
+/* =========================================
+   ADDRESS TYPE
+========================================= */
+
+.address-types{
+  display:flex;
+  gap:8px;
+
+  margin-top:14px;
+}
+
+.address-types label{
+  cursor:pointer;
+}
+
+.address-types input{
+  display:none;
+}
+
+.address-types span{
+  display:block;
+
+  padding:8px 12px;
+
+  border:1px solid #ddd;
+
+  border-radius:8px;
+
+  font-size:11px;
+  font-weight:800;
+}
+
+.address-types input:checked + span{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
+
+.default-row{
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  margin-top:14px;
+
+  font-size:11px;
+
+  color:#555;
+}
+
+.default-row input{
+  width:16px;
+  height:16px;
+}
+
+
+/* =========================================
+   SAVE NEW ADDRESS
+========================================= */
+
+.save-address{
+  margin-top:15px;
+
+  width:100%;
+
+  height:45px;
+
+  border:0;
+
+  border-radius:10px;
+
+  background:#111;
+
+  color:#fff;
+
+  font-weight:900;
+
+  cursor:pointer;
+}
+
+
+/* =========================================
+   PRODUCTS
+========================================= */
+
+.product-row{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:14px;
+
+  padding:15px 0;
+
+  border-bottom:1px solid #eee;
+}
+
+.product-row:last-child{
+  border-bottom:0;
+}
+
+.product-image{
+
+  width:72px;
+  height:72px;
+
+  border-radius:10px;
+
+  background:#f5f5f5;
+
+  overflow:hidden;
+
+  flex-shrink:0;
+}
+
+.product-image img{
+
+  width:100%;
+  height:100%;
+
+  object-fit:contain;
+}
+
+.product-info{
+  flex:1;
+  min-width:0;
+}
+
+.product-name{
+
+  font-size:13px;
+  font-weight:800;
+
+  line-height:1.4;
+}
+
+.product-meta{
+
+  font-size:11px;
+  color:#777;
+
+  margin-top:5px;
+}
+
+.product-price{
+
+  font-size:13px;
+  font-weight:900;
+
+  white-space:nowrap;
+}
+
+
+/* =========================================
+   PAYMENT PLACEHOLDER
+========================================= */
+
+.payment-option{
+
+  border:1px solid #ddd;
+
+  border-radius:13px;
+
+  padding:15px;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:12px;
+
+  background:#fafafa;
+}
+
+.payment-icon{
+
+  width:40px;
+  height:40px;
+
+  background:#fff;
+
+  border-radius:10px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  font-size:20px;
+}
+
+.payment-name{
+
+  font-size:13px;
+  font-weight:900;
+}
+
+.payment-text{
+
+  font-size:10px;
+  color:#777;
+
+  margin-top:3px;
+}
+
+
+/* =========================================
+   SUMMARY
+========================================= */
+
+.summary-card{
+  position:sticky;
+  top:88px;
+}
+
+.summary-row{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:15px;
+
+  font-size:13px;
+
+  padding:9px 0;
+}
+
+.summary-row span:first-child{
+  color:#666;
+}
+
+.summary-row span:last-child{
+  font-weight:700;
+}
+
+.delivery-free{
+  color:#16803c!important;
+}
+
+.summary-divider{
+
+  border:0;
+
+  border-top:1px dashed #ddd;
+
+  margin:10px 0;
+}
+
+.total-row{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  padding-top:10px;
+}
+
+.total-label{
+  font-size:16px;
+  font-weight:900;
+}
+
+.total-value{
+  font-size:21px;
+  font-weight:900;
+}
+
+.place-order{
+
+  width:100%;
+
+  height:54px;
+
+  margin-top:17px;
+
+  border:0;
+
+  border-radius:12px;
+
+  background:#111;
+
+  color:#fff;
+
+  font-size:15px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.place-order:hover{
+  transform:translateY(-1px);
+}
+
+.place-order:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.secure-note{
+
+  text-align:center;
+
+  color:#888;
+
+  font-size:10px;
+
+  line-height:1.5;
+
+  margin-top:12px;
+}
+
+
+/* =========================================
+   EMPTY CART
+========================================= */
+
+.empty-cart{
+
+  text-align:center;
+
+  background:#fff;
+
+  border-radius:20px;
+
+  padding:60px 20px;
+
+  border:1px solid #eee;
+}
+
+.empty-cart-icon{
+  font-size:50px;
+  margin-bottom:12px;
+}
+
+.empty-cart h2{
+  margin:0 0 7px;
+}
+
+.empty-cart p{
+  color:#777;
+  font-size:13px;
+}
+
+.shop-btn{
+
+  border:0;
+
+  background:#111;
+
+  color:#fff;
+
+  padding:12px 20px;
+
+  border-radius:10px;
+
+  font-weight:900;
+
+  cursor:pointer;
+}
+
+
+/* =========================================
+   LOGIN REQUIRED
+========================================= */
+
+.login-required{
+
+  max-width:550px;
+
+  margin:60px auto;
+
+  background:#fff;
+
+  border-radius:20px;
+
+  text-align:center;
+
+  padding:50px 25px;
+
+  border:1px solid #eee;
+}
+
+.login-required-icon{
+  font-size:45px;
+  margin-bottom:12px;
+}
+
+.login-required h2{
+  margin:0 0 8px;
+}
+
+.login-required p{
+  color:#777;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.login-button{
+
+  border:0;
+
+  background:#111;
+
+  color:#fff;
+
+  padding:13px 28px;
+
+  border-radius:10px;
+
+  font-weight:900;
+
+  cursor:pointer;
+}
+
+
+/* =========================================
+   SUCCESS
+========================================= */
+
+.success-screen{
+
+  display:none;
+
+  text-align:center;
+
+  max-width:650px;
+
+  margin:55px auto;
+
+  background:#fff;
+
+  border-radius:22px;
+
+  padding:50px 25px;
+
+  border:1px solid #eee;
+}
+
+.success-icon{
+
+  width:75px;
+  height:75px;
+
+  border-radius:50%;
+
+  background:#111;
+
+  color:#fff;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  margin:0 auto 20px;
+
+  font-size:30px;
+}
+
+.success-screen h2{
+  margin:0 0 8px;
+}
+
+.success-screen p{
+  color:#777;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.continue-btn{
+
+  border:0;
+
+  background:#111;
+
+  color:#fff;
+
+  padding:13px 24px;
+
+  border-radius:10px;
+
+  font-weight:900;
+
+  cursor:pointer;
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+.toast{
+
+  position:fixed;
+
+  left:50%;
+
+  bottom:25px;
+
+  transform:
+    translate(-50%,30px);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  background:#111;
+
+  color:#fff;
+
+  padding:12px 18px;
+
+  border-radius:10px;
+
+  font-size:12px;
+
+  z-index:2000;
+
+  transition:.3s;
+
+  max-width:calc(100% - 30px);
+
+  text-align:center;
+}
+
+.toast.show{
+
+  opacity:1;
+
+  transform:
+    translate(-50%,0);
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.loading{
+
+  text-align:center;
+
+  padding:90px 20px;
+
+  color:#777;
+}
+
+.spinner{
+
+  width:35px;
+  height:35px;
+
+  border:3px solid #ddd;
+
+  border-top-color:#111;
+
+  border-radius:50%;
+
+  animation:
+    spin .8s linear infinite;
+
+  margin:0 auto 15px;
+}
+
+@keyframes spin{
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:950px){
+
+  .checkout-grid{
+    grid-template-columns:1fr;
+  }
+
+  .summary-card{
+    position:static;
+  }
+
+}
+
+@media(max-width:600px){
+
+  .checkout-bar{
+    height:58px;
+    padding:0 15px;
+  }
+
+  .checkout-logo{
+    font-size:19px;
+  }
+
+  .secure{
+    font-size:10px;
+  }
+
+  .page{
+    padding:20px 12px 45px;
+  }
+
+  .page-title h1{
+    font-size:26px;
+  }
+
+  .card{
+    border-radius:15px;
+  }
+
+  .card-header{
+    padding:14px 15px;
+  }
+
+  .card-body{
+    padding:15px;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .field.full{
+    grid-column:auto;
+  }
+
+  .product-image{
+    width:60px;
+    height:60px;
+  }
+
+  .product-name{
+    font-size:12px;
+  }
+
+  .product-price{
+    font-size:12px;
+  }
+
+  .address-option{
+    padding:14px;
+  }
+
+}
+
+
+/* =========================================
+   HIDDEN
+========================================= */
+
+.hidden{
+  display:none!important;
+}
+
+</style>
+
 </head>
+
 
 <body>
 
-  <!-- HEADER -->
 
-  <header class="header">
+<!-- =========================================
+     SIMPLE CHECKOUT BAR
+========================================= -->
 
-    <div
-      class="logo"
-      onclick="window.location.href='index.html'">
+<header class="checkout-bar">
 
-      MyStore
+  <div class="checkout-logo">
+    Checkout
+  </div>
 
+  <div class="secure">
+    🔒 Secure Checkout
+  </div>
+
+</header>
+
+
+
+<main class="page">
+
+
+  <!-- =====================================
+       LOADING
+  ====================================== -->
+
+  <div
+    id="loading"
+    class="loading">
+
+    <div class="spinner"></div>
+
+    Loading checkout...
+
+  </div>
+
+
+
+  <!-- =====================================
+       LOGIN REQUIRED
+  ====================================== -->
+
+  <section
+    id="loginRequired"
+    class="login-required hidden">
+
+    <div class="login-required-icon">
+      🔐
     </div>
 
-    <div class="search">
+    <h2>
+      Login Required
+    </h2>
 
-      <input
-        type="text"
-        placeholder="Search products..."
-        onclick="window.location.href='index.html'">
-
-    </div>
+    <p>
+      Please login to continue with checkout
+      and use your saved addresses.
+    </p>
 
     <button
-      class="header-cart"
-      onclick="window.location.href='cart.html'">
+      class="login-button"
+      onclick="location.href='login.html'">
 
-      🛒 Cart
-
-      <span
-        id="cartCount"
-        class="cart-count">
-        0
-      </span>
+      LOGIN
 
     </button>
 
-  </header>
+  </section>
 
 
-  <main class="page">
 
-    <h1 class="page-title">
-      Checkout
-    </h1>
+  <!-- =====================================
+       EMPTY CART
+  ====================================== -->
 
-    <div class="page-subtitle">
-      Complete your order securely
+  <section
+    id="emptyCart"
+    class="empty-cart hidden">
+
+    <div class="empty-cart-icon">
+      🛒
+    </div>
+
+    <h2>
+      Your cart is empty
+    </h2>
+
+    <p>
+      Add some products before going to checkout.
+    </p>
+
+    <button
+      class="shop-btn"
+      onclick="location.href='index.html'">
+
+      Continue Shopping
+
+    </button>
+
+  </section>
+
+
+
+  <!-- =====================================
+       CHECKOUT
+  ====================================== -->
+
+  <section
+    id="checkoutContent"
+    class="hidden">
+
+
+    <div class="page-title">
+
+      <h1>
+        Complete Your Order
+      </h1>
+
+      <p>
+        Select your delivery address and review your order.
+      </p>
+
     </div>
 
 
-    <div
-      id="checkoutLayout"
-      class="checkout-layout">
+
+    <div class="checkout-grid">
 
 
-      <!-- LEFT -->
+      <!-- =================================
+           LEFT
+      ================================== -->
 
-      <section>
+      <div>
 
 
         <!-- ADDRESS -->
 
         <div class="card">
 
-          <h2 class="card-title">
-            📍 Delivery Address
-          </h2>
 
+          <div class="card-header">
 
-          <div class="form-grid">
+            <div class="card-title">
 
+              📍
 
-            <div class="field">
-
-              <label>
-                Full Name *
-              </label>
-
-              <input
-                id="name"
-                type="text"
-                placeholder="Enter your full name"
-                autocomplete="name">
+              Delivery Address
 
             </div>
 
 
-            <div class="field">
+            <span
+              id="addressCount"
+              style="
+                font-size:11px;
+                color:#777;
+              ">
 
-              <label>
-                Mobile Number *
-              </label>
-
-              <input
-                id="mobile"
-                type="tel"
-                maxlength="10"
-                inputmode="numeric"
-                placeholder="10-digit mobile number"
-                autocomplete="tel">
-
-            </div>
-
-
-            <div class="field">
-
-              <label>
-                Pincode *
-              </label>
-
-              <input
-                id="pincode"
-                type="tel"
-                maxlength="6"
-                inputmode="numeric"
-                placeholder="6-digit pincode">
-
-            </div>
-
-
-            <div class="field">
-
-              <label>
-                City *
-              </label>
-
-              <input
-                id="city"
-                type="text"
-                placeholder="City">
-
-            </div>
-
-
-            <div class="field">
-
-              <label>
-                State *
-              </label>
-
-              <select id="state">
-
-                <option value="">
-                  Select State
-                </option>
-
-                <option>Uttar Pradesh</option>
-                <option>Delhi</option>
-                <option>Maharashtra</option>
-                <option>Bihar</option>
-                <option>Madhya Pradesh</option>
-                <option>Rajasthan</option>
-                <option>Gujarat</option>
-                <option>West Bengal</option>
-                <option>Punjab</option>
-                <option>Haryana</option>
-                <option>Uttarakhand</option>
-                <option>Jharkhand</option>
-                <option>Chhattisgarh</option>
-                <option>Odisha</option>
-                <option>Karnataka</option>
-                <option>Telangana</option>
-                <option>Tamil Nadu</option>
-                <option>Kerala</option>
-                <option>Andhra Pradesh</option>
-
-              </select>
-
-            </div>
-
-
-            <div class="field">
-
-              <label>
-                Landmark
-              </label>
-
-              <input
-                id="landmark"
-                type="text"
-                placeholder="Nearby landmark">
-
-            </div>
-
-
-            <div class="field full">
-
-              <label>
-                Complete Address *
-              </label>
-
-              <textarea
-                id="address"
-                placeholder="House/Flat No., Building, Street, Area..."
-              ></textarea>
-
-            </div>
+            </span>
 
           </div>
 
 
-          <div class="address-type">
-
-            <label>
-
-              <input
-                type="radio"
-                name="addressType"
-                value="Home"
-                checked>
-
-              <span>
-                🏠 Home
-              </span>
-
-            </label>
+          <div class="card-body">
 
 
-            <label>
+            <div
+              id="addressList"
+              class="address-list">
 
-              <input
-                type="radio"
-                name="addressType"
-                value="Work">
+            </div>
 
-              <span>
-                🏢 Work
-              </span>
 
-            </label>
+            <button
+              class="add-new-address"
+              onclick="toggleNewAddress()">
+
+              ＋ Add New Delivery Address
+
+            </button>
+
+
+
+            <!-- NEW ADDRESS -->
+
+            <div
+              id="newAddress"
+              class="new-address">
+
+
+              <div class="form-grid">
+
+
+                <div class="field">
+
+                  <label>
+                    Full Name *
+                  </label>
+
+                  <input
+                    id="newName"
+                    type="text"
+                    placeholder="Full name">
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    Mobile Number *
+                  </label>
+
+                  <input
+                    id="newMobile"
+                    type="tel"
+                    inputmode="numeric"
+                    maxlength="10"
+                    placeholder="10-digit mobile">
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    Pincode *
+                  </label>
+
+
+                  <div class="pincode-wrap">
+
+                    <input
+                      id="newPincode"
+                      type="tel"
+                      inputmode="numeric"
+                      maxlength="6"
+                      placeholder="6-digit pincode">
+
+                    <span
+                      id="newPincodeStatus"
+                      class="pincode-status">
+
+                    </span>
+
+                  </div>
+
+
+                  <div
+                    id="newLocationInfo"
+                    class="location-info">
+
+                  </div>
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    City *
+                  </label>
+
+                  <input
+                    id="newCity"
+                    type="text"
+                    placeholder="Auto-filled">
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    District *
+                  </label>
+
+                  <input
+                    id="newDistrict"
+                    type="text"
+                    placeholder="Auto-filled">
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    State *
+                  </label>
+
+                  <input
+                    id="newState"
+                    type="text"
+                    placeholder="Auto-filled">
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    Landmark
+                  </label>
+
+                  <input
+                    id="newLandmark"
+                    type="text"
+                    placeholder="Nearby landmark">
+
+                </div>
+
+
+                <div class="field full">
+
+                  <label>
+                    Complete Address *
+                  </label>
+
+                  <textarea
+                    id="newFullAddress"
+                    placeholder="House/Flat No., Street, Area..."></textarea>
+
+                </div>
+
+
+              </div>
+
+
+              <div class="address-types">
+
+
+                <label>
+
+                  <input
+                    type="radio"
+                    name="newAddressType"
+                    value="Home"
+                    checked>
+
+                  <span>
+                    🏠 Home
+                  </span>
+
+                </label>
+
+
+                <label>
+
+                  <input
+                    type="radio"
+                    name="newAddressType"
+                    value="Work">
+
+                  <span>
+                    🏢 Work
+                  </span>
+
+                </label>
+
+
+                <label>
+
+                  <input
+                    type="radio"
+                    name="newAddressType"
+                    value="Other">
+
+                  <span>
+                    📍 Other
+                  </span>
+
+                </label>
+
+
+              </div>
+
+
+              <label class="default-row">
+
+                <input
+                  id="newDefault"
+                  type="checkbox">
+
+                Make this my default address
+
+              </label>
+
+
+              <button
+                id="saveNewAddressBtn"
+                class="save-address"
+                onclick="saveNewAddress()">
+
+                SAVE ADDRESS
+
+              </button>
+
+
+            </div>
+
 
           </div>
 
         </div>
+
+
+
+        <!-- ORDER ITEMS -->
+
+        <div class="card">
+
+
+          <div class="card-header">
+
+            <div class="card-title">
+
+              📦
+
+              Your Items
+
+            </div>
+
+
+            <span
+              id="itemCount"
+              style="
+                font-size:11px;
+                color:#777;
+              ">
+
+            </span>
+
+          </div>
+
+
+          <div
+            id="productList"
+            class="card-body">
+
+          </div>
+
+
+        </div>
+
 
 
         <!-- PAYMENT -->
 
         <div class="card">
 
-          <h2 class="card-title">
-            💳 Payment Method
-          </h2>
 
+          <div class="card-header">
 
-          <div
-            class="payment-option selected"
-            onclick="selectPayment('UPI', this)">
+            <div class="card-title">
 
-            <label>
+              💳
 
-              <input
-                type="radio"
-                name="payment"
-                value="UPI"
-                checked>
+              Payment Method
 
-              <div>
-
-                <div class="payment-name">
-                  UPI
-                </div>
-
-                <div class="payment-description">
-                  Pay securely using UPI
-                </div>
-
-              </div>
-
-            </label>
+            </div>
 
           </div>
 
 
-          <div
-            class="payment-option"
-            onclick="selectPayment('CARD', this)">
+          <div class="card-body">
 
-            <label>
 
-              <input
-                type="radio"
-                name="payment"
-                value="CARD">
+            <div class="payment-option">
+
+              <div class="payment-icon">
+                💳
+              </div>
 
               <div>
 
                 <div class="payment-name">
-                  Credit / Debit Card
+                  Online Payment
                 </div>
 
-                <div class="payment-description">
-                  Visa, Mastercard, RuPay and more
-                </div>
-
-              </div>
-
-            </label>
-
-          </div>
-
-
-          <div
-            class="payment-option"
-            onclick="selectPayment('COD', this)">
-
-            <label>
-
-              <input
-                type="radio"
-                name="payment"
-                value="COD">
-
-              <div>
-
-                <div class="payment-name">
-                  Cash on Delivery
-                </div>
-
-                <div class="payment-description">
-                  Pay when your order arrives
+                <div class="payment-text">
+                  Secure payment will be connected later.
                 </div>
 
               </div>
 
-            </label>
+            </div>
+
 
           </div>
 
         </div>
 
 
-      </section>
+      </div>
 
 
-      <!-- RIGHT -->
 
-      <aside class="summary">
+      <!-- =================================
+           RIGHT SUMMARY
+      ================================== -->
+
+      <aside>
 
 
-        <!-- ITEMS -->
+        <div class="card summary-card">
 
-        <div class="card">
 
-          <h2 class="card-title">
-            Order Summary
-          </h2>
+          <div class="card-header">
 
-          <div id="orderItems"></div>
+            <div class="card-title">
+
+              Order Summary
+
+            </div>
+
+          </div>
+
+
+          <div class="card-body">
+
+
+            <div class="summary-row">
+
+              <span>
+                Items
+              </span>
+
+              <span id="summaryItems">
+                ₹0
+              </span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+              <span>
+                Delivery
+              </span>
+
+              <span
+                id="summaryDelivery"
+                class="delivery-free">
+
+                FREE
+
+              </span>
+
+            </div>
+
+
+            <hr class="summary-divider">
+
+
+            <div class="total-row">
+
+              <div class="total-label">
+                Total
+              </div>
+
+              <div
+                id="summaryTotal"
+                class="total-value">
+
+                ₹0
+
+              </div>
+
+            </div>
+
+
+            <button
+              id="placeOrderBtn"
+              class="place-order"
+              onclick="placeOrder()">
+
+              PLACE ORDER
+
+            </button>
+
+
+            <div class="secure-note">
+
+              🔒 Your information is securely
+              processed.
+
+            </div>
+
+
+          </div>
 
         </div>
 
-
-        <!-- PRICE -->
-
-        <div class="card">
-
-
-          <div class="summary-row">
-
-            <span>
-              Item Total
-            </span>
-
-            <strong id="subtotal">
-              ₹0
-            </strong>
-
-          </div>
-
-
-          <div class="summary-row discount">
-
-            <span>
-              Discount
-            </span>
-
-            <strong id="discount">
-              - ₹0
-            </strong>
-
-          </div>
-
-
-          <div class="summary-row">
-
-            <span>
-              Delivery
-            </span>
-
-            <strong>
-              FREE
-            </strong>
-
-          </div>
-
-
-          <hr class="divider">
-
-
-          <div class="total-row">
-
-            <span>
-              Total Amount
-            </span>
-
-            <span id="total">
-              ₹0
-            </span>
-
-          </div>
-
-
-          <button
-            id="placeOrderBtn"
-            class="place-order"
-            onclick="placeOrder()">
-
-            🔒 Place Order
-
-          </button>
-
-
-          <div class="secure">
-
-            Your payment information is protected.<br>
-            Secure checkout experience.
-
-          </div>
-
-        </div>
 
       </aside>
 
+
     </div>
 
 
-    <!-- EMPTY -->
+  </section>
 
-    <div
-      id="empty"
-      class="empty"
-      style="display:none;">
 
-      <div class="empty-icon">
-        🛒
+
+  <!-- =====================================
+       SUCCESS
+  ====================================== -->
+
+  <section
+    id="successScreen"
+    class="success-screen">
+
+
+    <div class="success-icon">
+      ✓
+    </div>
+
+
+    <h2>
+      Order Placed Successfully
+    </h2>
+
+
+    <p>
+      Your order has been placed successfully.
+      Real online payment will be connected in
+      the next step.
+    </p>
+
+
+    <button
+      class="continue-btn"
+      onclick="location.href='index.html'">
+
+      Continue Shopping
+
+    </button>
+
+
+  </section>
+
+
+</main>
+
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast">
+
+</div>
+
+
+
+<script>
+
+/* =========================================
+   SUPABASE
+========================================= */
+
+/* =========================================
+   SUPABASE CONFIG
+   ========================================= */
+
+const SUPABASE_URL =
+  "https://bszojvhitsoamhksyjul.supabase.co";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+
+/* =========================================
+   GLOBAL
+========================================= */
+
+let currentUser = null;
+
+let addresses = [];
+
+let cart = [];
+
+let selectedAddressId = null;
+
+
+/* =========================================
+   INIT
+========================================= */
+
+async function initCheckout(){
+
+  /*
+    Load cart first
+  */
+
+  loadCart();
+
+
+  if(!cart.length){
+
+    showEmptyCart();
+
+    return;
+
+  }
+
+
+  /*
+    Check login
+  */
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.getUser();
+
+
+  if(
+    error ||
+    !data.user
+  ){
+
+    showLoginRequired();
+
+    return;
+
+  }
+
+
+  currentUser =
+    data.user;
+
+
+  /*
+    Load addresses
+  */
+
+  await loadAddresses();
+
+
+  /*
+    Render products
+  */
+
+  renderProducts();
+
+
+  /*
+    Show checkout
+  */
+
+  document.getElementById(
+    "loading"
+  ).classList.add(
+    "hidden"
+  );
+
+  document.getElementById(
+    "checkoutContent"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  calculateTotals();
+
+}
+
+
+/* =========================================
+   CART
+========================================= */
+
+function loadCart(){
+
+  try{
+
+    cart =
+      JSON.parse(
+        localStorage.getItem(
+          "cart"
+        ) || "[]"
+      );
+
+
+    if(!Array.isArray(cart)){
+
+      cart = [];
+
+    }
+
+  }catch(error){
+
+    cart = [];
+
+  }
+
+}
+
+
+/* =========================================
+   LOGIN REQUIRED
+========================================= */
+
+function showLoginRequired(){
+
+  document.getElementById(
+    "loading"
+  ).classList.add(
+    "hidden"
+  );
+
+  document.getElementById(
+    "loginRequired"
+  ).classList.remove(
+    "hidden"
+  );
+
+}
+
+
+/* =========================================
+   EMPTY
+========================================= */
+
+function showEmptyCart(){
+
+  document.getElementById(
+    "loading"
+  ).classList.add(
+    "hidden"
+  );
+
+  document.getElementById(
+    "emptyCart"
+  ).classList.remove(
+    "hidden"
+  );
+
+}
+
+
+/* =========================================
+   ADDRESSES
+========================================= */
+
+async function loadAddresses(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from(
+        "customer_addresses"
+      )
+      .select("*")
+      .eq(
+        "user_id",
+        currentUser.id
+      )
+      .order(
+        "is_default",
+        {
+          ascending:false
+        }
+      )
+      .order(
+        "updated_at",
+        {
+          ascending:false
+        }
+      );
+
+
+  if(error){
+
+    console.error(
+      error
+    );
+
+    addresses = [];
+
+  }else{
+
+    addresses =
+      data || [];
+
+  }
+
+
+  /*
+    Default address first
+  */
+
+  if(addresses.length){
+
+    const defaultAddress =
+      addresses.find(
+        address =>
+          address.is_default === true
+      );
+
+
+    selectedAddressId =
+      defaultAddress
+        ? defaultAddress.id
+        : addresses[0].id;
+
+  }
+
+
+  renderAddresses();
+
+}
+
+
+/* =========================================
+   RENDER ADDRESSES
+========================================= */
+
+function renderAddresses(){
+
+  const container =
+    document.getElementById(
+      "addressList"
+    );
+
+
+  container.innerHTML = "";
+
+
+  document.getElementById(
+    "addressCount"
+  ).textContent =
+
+    addresses.length
+      ? `${addresses.length} saved`
+      : "No saved address";
+
+
+  if(!addresses.length){
+
+    container.innerHTML = `
+
+      <div
+        style="
+          padding:25px;
+          text-align:center;
+          background:#fafafa;
+          border:1px dashed #ccc;
+          border-radius:12px;
+          color:#777;
+          font-size:12px;
+        ">
+
+        📍 No saved address found.<br><br>
+
+        Add a delivery address below.
+
       </div>
 
-      <h2>
-        Your cart is empty
-      </h2>
+    `;
 
-      <p>
-        Add products to continue checkout.
-      </p>
+    return;
 
-      <button
-        onclick="window.location.href='index.html'">
-
-        Start Shopping
-
-      </button>
-
-    </div>
-
-  </main>
+  }
 
 
-  <div
-    id="toast"
-    class="toast">
-  </div>
+  addresses.forEach(
+    address => {
+
+      const selected =
+        Number(
+          selectedAddressId
+        ) ===
+        Number(
+          address.id
+        );
 
 
-  <script>
+      const typeIcon =
+        address.address_type === "Work"
+          ? "🏢"
+          : address.address_type === "Other"
+            ? "📍"
+            : "🏠";
 
-    /* =========================
-       CART
-    ========================= */
 
-    let cart =
-      JSON.parse(
-        localStorage.getItem("cart") || "[]"
+      const wrapper =
+        document.createElement(
+          "label"
+        );
+
+
+      wrapper.className =
+        "address-option" +
+        (
+          selected
+            ? " selected"
+            : ""
+        );
+
+
+      wrapper.innerHTML = `
+
+        <input
+          type="radio"
+          name="checkoutAddress"
+          value="${address.id}"
+          ${selected ? "checked" : ""}>
+
+
+        <div class="address-option-top">
+
+          <span class="address-label">
+
+            ${typeIcon}
+
+            ${escapeHTML(
+              address.address_type ||
+              "Home"
+            )}
+
+          </span>
+
+
+          ${
+            address.is_default
+              ? `
+                <span class="default-badge">
+                  ⭐ Default
+                </span>
+              `
+              : ""
+          }
+
+        </div>
+
+
+        <div class="address-name">
+
+          ${escapeHTML(
+            address.full_name
+          )}
+
+        </div>
+
+
+        <div class="address-mobile">
+
+          📱 ${escapeHTML(
+            address.mobile
+          )}
+
+        </div>
+
+
+        <div class="address-text">
+
+          ${escapeHTML(
+            address.address
+          )}
+
+          <br>
+
+          ${
+            address.landmark
+              ? escapeHTML(
+                  address.landmark
+                ) + "<br>"
+              : ""
+          }
+
+          ${escapeHTML(
+            address.city
+          )},
+
+          ${escapeHTML(
+            address.district
+          )}
+
+          <br>
+
+          ${escapeHTML(
+            address.state
+          )}
+
+          -
+
+          <strong>
+            ${escapeHTML(
+              address.pincode
+            )}
+          </strong>
+
+        </div>
+
+
+        <span class="selected-check">
+          ✓
+        </span>
+
+      `;
+
+
+      wrapper.addEventListener(
+        "click",
+        function(){
+
+          selectedAddressId =
+            address.id;
+
+          renderAddresses();
+
+        }
       );
 
 
-    let selectedPayment = "UPI";
+      container.appendChild(
+        wrapper
+      );
+
+    }
+  );
+
+}
 
 
-    /* =========================
-       ELEMENTS
-    ========================= */
+/* =========================================
+   TOGGLE NEW ADDRESS
+========================================= */
 
-    const orderItems =
-      document.getElementById("orderItems");
+function toggleNewAddress(){
 
-    const subtotalElement =
-      document.getElementById("subtotal");
-
-    const discountElement =
-      document.getElementById("discount");
-
-    const totalElement =
-      document.getElementById("total");
-
-    const cartCount =
-      document.getElementById("cartCount");
+  const form =
+    document.getElementById(
+      "newAddress"
+    );
 
 
-    /* =========================
-       MONEY
-    ========================= */
+  form.classList.toggle(
+    "show"
+  );
 
-    function money(value) {
 
-      return Number(value || 0)
-        .toLocaleString("en-IN");
+  if(
+    form.classList.contains(
+      "show"
+    )
+  ){
+
+    document.getElementById(
+      "newName"
+    ).value =
+      currentUser
+        .user_metadata
+        ?.full_name ||
+      "";
+
+
+    document.getElementById(
+      "newMobile"
+    ).value =
+      currentUser
+        .user_metadata
+        ?.mobile ||
+      "";
+
+  }
+
+}
+
+
+/* =========================================
+   PINCODE
+========================================= */
+
+let pincodeTimer;
+
+
+document.getElementById(
+  "newPincode"
+).addEventListener(
+  "input",
+  function(){
+
+    this.value =
+      this.value
+        .replace(/\D/g,"")
+        .slice(0,6);
+
+
+    clearTimeout(
+      pincodeTimer
+    );
+
+
+    if(
+      this.value.length !== 6
+    ){
+
+      setPincodeStatus(
+        "",
+        ""
+      );
+
+      return;
 
     }
 
 
-    /* =========================
-       RENDER
-    ========================= */
-
-    function renderCheckout() {
-
-      cart =
-        JSON.parse(
-          localStorage.getItem("cart") || "[]"
-        );
-
-
-      updateCartCount();
-
-
-      if (!cart.length) {
-
-        document.getElementById(
-          "checkoutLayout"
-        ).style.display = "none";
-
-        document.getElementById(
-          "empty"
-        ).style.display = "block";
-
-        return;
-
-      }
-
-
-      let subtotal = 0;
-
-      let mrpTotal = 0;
-
-
-      orderItems.innerHTML = "";
-
-
-      cart.forEach(item => {
-
-        const quantity =
-          Number(item.quantity || 1);
-
-        const price =
-          Number(item.price || 0);
-
-        const mrp =
-          Number(item.mrp || price);
-
-
-        subtotal +=
-          price * quantity;
-
-
-        mrpTotal +=
-          mrp * quantity;
-
-
-        const row =
-          document.createElement("div");
-
-        row.className =
-          "order-item";
-
-
-        row.innerHTML = `
-
-          <img
-            class="order-image"
-            src="${
-              item.image ||
-              "https://placehold.co/100x100/png?text=Product"
-            }"
-            alt="${escapeHTML(item.name)}">
-
-
-          <div>
-
-            <div class="order-name">
-
-              ${escapeHTML(item.name)}
-
-            </div>
-
-            <div class="order-quantity">
-
-              Qty: ${quantity}
-
-            </div>
-
-          </div>
-
-
-          <div class="order-price">
-
-            ₹${money(price * quantity)}
-
-          </div>
-
-        `;
-
-
-        orderItems.appendChild(row);
-
-      });
-
-
-      const discount =
-        Math.max(
-          0,
-          mrpTotal - subtotal
-        );
-
-
-      subtotalElement.textContent =
-        `₹${money(subtotal)}`;
-
-
-      discountElement.textContent =
-        `- ₹${money(discount)}`;
-
-
-      totalElement.textContent =
-        `₹${money(subtotal)}`;
-
-    }
-
-
-    /* =========================
-       PAYMENT
-    ========================= */
-
-    function selectPayment(method, element) {
-
-      selectedPayment =
-        method;
-
-
-      document
-        .querySelectorAll(".payment-option")
-        .forEach(option =>
-          option.classList.remove("selected")
-        );
-
-
-      element.classList.add("selected");
-
-
-      const radio =
-        element.querySelector(
-          "input"
-        );
-
-
-      if (radio) {
-        radio.checked = true;
-      }
-
-    }
-
-
-    /* =========================
-       VALIDATION
-    ========================= */
-
-    function validateAddress() {
-
-      const name =
-        document.getElementById("name")
-          .value.trim();
-
-      const mobile =
-        document.getElementById("mobile")
-          .value.trim();
-
-      const pincode =
-        document.getElementById("pincode")
-          .value.trim();
-
-      const city =
-        document.getElementById("city")
-          .value.trim();
-
-      const state =
-        document.getElementById("state")
-          .value;
-
-      const address =
-        document.getElementById("address")
-          .value.trim();
-
-
-      if (!name) {
-
-        showToast(
-          "Please enter your name"
-        );
-
-        return false;
-
-      }
-
-
-      if (!/^[0-9]{10}$/.test(mobile)) {
-
-        showToast(
-          "Enter a valid 10-digit mobile number"
-        );
-
-        return false;
-
-      }
-
-
-      if (!/^[0-9]{6}$/.test(pincode)) {
-
-        showToast(
-          "Enter a valid 6-digit pincode"
-        );
-
-        return false;
-
-      }
-
-
-      if (!city) {
-
-        showToast(
-          "Please enter your city"
-        );
-
-        return false;
-
-      }
-
-
-      if (!state) {
-
-        showToast(
-          "Please select your state"
-        );
-
-        return false;
-
-      }
-
-
-      if (!address) {
-
-        showToast(
-          "Please enter your complete address"
-        );
-
-        return false;
-
-      }
-
-
-      return true;
-
-    }
-
-
-    /* =========================
-       PLACE ORDER
-    ========================= */
-
-    function placeOrder() {
-
-      if (!cart.length) {
-
-        showToast(
-          "Your cart is empty"
-        );
-
-        return;
-
-      }
-
-
-      if (!validateAddress()) {
-
-        return;
-
-      }
-
-
-      /*
-        Temporary order object.
-        Database + real payment
-        will be connected next.
-      */
-
-      const addressType =
-        document.querySelector(
-          'input[name="addressType"]:checked'
-        )?.value || "Home";
-
-
-      const order = {
-
-        orderId:
-          "ORD" +
-          Date.now(),
-
-        customer: {
-
-          name:
-            document.getElementById("name")
-              .value.trim(),
-
-          mobile:
-            document.getElementById("mobile")
-              .value.trim(),
-
-          pincode:
-            document.getElementById("pincode")
-              .value.trim(),
-
-          city:
-            document.getElementById("city")
-              .value.trim(),
-
-          state:
-            document.getElementById("state")
-              .value,
-
-          landmark:
-            document.getElementById("landmark")
-              .value.trim(),
-
-          address:
-            document.getElementById("address")
-              .value.trim(),
-
-          addressType:
-            addressType
+    pincodeTimer =
+      setTimeout(
+        () => {
+
+          fetchPincode(
+            this.value
+          );
 
         },
+        250
+      );
 
-        paymentMethod:
-          selectedPayment,
-
-        items:
-          cart,
-
-        createdAt:
-          new Date().toISOString()
-
-      };
+  }
+);
 
 
-      localStorage.setItem(
-        "pendingOrder",
-        JSON.stringify(order)
+/* =========================================
+   FETCH PINCODE
+========================================= */
+
+async function fetchPincode(
+  pincode
+){
+
+  setPincodeStatus(
+    "Fetching...",
+    "loading"
+  );
+
+
+  try{
+
+    const response =
+      await fetch(
+        `https://api.postalpincode.in/pincode/${encodeURIComponent(
+          pincode
+        )}`
       );
 
 
-      /*
-        For now:
-        COD can continue to order confirmation.
+    if(!response.ok){
 
-        UPI/Card will be connected
-        to the real payment gateway
-        in the next phase.
-      */
+      throw new Error(
+        "Network error"
+      );
 
-      if (
-        selectedPayment === "COD"
-      ) {
-
-        localStorage.removeItem(
-          "cart"
-        );
+    }
 
 
-        window.location.href =
-          "order-success.html";
+    const result =
+      await response.json();
 
-        return;
+
+    if(
+      !Array.isArray(result) ||
+      !result.length ||
+      result[0].Status !== "Success" ||
+      !result[0].PostOffice?.length
+    ){
+
+      setPincodeStatus(
+        "Invalid",
+        "error"
+      );
+
+      showToast(
+        "Pincode not found."
+      );
+
+      return;
+
+    }
+
+
+    const office =
+      result[0].PostOffice[0];
+
+
+    document.getElementById(
+      "newCity"
+    ).value =
+      office.Block ||
+      office.District ||
+      office.Name ||
+      "";
+
+
+    document.getElementById(
+      "newDistrict"
+    ).value =
+      office.District ||
+      "";
+
+
+    document.getElementById(
+      "newState"
+    ).value =
+      office.State ||
+      "";
+
+
+    setPincodeStatus(
+      "✓",
+      "success"
+    );
+
+
+    const location =
+      document.getElementById(
+        "newLocationInfo"
+      );
+
+
+    location.textContent =
+      `${office.Name || ""} • ${office.District || ""}, ${office.State || ""}`;
+
+
+    location.classList.add(
+      "show"
+    );
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    setPincodeStatus(
+      "Retry",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   PIN STATUS
+========================================= */
+
+function setPincodeStatus(
+  text,
+  type
+){
+
+  const status =
+    document.getElementById(
+      "newPincodeStatus"
+    );
+
+
+  status.textContent =
+    text;
+
+
+  status.className =
+    "pincode-status";
+
+
+  if(type){
+
+    status.classList.add(
+      type
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   SAVE NEW ADDRESS
+========================================= */
+
+async function saveNewAddress(){
+
+  const name =
+    document.getElementById(
+      "newName"
+    ).value.trim();
+
+
+  const mobile =
+    document.getElementById(
+      "newMobile"
+    ).value.trim();
+
+
+  const pincode =
+    document.getElementById(
+      "newPincode"
+    ).value.trim();
+
+
+  const city =
+    document.getElementById(
+      "newCity"
+    ).value.trim();
+
+
+  const district =
+    document.getElementById(
+      "newDistrict"
+    ).value.trim();
+
+
+  const state =
+    document.getElementById(
+      "newState"
+    ).value.trim();
+
+
+  const landmark =
+    document.getElementById(
+      "newLandmark"
+    ).value.trim();
+
+
+  const address =
+    document.getElementById(
+      "newFullAddress"
+    ).value.trim();
+
+
+  const type =
+    document.querySelector(
+      'input[name="newAddressType"]:checked'
+    )?.value ||
+    "Home";
+
+
+  const isDefault =
+    document.getElementById(
+      "newDefault"
+    ).checked ||
+    addresses.length === 0;
+
+
+  const button =
+    document.getElementById(
+      "saveNewAddressBtn"
+    );
+
+
+  if(name.length < 2){
+
+    showToast(
+      "Enter your full name."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !/^[0-9]{10}$/.test(
+      mobile
+    )
+  ){
+
+    showToast(
+      "Enter valid 10-digit mobile."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !/^[0-9]{6}$/.test(
+      pincode
+    )
+  ){
+
+    showToast(
+      "Enter valid 6-digit pincode."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !city ||
+    !district ||
+    !state
+  ){
+
+    showToast(
+      "Please enter a valid pincode."
+    );
+
+    return;
+
+  }
+
+
+  if(!address){
+
+    showToast(
+      "Enter complete address."
+    );
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "SAVING...";
+
+
+  try{
+
+    /*
+      If default,
+      remove old default.
+    */
+
+    if(isDefault){
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from(
+            "customer_addresses"
+          )
+          .update({
+            is_default:false
+          })
+          .eq(
+            "user_id",
+            currentUser.id
+          );
+
+
+      if(error){
+
+        throw error;
 
       }
 
+    }
 
-      showToast(
-        `${selectedPayment} payment gateway will be connected next`
-      );
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from(
+          "customer_addresses"
+        )
+        .insert({
+
+          user_id:
+            currentUser.id,
+
+          full_name:
+            name,
+
+          mobile:
+            mobile,
+
+          pincode:
+            pincode,
+
+          city:
+            city,
+
+          district:
+            district,
+
+          state:
+            state,
+
+          landmark:
+            landmark,
+
+          address:
+            address,
+
+          address_type:
+            type,
+
+          is_default:
+            isDefault,
+
+          updated_at:
+            new Date().toISOString()
+
+        })
+        .select()
+        .single();
+
+
+    if(error){
+
+      throw error;
 
     }
 
 
-    /* =========================
-       CART COUNT
-    ========================= */
+    /*
+      New address becomes
+      selected address.
+    */
 
-    function updateCartCount() {
+    selectedAddressId =
+      data.id;
 
-      const count =
-        cart.reduce(
-          (total, item) =>
-            total +
-            Number(item.quantity || 0),
-          0
+
+    /*
+      Reload addresses.
+    */
+
+    await loadAddresses();
+
+
+    /*
+      Hide form.
+    */
+
+    document.getElementById(
+      "newAddress"
+    ).classList.remove(
+      "show"
+    );
+
+
+    clearNewAddressForm();
+
+
+    showToast(
+      "Address saved successfully."
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Address error:",
+      error
+    );
+
+
+    showToast(
+      "Address save failed."
+    );
+
+  }
+
+
+  button.disabled =
+    false;
+
+  button.textContent =
+    "SAVE ADDRESS";
+
+}
+
+
+/* =========================================
+   CLEAR NEW ADDRESS
+========================================= */
+
+function clearNewAddressForm(){
+
+  const ids = [
+
+    "newName",
+    "newMobile",
+    "newPincode",
+    "newCity",
+    "newDistrict",
+    "newState",
+    "newLandmark",
+    "newFullAddress"
+
+  ];
+
+
+  ids.forEach(
+    id => {
+
+      document.getElementById(
+        id
+      ).value = "";
+
+    }
+  );
+
+
+  document.getElementById(
+    "newDefault"
+  ).checked =
+    false;
+
+
+  document.querySelector(
+    'input[name="newAddressType"][value="Home"]'
+  ).checked =
+    true;
+
+
+  document.getElementById(
+    "newLocationInfo"
+  ).classList.remove(
+    "show"
+  );
+
+
+  setPincodeStatus(
+    "",
+    ""
+  );
+
+}
+
+
+/* =========================================
+   PRODUCTS
+========================================= */
+
+function renderProducts(){
+
+  const container =
+    document.getElementById(
+      "productList"
+    );
+
+
+  container.innerHTML = "";
+
+
+  let totalQuantity = 0;
+
+
+  cart.forEach(
+    item => {
+
+      const quantity =
+        Number(
+          item.quantity || 1
         );
 
 
-      cartCount.textContent =
-        count;
+      const price =
+        Number(
+          item.price || 0
+        );
+
+
+      totalQuantity +=
+        quantity;
+
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+
+      row.className =
+        "product-row";
+
+
+      const image =
+        item.image ||
+        item.img ||
+        "";
+
+
+      row.innerHTML = `
+
+        <div class="product-image">
+
+          ${
+            image
+              ? `
+                <img
+                  src="${escapeHTML(image)}"
+                  alt="">
+              `
+              : `
+                <div
+                  style="
+                    width:100%;
+                    height:100%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:25px;
+                  ">
+
+                  📦
+
+                </div>
+              `
+          }
+
+        </div>
+
+
+        <div class="product-info">
+
+          <div class="product-name">
+
+            ${escapeHTML(
+              item.name ||
+              item.title ||
+              "Product"
+            )}
+
+          </div>
+
+
+          <div class="product-meta">
+
+            Qty: ${quantity}
+
+          </div>
+
+        </div>
+
+
+        <div class="product-price">
+
+          ₹${formatMoney(
+            price * quantity
+          )}
+
+        </div>
+
+      `;
+
+
+      container.appendChild(
+        row
+      );
 
     }
+  );
 
 
-    /* =========================
-       TOAST
-    ========================= */
+  document.getElementById(
+    "itemCount"
+  ).textContent =
 
-    let toastTimer;
+    `${totalQuantity} item${totalQuantity !== 1 ? "s" : ""}`;
 
-
-    function showToast(message) {
-
-      const toast =
-        document.getElementById("toast");
+}
 
 
-      toast.textContent =
-        message;
+/* =========================================
+   TOTALS
+========================================= */
+
+function calculateTotals(){
+
+  let subtotal = 0;
+
+  cart.forEach(
+    item => {
+
+      const price =
+        Number(
+          item.price || 0
+        );
 
 
-      toast.classList.add("show");
+      const quantity =
+        Number(
+          item.quantity || 1
+        );
 
 
-      clearTimeout(
-        toastTimer
+      subtotal +=
+        price * quantity;
+
+    }
+  );
+
+
+  const delivery =
+    subtotal > 0
+      ? 0
+      : 0;
+
+
+  const total =
+    subtotal +
+    delivery;
+
+
+  document.getElementById(
+    "summaryItems"
+  ).textContent =
+    "₹" +
+    formatMoney(
+      subtotal
+    );
+
+
+  document.getElementById(
+    "summaryDelivery"
+  ).textContent =
+    delivery === 0
+      ? "FREE"
+      : "₹" +
+        formatMoney(
+          delivery
+        );
+
+
+  document.getElementById(
+    "summaryTotal"
+  ).textContent =
+    "₹" +
+    formatMoney(
+      total
+    );
+
+}
+
+
+/* =========================================
+   PLACE ORDER
+========================================= */
+
+async function placeOrder(){
+
+  if(!selectedAddressId){
+
+    showToast(
+      "Please select a delivery address."
+    );
+
+    return;
+
+  }
+
+
+  const address =
+    addresses.find(
+      item =>
+        Number(item.id) ===
+        Number(selectedAddressId)
+    );
+
+
+  if(!address){
+
+    showToast(
+      "Please select a valid address."
+    );
+
+    return;
+
+  }
+
+
+  if(!cart.length){
+
+    showToast(
+      "Your cart is empty."
+    );
+
+    return;
+
+  }
+
+
+  const button =
+    document.getElementById(
+      "placeOrderBtn"
+    );
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "PROCESSING...";
+
+
+  /*
+    REAL PAYMENT WILL BE CONNECTED LATER.
+
+    For now we create a demo order
+    reference and show success.
+  */
+
+
+  const orderId =
+    "ORD" +
+    Date.now();
+
+
+  /*
+    Save current checkout
+    temporarily in localStorage.
+  */
+
+  const order = {
+
+    order_id:
+      orderId,
+
+    user_id:
+      currentUser.id,
+
+    address_id:
+      address.id,
+
+    address:
+      address,
+
+    items:
+      cart,
+
+    total:
+      calculateCartTotal(),
+
+    created_at:
+      new Date().toISOString(),
+
+    payment_status:
+      "pending",
+
+    order_status:
+      "placed"
+
+  };
+
+
+  localStorage.setItem(
+    "lastOrder",
+    JSON.stringify(
+      order
+    )
+  );
+
+
+  /*
+    Demo delay
+  */
+
+  setTimeout(
+    () => {
+
+      document.getElementById(
+        "checkoutContent"
+      ).classList.add(
+        "hidden"
       );
 
 
-      toastTimer =
-        setTimeout(
-          () => {
+      document.getElementById(
+        "successScreen"
+      ).style.display =
+        "block";
 
-            toast.classList.remove("show");
 
-          },
-          2500
+      /*
+        Clear cart
+      */
+
+      localStorage.removeItem(
+        "cart"
+      );
+
+
+    },
+    800
+  );
+
+}
+
+
+/* =========================================
+   CART TOTAL
+========================================= */
+
+function calculateCartTotal(){
+
+  return cart.reduce(
+    (
+      total,
+      item
+    ) => {
+
+      return total +
+
+        Number(
+          item.price || 0
+        ) *
+
+        Number(
+          item.quantity || 1
         );
 
+    },
+    0
+  );
+
+}
+
+
+/* =========================================
+   MONEY
+========================================= */
+
+function formatMoney(
+  value
+){
+
+  return Number(
+    value || 0
+  ).toLocaleString(
+    "en-IN",
+    {
+      maximumFractionDigits:2
     }
+  );
+
+}
 
 
-    /* =========================
-       SECURITY
-    ========================= */
+/* =========================================
+   ESCAPE HTML
+========================================= */
 
-    function escapeHTML(value) {
+function escapeHTML(
+  value
+){
 
-      return String(value || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+  return String(
+    value || ""
+  )
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
 
-    }
+}
 
 
-    /* =========================
-       START
-    ========================= */
+/* =========================================
+   TOAST
+========================================= */
 
-    renderCheckout();
+let toastTimer;
 
-  </script>
+
+function showToast(
+  text
+){
+
+  const toast =
+    document.getElementById(
+      "toast"
+    );
+
+
+  toast.textContent =
+    text;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2500
+    );
+
+}
+
+
+/* =========================================
+   MOBILE INPUT
+========================================= */
+
+document.getElementById(
+  "newMobile"
+).addEventListener(
+  "input",
+  function(){
+
+    this.value =
+      this.value
+        .replace(/\D/g,"")
+        .slice(0,10);
+
+  }
+);
+
+
+/* =========================================
+   START
+========================================= */
+
+initCheckout();
+
+</script>
 
 </body>
+
 </html>
