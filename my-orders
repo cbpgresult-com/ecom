@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Orders | MyStore</title>
+<meta name="theme-color" content="#111111">
+<style>
+*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#111}
+button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.top{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:20px;padding:0 5%;position:sticky;top:0;z-index:20}
+.logo{font-size:25px;font-weight:800}.search{height:44px;flex:1;max-width:850px;border:1px solid #ddd;border-radius:12px;padding:0 16px;background:#f8f8f8;outline:0}
+.account{margin-left:auto;height:44px;padding:0 17px;border:0;border-radius:12px;background:#111;color:#fff;font-weight:800}
+.page{width:min(1200px,100%);margin:auto;padding:25px 4%}.heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px}.heading h1{margin:0;font-size:30px}.heading p{margin:7px 0 0;color:#6b7280;font-size:13px}
+.state{background:#fff;border:1px solid #e5e7eb;border-radius:20px;min-height:430px;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px}.state-icon{font-size:52px}.state h2{margin:12px 0 7px}.state p{color:#6b7280;font-size:13px;line-height:1.6}.btn{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 17px;border-radius:11px;background:#111;color:#fff;font-weight:800;font-size:13px;border:0;margin-top:15px}
+.order{background:#fff;border:1px solid #e5e7eb;border-radius:18px;margin-bottom:15px;overflow:hidden;box-shadow:0 5px 20px #00000007}
+.order-head{padding:17px 20px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.order-id{font-size:14px;font-weight:900}.date{font-size:11px;color:#777;margin-top:5px}.status{padding:6px 10px;border-radius:20px;font-size:11px;font-weight:900;background:#ecfdf5;color:#15803d;text-transform:capitalize}
+.status.cancelled,.status.rejected{background:#fef2f2;color:#dc2626}.status.shipped,.status.out_for_delivery{background:#eff6ff;color:#2563eb}
+.order-body{padding:18px 20px}.items{display:flex;flex-direction:column;gap:12px}.item{display:grid;grid-template-columns:70px 1fr auto;gap:13px;align-items:center}.item img{width:70px;height:70px;border:1px solid #eee;border-radius:11px;object-fit:contain;padding:5px}.item-name{font-size:13px;font-weight:800}.item-meta{font-size:11px;color:#777;margin-top:5px}.item-price{font-size:13px;font-weight:900}.order-foot{border-top:1px solid #eee;margin-top:17px;padding-top:15px;display:flex;align-items:center;justify-content:space-between;gap:15px}.total-label{font-size:11px;color:#777}.total{font-size:18px;font-weight:900;margin-top:3px}.payment{font-size:11px;color:#555;margin-top:4px}.details-btn{height:42px;padding:0 15px;border:1px solid #111;background:#fff;border-radius:10px;font-size:12px;font-weight:900}
+.details{display:none;background:#fafafa;border-top:1px solid #eee;padding:18px 20px}.details.open{display:block}.section-title{font-size:12px;font-weight:900;margin:0 0 10px}.address{font-size:12px;color:#555;line-height:1.7;background:#fff;border:1px solid #eee;border-radius:11px;padding:12px}.timeline{display:flex;gap:0;margin:18px 0 3px;overflow:auto}.step{min-width:105px;text-align:center;position:relative;color:#9ca3af;font-size:10px;font-weight:800}.dot{width:12px;height:12px;border-radius:50%;background:#d1d5db;margin:0 auto 7px;position:relative;z-index:2}.step.active{color:#15803d}.step.active .dot{background:#16a34a}.step:not(:last-child):after{content:"";position:absolute;height:2px;background:#d1d5db;left:56px;right:-49px;top:5px}.step.active:not(:last-child):after{background:#16a34a}.loader{width:40px;height:40px;border:4px solid #eee;border-top-color:#111;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;background:#111;color:#fff;padding:12px 16px;border-radius:10px;font-size:12px;font-weight:800;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){
+.top{height:62px;padding:0 12px}.logo{font-size:20px}.search{display:none}.account{height:40px;padding:0 13px}
+.page{padding:16px 10px}.heading{display:block}.heading h1{font-size:25px}.order-head{padding:14px}.order-body{padding:14px}.item{grid-template-columns:58px 1fr auto}.item img{width:58px;height:58px}.item-name{font-size:12px}.item-price{font-size:12px}.order-foot{align-items:flex-start;flex-direction:column}.details-btn{width:100%}.details{padding:15px}.timeline{padding-bottom:5px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+<a class="logo" href="/ecom/">MyStore</a>
+<input id="search" class="search" placeholder="Search products...">
+<button class="account" onclick="location.href='/ecom/account.html'">Account</button>
+</header>
+
+<main class="page">
+<div class="heading">
+<div>
+<h1>My Orders</h1>
+<p id="subtitle">Your recent orders</p>
+</div>
+<a href="/ecom/" class="btn" style="margin:0">Continue Shopping</a>
+</div>
+
+<div id="loading" class="state"><div class="loader"></div></div>
+
+<div id="loginState" class="state" style="display:none">
+<div><div class="state-icon">🔐</div><h2>Login required</h2><p>Please login to see your orders.</p><a class="btn" href="/ecom/account.html">Login / Account</a></div>
+</div>
+
+<div id="emptyState" class="state" style="display:none">
+<div><div class="state-icon">📦</div><h2>No orders yet</h2><p>Your placed orders will appear here.</p><a class="btn" href="/ecom/">Start Shopping</a></div>
+</div>
+
+<div id="orders"></div>
+</main>
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let user=null,orders=[];
+
+const money=n=>"₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function dateText(v){if(!v)return "—";return new Date(v).toLocaleString("en-IN",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}
+function toast(x){const t=document.getElementById("toast");t.textContent=x;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2300)}
+function show(id){["loading","loginState","emptyState"].forEach(x=>document.getElementById(x).style.display=x===id?"flex":"none")}
+
+async function init(){
+ try{
+  const {data,error}=await sb.auth.getSession();
+  if(error)throw error;
+  user=data.session?.user||null;
+  if(!user){show("loginState");return}
+  await loadOrders();
+ }catch(e){
+  console.error(e);
+  document.getElementById("loading").innerHTML="<div><div class='state-icon'>⚠️</div><h2>Orders load nahi hue</h2><p>"+esc(e.message)+"</p></div>";
+ }
+}
+
+async function loadOrders(){
+ const {data,error}=await sb.from("orders").select("*").eq("user_id",user.id).order("created_at",{ascending:false});
+ if(error)throw error;
+ orders=data||[];
+ if(!orders.length){show("emptyState");return}
+ document.getElementById("loading").style.display="none";
+ renderOrders();
+}
+
+async function getItems(orderId){
+ const {data,error}=await sb.from("order_items").select("*").eq("order_id",orderId).order("created_at",{ascending:true});
+ if(error)throw error;
+ return data||[];
+}
+
+async function getAddress(addressId){
+ if(!addressId)return null;
+ const {data,error}=await sb.from("customer_addresses").select("*").eq("id",addressId).eq("user_id",user.id).maybeSingle();
+ if(error)throw error;
+ return data;
+}
+
+function statusClass(status){return String(status||"placed").toLowerCase().replace(/\s+/g,"_")}
+function timeline(status){
+ const s=statusClass(status);
+ if(["cancelled","rejected"].includes(s))return "";
+ const stages=["placed","confirmed","shipped","out_for_delivery","delivered"];
+ let current=stages.indexOf(s);
+ if(current<0)current=0;
+ return `<div class="timeline">${stages.map((x,i)=>`<div class="step ${i<=current?"active":""}"><div class="dot"></div>${x.replace(/_/g," ")}</div>`).join("")}</div>`;
+}
+
+async function renderOrders(){
+ const root=document.getElementById("orders");
+ root.innerHTML="";
+ document.getElementById("subtitle").textContent=orders.length+" order"+(orders.length===1?"":"s");
+
+ for(const order of orders){
+  const el=document.createElement("article");
+  el.className="order";
+  el.id="order-"+order.id;
+  el.innerHTML=`
+   <div class="order-head">
+    <div><div class="order-id">Order #${esc(order.order_number||order.id)}</div><div class="date">${dateText(order.created_at)}</div></div>
+    <span class="status ${statusClass(order.order_status)}">${esc(order.order_status||"placed")}</span>
+   </div>
+   <div class="order-body">
+    <div class="items"><div style="font-size:12px;color:#777">Loading products...</div></div>
+    <div class="order-foot">
+     <div><div class="total-label">Total Amount</div><div class="total">${money(order.total_amount)}</div><div class="payment">${esc(order.payment_method||"COD")}</div></div>
+     <button class="details-btn" onclick="toggleDetails(${order.id})">View Order Details</button>
+    </div>
+    <div class="details" id="details-${order.id}">
+      <div class="section-title">Delivery Address</div>
+      <div class="address" id="address-${order.id}">Loading...</div>
+      ${timeline(order.order_status)}
+    </div>
+   </div>`;
+  root.appendChild(el);
+  try{
+   const [items,address]=await Promise.all([getItems(order.id),getAddress(order.address_id)]);
+   const itemBox=el.querySelector(".items");
+   itemBox.innerHTML=items.length?items.map(i=>`
+    <div class="item">
+      <img src="${esc(i.product_image||"")}" onerror="this.style.visibility='hidden'">
+      <div><div class="item-name">${esc(i.product_name||"Product")}</div><div class="item-meta">${Number(i.quantity)||1} × ${money(i.price)}</div></div>
+      <div class="item-price">${money(i.total_price ?? ((Number(i.quantity)||1)*(Number(i.price)||0)))}</div>
+    </div>`).join(""):`<div style="font-size:12px;color:#777">No product details found.</div>`;
+   const a=address;
+   el.querySelector("#address-"+order.id).innerHTML=a?`
+    <b>${esc(a.full_name)}</b><br>
+    ${esc(a.address)}${a.landmark?`, ${esc(a.landmark)}`:""}<br>
+    ${esc(a.city)}, ${esc(a.district)}, ${esc(a.state)} - <b>${esc(a.pincode)}</b><br>
+    Mobile: ${esc(a.mobile)}
+   `:"Address details unavailable";
+  }catch(e){
+   console.error(e);
+   el.querySelector(".items").innerHTML="<div style='font-size:12px;color:#dc2626'>Order items load nahi hue.</div>";
+  }
+ }
+}
+
+function toggleDetails(id){
+ const d=document.getElementById("details-"+id);
+ d.classList.toggle("open");
+}
+
+document.getElementById("search").addEventListener("keydown",e=>{
+ if(e.key==="Enter"&&e.target.value.trim()){
+  location.href="/ecom/index.html?search="+encodeURIComponent(e.target.value.trim());
+ }
+});
+init();
+</script>
+</body>
+</html>
