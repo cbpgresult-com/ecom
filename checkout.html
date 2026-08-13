@@ -1567,7 +1567,7 @@ body{padding:0 !important;margin:0 !important;}
 
     setText('ckOrderIdText', '#' + displayOrderId(orderRow));
     var trackLink = document.getElementById('ckTrackOrderLink');
-    if(trackLink) trackLink.href = '/orders.html?id=' + orderRow.id;
+    if(trackLink) trackLink.href = '/my-orders.html?id=' + orderRow.id;
     ckShowPanel(4);
 
     if(window.confetti){
