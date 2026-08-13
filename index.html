@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Store</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="logo">MyStore</div>
+
+    <div class="search">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search products..."
+      >
+    </div>
+
+    <button class="cart-btn">
+      🛒 Cart <span id="cartCount">0</span>
+    </button>
+  </header>
+
+
+  <main>
+
+    <section class="top-section">
+
+      <div>
+        <h1>Explore Products</h1>
+        <p>Discover products you'll love.</p>
+      </div>
+
+      <select id="sortSelect">
+        <option value="popular">Popular</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+        <option value="new">Newest</option>
+      </select>
+
+    </section>
+
+
+    <div id="categoryBar" class="categories">
+      <button class="category active" data-category="all">
+        All
+      </button>
+    </div>
+
+
+    <div id="loading" class="loading">
+      Loading products...
+    </div>
+
+
+    <section id="productGrid" class="product-grid"></section>
+
+
+    <div id="noProducts" class="no-products hidden">
+      <div>🔍</div>
+      <h2>No products found</h2>
+      <p>Try another search or category.</p>
+    </div>
+
+  </main>
+
+
+  <script src="app.js"></script>
+
+</body>
+</html>
