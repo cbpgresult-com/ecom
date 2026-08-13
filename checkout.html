@@ -343,7 +343,7 @@ body{padding:0 !important;margin:0 !important;}
 
 @media(min-width:900px){
   .ckwrap{padding:28px 16px 48px;align-items:flex-start;}
-  .ckphone{max-width:1450px;box-shadow:var(--shadow-md);border-radius:22px;overflow:hidden;min-height:0;border:1px solid var(--line);}
+  .ckphone{max-width:1080px;box-shadow:var(--shadow-md);border-radius:22px;overflow:hidden;min-height:0;border:1px solid var(--line);}
   .ckheader{padding:20px 30px;padding-top:20px;}
   .ckheader h1{font-size:20px;}
   .ckstepper{padding:24px 22px 20px;}
@@ -352,7 +352,7 @@ body{padding:0 !important;margin:0 !important;}
   .ckform-grid .ckfield.full{grid-column:1 / -1;}
   .ckstep3-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start;}
   .ckstep3-grid .ckpricecol{position:sticky;top:24px;}
-  .ckfooterbar{position:static;max-width:1450px;margin:0 auto;border:none;border-top:1px solid var(--line);border-radius:0 0 22px 22px;padding:18px 30px;background:#fff;}
+  .ckfooterbar{position:static;max-width:1080px;margin:0 auto;border:none;border-top:1px solid var(--line);border-radius:0 0 22px 22px;padding:18px 30px;background:#fff;}
   .ckfooterbar .ckbtn{max-width:340px;margin-left:auto;display:flex;}
 }
 </style>
@@ -571,8 +571,21 @@ body{padding:0 !important;margin:0 !important;}
           <div>
             <div class="cksectitle">Choose a payment method</div>
 
-            <!-- COD ONLY FOR NOW -->
-            <div class="ckpay selected" data-pay="cod">
+            <div class="ckpay selected" data-pay="upi" onclick="ckSelectPay('upi')">
+              <div class="ckpayicon">
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1f4d36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="2" width="12" height="20" rx="2"></rect>
+                  <line x1="6" y1="18" x2="18" y2="18"></line>
+                </svg>
+              </div>
+              <div>
+                <div class="ckpaytitle">UPI <span class="ckpaybadge">+ QR</span></div>
+                <div class="ckpaysub">Pay via any UPI app installed on your phone, or scan the QR</div>
+              </div>
+              <div class="ckradio"></div>
+            </div>
+
+            <div class="ckpay" data-pay="cod" onclick="ckSelectPay('cod')">
               <div class="ckpayicon">
                 <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1f4d36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="2" y="6" width="20" height="12" rx="2"></rect>
@@ -582,14 +595,10 @@ body{padding:0 !important;margin:0 !important;}
                 </svg>
               </div>
               <div>
-                <div class="ckpaytitle">Cash on Delivery <span class="ckpaybadge">AVAILABLE</span></div>
-                <div class="ckpaysub">Pay when your order is delivered. No online payment required.</div>
+                <div class="ckpaytitle">Cash on Delivery</div>
+                <div class="ckpaysub">Nominal fee ₹13 applies</div>
               </div>
               <div class="ckradio"></div>
-            </div>
-
-            <div style="margin-top:12px;padding:13px 14px;border-radius:12px;background:#eaf8ef;border:1px solid #cdebd9;color:#1f6b3d;font-size:12.5px;line-height:1.55;font-weight:700;">
-              ✓ COD available &nbsp; • &nbsp; Pay at delivery &nbsp; • &nbsp; Online payment will be added later
             </div>
           </div>
 
@@ -597,12 +606,13 @@ body{padding:0 !important;margin:0 !important;}
             <div class="ckpricecard">
               <div class="cksectitle">Price details</div>
               <div class="ckpricerow"><span>MRP (incl. all taxes)</span><span id="ckMrpVal">₹0</span></div>
-              <div class="ckpricerow"><span>Delivery</span><span id="ckFeeVal">FREE</span></div>
+              <div class="ckpricerow"><span>Fees</span><span id="ckFeeVal">₹0</span></div>
               <div class="ckpricerow disc"><span>Discounts</span><span id="ckDiscVal">-₹0</span></div>
               <div class="ckpricerow total"><span>Total Amount</span><span id="ckTotalVal">₹0</span></div>
               <div class="cksavings" id="ckSavingsBox">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.8L20 9.7l-5.8 1.9L12 17.4l-1.9-5.8L4 9.7l5.8-1.9L12 2z"></path></svg>
-                You'll save <span id="ckSaveAmt">₹0</span> on this order!
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l1.9 5.8L20 9.7l-5.8 1.9L12 17.4l-1.9-5.8L4 9.7l5.8-1.9L12 2z"></path>
+                </svg> You'll save <span id="ckSaveAmt">₹0</span> on this order!
               </div>
             </div>
           </div>
@@ -629,7 +639,7 @@ body{padding:0 !important;margin:0 !important;}
           </h2>
           <p style="font-size:14px; color:#6c7a73; margin:0 0 4px;">Your order <span id="ckOrderIdText" style="font-weight:800; color:#1f4d36;"></span> has been placed successfully.</p>
           <p style="font-size:14px; color:#6c7a73; margin:0 0 20px;">Order history me "My Orders" section me dikhega.</p>
-          <a class="ckbtn" id="ckTrackOrderLink" href="/p/my-orders.html" style="margin-bottom:10px;">Track Order</a>
+          <a class="ckbtn" id="ckTrackOrderLink" href="/orders.html" style="margin-bottom:10px;">Track Order</a>
           <div style="height:10px"></div>
           <a class="ckbtn ghost" href="/">Continue Shopping</a>
         </div>
@@ -686,7 +696,7 @@ body{padding:0 !important;margin:0 !important;}
           <p style="font-size:14px; color:#6c7a73; margin:0 0 20px;">Order <span id="ckPendingOrderId" style="font-weight:800; color:#1f4d36;"></span></p>
           <button class="ckbtn amber block" type="button" onclick="ckCheckPendingStatus()" style="margin-bottom:10px;">Check Status</button>
           <div style="height:10px"></div>
-          <a class="ckbtn ghost block" href="/p/my-orders.html">View My Orders</a>
+          <a class="ckbtn ghost block" href="/orders.html">View My Orders</a>
         </div>
       </div>
 
@@ -719,615 +729,919 @@ body{padding:0 !important;margin:0 !important;}
   </div>
 </div>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
 (function(){
-  'use strict';
-
-  /* =========================================================
-     SUPABASE
-  ========================================================= */
-  var SUPABASE_URL = 'https://bszojvhitsoamhksyjul.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE';
-
-  if(!window.supabase || typeof window.supabase.createClient !== 'function'){
-    throw new Error('Supabase library load nahi hui.');
-  }
-
+  var SUPABASE_URL = 'https://cblfmqcszdungpkbfrof.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNibGZtcWNzemR1bmdwa2Jmcm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMjU2MTAsImV4cCI6MjEwMDgwMTYxMH0._pOV5pHVGlE-Fl73hZ6VouR0atfq3xRVoui3WxESy9g';
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  window.__MY_STORE_SUPABASE__ = sb;
+
+  var RAZORPAY_KEY_ID = 'rzp_test_TMoz4c23Z6FKfg';
 
   var checkoutMode = 'cart';
   var checkoutItems = [];
   var currentUser = null;
   var addressType = 'home';
-  var payMethod = 'cod';
+  var payMethod = 'upi';
   var lastTotal = 0;
+
   var savedAddresses = [];
   var selectedAddress = null;
-  var historyInitialized = false;
+  window._ckLastOrder = null;
+  var ckPendingPoll = null;
+  var ckOrderCreated = false;
+  var ckHistoryInitialized = false;
 
-  /* =========================================================
-     HELPERS
-  ========================================================= */
-  function el(id){ return document.getElementById(id); }
-  function setText(id,val){ var x=el(id); if(x) x.textContent=val==null?'':val; }
-  function money(n){
-    n=Number(n)||0;
-    return '₹'+Math.round(n).toLocaleString('en-IN');
-  }
-  function escapeHtml(str){
-    return String(str==null?'':str).replace(/[&<>"']/g,function(c){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-    });
-  }
-  function normalizeId(v){ return String(v==null?'':v); }
+  // Real step-aware back arrow:
+  // Payment -> Order, Order -> Address, Address -> the page user came from
+  document.getElementById('ckBackBtn').addEventListener('click', function(e){
+    window.ckGoBack();
+  });
 
-  function parseMoney(v){
-    if(typeof v==='number') return v||0;
-    var m=String(v||'').match(/[0-9,]+(?:\.[0-9]+)?/);
-    return m ? Number(m[0].replace(/,/g,''))||0 : 0;
+  // ============================================
+  // ⭐ Back-navigation-after-order-placed guard
+  // ============================================
+  // Agar order place ho chuka hai aur user Track Order / My Orders page se
+  // "back" dabakar is checkout page pe wapas aata hai (hardware back ya
+  // browser back), toh cart/session items khali ho chuke hote hain aur
+  // checkout dobara load hoke "Nothing to checkout" dikha deta tha.
+  // Fix: aisi back-navigation detect karke seedha origin/home pe bhej do,
+  // checkout ko dobara render hi mat karo.
+  function ckIsBackForwardNav(){
+    try{
+      var navEntries = performance.getEntriesByType('navigation');
+      if(navEntries && navEntries.length) return navEntries[0].type === 'back_forward';
+    }catch(e){}
+    return false;
+  }
+
+  function ckHandleBackAfterOrder(){
+    var justPlaced = false;
+    try{ justPlaced = sessionStorage.getItem('ckOrderJustPlaced') === '1'; }catch(e){}
+    if(justPlaced && ckIsBackForwardNav()){
+      try{ sessionStorage.removeItem('ckOrderJustPlaced'); }catch(e){}
+      var target = null;
+      try{ target = sessionStorage.getItem('ckOriginPage'); }catch(e){}
+      window.location.replace(target || '/');
+      return true;
+    }
+    // Fresh (non back/forward) visit to checkout - clear any stale flag
+    // from a previous order so a genuinely new checkout works normally.
+    if(!ckIsBackForwardNav()){
+      try{ sessionStorage.removeItem('ckOrderJustPlaced'); }catch(e){}
+    }
+    return false;
+  }
+
+  // Kai browsers is page ko bfcache se restore karte hain (DOMContentLoaded
+  // dobara nahi chalta) - us case ko pageshow se pakdo.
+  window.addEventListener('pageshow', function(e){
+    if(e.persisted){
+      ckHandleBackAfterOrder();
+    }
+  });
+
+  // ============================================
+  // ⭐ SAVE FAILED ORDER TO SUPABASE (SIRF TRACKING)
+  // ============================================
+  async function saveFailedOrder(orderData, failReason, failDetails, paymentId) {
+    try {
+      if (!currentUser) {
+        console.log('⚠️ No user logged in - cannot save failed order');
+        return;
+      }
+
+      console.log('🟡 Saving failed order to Supabase...', {
+        user_id: currentUser.id,
+        fail_reason: failReason,
+        total: lastTotal
+      });
+
+      const { data, error } = await sb.from('failed_orders').insert({
+        user_id: currentUser.id,
+        order_data: orderData,
+        payment_method: payMethod,
+        total_amount: lastTotal,
+        fail_reason: failReason,
+        fail_details: failDetails || 'No details',
+        razorpay_payment_id: paymentId || null,
+        user_email: currentUser.email || '',
+        user_phone: selectedAddress?.phone || ''
+      });
+      
+      if(error) {
+        console.error('❌ Supabase error:', error);
+      } else {
+        console.log('✅ Failed order saved to Supabase:', data);
+      }
+    } catch(err) {
+      console.error('❌ Error:', err);
+    }
   }
 
   function getMRPForProduct(price){
-    var sell=parseMoney(price);
-    if(sell===149) return 999;
-    if(sell===99) return 699;
-    if(sell===249) return 1499;
-    if(sell===499) return 2999;
-    if(sell===999) return 5999;
-    return Math.max(sell*6,500);
+    var sellPrice = 0;
+    if(typeof price === 'number') sellPrice = price;
+    else if(typeof price === 'string'){
+      var match = price.match(/[₹Rs.]*\s*([0-9,]+)/);
+      if(match) sellPrice = parseFloat(match[1].replace(/,/g,'')) || 0;
+    }
+    if(sellPrice === 149) return 999;
+    if(sellPrice === 99) return 699;
+    if(sellPrice === 249) return 1499;
+    if(sellPrice === 499) return 2999;
+    if(sellPrice === 999) return 5999;
+    return Math.max(sellPrice * 6, 500);
   }
 
   function priceOf(item){
-    var qty=Number(item.qty||item.quantity||1)||1;
-    var sell=parseMoney(item.price);
-    var mrp=parseMoney(item.mrp);
-    if(!mrp || mrp<sell) mrp=getMRPForProduct(sell);
-    return {sell:sell,mrp:mrp,qty:qty};
+    var qty = item.qty || 1;
+    var sell = 0;
+    if(typeof item.price === 'number') sell = item.price;
+    else if(typeof item.price === 'string'){
+      var match = item.price.match(/[₹Rs.]*\s*([0-9,]+)/);
+      if(match) sell = parseFloat(match[1].replace(/,/g,'')) || 0;
+    }
+    var mrp = getMRPForProduct(sell);
+    if(item.mrp && typeof item.mrp === 'number' && item.mrp > 0) mrp = item.mrp;
+    else if(item.mrp && typeof item.mrp === 'string'){
+      var mrpMatch = item.mrp.match(/[₹Rs.]*\s*([0-9,]+)/);
+      if(mrpMatch) mrp = parseFloat(mrpMatch[1].replace(/,/g,'')) || mrp;
+    }
+    return { sell: sell, mrp: mrp, qty: qty };
   }
 
-  function displayOrderId(row){
-    return row && (row.order_number || String(row.id||'').slice(0,8).toUpperCase()) || 'ORDER';
+  function money(n){ 
+    if(isNaN(n) || n === 0) return '₹0';
+    return String.fromCharCode(8377) + Math.round(n).toLocaleString('en-IN'); 
+  }
+  
+  function setText(id, val){ 
+    var el = document.getElementById(id); 
+    if(el) el.textContent = val; 
   }
 
-  function showOnly(id){
-    document.querySelectorAll('.ckpanel').forEach(function(p){
-      p.style.display='none';
-      p.classList.remove('active');
+  function displayOrderId(orderRow){
+    return orderRow.order_number || (orderRow.id || '').slice(0,8).toUpperCase();
+  }
+
+  (function hideBottomNavNow(){
+    var selectors = ['#bottomNav','.bottom-nav','.bottomnav','.bottom_nav','#bottomNavBar','#bottom-nav',
+      '.mobile-bottom-nav','.mobileBottomNav','.tabbar','.tab-bar','nav.bottom','.app-bottom-nav',
+      '.bottomTabs','.bottom-tabs'];
+    selectors.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(el){ el.style.display = 'none'; });
     });
-    var p=el(id);
-    if(p){ p.style.display='block'; p.classList.add('active'); }
-  }
+  })();
 
-  function showLoader(){
-    /* No full-screen loader is used here. This prevents the checkout from
-       looking stuck if a non-critical Supabase request is slow. */
-  }
+  document.addEventListener('DOMContentLoaded', async function(){
+    // Order-placed-then-back guard runs first, before anything else touches
+    // the DOM or re-fetches cart data.
+    if(ckHandleBackAfterOrder()) return;
 
-  /* =========================================================
-     STEP / HISTORY
-  ========================================================= */
-  function applyPanel(step){
-    showOnly('ckPanel'+step);
-
-    var titles={
-      1:'Add delivery address',
-      2:'Order Summary',
-      3:'Cash on Delivery',
-      4:'Order Confirmed'
-    };
-    setText('ckHeaderTitle',titles[step]||'Checkout');
-
-    var stepper=el('ckStepper');
-    if(stepper) stepper.style.display=step>=4?'none':'flex';
-
-    document.querySelectorAll('.ckstep').forEach(function(s){
-      var n=Number(s.dataset.step);
-      var done=n<step;
-      s.classList.toggle('active',n===step);
-      s.classList.toggle('done',done);
-      var conn=s.querySelector('.ckconnector');
-      if(conn) conn.classList.toggle('filled',n<step);
-      var dot=s.querySelector('.ckdot');
-      if(dot) dot.textContent=done?'✓':String(n);
-    });
-
-    var footer=el('ckFooterBar');
-    if(footer) footer.style.display=step===3?'block':'none';
-    var main=document.querySelector('.ckmain');
-    if(main) main.classList.toggle('ck-has-footer',step===3);
-
-    if(step===2 || step===3) renderPriceSummary();
-    window._ckCurrentStep=step;
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-
-  window.ckShowPanel=function(step){
-    applyPanel(step);
-    if(step>=1 && step<=3){
-      try{
-        var state={ckStep:step};
-        if(!historyInitialized){
-          historyInitialized=true;
-          history.replaceState(state,'',location.href);
-        }else{
-          history.pushState(state,'',location.href);
+    try{
+      var existingOrigin = sessionStorage.getItem('ckOriginPage');
+      if(!existingOrigin && document.referrer){
+        var refUrl = new URL(document.referrer);
+        if(refUrl.origin === window.location.origin){
+          sessionStorage.setItem('ckOriginPage', document.referrer);
         }
-      }catch(e){}
+      }
+    }catch(e){}
+
+    var res = await sb.auth.getSession();
+    var session = res && res.data && res.data.session;
+    if(!session){
+      showOnly('ckPanelLoginGate');
+      document.getElementById('ckStepper').style.display = 'none';
+      document.getElementById('ckHeaderTitle').textContent = 'Login required';
+      return;
     }
-  };
+    currentUser = session.user;
 
-  window.addEventListener('popstate',function(e){
-    var step=window._ckCurrentStep||1;
-    if(step>=4){ navigateOrigin(); return; }
-    if(e.state && e.state.ckStep){ applyPanel(e.state.ckStep); }
-    else if(step>1){ applyPanel(step-1); }
-  });
+    var params = new URLSearchParams(window.location.search);
+    checkoutMode = params.get('mode') === 'buy' ? 'buy' : 'cart';
 
-  function navigateOrigin(){
-    var target=null;
-    try{ target=sessionStorage.getItem('ckOriginPage'); }catch(e){}
-    location.href=target || document.referrer || '/';
-  }
-
-  window.ckGoBack=function(){
-    var step=window._ckCurrentStep||1;
-    if(step>1 && step<4){ history.back(); }
-    else navigateOrigin();
-  };
-
-  /* =========================================================
-     LOAD CART
-  ========================================================= */
-  async function loadCheckoutItems(){
-    checkoutItems=[];
-
-    var params=new URLSearchParams(location.search);
-    checkoutMode=params.get('mode')==='buy'?'buy':'cart';
-
-    if(checkoutMode==='buy'){
+    if(checkoutMode === 'buy'){
       try{
-        var stored=JSON.parse(sessionStorage.getItem('checkoutItems')||'[]');
-        if(Array.isArray(stored)){
-          checkoutItems=stored.map(function(it){
-            return Object.assign({},it,{qty:Number(it.qty||it.quantity||1)||1});
-          });
-        }
-      }catch(e){ checkoutItems=[]; }
-      if(checkoutItems.length) return;
-      checkoutMode='cart';
+        var stored = JSON.parse(sessionStorage.getItem('checkoutItems') || '[]');
+        checkoutItems = stored.map(function(it){ return Object.assign({qty:1}, it); });
+      }catch(e){ checkoutItems = []; }
+      if(!checkoutItems.length) checkoutMode = 'cart';
     }
 
-    var res=await window.__MY_STORE_SUPABASE__.from('cart_items')
-      .select('*')
-      .eq('user_id',currentUser.id)
-      .order('created_at',{ascending:true});
-
-    if(res.error){
-      console.error('Cart load error:',res.error);
-      throw res.error;
+    if(checkoutMode === 'cart'){
+      var cres = await sb.from('cart_items').select('*').eq('user_id', currentUser.id).order('created_at',{ascending:true});
+      checkoutItems = (cres.data || []).map(function(row){
+        var mrpValue = getMRPForProduct(row.price);
+        if(row.mrp && typeof row.mrp === 'number' && row.mrp > 0) mrpValue = row.mrp;
+        return { 
+          url: row.product_url, 
+          title: row.title, 
+          image: row.image, 
+          price: row.price,
+          mrp: mrpValue,
+          qty: row.qty || 1 
+        };
+      });
     }
 
-    checkoutItems=(res.data||[]).map(function(row){
-      return {
-        id:row.product_id || row.id || null,
-        url:row.product_url || row.url || '',
-        title:row.title || 'Product',
-        image:row.image || '',
-        price:row.price,
-        mrp:row.mrp || getMRPForProduct(row.price),
-        qty:Number(row.qty||1)||1
-      };
-    });
-  }
-
-  /* =========================================================
-     ADDRESS TABLE = customer_addresses
-  ========================================================= */
-  function mapAddress(a){
-    return {
-      id:a.id,
-      name:a.full_name || a.name || '',
-      phone:a.mobile || a.phone || '',
-      pincode:a.pincode || a.pin || '',
-      state:a.state || '',
-      city:a.district || a.city || '',
-      house:a.house || a.house_no || a.house_number || '',
-      road:a.road || a.area || a.address_line || '',
-      type:a.address_type || a.type || 'home'
-    };
-  }
-
-  async function loadSavedAddresses(){
-    var res=await window.__MY_STORE_SUPABASE__.from('customer_addresses')
-      .select('*')
-      .eq('user_id',currentUser.id)
-      .order('id',{ascending:false});
-
-    if(res.error){
-      console.error('Address load error:',res.error);
-      throw res.error;
-    }
-
-    savedAddresses=(res.data||[]).map(mapAddress);
-  }
-
-  function renderSavedAddresses(){
-    var wrap=el('ckSavedAddrSection');
-    var list=el('ckSavedAddrList');
-    var form=el('ckAddressFormSection');
-    var back=el('ckBackToSavedLink');
-
-    if(!wrap || !list || !form) return;
-
-    if(!savedAddresses.length){
-      wrap.style.display='none';
-      form.style.display='block';
-      if(back) back.style.display='none';
+    if(!checkoutItems.length){
+      showOnly('ckPanelEmpty');
+      document.getElementById('ckStepper').style.display = 'none';
       return;
     }
 
-    list.innerHTML=savedAddresses.map(function(a){
-      var addr=[a.house,a.road,a.city,a.state,a.pincode].filter(Boolean).join(', ');
-      return '<div class="ck-saved-card">'
-        + '<div><span class="sa-name">'+escapeHtml(a.name)+'</span>'
-        + '<span class="sa-tag">'+escapeHtml((a.type||'home').toUpperCase())+'</span></div>'
-        + '<div class="sa-addr">'+escapeHtml(addr)+'<br>Phone: '+escapeHtml(a.phone)+'</div>'
-        + '<button class="sa-deliverbtn" type="button" onclick="ckUseSavedAddress(\''+escapeHtml(normalizeId(a.id))+'\')">Deliver Here</button>'
-        + '</div>';
-    }).join('');
+    ckShowPanel(1);
+    ckShowAddrSkeleton();
+    var skelStart = Date.now();
+    await ckLoadSavedAddresses();
+    var skelElapsed = Date.now() - skelStart;
+    var minSkelTime = 600;
+    if(skelElapsed < minSkelTime){
+      await new Promise(function(res){ setTimeout(res, minSkelTime - skelElapsed); });
+    }
+    renderSavedAddresses();
 
-    wrap.style.display='block';
-    form.style.display='none';
-    if(back) back.style.display='block';
+    // Address already on file - don't make the user pick it, go straight
+    // to Order Summary with the most recently saved one. "Change" on that
+    // screen still opens Step 1 (which renderSavedAddresses above already
+    // populated), so switching address still works normally.
+    if(savedAddresses.length){
+      ckUseSavedAddress(savedAddresses[0].id);
+    }
+  });
+
+  function ckShowAddrSkeleton(){
+    document.getElementById('ckAddrSkeleton').style.display = 'block';
+    document.getElementById('ckSavedAddrSection').style.display = 'none';
+    document.getElementById('ckAddressFormSection').style.display = 'none';
   }
 
-  function fillSummary(addr){
-    setText('ckSummaryName',addr.name);
-    setText('ckSummaryTag',(addr.type||'home').toUpperCase());
-    setText('ckSummaryAddr',[addr.house,addr.road,addr.city,addr.state,addr.pincode,'Phone: '+addr.phone].filter(Boolean).join(', '));
+  function showOnly(id){
+    document.querySelectorAll('.ckpanel').forEach(function(p){ p.classList.remove('active'); p.style.display='none'; });
+    var el = document.getElementById(id);
+    if(el){ el.style.display='block'; el.classList.add('active'); }
+  }
+
+  async function ckLoadSavedAddresses(){
+    var res = await sb.from('saved_addresses')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', {ascending:false});
+    savedAddresses = res.data || [];
+  }
+
+  function escapeHtml(str){
+    return (str || '').replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function renderSavedAddresses(){
+    var skel = document.getElementById('ckAddrSkeleton');
+    if(skel) skel.style.display = 'none';
+
+    var wrap = document.getElementById('ckSavedAddrSection');
+    var list = document.getElementById('ckSavedAddrList');
+    var formSection = document.getElementById('ckAddressFormSection');
+    var backLink = document.getElementById('ckBackToSavedLink');
+
+    if(!savedAddresses.length){
+      wrap.style.display = 'none';
+      formSection.style.display = 'block';
+      if(backLink) backLink.style.display = 'none';
+      return;
+    }
+
+    var html = '';
+    savedAddresses.forEach(function(a){
+      html += '<div class="ck-saved-card">'
+        + '<div><span class="sa-name">' + escapeHtml(a.name) + '</span><span class="sa-tag">' + (a.type||'home').toUpperCase() + '</span></div>'
+        + '<div class="sa-addr">' + [a.house, a.road, a.city + ', ' + a.state + ' ' + a.pincode].filter(Boolean).map(escapeHtml).join(', ') + '<br>Phone: ' + escapeHtml(a.phone) + '</div>'
+        + '<button class="sa-deliverbtn" type="button" onclick="ckUseSavedAddress(\'' + a.id + '\')">Deliver Here</button>'
+        + '</div>';
+    });
+    list.innerHTML = html;
+
+    wrap.style.display = 'block';
+    formSection.style.display = 'none';
+    if(backLink) backLink.style.display = 'block';
+  }
+
+  window.ckShowAddressForm = function(){
+    document.getElementById('ckSavedAddrSection').style.display = 'none';
+    document.getElementById('ckAddressFormSection').style.display = 'block';
+    var backLink = document.getElementById('ckBackToSavedLink');
+    if(backLink) backLink.style.display = savedAddresses.length ? 'block' : 'none';
+  };
+
+  window.ckShowSavedList = function(){ renderSavedAddresses(); };
+
+  window.ckUseSavedAddress = function(id){
+    var a = savedAddresses.find(function(x){ return x.id === id; });
+    if(!a) return;
+    selectedAddress = {
+      name: a.name, phone: a.phone, pincode: a.pincode, state: a.state,
+      city: a.city, house: a.house, road: a.road, type: a.type || 'home'
+    };
+    ckFillSummaryAndProceed(selectedAddress);
+  };
+
+  function ckFillSummaryAndProceed(addr){
+    document.getElementById('ckSummaryName').textContent = addr.name;
+    document.getElementById('ckSummaryTag').textContent = (addr.type || 'home').toUpperCase();
+    document.getElementById('ckSummaryAddr').textContent = [
+      addr.house, addr.road, addr.city + ', ' + addr.state + ' ' + addr.pincode, 'Phone: ' + addr.phone
+    ].join(', ');
     renderProducts();
     ckShowPanel(2);
   }
 
-  window.ckShowAddressForm=function(){
-    el('ckSavedAddrSection').style.display='none';
-    el('ckAddressFormSection').style.display='block';
-    var back=el('ckBackToSavedLink');
-    if(back) back.style.display=savedAddresses.length?'block':'none';
+  window.ckSelectType = function(t){
+    addressType = t;
+    document.getElementById('ckTypeHome').classList.toggle('selected', t==='home');
+    document.getElementById('ckTypeWork').classList.toggle('selected', t==='work');
   };
 
-  window.ckShowSavedList=function(){ renderSavedAddresses(); };
-
-  window.ckUseSavedAddress=function(id){
-    var a=savedAddresses.find(function(x){return normalizeId(x.id)===normalizeId(id);});
-    if(!a) return;
-    selectedAddress=a;
-    fillSummary(a);
-  };
-
-  window.ckSelectType=function(t){
-    addressType=t;
-    el('ckTypeHome').classList.toggle('selected',t==='home');
-    el('ckTypeWork').classList.toggle('selected',t==='work');
-  };
-
-  /* =========================================================
-     PINCODE
-  ========================================================= */
-  function setupPincode(){
-    var pin=el('ckPincode');
-    var state=el('ckState');
-    var city=el('ckCity');
-    var loader=el('ckPinLoader');
-    if(!pin) return;
-
-    pin.addEventListener('input',function(){
-      var value=this.value.replace(/\D/g,'').slice(0,6);
-      this.value=value;
-      if(value.length!==6) return;
-
+  document.addEventListener('DOMContentLoaded', function(){
+    var pinInput = document.getElementById('ckPincode');
+    var stateInput = document.getElementById('ckState');
+    var cityInput = document.getElementById('ckCity');
+    var loader = document.getElementById('ckPinLoader');
+    if(!pinInput) return;
+    pinInput.addEventListener('input', function(){
+      var val = this.value.trim();
+      if(val.length !== 6 || !/^\d{6}$/.test(val)) return;
       loader.classList.add('show');
-      fetch('https://api.postalpincode.in/pincode/'+value)
-        .then(function(r){return r.json();})
+      fetch('https://api.postalpincode.in/pincode/' + val)
+        .then(function(r){ return r.json(); })
         .then(function(data){
-          if(data && data[0] && data[0].Status==='Success' && data[0].PostOffice && data[0].PostOffice[0]){
-            var po=data[0].PostOffice[0];
-            if(po.State) state.value=po.State;
-            if(po.District) city.value=po.District;
+          loader.classList.remove('show');
+          if(data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length){
+            var po = data[0].PostOffice[0];
+            if(po.State) stateInput.value = po.State;
+            if(po.District) cityInput.value = po.District;
           }
-        })
-        .catch(function(err){console.warn('Pincode lookup:',err);})
-        .finally(function(){loader.classList.remove('show');});
+        }).catch(function(){ loader.classList.remove('show'); });
     });
-  }
+  });
 
-  /* =========================================================
-     SAVE ADDRESS
-  ========================================================= */
-  window.ckSaveAddress=async function(){
-    var ids=['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckHouse','ckRoad'];
-    var valid=true;
-
+  window.ckSaveAddress = function(){
+    var ids = ['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckHouse','ckRoad'];
+    var ok = true;
     ids.forEach(function(id){
-      var x=el(id);
-      if(!x.value.trim()){
-        x.classList.add('invalid');
-        valid=false;
-      }else x.classList.remove('invalid');
+      var el = document.getElementById(id);
+      if(!el.value.trim()){ el.classList.add('invalid'); ok = false; }
+      else el.classList.remove('invalid');
     });
+    var phoneVal = document.getElementById('ckPhone').value.trim();
+    document.getElementById('ckPhoneError').classList.toggle('show', !phoneVal);
+    if(!ok) return;
 
-    var phone=el('ckPhone').value.trim();
-    var pincode=el('ckPincode').value.trim();
-    el('ckPhoneError').classList.toggle('show',!/^[6-9]\d{9}$/.test(phone));
-    if(!/^[6-9]\d{9}$/.test(phone)) valid=false;
-    if(!/^\d{6}$/.test(pincode)) valid=false;
-    if(!valid) return;
-
-    var btn=document.querySelector('#ckAddressFormSection .ckbtn.block');
-    if(btn){btn.disabled=true;btn.textContent='Saving...';}
-
-    var addr={
-      name:el('ckFullName').value.trim(),
-      phone:phone,
-      pincode:pincode,
-      state:el('ckState').value.trim(),
-      city:el('ckCity').value.trim(),
-      house:el('ckHouse').value.trim(),
-      road:el('ckRoad').value.trim(),
-      type:addressType
+    var addr = {
+      name: document.getElementById('ckFullName').value.trim(),
+      phone: document.getElementById('ckPhone').value.trim(),
+      pincode: document.getElementById('ckPincode').value.trim(),
+      state: document.getElementById('ckState').value.trim(),
+      city: document.getElementById('ckCity').value.trim(),
+      house: document.getElementById('ckHouse').value.trim(),
+      road: document.getElementById('ckRoad').value.trim(),
+      type: addressType
     };
+    selectedAddress = addr;
 
-    try{
-      /* Always create an address row: orders.address_id points to it. */
-      var insertPayload={
-        user_id:currentUser.id,
-        full_name:addr.name,
-        mobile:addr.phone,
-        pincode:addr.pincode,
-        state:addr.state,
-        district:addr.city,
-        house:addr.house,
-        road:addr.road,
-        address_type:addr.type
-      };
-
-      var res=await window.__MY_STORE_SUPABASE__.from('customer_addresses').insert(insertPayload).select().single();
-      if(res.error) throw res.error;
-
-      selectedAddress=mapAddress(res.data);
-      await loadSavedAddresses();
-      fillSummary(selectedAddress);
-    }catch(error){
-      console.error('SAVE ADDRESS ERROR:',error);
-      alert('Address save nahi ho paya.\n\n'+(error.message||'Supabase error'));
-    }finally{
-      if(btn){btn.disabled=false;btn.textContent='Save Address';}
+    var saveCheck = document.getElementById('ckSaveAddrCheck');
+    if(saveCheck && saveCheck.checked){
+      sb.from('saved_addresses').insert({
+        user_id: currentUser.id,
+        name: addr.name, phone: addr.phone, pincode: addr.pincode,
+        state: addr.state, city: addr.city, house: addr.house, road: addr.road,
+        type: addr.type
+      }).then(function(res){
+        if(!res.error){ ckLoadSavedAddresses(); }
+      });
     }
+
+    ckFillSummaryAndProceed(addr);
   };
 
-  /* =========================================================
-     PRODUCTS / PRICE
-  ========================================================= */
   function renderProducts(){
-    var wrap=el('ckProductsCard');
-    if(!wrap) return;
-
-    var html='<div class="ckcard">';
+    var wrap = document.getElementById('ckProductsCard');
+    var html = '<div class="ckcard">';
     checkoutItems.forEach(function(item){
-      var p=priceOf(item);
-      html+='<div class="ckprodrow">'
-        +'<img class="ckthumb" src="'+escapeHtml(item.image||'')+'" alt="" onerror="this.style.visibility=\'hidden\'">'
-        +'<div class="ckprodinfo">'
-        +'<div class="ckpname">'+escapeHtml(item.title||'Product')+'</div>'
-        +'<div class="ckpmeta">Qty: '+p.qty+'</div>'
-        +'<div class="ckpprice">'+money(p.sell*p.qty)+'</div>'
-        +'</div></div>';
+      var p = priceOf(item);
+      html += '<div class="ckprodrow">'
+        + '<img class="ckthumb" src="' + (item.image||'') + '" alt="">'
+        + '<div class="ckprodinfo">'
+        + '<div class="ckpname">' + (item.title||'') + '</div>'
+        + '<div class="ckpmeta">Qty: ' + p.qty + '</div>'
+        + '<div class="ckpprice">' + money(p.sell * p.qty) + '</div>'
+        + '</div></div>';
     });
-    html+='<div style="font-size:13px;color:#1f4d36;font-weight:700;margin-top:12px;display:flex;align-items:center;gap:7px;">✓ Delivery in 3–6 business days</div></div>';
-    wrap.innerHTML=html;
+    html += '<div style="font-size:13px;color:#1f4d36;font-weight:700;margin-top:12px;display:flex;align-items:center;gap:7px;">'
+      + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1z"></path><path d="M16 8h4l3 3v5h-7V8z"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>'
+      + 'Delivery in 3-6 business days</div></div>';
+    wrap.innerHTML = html;
   }
+
+  window.ckSelectPay = function(method){
+    payMethod = method;
+    document.querySelectorAll('.ckpay').forEach(function(el){ el.classList.toggle('selected', el.dataset.pay === method); });
+    document.getElementById('ckFooterBtn').textContent = method === 'cod' ? 'Place Order (COD)' : 'Place Order';
+    renderPriceSummary();
+  };
 
   function renderPriceSummary(){
-    var mrp=0,sell=0;
+    var mrpTotal = 0, sellTotal = 0;
     checkoutItems.forEach(function(item){
-      var p=priceOf(item);
-      mrp+=p.mrp*p.qty;
-      sell+=p.sell*p.qty;
+      var p = priceOf(item);
+      var itemSell = parseFloat(p.sell) || 0;
+      var itemMrp = parseFloat(p.mrp) || 0;
+      var qty = parseInt(p.qty) || 1;
+      if(!itemMrp || itemMrp === 0 || itemMrp < itemSell) itemMrp = getMRPForProduct(itemSell);
+      sellTotal += itemSell * qty;
+      mrpTotal += itemMrp * qty;
     });
-    var delivery=0;
-    var discount=Math.max(mrp-sell,0);
-    var total=sell+delivery;
-    lastTotal=total;
+    var fee = 9 + (payMethod === 'cod' ? 13 : 0);
+    var discount = Math.max(mrpTotal - sellTotal, 0);
+    var total = sellTotal + fee;
+    lastTotal = total;
 
-    setText('ckMrpVal',money(mrp));
-    setText('ckFeeVal','FREE');
-    setText('ckDiscVal','-'+money(discount));
-    setText('ckTotalVal',money(total));
-    setText('ckMrpVal2',money(mrp));
-    setText('ckFeeVal2','FREE');
-    setText('ckDiscVal2','-'+money(discount));
-    setText('ckTotalVal2',money(total));
+    setText('ckMrpVal', money(mrpTotal));
+    setText('ckFeeVal', money(fee));
+    setText('ckDiscVal', '-' + money(discount));
+    setText('ckTotalVal', money(total));
+    setText('ckMrpVal2', money(mrpTotal));
+    setText('ckFeeVal2', money(fee));
+    setText('ckDiscVal2', '-' + money(discount));
+    setText('ckTotalVal2', money(total));
 
-    var box=el('ckSavingsBox');
+    var box = document.getElementById('ckSavingsBox');
     if(box){
-      box.style.display=discount>0?'flex':'none';
-      setText('ckSaveAmt',money(discount));
+      if(discount > 0){ 
+        box.style.display = 'flex'; 
+        document.getElementById('ckSaveAmt').textContent = money(discount); 
+      } else {
+        box.style.display = 'none';
+      }
     }
   }
 
-  window.ckSelectPay=function(){
-    payMethod='cod';
-    document.querySelectorAll('.ckpay').forEach(function(x){x.classList.toggle('selected',x.dataset.pay==='cod');});
-    setText('ckFooterBtn','Place Order (COD)');
-    renderPriceSummary();
+  function ckApplyPanel(step){
+    document.querySelectorAll('.ckpanel').forEach(function(p){ p.classList.remove('active'); p.style.display='none'; });
+    var panel = document.getElementById('ckPanel' + step);
+    panel.style.display = 'block';
+    panel.classList.add('active');
+
+    var titles = {1:'Add delivery address', 2:'Order Summary', 3:'Payments', 4:'Order Confirmed', 5:'Payment Failed', 6:'Payment Pending'};
+    document.getElementById('ckHeaderTitle').textContent = titles[step] || 'Checkout';
+
+    var stepper = document.getElementById('ckStepper');
+    stepper.style.display = step >= 4 ? 'none' : 'flex';
+    document.querySelectorAll('.ckstep').forEach(function(s){
+      var n = parseInt(s.dataset.step);
+      var isDone = n < step;
+      s.classList.toggle('active', n === step);
+      s.classList.toggle('done', isDone);
+      var conn = s.querySelector('.ckconnector');
+      if(conn) conn.classList.toggle('filled', n <= step);
+
+      var dot = s.querySelector('.ckdot');
+      if(dot){
+        dot.innerHTML = isDone
+          ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>'
+          : n;
+      }
+    });
+    if(step === 2 || step === 3) renderPriceSummary();
+
+    document.getElementById('ckFooterBar').style.display = step === 3 ? 'flex' : 'none';
+    var mainEl = document.querySelector('.ckmain');
+    if(mainEl) mainEl.classList.toggle('ck-has-footer', step === 3);
+    window.scrollTo(0,0);
+    window._ckCurrentStep = step;
+
+    if(step === 4){
+      var ripple = panel.querySelector('.ck-tick-ripple');
+      var circle = panel.querySelector('.ck-tick-circle');
+      var check = panel.querySelector('.ck-tick-check');
+      [ripple, circle, check].forEach(function(el){
+        if(!el) return;
+        el.style.animation = 'none';
+        void el.offsetWidth;
+        el.style.animation = '';
+      });
+    }
+  }
+
+  // Public entry point used everywhere in this file. Applies the panel AND
+  // keeps *real* browser/history state in sync for steps 1-3, so the mobile
+  // hardware back button and the on-screen arrow do exactly the same thing:
+  //  - step 1: replaceState (first time only) - back leaves to the real
+  //    previous page (no fake entry added).
+  //  - step 2 / step 3: pushState - back steps through Payment -> Order ->
+  //    Address one at a time, same as the on-screen arrow.
+  window.ckShowPanel = function(step){
+    ckApplyPanel(step);
+    if(step >= 1 && step <= 3){
+      try{
+        var state = { ckStep: step };
+        if(!ckHistoryInitialized){
+          ckHistoryInitialized = true;
+          history.replaceState(state, '', window.location.href);
+        } else {
+          history.pushState(state, '', window.location.href);
+        }
+      }catch(err){}
+    }
   };
 
-  /* =========================================================
-     CONFIRM
-  ========================================================= */
-  window.ckAskConfirmPlaceOrder=function(){
-    renderPriceSummary();
-    setText('ckConfirmSub','Cash on Delivery selected — you will pay '+money(lastTotal)+' when your order arrives.');
-    el('ckConfirmOverlay').classList.add('show');
-  };
-  window.ckCloseConfirm=function(){el('ckConfirmOverlay').classList.remove('show');};
-  window.ckConfirmPlaceOrderYes=function(){ckCloseConfirm();ckPlaceOrder();};
-
-  /* =========================================================
-     PLACE COD ORDER - NEW ORDERS + ORDER_ITEMS SCHEMA
-  ========================================================= */
-  window.ckPlaceOrder=async function(){
-    var btn=el('ckFooterBtn');
-
-    if(!currentUser){alert('Please login first.');return;}
-    if(!selectedAddress || !selectedAddress.id){
-      alert('Please select or save a delivery address first.');
-      ckShowPanel(1);
+  // Mobile hardware back / browser back button fires this.
+  window.addEventListener('popstate', function(e){
+    // If we were sitting on a terminal screen (success/failed/pending) when
+    // back was pressed, behave exactly like the on-screen arrow does for
+    // those screens: leave straight to the origin page, don't fall back
+    // into the Payment step (no history entry is ever pushed for steps
+    // 4/5/6, so without this check popping would land back on step 3).
+    if((window._ckCurrentStep || 1) >= 4){
+      ckNavigateToOrigin();
       return;
     }
-    if(!checkoutItems.length){alert('Cart is empty.');return;}
-
-    btn.disabled=true;
-    btn.textContent='Placing Order...';
-
-    try{
-      renderPriceSummary();
-
-      var orderNumber='ORD-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,8).toUpperCase();
-
-      var orderRes=await window.__MY_STORE_SUPABASE__.from('orders').insert({
-        order_number:orderNumber,
-        user_id:currentUser.id,
-        address_id:selectedAddress.id,
-        subtotal:lastTotal,
-        delivery_charge:0,
-        total_amount:lastTotal,
-        payment_method:'cod',
-        payment_status:'pending',
-        order_status:'placed'
-      }).select().single();
-
-      if(orderRes.error) throw orderRes.error;
-
-      var order=orderRes.data;
-
-      var items=checkoutItems.map(function(item){
-        var p=priceOf(item);
-        return {
-          order_id:order.id,
-          product_id:item.id==null?null:String(item.id),
-          product_name:item.title||'Product',
-          product_image:item.image||null,
-          quantity:p.qty,
-          price:p.sell,
-          total_price:p.sell*p.qty
-        };
-      });
-
-      var itemRes=await window.__MY_STORE_SUPABASE__.from('order_items').insert(items);
-      if(itemRes.error){
-        await window.__MY_STORE_SUPABASE__.from('orders').delete().eq('id',order.id);
-        throw itemRes.error;
-      }
-
-      if(checkoutMode==='cart'){
-        var clearRes=await window.__MY_STORE_SUPABASE__.from('cart_items').delete().eq('user_id',currentUser.id);
-        if(clearRes.error) console.warn('Cart clear error:',clearRes.error);
-      }
-
-      try{sessionStorage.removeItem('checkoutItems');sessionStorage.setItem('ckOrderJustPlaced','1');}catch(e){}
-
-      setText('ckOrderIdText','#'+displayOrderId(order));
-      var track=el('ckTrackOrderLink');
-      if(track) track.href='/p/my-orders.html?id='+encodeURIComponent(order.id);
-
-      window._ckLastOrder=order;
-      applyPanel(4);
-
-      if(window.confetti){
-        window.confetti({particleCount:100,spread:100,origin:{y:.55}});
-      }
-    }catch(error){
-      console.error('PLACE ORDER ERROR:',error);
-      var msg=error.message||'Unknown Supabase error';
-      if(error.hint) msg+='\n\nHint: '+error.hint;
-      alert('Order place nahi ho paya.\n\n'+msg);
-    }finally{
-      btn.disabled=false;
-      btn.textContent='Place Order (COD)';
+    var state = e.state;
+    if(state && typeof state.ckStep === 'number' && state.ckStep >= 1 && state.ckStep <= 3){
+      ckApplyPanel(state.ckStep);
     }
+    // No matching state means we've popped out of our own step stack -
+    // the browser is taking the user to the real previous page (origin),
+    // which is exactly what we want for step 1's back action.
+  });
+
+  window.ckGoBack = function(){
+    var step = window._ckCurrentStep || 1;
+    if(step >= 4){
+      // success/failed/pending screens -> leave checkout straight away
+      ckNavigateToOrigin();
+      return;
+    }
+    var beforeHref = window.location.href;
+    history.back();
+    // Fallback for the rare case where there is nothing to go back to
+    // (e.g. checkout was opened with no browser history) - history.back()
+    // is then a silent no-op and popstate never fires.
+    setTimeout(function(){
+      if(window.location.href === beforeHref && (window._ckCurrentStep||1) === step){
+        if(step > 1){ ckShowPanel(step - 1); }
+        else { ckNavigateToOrigin(); }
+      }
+    }, 350);
   };
 
-  /* =========================================================
-     INITIALIZATION
-  ========================================================= */
-  async function init(){
-    try{
-      try{
-        var existing=sessionStorage.getItem('ckOriginPage');
-        if(!existing && document.referrer && new URL(document.referrer).origin===location.origin){
-          sessionStorage.setItem('ckOriginPage',document.referrer);
-        }
-        sessionStorage.removeItem('ckOrderJustPlaced');
-      }catch(e){}
+  function ckNavigateToOrigin(){
+    var origin = null;
+    try{ origin = sessionStorage.getItem('ckOriginPage'); }catch(e){}
+    if(origin){ window.location.href = origin; return; }
+    if(document.referrer){ window.location.href = document.referrer; return; }
+    window.location.href = '/';
+  }
 
-      var sessionRes=await window.__MY_STORE_SUPABASE__.auth.getSession();
-      if(sessionRes.error) throw sessionRes.error;
+  window.ckAskConfirmPlaceOrder = function(){
+    var sub = document.getElementById('ckConfirmSub');
+    if(sub){
+      sub.textContent = payMethod === 'cod'
+        ? 'Cash on Delivery selected - you will pay ' + money(lastTotal) + ' when your order arrives.'
+        : 'You will be redirected to pay ' + money(lastTotal) + ' via UPI.';
+    }
+    document.getElementById('ckConfirmOverlay').classList.add('show');
+  };
 
-      var session=sessionRes.data && sessionRes.data.session;
-      if(!session){
-        showOnly('ckPanelLoginGate');
-        el('ckStepper').style.display='none';
-        setText('ckHeaderTitle','Login required');
+  window.ckCloseConfirm = function(){
+    document.getElementById('ckConfirmOverlay').classList.remove('show');
+  };
+
+  window.ckConfirmPlaceOrderYes = function(){
+    ckCloseConfirm();
+    ckPlaceOrder();
+  };
+
+  window.ckPlaceOrder = async function(){
+    var btn = document.getElementById('ckFooterBtn');
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+
+    var address = selectedAddress || {
+      name: document.getElementById('ckFullName') ? document.getElementById('ckFullName').value : '',
+      phone: document.getElementById('ckPhone') ? document.getElementById('ckPhone').value : '',
+      pincode: document.getElementById('ckPincode') ? document.getElementById('ckPincode').value : '',
+      state: document.getElementById('ckState') ? document.getElementById('ckState').value : '',
+      city: document.getElementById('ckCity') ? document.getElementById('ckCity').value : '',
+      house: document.getElementById('ckHouse') ? document.getElementById('ckHouse').value : '',
+      road: document.getElementById('ckRoad') ? document.getElementById('ckRoad').value : '',
+      type: addressType
+    };
+
+    var itemsForOrder = checkoutItems.map(function(it){
+      var p = priceOf(it);
+      return { title: it.title, image: it.image, url: it.url, qty: p.qty, price: p.sell, mrp: p.mrp };
+    });
+
+    if(payMethod === 'cod'){
+      var ins = await sb.from('orders').insert({
+        user_id: currentUser.id,
+        items: itemsForOrder,
+        address: address,
+        payment_method: 'cod',
+        total_amount: lastTotal,
+        status: 'placed',
+        user_email: currentUser.email
+      }).select().single();
+
+      if(ins.error){
+        btn.disabled = false;
+        btn.textContent = 'Place Order (COD)';
+        alert('Order save nahi ho paya, dobara try karo.');
+        console.error(ins.error);
         return;
       }
 
-      currentUser=session.user;
+      var orderRow = ins.data;
+      window._ckLastOrder = orderRow;
+      ckOrderCreated = true;
+      await ckFinalizeCartAndShowSuccess(orderRow);
+      btn.disabled = false;
+      btn.textContent = 'Place Order (COD)';
+      return;
+    }
 
-      await loadCheckoutItems();
+    ckOpenRazorpay(itemsForOrder, address);
+  };
 
-      if(!checkoutItems.length){
-        showOnly('ckPanelEmpty');
-        el('ckStepper').style.display='none';
-        setText('ckHeaderTitle','Checkout');
-        return;
-      }
+  function ckOpenRazorpay(itemsForOrder, address){
+    if(!window.Razorpay){
+      alert('Payment gateway load nahi hua, apna internet check karke page reload karo.');
+      var btn = document.getElementById('ckFooterBtn');
+      if(btn){ btn.disabled = false; btn.textContent = 'Place Order'; }
+      return;
+    }
 
-      ckShowPanel(1);
+    var resolved = false;
 
-      try{
-        await loadSavedAddresses();
-        renderSavedAddresses();
-        if(savedAddresses.length){
-          selectedAddress=savedAddresses[0];
-          fillSummary(selectedAddress);
+    var options = {
+      key: RAZORPAY_KEY_ID,
+      amount: Math.round(lastTotal * 100),
+      currency: 'INR',
+      name: 'Trikund Printers',
+      description: 'Order Payment',
+      prefill: {
+        name: (selectedAddress && selectedAddress.name) || '',
+        contact: (selectedAddress && selectedAddress.phone) || '',
+        email: currentUser.email || ''
+      },
+      notes: { user_id: currentUser.id },
+      theme: { color: '#1f4d36' },
+      config: {
+        display: {
+          blocks: {
+            upi: {
+              name: 'Pay via UPI',
+              instruments: [
+                { method: 'upi' }
+              ]
+            }
+          },
+          sequence: ['block.upi'],
+          preferences: { show_default_blocks: false }
         }
-      }catch(addressError){
-        console.error('ADDRESS LOAD ERROR:',addressError);
-        /* Address loading is non-fatal: show the new-address form. */
-        el('ckSavedAddrSection').style.display='none';
-        el('ckAddressFormSection').style.display='block';
+      },
+      handler: function(response){
+        resolved = true;
+        ckCreateOrderAfterPayment(itemsForOrder, address, 'paid', response.razorpay_payment_id);
+      },
+      modal: {
+        ondismiss: function(){
+          if(resolved) return;
+          resolved = true;
+          
+          saveFailedOrder(
+            {
+              items: itemsForOrder,
+              address: address,
+              total: lastTotal,
+              shipping_fee: 9 + (payMethod === 'cod' ? 13 : 0)
+            },
+            'user_cancelled',
+            'User closed the payment window',
+            null
+          );
+          
+          ckShowFailedPanel('Aapne payment window band kar di - koi order create nahi hua hai.');
+          var btn = document.getElementById('ckFooterBtn');
+          if(btn){ btn.disabled = false; btn.textContent = 'Place Order'; }
+        }
       }
+    };
 
-    }catch(error){
-      console.error('CHECKOUT INIT ERROR:',error);
-      showOnly('ckPanel1');
-      el('ckStepper').style.display='flex';
-      setText('ckHeaderTitle','Add delivery address');
-      alert('Checkout load nahi ho paya.\n\n'+(error.message||'Please refresh the page.'));
+    var rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(response){
+      resolved = true;
+      var reason = response && response.error && response.error.description;
+      
+      saveFailedOrder(
+        {
+          items: itemsForOrder,
+          address: address,
+          total: lastTotal,
+          shipping_fee: 9 + (payMethod === 'cod' ? 13 : 0)
+        },
+        'bank_decline',
+        reason || 'Transaction declined by bank',
+        response?.error?.metadata?.payment_id || null
+      );
+      
+      ckShowFailedPanel(reason || 'Bank ne payment approve nahi ki - koi order create nahi hua hai.');
+      var btn = document.getElementById('ckFooterBtn');
+      if(btn){ btn.disabled = false; btn.textContent = 'Place Order'; }
+    });
+    rzp.open();
+  }
+
+  async function ckCreateOrderAfterPayment(itemsForOrder, address, status, paymentId){
+    var ins = await sb.from('orders').insert({
+      user_id: currentUser.id,
+      items: itemsForOrder,
+      address: address,
+      payment_method: payMethod,
+      total_amount: lastTotal,
+      status: status,
+      payment_id: paymentId || null,
+      user_email: currentUser.email
+    }).select().single();
+
+    if(ins.error){
+      alert('Order save nahi ho paya - please contact support.');
+      console.error(ins.error);
+      var btn = document.getElementById('ckFooterBtn');
+      if(btn){ btn.disabled = false; btn.textContent = 'Place Order'; }
+      return;
+    }
+
+    var orderRow = ins.data;
+    window._ckLastOrder = orderRow;
+    ckOrderCreated = true;
+
+    if(status === 'paid'){
+      await ckFinalizeCartAndShowSuccess(orderRow);
+    } else if(status === 'pending_payment'){
+      ckShowPendingPanel(orderRow);
+      ckStartPendingPoll();
+    }
+    
+    var btn = document.getElementById('ckFooterBtn');
+    if(btn){ btn.disabled = false; btn.textContent = 'Place Order'; }
+  }
+
+  function ckStartPendingPoll(){
+    ckStopPendingPoll();
+    var startTime = Date.now();
+    
+    ckPendingPoll = setInterval(async function(){
+      var orderRow = window._ckLastOrder;
+      if(!orderRow || !ckOrderCreated) return;
+      var res = await sb.from('orders').select('*').eq('id', orderRow.id).single();
+      if(res.error || !res.data) return;
+      window._ckLastOrder = res.data;
+      if(res.data.status === 'paid'){
+        ckStopPendingPoll();
+        ckFinalizeCartAndShowSuccess(res.data);
+      } else if(res.data.status === 'failed'){
+        ckStopPendingPoll();
+        await sb.from('orders').delete().eq('id', res.data.id);
+        ckOrderCreated = false;
+        ckShowFailedPanel('Payment fail ho gaya - order delete kar diya gaya hai.');
+      }
+      
+      if(Date.now() - startTime > 30000) {
+        ckStopPendingPoll();
+        
+        var orderRow = window._ckLastOrder;
+        if(orderRow) {
+          await saveFailedOrder(
+            {
+              items: orderRow.items || [],
+              address: orderRow.address || {},
+              total: orderRow.total_amount || lastTotal,
+              shipping_fee: 9 + (payMethod === 'cod' ? 13 : 0)
+            },
+            'timeout',
+            'Payment pending timeout after 30 seconds',
+            orderRow.payment_id || null
+          );
+          
+          await sb.from('orders').delete().eq('id', orderRow.id);
+          ckOrderCreated = false;
+        }
+        
+        ckShowFailedPanel('Payment timeout ho gaya - order delete kar diya gaya hai.');
+        var btn = document.getElementById('ckFooterBtn');
+        if(btn){ btn.disabled = false; btn.textContent = 'Place Order'; }
+      }
+    }, 4000);
+  }
+
+  function ckStopPendingPoll(){
+    if(ckPendingPoll){ clearInterval(ckPendingPoll); ckPendingPoll = null; }
+  }
+
+  async function ckFinalizeCartAndShowSuccess(orderRow){
+    ckStopPendingPoll();
+    // Mark that an order was just placed so a later back-navigation from
+    // Track Order / My Orders doesn't re-render this (now empty) checkout.
+    try{ sessionStorage.setItem('ckOrderJustPlaced', '1'); }catch(e){}
+
+    if(checkoutMode === 'cart'){
+      await sb.from('cart_items').delete().eq('user_id', currentUser.id);
+    }
+    try{ sessionStorage.removeItem('checkoutItems'); }catch(e){}
+
+    setText('ckOrderIdText', '#' + displayOrderId(orderRow));
+    var trackLink = document.getElementById('ckTrackOrderLink');
+    if(trackLink) trackLink.href = '/orders.html?id=' + orderRow.id;
+    ckShowPanel(4);
+
+    if(window.confetti){
+      var duration = 1400;
+      var end = Date.now() + duration;
+      var colors = ['#1f4d36','#ffb703','#2ec4b6','#ff6b6b'];
+      (function frame(){
+        window.confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 }, colors: colors });
+        window.confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 }, colors: colors });
+        if(Date.now() < end) requestAnimationFrame(frame);
+      })();
+      window.confetti({ particleCount: 90, spread: 100, origin: { y: 0.5 }, colors: colors });
     }
   }
 
-  document.getElementById('ckBackBtn').addEventListener('click',function(){window.ckGoBack();});
-  setupPincode();
-  document.addEventListener('DOMContentLoaded',init);
+  function ckShowFailedPanel(reason){
+    document.getElementById('ckFailReason').textContent = reason || 'Payment fail ho gayi - koi order create nahi hua hai.';
+    ckShowPanel(5);
+    var btn = document.getElementById('ckFooterBtn');
+    if(btn){ btn.disabled = false; btn.textContent = 'Place Order'; }
+  }
 
-  window.__MY_STORE_SUPABASE__.auth.onAuthStateChange(function(event,session){
-    if(event==='SIGNED_OUT') location.href='/';
-  });
+  window.ckRetryPayment = function(){
+    var address = selectedAddress || {
+      name: document.getElementById('ckFullName') ? document.getElementById('ckFullName').value : '',
+      phone: document.getElementById('ckPhone') ? document.getElementById('ckPhone').value : '',
+      pincode: document.getElementById('ckPincode') ? document.getElementById('ckPincode').value : '',
+      state: document.getElementById('ckState') ? document.getElementById('ckState').value : '',
+      city: document.getElementById('ckCity') ? document.getElementById('ckCity').value : '',
+      house: document.getElementById('ckHouse') ? document.getElementById('ckHouse').value : '',
+      road: document.getElementById('ckRoad') ? document.getElementById('ckRoad').value : '',
+      type: addressType
+    };
+
+    var itemsForOrder = checkoutItems.map(function(it){
+      var p = priceOf(it);
+      return { title: it.title, image: it.image, url: it.url, qty: p.qty, price: p.sell, mrp: p.mrp };
+    });
+
+    if(payMethod === 'cod'){
+      ckPlaceOrder();
+      return;
+    }
+
+    ckOpenRazorpay(itemsForOrder, address);
+  };
+
+  window.ckChangePaymentMethod = function(){
+    ckShowPanel(3);
+  };
+
+  function ckShowPendingPanel(orderRow){
+    setText('ckPendingOrderId', '#' + displayOrderId(orderRow));
+    ckShowPanel(6);
+  }
+
+  window.ckCheckPendingStatus = async function(){
+    var orderRow = window._ckLastOrder;
+    if(!orderRow || !ckOrderCreated) return;
+    var res = await sb.from('orders').select('*').eq('id', orderRow.id).single();
+    if(res.error){ alert('Status check nahi ho paya, dobara try karo.'); return; }
+    var row = res.data;
+    window._ckLastOrder = row;
+    if(row.status === 'paid'){
+      ckFinalizeCartAndShowSuccess(row);
+    }else if(row.status === 'failed'){
+      ckStopPendingPoll();
+      await sb.from('orders').delete().eq('id', row.id);
+      ckOrderCreated = false;
+      ckShowFailedPanel('Payment fail ho gaya - order delete kar diya gaya hai.');
+    }else{
+      alert('Payment abhi bhi pending hai. Confirm hote hi hum tumhe update karenge.');
+    }
+  };
 
 })();
 </script>
