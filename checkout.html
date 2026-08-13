@@ -924,19 +924,22 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   /* =========================================================
-     ADDRESS TABLE = customer_addresses
+     ADDRESS TABLE = saved_addresses
+     Columns:
+     id, user_id, name, phone, pincode, state, city,
+     house, road, type, created_at
   ========================================================= */
   function mapAddress(a){
     return {
       id:a.id,
-      name:a.full_name || a.name || '',
-      phone:a.mobile || a.phone || '',
-      pincode:a.pincode || a.pin || '',
+      name:a.name || '',
+      phone:a.phone || '',
+      pincode:a.pincode || '',
       state:a.state || '',
-      city:a.district || a.city || '',
-      house:a.house || a.house_no || a.house_number || '',
-      road:a.road || a.area || a.address_line || '',
-      type:a.address_type || a.type || 'home'
+      city:a.city || '',
+      house:a.house || '',
+      road:a.road || '',
+      type:a.type || 'home'
     };
   }
 
@@ -944,7 +947,7 @@ body{padding:0 !important;margin:0 !important;}
     var res=await window.__MY_STORE_SUPABASE__.from('saved_addresses')
       .select('*')
       .eq('user_id',currentUser.id)
-      .order('id',{ascending:false});
+      .order('created_at',{ascending:false});
 
     if(res.error){
       console.error('Address load error:',res.error);
@@ -1053,21 +1056,35 @@ body{padding:0 !important;margin:0 !important;}
 
     ids.forEach(function(id){
       var x=el(id);
-      if(!x.value.trim()){
-        x.classList.add('invalid');
+      if(!x || !x.value.trim()){
+        if(x) x.classList.add('invalid');
         valid=false;
-      }else x.classList.remove('invalid');
+      }else{
+        x.classList.remove('invalid');
+      }
     });
 
     var phone=el('ckPhone').value.trim();
     var pincode=el('ckPincode').value.trim();
-    el('ckPhoneError').classList.toggle('show',!/^[6-9]\d{9}$/.test(phone));
+
+    if(el('ckPhoneError')){
+      el('ckPhoneError').classList.toggle('show',!/^[6-9]\d{9}$/.test(phone));
+    }
+
     if(!/^[6-9]\d{9}$/.test(phone)) valid=false;
     if(!/^\d{6}$/.test(pincode)) valid=false;
     if(!valid) return;
 
+    if(!currentUser){
+      alert('Please login first.');
+      return;
+    }
+
     var btn=document.querySelector('#ckAddressFormSection .ckbtn.block');
-    if(btn){btn.disabled=true;btn.textContent='Saving...';}
+    if(btn){
+      btn.disabled=true;
+      btn.textContent='Saving...';
+    }
 
     var addr={
       name:el('ckFullName').value.trim(),
@@ -1077,34 +1094,58 @@ body{padding:0 !important;margin:0 !important;}
       city:el('ckCity').value.trim(),
       house:el('ckHouse').value.trim(),
       road:el('ckRoad').value.trim(),
-      type:addressType
+      type:addressType || 'home'
     };
 
     try{
-      /* Always create an address row: orders.address_id points to it. */
+      /*
+        IMPORTANT:
+        saved_addresses me exact columns use honge.
+        address_type/full_name/mobile/district nahi.
+      */
       var insertPayload={
         user_id:currentUser.id,
-        full_name:addr.name,
-        mobile:addr.phone,
+        name:addr.name,
+        phone:addr.phone,
         pincode:addr.pincode,
         state:addr.state,
-        district:addr.city,
+        city:addr.city,
         house:addr.house,
         road:addr.road,
-        address_type:addr.type
+        type:addr.type
       };
 
-      var res=await window.__MY_STORE_SUPABASE__.from('saved_addresses').insert(insertPayload).select().single();
+      var res=await window.__MY_STORE_SUPABASE__
+        .from('saved_addresses')
+        .insert(insertPayload)
+        .select()
+        .single();
+
       if(res.error) throw res.error;
 
       selectedAddress=mapAddress(res.data);
+
       await loadSavedAddresses();
+
+      /* Newly saved address should remain selected */
+      var fresh=savedAddresses.find(function(a){
+        return normalizeId(a.id)===normalizeId(res.data.id);
+      });
+      if(fresh) selectedAddress=fresh;
+
       fillSummary(selectedAddress);
+
     }catch(error){
       console.error('SAVE ADDRESS ERROR:',error);
-      alert('Address save nahi ho paya.\n\n'+(error.message||'Supabase error'));
+      alert(
+        'Address save nahi ho paya.\n\n' +
+        (error.message || 'Supabase error')
+      );
     }finally{
-      if(btn){btn.disabled=false;btn.textContent='Save Address';}
+      if(btn){
+        btn.disabled=false;
+        btn.textContent='Save Address';
+      }
     }
   };
 
@@ -1177,18 +1218,36 @@ body{padding:0 !important;margin:0 !important;}
   window.ckConfirmPlaceOrderYes=function(){ckCloseConfirm();ckPlaceOrder();};
 
   /* =========================================================
-     PLACE COD ORDER - NEW ORDERS + ORDER_ITEMS SCHEMA
+     PLACE COD ORDER
+     Uses ONLY public.orders
+     New orders schema:
+     id, user_id, items, address, payment_method,
+     total_amount, status, created_at, delivery_date,
+     user_email, delivered_at, cancelled_by, rating,
+     review_text, cancel_reason, shipped_at, cancelled_at,
+     out_for_delivery_at, order_number, cancel_requested_at,
+     processed_at, picked_up_at, courier_name,
+     courier_tracking_id, hub_received_at, advance_status,
+     advance_amount, cod_due, advance_checked_at
   ========================================================= */
   window.ckPlaceOrder=async function(){
     var btn=el('ckFooterBtn');
 
-    if(!currentUser){alert('Please login first.');return;}
-    if(!selectedAddress || !selectedAddress.id){
+    if(!currentUser){
+      alert('Please login first.');
+      return;
+    }
+
+    if(!selectedAddress){
       alert('Please select or save a delivery address first.');
       ckShowPanel(1);
       return;
     }
-    if(!checkoutItems.length){alert('Cart is empty.');return;}
+
+    if(!checkoutItems.length){
+      alert('Cart is empty.');
+      return;
+    }
 
     btn.disabled=true;
     btn.textContent='Placing Order...';
@@ -1196,68 +1255,137 @@ body{padding:0 !important;margin:0 !important;}
     try{
       renderPriceSummary();
 
-      var orderNumber='ORD-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,8).toUpperCase();
-
-      var orderRes=await window.__MY_STORE_SUPABASE__.from('orders').insert({
-        order_number:orderNumber,
-        user_id:currentUser.id,
-        address_id:selectedAddress.id,
-        subtotal:lastTotal,
-        delivery_charge:0,
-        total_amount:lastTotal,
-        payment_method:'cod',
-        payment_status:'pending',
-        order_status:'placed'
-      }).select().single();
-
-      if(orderRes.error) throw orderRes.error;
-
-      var order=orderRes.data;
-
-      var items=checkoutItems.map(function(item){
+      /*
+        Items JSONB:
+        Product page/cart se jo details aa rahi hain
+        unko simple clean format me orders.items me store karenge.
+      */
+      var itemsForOrder=checkoutItems.map(function(item){
         var p=priceOf(item);
+
         return {
-          order_id:order.id,
           product_id:item.id==null?null:String(item.id),
-          product_name:item.title||'Product',
-          product_image:item.image||null,
-          quantity:p.qty,
+          product_name:item.title || 'Product',
+          image:item.image || '',
+          url:item.url || '',
+          qty:p.qty,
           price:p.sell,
-          total_price:p.sell*p.qty
+          mrp:p.mrp,
+          total:p.sell*p.qty
         };
       });
 
-      var itemRes=await window.__MY_STORE_SUPABASE__.from('order_items').insert(items);
-      if(itemRes.error){
-        await window.__MY_STORE_SUPABASE__.from('orders').delete().eq('id',order.id);
-        throw itemRes.error;
+      /*
+        Address JSONB:
+        saved_addresses ki current selected address ko
+        order ke saath snapshot ki tarah save kar rahe hain.
+      */
+      var addressForOrder={
+        id:selectedAddress.id || null,
+        name:selectedAddress.name || '',
+        phone:selectedAddress.phone || '',
+        pincode:selectedAddress.pincode || '',
+        state:selectedAddress.state || '',
+        city:selectedAddress.city || '',
+        house:selectedAddress.house || '',
+        road:selectedAddress.road || '',
+        type:selectedAddress.type || 'home'
+      };
+
+      /*
+        Database trigger order_number create karega.
+        Isliye frontend se order_number dene ki zarurat nahi.
+      */
+      var orderPayload={
+        user_id:currentUser.id,
+        items:itemsForOrder,
+        address:addressForOrder,
+        payment_method:'cod',
+        total_amount:lastTotal,
+        status:'placed',
+        user_email:currentUser.email || '',
+        cod_due:lastTotal
+      };
+
+      console.log('Creating order:',orderPayload);
+
+      var orderRes=await window.__MY_STORE_SUPABASE__
+        .from('orders')
+        .insert(orderPayload)
+        .select()
+        .single();
+
+      if(orderRes.error){
+        throw orderRes.error;
       }
 
-      if(checkoutMode==='cart'){
-        var clearRes=await window.__MY_STORE_SUPABASE__.from('cart_items').delete().eq('user_id',currentUser.id);
-        if(clearRes.error) console.warn('Cart clear error:',clearRes.error);
-      }
-
-      try{sessionStorage.removeItem('checkoutItems');sessionStorage.setItem('ckOrderJustPlaced','1');}catch(e){}
-
-      setText('ckOrderIdText','#'+displayOrderId(order));
-      var track=el('ckTrackOrderLink');
-      if(track) track.href='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
+      var order=orderRes.data;
 
       window._ckLastOrder=order;
+
+      /*
+        Cart mode me order successful hone ke baad cart clear.
+      */
+      if(checkoutMode==='cart'){
+        var clearRes=await window.__MY_STORE_SUPABASE__
+          .from('cart_items')
+          .delete()
+          .eq('user_id',currentUser.id);
+
+        if(clearRes.error){
+          console.warn('Cart clear error:',clearRes.error);
+        }
+      }
+
+      try{
+        sessionStorage.removeItem('checkoutItems');
+        sessionStorage.setItem('ckOrderJustPlaced','1');
+      }catch(e){}
+
+      setText(
+        'ckOrderIdText',
+        '#'+displayOrderId(order)
+      );
+
+      var track=el('ckTrackOrderLink');
+
+      /*
+        My Orders page ko order id ke saath open karenge.
+      */
+      if(track){
+        track.href='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
+      }
+
       applyPanel(4);
 
       if(window.confetti){
-        window.confetti({particleCount:100,spread:100,origin:{y:.55}});
+        window.confetti({
+          particleCount:100,
+          spread:100,
+          origin:{y:.55}
+        });
       }
+
     }catch(error){
+
       console.error('PLACE ORDER ERROR:',error);
-      var msg=error.message||'Unknown Supabase error';
-      if(error.hint) msg+='\n\nHint: '+error.hint;
-      alert('Order place nahi ho paya.\n\n'+msg);
+
+      var msg=error.message || 'Unknown Supabase error';
+
+      if(error.hint){
+        msg += '\n\nHint: '+error.hint;
+      }
+
+      alert(
+        'Order place nahi ho paya.\n\n' +
+        msg
+      );
+
     }finally{
+
       btn.disabled=false;
       btn.textContent='Place Order (COD)';
+
     }
   };
 
@@ -1301,10 +1429,10 @@ body{padding:0 !important;margin:0 !important;}
       try{
         await loadSavedAddresses();
         renderSavedAddresses();
-        if(savedAddresses.length){
-          selectedAddress=savedAddresses[0];
-          fillSummary(selectedAddress);
-        }
+        /*
+          Saved address list dikhao.
+          User "Deliver Here" click karke address select karega.
+        */
       }catch(addressError){
         console.error('ADDRESS LOAD ERROR:',addressError);
         /* Address loading is non-fatal: show the new-address form. */
