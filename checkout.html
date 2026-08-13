@@ -1094,7 +1094,7 @@ body{padding:0 !important;margin:0 !important;}
         address_type:addr.type
       };
 
-      var res=await window.__MY_STORE_SUPABASE__.from('customer_addresses').insert(insertPayload).select().single();
+      var res=await window.__MY_STORE_SUPABASE__.from('saved_addresses').insert(insertPayload).select().single();
       if(res.error) throw res.error;
 
       selectedAddress=mapAddress(res.data);
