@@ -629,7 +629,7 @@ body{padding:0 !important;margin:0 !important;}
           </h2>
           <p style="font-size:14px; color:#6c7a73; margin:0 0 4px;">Your order <span id="ckOrderIdText" style="font-weight:800; color:#1f4d36;"></span> has been placed successfully.</p>
           <p style="font-size:14px; color:#6c7a73; margin:0 0 20px;">Order history me "My Orders" section me dikhega.</p>
-          <a class="ckbtn" id="ckTrackOrderLink" href="/p/orders.html" style="margin-bottom:10px;">Track Order</a>
+          <a class="ckbtn" id="ckTrackOrderLink" href="/p/my-orders.html" style="margin-bottom:10px;">Track Order</a>
           <div style="height:10px"></div>
           <a class="ckbtn ghost" href="/">Continue Shopping</a>
         </div>
@@ -686,7 +686,7 @@ body{padding:0 !important;margin:0 !important;}
           <p style="font-size:14px; color:#6c7a73; margin:0 0 20px;">Order <span id="ckPendingOrderId" style="font-weight:800; color:#1f4d36;"></span></p>
           <button class="ckbtn amber block" type="button" onclick="ckCheckPendingStatus()" style="margin-bottom:10px;">Check Status</button>
           <div style="height:10px"></div>
-          <a class="ckbtn ghost block" href="/p/orders.html">View My Orders</a>
+          <a class="ckbtn ghost block" href="/p/my-orders.html">View My Orders</a>
         </div>
       </div>
 
@@ -1242,7 +1242,7 @@ body{padding:0 !important;margin:0 !important;}
 
       setText('ckOrderIdText','#'+displayOrderId(order));
       var track=el('ckTrackOrderLink');
-      if(track) track.href='/p/orders.html?id='+encodeURIComponent(order.id);
+      if(track) track.href='/p/my-orders.html?id='+encodeURIComponent(order.id);
 
       window._ckLastOrder=order;
       applyPanel(4);
