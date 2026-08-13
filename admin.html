@@ -14,7 +14,7 @@
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:18px}.stat small{color:#777;font-size:10px}.stat strong{display:block;font-size:26px;margin-top:8px}
 .toolbar{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:12px;display:flex;gap:9px;margin-bottom:14px}.search{flex:1;height:42px;border:1px solid #ddd;border-radius:10px;padding:0 12px;outline:0}.filter{height:42px;border:1px solid #ddd;border-radius:10px;background:#fff;padding:0 10px}
 .table{background:#fff;border:1px solid #e5e7eb;border-radius:15px;overflow:auto}table{border-collapse:collapse;width:100%;min-width:930px}th,td{text-align:left;padding:13px;border-bottom:1px solid #eee;font-size:12px}th{font-size:10px;color:#777;background:#fafafa;text-transform:uppercase}.pcell{display:flex;align-items:center;gap:10px}.pcell img{width:50px;height:50px;border:1px solid #eee;border-radius:9px;object-fit:contain;padding:4px}.pn{font-weight:800}.sub{font-size:10px;color:#888;margin-top:3px}.pill{display:inline-block;padding:5px 8px;border-radius:20px;background:#111;color:#fff;font-size:9px;font-weight:900}.low{color:#d97706;font-weight:900}.out{color:#dc2626;font-weight:900}.good{color:#15803d;font-weight:900}.acts{display:flex;gap:5px}.ib{width:34px;height:34px;border:1px solid #ddd;background:#fff;border-radius:8px}.empty{text-align:center;padding:50px;color:#777}
-.modal{display:none;position:fixed;inset:0;background:#0008;z-index:100;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.box{width:min(850px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.mh{display:flex;justify-content:space-between;align-items:center}.mh h2{margin:0}.close{border:0;background:#eee;width:35px;height:35px;border-radius:50%;font-weight:900}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:15px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:900}.field input,.field textarea,.field select{border:1px solid #ddd;border-radius:10px;padding:10px 11px;outline:0}.field textarea{min-height:95px;resize:vertical}.preview{height:180px;border:1px dashed #ccc;border-radius:11px;display:flex;align-items:center;justify-content:center;overflow:hidden}.preview img{width:100%;height:100%;object-fit:contain}.ma{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:100;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.box{width:min(850px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:22px}.mh{display:flex;justify-content:space-between;align-items:center}.mh h2{margin:0}.close{border:0;background:#eee;width:35px;height:35px;border-radius:50%;font-weight:900}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:15px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:900}.field input,.field textarea,.field select{border:1px solid #ddd;border-radius:10px;padding:10px 11px;outline:0}.field textarea{min-height:95px;resize:vertical}.preview{height:180px;border:1px dashed #ccc;border-radius:11px;display:flex;align-items:center;justify-content:center;overflow:hidden}.preview img{width:100%;height:100%;object-fit:contain}.image-links{display:flex;flex-direction:column;gap:9px}.image-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.image-row input{width:100%;height:42px;border:1px solid #ddd;border-radius:10px;padding:0 11px;outline:0}.image-row .remove-image{width:42px;height:42px;border:1px solid #ddd;background:#fff;border-radius:10px;font-weight:900}.image-row .remove-image:hover{background:#fef2f2;color:#dc2626}.add-image-btn{margin-top:8px}.image-help{font-size:10px;color:#888;margin-top:7px;line-height:1.5}.ma{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
 .toast{position:fixed;right:20px;bottom:20px;background:#111;color:#fff;padding:12px 15px;border-radius:10px;font-size:12px;font-weight:800;z-index:200;opacity:0;transform:translateY(15px);transition:.2s}.toast.show{opacity:1;transform:translateY(0)}
 @media(max-width:850px){.side{width:70px;padding:18px 8px}.brand{font-size:0;text-align:center}.brand:after{content:"M";font-size:23px}.side small{display:none}.nav button{font-size:0;text-align:center;height:44px}.nav button:first-letter{font-size:18px}.logout{font-size:0}.logout:after{content:"↪";font-size:18px}.main{margin-left:70px}.top{padding:0 15px}.top span{display:none}.content{padding:15px}.stats{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.head{align-items:flex-start}.head h1{font-size:23px}.toolbar{flex-wrap:wrap}.search{flex-basis:100%}.filter{flex:1}.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.ma{flex-direction:column}.ma button{width:100%}}
@@ -104,7 +104,12 @@
         <div class="field"><label>Status</label><select id="active"><option value="true">Active</option><option value="false">Inactive</option></select></div>
         <div class="field full"><label>Main Image URL *</label><input id="mainImage" required oninput="preview()"></div>
         <div class="field full"><div id="preview" class="preview">Image preview</div></div>
-        <div class="field full"><label>Images JSON</label><textarea id="images" placeholder='["https://example.com/1.jpg","https://example.com/2.jpg"]'></textarea></div>
+        <div class="field full">
+<label>Additional Product Images</label>
+<div id="imageLinks" class="image-links"></div>
+<button type="button" class="btn light add-image-btn" onclick="addImageLink()">＋ Add Image Link</button>
+<div class="image-help">Main Image ke baad ye images product page par isi order me dikhengi. Jitni chaho images add kar sakte ho.</div>
+</div>
         <div class="field full"><label>Description</label><textarea id="description"></textarea></div>
       </div>
       <div class="ma"><button type="button" class="btn light" onclick="closeModal()">Cancel</button><button id="saveBtn" class="btn">Save Product</button></div>
@@ -241,6 +246,8 @@ function openAdd(){
  $("active").value="true";
  $("preview").textContent="Image preview";
  $("formError").style.display="none";
+ $("imageLinks").innerHTML="";
+ addImageLink("");
  $("modal").classList.add("show");
 }
 
@@ -253,7 +260,14 @@ function edit(id){
  $("saveBtn").textContent="Update Product";
  $("name").value=p.name||"";$("slug").value=p.slug||"";$("brand").value=p.brand||"";$("category").value=p.category||"";$("badge").value=p.badge||"";
  $("price").value=p.price??"";$("mrp").value=p.mrp??"";$("discount").value=p.discount_percent??"";$("stock").value=p.stock??0;$("rating").value=p.rating??"";$("reviews").value=p.review_count??0;$("active").value=String(p.is_active!==false);
- $("mainImage").value=p.main_image||"";$("images").value=p.images?JSON.stringify(p.images,null,2):"";$("description").value=p.description||"";
+ $("mainImage").value=p.main_image||"";
+ $("imageLinks").innerHTML="";
+ let extraImages=[];
+ if(Array.isArray(p.images)) extraImages=p.images;
+ else if(typeof p.images==="string"){try{const parsed=JSON.parse(p.images);if(Array.isArray(parsed))extraImages=parsed}catch{}}
+ extraImages.forEach(url=>addImageLink(typeof url==="string"?url:(url?.url||url?.src||url?.image||"")));
+ if(!extraImages.length)addImageLink("");
+ $("description").value=p.description||"";
  $("formError").style.display="none";preview();$("modal").classList.add("show");
 }
 
@@ -262,15 +276,23 @@ function preview(){
  $("preview").innerHTML=u?`<img src="${esc(u)}" onerror="this.outerHTML='<span>Image could not load</span>'">`:"Image preview";
 }
 
+function addImageLink(value=""){
+ const wrap=$("imageLinks");
+ const row=document.createElement("div");
+ row.className="image-row";
+ row.innerHTML=`<input class="image-url" type="url" placeholder="https://example.com/product-image.jpg" value="${esc(value)}">
+                <button type="button" class="remove-image" title="Remove image" onclick="this.parentElement.remove()">×</button>`;
+ wrap.appendChild(row);
+}
+
 function slugify(x){return String(x).toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")}
 
 async function save(e){
  e.preventDefault();
  $("formError").style.display="none";
- let images=[];
- if($("images").value.trim()){
-  try{images=JSON.parse($("images").value);if(!Array.isArray(images))throw Error()}catch{errorBox($("formError"),"Images JSON invalid hai.");return}
- }
+ const images=[...document.querySelectorAll("#imageLinks .image-url")]
+  .map(x=>x.value.trim())
+  .filter(Boolean);
  const name=$("name").value.trim(),price=Number($("price").value),stock=Number($("stock").value),mrp=Number($("mrp").value)||0;
  if(!name||!Number.isFinite(price)||price<0||!Number.isInteger(stock)||stock<0){errorBox($("formError"),"Name, Price aur Stock valid hona chahiye.");return}
  let discount=Number($("discount").value);
