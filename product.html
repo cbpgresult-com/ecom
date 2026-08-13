@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Product | MyStore</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    .product-page {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .back-btn {
+      border: none;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    .product-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      background: white;
+      padding: 30px;
+      border-radius: 22px;
+    }
+
+    .product-detail-image {
+      width: 100%;
+      max-height: 600px;
+      object-fit: contain;
+      border-radius: 18px;
+      background: #f5f5f5;
+    }
+
+    .detail-info {
+      padding: 10px;
+    }
+
+    .detail-badge {
+      display: inline-block;
+      background: #111;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .detail-title {
+      font-size: 34px;
+      line-height: 1.2;
+      margin-bottom: 15px;
+    }
+
+    .detail-rating {
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+
+    .detail-price {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .detail-mrp {
+      color: #999;
+      text-decoration: line-through;
+      margin-right: 10px;
+    }
+
+    .detail-discount {
+      color: #16803c;
+      font-weight: 700;
+    }
+
+    .detail-description {
+      color: #666;
+      line-height: 1.7;
+      margin: 25px 0;
+    }
+
+    .stock {
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .detail-cart {
+      width: 100%;
+      padding: 16px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .detail-cart:hover {
+      opacity: .85;
+    }
+
+    .loading-product {
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    .error-product {
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    @media (max-width: 700px) {
+
+      .product-page {
+        margin: 15px auto;
+        padding: 12px;
+      }
+
+      .product-detail {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        padding: 15px;
+      }
+
+      .detail-title {
+        font-size: 25px;
+      }
+
+      .detail-price {
+        font-size: 27px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+
+    <div
+      class="logo"
+      onclick="window.location.href='index.html'"
+      style="cursor:pointer;">
+      MyStore
+    </div>
+
+    <div class="search">
+      <input
+        type="text"
+        placeholder="Search products..."
+        onclick="window.location.href='index.html'"
+      >
+    </div>
+
+    <button
+      class="cart-btn"
+      onclick="window.location.href='index.html'">
+      🛒 Cart
+      <span id="cartCount">0</span>
+    </button>
+
+  </header>
+
+
+  <main class="product-page">
+
+    <button
+      class="back-btn"
+      onclick="history.back()">
+      ← Back
+    </button>
+
+
+    <div
+      id="loadingProduct"
+      class="loading-product">
+
+      Loading product...
+
+    </div>
+
+
+    <div
+      id="productContainer"
+      style="display:none;">
+    </div>
+
+
+    <div
+      id="errorProduct"
+      class="error-product"
+      style="display:none;">
+
+      <h2>Product not found</h2>
+
+      <p>
+        This product is unavailable or has been removed.
+      </p>
+
+      <br>
+
+      <button
+        class="detail-cart"
+        onclick="window.location.href='index.html'">
+
+        Continue Shopping
+
+      </button>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    /* =========================================
+       SUPABASE CONFIG
+       ========================================= */
+
+    const SUPABASE_URL =
+      "https://bszojvhitsoamhksyjul.supabase.co";
+
+    const SUPABASE_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* =========================================
+       PRODUCT ID
+       ========================================= */
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const productId =
+      params.get("id");
+
+
+    /* =========================================
+       LOAD PRODUCT
+       ========================================= */
+
+    async function loadProduct() {
+
+      if (!productId) {
+
+        showError();
+
+        return;
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("products")
+          .select("*")
+          .eq("id", productId)
+          .eq("is_active", true)
+          .single();
+
+
+      if (error || !data) {
+
+        console.error(error);
+
+        showError();
+
+        return;
+      }
+
+
+      showProduct(data);
+
+    }
+
+
+    /* =========================================
+       SHOW PRODUCT
+       ========================================= */
+
+    function showProduct(product) {
+
+      document.title =
+        product.name + " | MyStore";
+
+
+      const container =
+        document.getElementById(
+          "productContainer"
+        );
+
+
+      const image =
+        product.main_image ||
+        "https://placehold.co/600x600/png?text=Product";
+
+
+      const price =
+        Number(product.price || 0)
+          .toLocaleString("en-IN");
+
+
+      const mrp =
+        product.mrp
+          ? Number(product.mrp)
+              .toLocaleString("en-IN")
+          : "";
+
+
+      container.innerHTML = `
+
+        <div class="product-detail">
+
+          <div>
+
+            <img
+              class="product-detail-image"
+              src="${image}"
+              alt="${escapeHTML(product.name)}"
+            >
+
+          </div>
+
+
+          <div class="detail-info">
+
+            ${
+              product.badge
+                ? `
+                  <span class="detail-badge">
+                    ${escapeHTML(product.badge)}
+                  </span>
+                `
+                : ""
+            }
+
+
+            <h1 class="detail-title">
+              ${escapeHTML(product.name)}
+            </h1>
+
+
+            <div class="detail-rating">
+              ⭐ ${product.rating || 0}
+
+              ${
+                product.review_count
+                  ? `
+                    (${product.review_count} reviews)
+                  `
+                  : ""
+              }
+            </div>
+
+
+            <div class="detail-price">
+              ₹${price}
+            </div>
+
+
+            <div>
+
+              ${
+                mrp
+                  ? `
+                    <span class="detail-mrp">
+                      ₹${mrp}
+                    </span>
+                  `
+                  : ""
+              }
+
+              ${
+                product.discount_percent
+                  ? `
+                    <span class="detail-discount">
+                      ${product.discount_percent}% OFF
+                    </span>
+                  `
+                  : ""
+              }
+
+            </div>
+
+
+            <p class="detail-description">
+
+              ${
+                escapeHTML(
+                  product.description ||
+                  "No description available."
+                )
+              }
+
+            </p>
+
+
+            <div class="stock">
+
+              ${
+                Number(product.stock) > 0
+                  ? `✓ In Stock (${product.stock} available)`
+                  : "✕ Out of Stock"
+              }
+
+            </div>
+
+
+            <button
+              class="detail-cart"
+              ${
+                Number(product.stock) <= 0
+                  ? "disabled"
+                  : ""
+              }
+              onclick="addToCart(${product.id})">
+
+              ${
+                Number(product.stock) > 0
+                  ? "🛒 Add to Cart"
+                  : "Out of Stock"
+              }
+
+            </button>
+
+          </div>
+
+        </div>
+
+      `;
+
+
+      document.getElementById(
+        "loadingProduct"
+      ).style.display = "none";
+
+
+      container.style.display = "block";
+
+    }
+
+
+    /* =========================================
+       ADD TO CART
+       ========================================= */
+
+    async function addToCart(id) {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("products")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+
+      if (error || !data) {
+
+        alert("Product unavailable.");
+
+        return;
+      }
+
+
+      let cart =
+        JSON.parse(
+          localStorage.getItem("cart") ||
+          "[]"
+        );
+
+
+      const existing =
+        cart.find(
+          item =>
+            item.id === data.id
+        );
+
+
+      if (existing) {
+
+        existing.quantity += 1;
+
+      } else {
+
+        cart.push({
+
+          id: data.id,
+
+          name: data.name,
+
+          price: data.price,
+
+          image: data.main_image,
+
+          quantity: 1
+
+        });
+
+      }
+
+
+      localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+      );
+
+
+      updateCartCount();
+
+
+      alert("Product added to cart!");
+
+    }
+
+
+    /* =========================================
+       CART COUNT
+       ========================================= */
+
+    function updateCartCount() {
+
+      const cart =
+        JSON.parse(
+          localStorage.getItem("cart") ||
+          "[]"
+        );
+
+
+      const count =
+        cart.reduce(
+          (total, item) =>
+            total + item.quantity,
+          0
+        );
+
+
+      document.getElementById(
+        "cartCount"
+      ).textContent = count;
+
+    }
+
+
+    /* =========================================
+       ERROR
+       ========================================= */
+
+    function showError() {
+
+      document.getElementById(
+        "loadingProduct"
+      ).style.display = "none";
+
+
+      document.getElementById(
+        "errorProduct"
+      ).style.display = "block";
+
+    }
+
+
+    /* =========================================
+       HTML SECURITY
+       ========================================= */
+
+    function escapeHTML(value) {
+
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    }
+
+
+    updateCartCount();
+
+    loadProduct();
+
+  </script>
+
+</body>
+</html>
