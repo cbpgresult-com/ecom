@@ -724,21 +724,19 @@ body{padding:0 !important;margin:0 !important;}
 <script>
 (function(){
   'use strict';
-/* =========================================
-   SUPABASE CONFIG
-   ========================================= */
 
-const SUPABASE_URL =
-  "https://bszojvhitsoamhksyjul.supabase.co";
+  /* =========================================================
+     SUPABASE
+  ========================================================= */
+  var SUPABASE_URL = 'https://bszojvhitsoamhksyjul.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE';
 
-const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+  if(!window.supabase || typeof window.supabase.createClient !== 'function'){
+    throw new Error('Supabase library load nahi hui.');
+  }
 
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  window.__MY_STORE_SUPABASE__ = sb;
 
   var checkoutMode = 'cart';
   var checkoutItems = [];
@@ -902,7 +900,7 @@ const supabaseClient =
       checkoutMode='cart';
     }
 
-    var res=await sb.from('cart_items')
+    var res=await window.__MY_STORE_SUPABASE__.from('cart_items')
       .select('*')
       .eq('user_id',currentUser.id)
       .order('created_at',{ascending:true});
@@ -943,7 +941,7 @@ const supabaseClient =
   }
 
   async function loadSavedAddresses(){
-    var res=await sb.from('customer_addresses')
+    var res=await window.__MY_STORE_SUPABASE__.from('customer_addresses')
       .select('*')
       .eq('user_id',currentUser.id)
       .order('id',{ascending:false});
@@ -1096,7 +1094,7 @@ const supabaseClient =
         address_type:addr.type
       };
 
-      var res=await sb.from('customer_addresses').insert(insertPayload).select().single();
+      var res=await window.__MY_STORE_SUPABASE__.from('customer_addresses').insert(insertPayload).select().single();
       if(res.error) throw res.error;
 
       selectedAddress=mapAddress(res.data);
@@ -1200,7 +1198,7 @@ const supabaseClient =
 
       var orderNumber='ORD-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,8).toUpperCase();
 
-      var orderRes=await sb.from('orders').insert({
+      var orderRes=await window.__MY_STORE_SUPABASE__.from('orders').insert({
         order_number:orderNumber,
         user_id:currentUser.id,
         address_id:selectedAddress.id,
@@ -1229,14 +1227,14 @@ const supabaseClient =
         };
       });
 
-      var itemRes=await sb.from('order_items').insert(items);
+      var itemRes=await window.__MY_STORE_SUPABASE__.from('order_items').insert(items);
       if(itemRes.error){
-        await sb.from('orders').delete().eq('id',order.id);
+        await window.__MY_STORE_SUPABASE__.from('orders').delete().eq('id',order.id);
         throw itemRes.error;
       }
 
       if(checkoutMode==='cart'){
-        var clearRes=await sb.from('cart_items').delete().eq('user_id',currentUser.id);
+        var clearRes=await window.__MY_STORE_SUPABASE__.from('cart_items').delete().eq('user_id',currentUser.id);
         if(clearRes.error) console.warn('Cart clear error:',clearRes.error);
       }
 
@@ -1276,7 +1274,7 @@ const supabaseClient =
         sessionStorage.removeItem('ckOrderJustPlaced');
       }catch(e){}
 
-      var sessionRes=await sb.auth.getSession();
+      var sessionRes=await window.__MY_STORE_SUPABASE__.auth.getSession();
       if(sessionRes.error) throw sessionRes.error;
 
       var session=sessionRes.data && sessionRes.data.session;
@@ -1327,7 +1325,7 @@ const supabaseClient =
   setupPincode();
   document.addEventListener('DOMContentLoaded',init);
 
-  sb.auth.onAuthStateChange(function(event,session){
+  window.__MY_STORE_SUPABASE__.auth.onAuthStateChange(function(event,session){
     if(event==='SIGNED_OUT') location.href='/';
   });
 
