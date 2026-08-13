@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cart | MyStore</title>
-<meta name="theme-color" content="#111111">
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html,body{
   margin:0;
@@ -18,11 +19,22 @@ html,body{
   color:#111;
 }
 
-body{padding-bottom:30px}
+body{
+  padding-bottom:30px;
+}
 
-button,input{font:inherit}
-button{cursor:pointer}
-a{text-decoration:none;color:inherit}
+button,input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
 
 /* ================= HEADER ================= */
 
@@ -36,13 +48,13 @@ a{text-decoration:none;color:inherit}
   padding:0 5%;
   position:sticky;
   top:0;
-  z-index:50;
+  z-index:100;
 }
 
 .logo{
   font-size:25px;
-  font-weight:800;
-  letter-spacing:-.8px;
+  font-weight:900;
+  letter-spacing:-1px;
   white-space:nowrap;
 }
 
@@ -94,7 +106,7 @@ a{text-decoration:none;color:inherit}
   align-items:start;
 }
 
-/* ================= CARDS ================= */
+/* ================= CART CARD ================= */
 
 .card,
 .summary{
@@ -106,7 +118,7 @@ a{text-decoration:none;color:inherit}
 
 .item{
   display:grid;
-  grid-template-columns:120px minmax(0,1fr) auto;
+  grid-template-columns:125px minmax(0,1fr) auto;
   gap:20px;
   align-items:center;
   padding:20px;
@@ -117,15 +129,29 @@ a{text-decoration:none;color:inherit}
   border-bottom:0;
 }
 
-.product-image{
-  width:120px;
-  height:120px;
-  border:1px solid #eee;
-  border-radius:14px;
-  object-fit:contain;
-  padding:8px;
+/* IMAGE */
+
+.image-box{
+  width:125px;
+  height:125px;
+  border:1px solid #e5e7eb;
+  border-radius:15px;
   background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  padding:7px;
 }
+
+.product-image{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+/* INFO */
 
 .product-name{
   font-size:16px;
@@ -133,10 +159,21 @@ a{text-decoration:none;color:inherit}
   line-height:1.4;
 }
 
+.product-stock{
+  margin-top:6px;
+  color:#15803d;
+  font-size:12px;
+  font-weight:700;
+}
+
+.product-stock.out{
+  color:#dc2626;
+}
+
 .price{
   margin-top:10px;
   font-size:18px;
-  font-weight:800;
+  font-weight:900;
 }
 
 .mrp{
@@ -154,6 +191,8 @@ a{text-decoration:none;color:inherit}
   margin-left:7px;
 }
 
+/* QUANTITY */
+
 .quantity{
   display:flex;
   align-items:center;
@@ -163,6 +202,7 @@ a{text-decoration:none;color:inherit}
   border:1px solid #ddd;
   border-radius:10px;
   overflow:hidden;
+  background:#fff;
 }
 
 .quantity button{
@@ -171,10 +211,15 @@ a{text-decoration:none;color:inherit}
   border:0;
   background:#f7f7f7;
   font-size:18px;
+  font-weight:700;
+}
+
+.quantity button:hover{
+  background:#eee;
 }
 
 .quantity span{
-  width:42px;
+  width:44px;
   height:100%;
   display:flex;
   align-items:center;
@@ -183,14 +228,7 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
 }
 
-.remove{
-  border:0;
-  background:transparent;
-  color:#dc2626;
-  font-size:12px;
-  font-weight:800;
-  margin-top:10px;
-}
+/* RIGHT */
 
 .item-right{
   text-align:right;
@@ -198,6 +236,25 @@ a{text-decoration:none;color:inherit}
   display:flex;
   flex-direction:column;
   align-items:flex-end;
+  justify-content:space-between;
+}
+
+.item-total{
+  font-size:17px;
+  font-weight:900;
+}
+
+.remove{
+  border:0;
+  background:transparent;
+  color:#dc2626;
+  font-size:12px;
+  font-weight:800;
+  padding:5px 0;
+}
+
+.remove:hover{
+  text-decoration:underline;
 }
 
 /* ================= SUMMARY ================= */
@@ -232,7 +289,7 @@ a{text-decoration:none;color:inherit}
   padding-top:16px;
   color:#111;
   font-size:18px;
-  font-weight:800;
+  font-weight:900;
 }
 
 .checkout-btn{
@@ -245,6 +302,11 @@ a{text-decoration:none;color:inherit}
   color:#111;
   font-size:14px;
   font-weight:900;
+}
+
+.checkout-btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
 }
 
 .continue-btn{
@@ -327,7 +389,9 @@ a{text-decoration:none;color:inherit}
 }
 
 @keyframes spin{
-  to{transform:rotate(360deg)}
+  to{
+    transform:rotate(360deg);
+  }
 }
 
 /* ================= TOAST ================= */
@@ -396,20 +460,29 @@ a{text-decoration:none;color:inherit}
   }
 
   .item{
-    grid-template-columns:82px minmax(0,1fr);
+    grid-template-columns:90px minmax(0,1fr);
     gap:14px;
     padding:15px;
   }
 
-  .product-image{
-    width:82px;
-    height:82px;
+  .image-box{
+    width:90px;
+    height:90px;
   }
 
   .item-right{
     grid-column:2;
     align-items:flex-start;
     text-align:left;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    margin-top:4px;
+  }
+
+  .item-total{
+    font-size:15px;
   }
 
   .price{
@@ -432,10 +505,22 @@ a{text-decoration:none;color:inherit}
 
   .item{
     padding:13px;
+    grid-template-columns:82px minmax(0,1fr);
+    gap:12px;
+  }
+
+  .image-box{
+    width:82px;
+    height:82px;
+    padding:5px;
   }
 
   .product-name{
     font-size:14px;
+  }
+
+  .product-stock{
+    font-size:11px;
   }
 
   .quantity{
@@ -496,14 +581,13 @@ a{text-decoration:none;color:inherit}
   </div>
 
 
-  <!-- LOGIN REQUIRED -->
+  <!-- LOGIN -->
 
   <div
     id="loginState"
     class="state"
     style="display:none"
   >
-
     <div>
 
       <div class="state-icon">🔐</div>
@@ -523,18 +607,16 @@ a{text-decoration:none;color:inherit}
       </a>
 
     </div>
-
   </div>
 
 
-  <!-- EMPTY CART -->
+  <!-- EMPTY -->
 
   <div
     id="emptyState"
     class="state"
     style="display:none"
   >
-
     <div>
 
       <div class="state-icon">🛒</div>
@@ -554,7 +636,6 @@ a{text-decoration:none;color:inherit}
       </a>
 
     </div>
-
   </div>
 
 
@@ -625,50 +706,29 @@ a{text-decoration:none;color:inherit}
 <div id="toast" class="toast"></div>
 
 
-<!-- Supabase JS -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
 /* ============================================================
-   SUPABASE CONFIG
+   SUPABASE
    ============================================================ */
 
 const SUPABASE_URL =
-  "https://bszojvhitsoamhksyjul.supabase.co";
+"https://bszojvhitsoamhksyjul.supabase.co";
 
 const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
-
-
-/*
- IMPORTANT:
- This is the ANON/public key you supplied.
- No service_role/secret key is used here.
-*/
-
-
-if (!window.supabase) {
-
-  showFatalError(
-    "Supabase library load nahi hui. Internet connection check karein."
-  );
-
-}
-
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sIjoiYW5vbiIsImlhdCI6MTc4NjU5NjQ5MywiZXhwIjoyMTAyMTcyMjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
 
 const sb =
-  window.supabase
-    ? window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      )
-    : null;
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 
 /* ============================================================
-   GLOBALS
+   GLOBAL
    ============================================================ */
 
 let currentUser = null;
@@ -700,7 +760,6 @@ function escapeHtml(value){
         ">":"&gt;",
         '"':"&quot;",
         "'":"&#039;"
-
       }[char];
 
     });
@@ -710,19 +769,19 @@ function escapeHtml(value){
 
 function toast(message){
 
-  const el =
+  const box =
     document.getElementById("toast");
 
-  el.textContent = message;
+  box.textContent = message;
 
-  el.classList.add("show");
+  box.classList.add("show");
 
-  clearTimeout(window.__toast);
+  clearTimeout(window.__toastTimer);
 
-  window.__toast =
+  window.__toastTimer =
     setTimeout(function(){
 
-      el.classList.remove("show");
+      box.classList.remove("show");
 
     },2500);
 
@@ -736,15 +795,15 @@ function showOnly(id){
     "loginState",
     "emptyState",
     "cartLayout"
-  ].forEach(function(x){
+  ].forEach(function(name){
 
     const el =
-      document.getElementById(x);
+      document.getElementById(name);
 
-    if(el){
-      el.style.display =
-        x === id ? "" : "none";
-    }
+    if(!el) return;
+
+    el.style.display =
+      name === id ? "" : "none";
 
   });
 
@@ -752,7 +811,7 @@ function showOnly(id){
 
 
 /* ============================================================
-   INITIALIZATION
+   INITIALIZE
    ============================================================ */
 
 document.addEventListener(
@@ -763,47 +822,21 @@ document.addEventListener(
 
 async function init(){
 
-  if(!sb){
-
-    showFatalError(
-      "Supabase client initialize nahi hua."
-    );
-
-    return;
-
-  }
-
-
   try{
-
-    /*
-     * Get currently logged-in account
-     */
 
     const {
       data,
       error
     } =
-      await sb.auth.getSession();
-
+    await sb.auth.getSession();
 
     if(error){
-
       throw error;
-
     }
 
-
     currentUser =
-      data &&
-      data.session
-        ? data.session.user
-        : null;
+      data?.session?.user || null;
 
-
-    /*
-     * Cart is account-based.
-     */
 
     if(!currentUser){
 
@@ -814,12 +847,7 @@ async function init(){
     }
 
 
-    /*
-     * Load user's cart
-     */
-
     await loadCart();
-
 
   }catch(error){
 
@@ -828,9 +856,8 @@ async function init(){
       error
     );
 
-
     showFatalError(
-      getReadableError(error)
+      error.message || String(error)
     );
 
   }
@@ -847,42 +874,191 @@ async function loadCart(){
   showOnly("loading");
 
 
+  /*
+   * Pehle cart_items.
+   */
+
   const {
-    data,
-    error
+    data:cartData,
+    error:cartError
   } =
-    await sb
-      .from("cart_items")
-      .select("*")
-      .eq(
-        "user_id",
-        currentUser.id
-      )
-      .order(
-        "created_at",
-        {
-          ascending:true
-        }
-      );
-
-
-  if(error){
-
-    console.error(
-      "CART DATABASE ERROR:",
-      error
+  await sb
+    .from("cart_items")
+    .select("*")
+    .eq(
+      "user_id",
+      currentUser.id
+    )
+    .order(
+      "created_at",
+      {
+        ascending:true
+      }
     );
 
 
-    throw error;
+  if(cartError){
+
+    throw cartError;
 
   }
 
 
+  if(!cartData || !cartData.length){
+
+    cartItems = [];
+
+    renderCart();
+
+    return;
+
+  }
+
+
+  /*
+   * Product IDs collect karo.
+   */
+
+  const productIds =
+    cartData
+      .map(function(row){
+
+        return row.product_id;
+
+      })
+      .filter(function(id){
+
+        return id !== null &&
+               id !== undefined &&
+               id !== "";
+
+      });
+
+
+  let products = [];
+
+
+  /*
+   * Products table se latest data.
+   */
+
+  if(productIds.length){
+
+    const {
+      data,
+      error
+    } =
+    await sb
+      .from("products")
+      .select(`
+        id,
+        name,
+        price,
+        mrp,
+        discount_percent,
+        stock,
+        main_image,
+        is_active
+      `)
+      .in(
+        "id",
+        productIds
+      );
+
+
+    if(error){
+
+      console.warn(
+        "Product refresh failed:",
+        error
+      );
+
+    }else{
+
+      products =
+        Array.isArray(data)
+          ? data
+          : [];
+
+    }
+
+  }
+
+
+  /*
+   * Product lookup.
+   */
+
+  const productMap =
+    new Map(
+      products.map(function(product){
+
+        return [
+          String(product.id),
+          product
+        ];
+
+      })
+    );
+
+
+  /*
+   * Cart + latest product data merge.
+   */
+
   cartItems =
-    Array.isArray(data)
-      ? data
-      : [];
+    cartData.map(function(row){
+
+      const product =
+        productMap.get(
+          String(row.product_id)
+        );
+
+
+      /*
+       * Product table latest data ko priority.
+       * Agar product delete/missing ho,
+       * cart me saved data fallback rahega.
+       */
+
+      return {
+
+        ...row,
+
+        product_id:
+          row.product_id || null,
+
+        title:
+          product?.name ||
+          row.title ||
+          "Product",
+
+        image:
+          product?.main_image ||
+          row.image ||
+          "",
+
+        price:
+          product?.price ??
+          row.price ??
+          0,
+
+        mrp:
+          product?.mrp ??
+          row.mrp ??
+          0,
+
+        stock:
+          product?.stock ??
+          null,
+
+        is_active:
+          product?.is_active ??
+          true
+
+      };
+
+    });
 
 
   renderCart();
@@ -891,7 +1067,7 @@ async function loadCart(){
 
 
 /* ============================================================
-   RENDER CART
+   RENDER
    ============================================================ */
 
 function renderCart(){
@@ -913,130 +1089,198 @@ function renderCart(){
 
 
   container.innerHTML =
-    cartItems.map(
-      function(item){
+    cartItems.map(function(item){
 
-        const price =
-          Number(item.price) || 0;
+      const price =
+        Number(item.price) || 0;
 
-        const mrp =
-          Number(item.mrp) || 0;
+      const mrp =
+        Number(item.mrp) || 0;
 
-        const qty =
-          Number(item.qty) || 1;
-
-        const itemTotal =
-          price * qty;
+      let qty =
+        Number(item.qty) || 1;
 
 
-        const discount =
-          mrp > price
-            ? Math.round(
-                (1 - price / mrp) * 100
-              )
-            : 0;
+      /*
+       * Stock available ho to quantity
+       * ko stock se zyada nahi hone denge.
+       */
+
+      const stock =
+        Number(item.stock);
 
 
-        return `
+      if(
+        Number.isFinite(stock) &&
+        stock >= 0 &&
+        qty > stock
+      ){
 
-          <article
-            class="item"
-            data-id="${escapeHtml(item.id)}"
-          >
+        qty = stock;
+
+      }
+
+
+      const itemTotal =
+        price * qty;
+
+
+      const discount =
+        mrp > price
+          ? Math.round(
+              ((mrp-price)/mrp)*100
+            )
+          : 0;
+
+
+      const stockText =
+        Number.isFinite(stock)
+          ? (
+              stock > 0
+                ? `${stock} available`
+                : "Out of stock"
+            )
+          : "";
+
+
+      const stockClass =
+        Number.isFinite(stock) &&
+        stock <= 0
+          ? "out"
+          : "";
+
+
+      return `
+
+        <article
+          class="item"
+          data-id="${escapeHtml(item.id)}"
+        >
+
+          <div class="image-box">
 
             <img
               class="product-image"
               src="${escapeHtml(item.image || "")}"
-              alt="${escapeHtml(item.title || "Product")}"
-              onerror="this.style.visibility='hidden'"
+              alt="${escapeHtml(item.title)}"
+              loading="lazy"
+              onerror="this.src='data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+                  <rect width="100%" height="100%" fill="#f5f5f5"/>
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-size="18">
+                    No Image
+                  </text>
+                </svg>
+              `)}'"
             >
 
-
-            <div>
-
-              <div class="product-name">
-                ${escapeHtml(
-                  item.title || "Product"
-                )}
-              </div>
+          </div>
 
 
-              <div class="price">
+          <div>
 
-                ${money(price)}
+            <div class="product-name">
 
-                ${
-                  mrp > price
-                  ? `
-                    <span class="mrp">
-                      ${money(mrp)}
-                    </span>
-                  `
-                  : ""
-                }
-
-                ${
-                  discount
-                  ? `
-                    <span class="discount">
-                      ${discount}% OFF
-                    </span>
-                  `
-                  : ""
-                }
-
-              </div>
-
-
-              <div class="quantity">
-
-                <button
-                  onclick="changeQuantity('${escapeHtml(item.id)}',-1)"
-                  aria-label="Decrease quantity"
-                >
-                  −
-                </button>
-
-
-                <span>
-                  ${qty}
-                </span>
-
-
-                <button
-                  onclick="changeQuantity('${escapeHtml(item.id)}',1)"
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
-
-              </div>
+              ${escapeHtml(item.title)}
 
             </div>
 
 
-            <div class="item-right">
+            ${
+              stockText
+              ? `
+                <div class="product-stock ${stockClass}">
+                  ${escapeHtml(stockText)}
+                </div>
+              `
+              : ""
+            }
 
-              <strong>
-                ${money(itemTotal)}
-              </strong>
 
+            <div class="price">
+
+              ${money(price)}
+
+              ${
+                mrp > price
+                ? `
+                  <span class="mrp">
+                    ${money(mrp)}
+                  </span>
+                `
+                : ""
+              }
+
+              ${
+                discount
+                ? `
+                  <span class="discount">
+                    ${discount}% OFF
+                  </span>
+                `
+                : ""
+              }
+
+            </div>
+
+
+            <div class="quantity">
 
               <button
-                class="remove"
-                onclick="removeItem('${escapeHtml(item.id)}')"
+                onclick="changeQuantity(
+                  '${escapeHtml(item.id)}',
+                  -1
+                )"
               >
-                Remove
+                −
+              </button>
+
+              <span>
+                ${qty}
+              </span>
+
+              <button
+                ${
+                  Number.isFinite(stock) &&
+                  stock <= qty
+                    ? "disabled"
+                    : ""
+                }
+                onclick="changeQuantity(
+                  '${escapeHtml(item.id)}',
+                  1
+                )"
+              >
+                +
               </button>
 
             </div>
 
-          </article>
+          </div>
 
-        `;
 
-      }
-    ).join("");
+          <div class="item-right">
+
+            <strong class="item-total">
+              ${money(itemTotal)}
+            </strong>
+
+            <button
+              class="remove"
+              onclick="removeItem(
+                '${escapeHtml(item.id)}'
+              )"
+            >
+              Remove
+            </button>
+
+          </div>
+
+        </article>
+
+      `;
+
+    }).join("");
 
 
   updateSummary();
@@ -1051,26 +1295,25 @@ function renderCart(){
 function updateSummary(){
 
   let quantityTotal = 0;
+
   let subtotal = 0;
 
 
-  cartItems.forEach(
-    function(item){
+  cartItems.forEach(function(item){
 
-      const qty =
-        Number(item.qty) || 0;
+    const qty =
+      Number(item.qty) || 0;
 
-      const price =
-        Number(item.price) || 0;
+    const price =
+      Number(item.price) || 0;
 
 
-      quantityTotal += qty;
+    quantityTotal += qty;
 
-      subtotal +=
-        price * qty;
+    subtotal +=
+      price * qty;
 
-    }
-  );
+  });
 
 
   document.getElementById(
@@ -1090,6 +1333,16 @@ function updateSummary(){
   ).textContent =
     money(subtotal);
 
+
+  const checkout =
+    document.getElementById(
+      "checkoutBtn"
+    );
+
+
+  checkout.disabled =
+    cartItems.length === 0;
+
 }
 
 
@@ -1103,14 +1356,12 @@ async function changeQuantity(
 ){
 
   const item =
-    cartItems.find(
-      function(x){
+    cartItems.find(function(x){
 
-        return String(x.id) ===
-          String(cartId);
+      return String(x.id) ===
+        String(cartId);
 
-      }
-    );
+    });
 
 
   if(!item) return;
@@ -1125,8 +1376,7 @@ async function changeQuantity(
 
 
   /*
-   * If quantity reaches zero,
-   * remove item.
+   * Minus se zero -> remove.
    */
 
   if(newQty <= 0){
@@ -1138,29 +1388,53 @@ async function changeQuantity(
   }
 
 
+  /*
+   * Stock check.
+   */
+
+  const stock =
+    Number(item.stock);
+
+
+  if(
+    change > 0 &&
+    Number.isFinite(stock) &&
+    stock >= 0 &&
+    newQty > stock
+  ){
+
+    toast(
+      `Only ${stock} item(s) available`
+    );
+
+    return;
+
+  }
+
+
   try{
 
     const {
       error
     } =
-      await sb
-        .from("cart_items")
-        .update({
+    await sb
+      .from("cart_items")
+      .update({
 
-          qty:newQty,
+        qty:newQty,
 
-          updated_at:
-            new Date().toISOString()
+        updated_at:
+          new Date().toISOString()
 
-        })
-        .eq(
-          "id",
-          cartId
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        );
+      })
+      .eq(
+        "id",
+        cartId
+      )
+      .eq(
+        "user_id",
+        currentUser.id
+      );
 
 
     if(error){
@@ -1178,7 +1452,8 @@ async function changeQuantity(
     console.error(error);
 
     toast(
-      getReadableError(error)
+      error.message ||
+      "Quantity update nahi ho payi"
     );
 
   }
@@ -1197,17 +1472,17 @@ async function removeItem(cartId){
     const {
       error
     } =
-      await sb
-        .from("cart_items")
-        .delete()
-        .eq(
-          "id",
-          cartId
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        );
+    await sb
+      .from("cart_items")
+      .delete()
+      .eq(
+        "id",
+        cartId
+      )
+      .eq(
+        "user_id",
+        currentUser.id
+      );
 
 
     if(error){
@@ -1230,7 +1505,8 @@ async function removeItem(cartId){
     console.error(error);
 
     toast(
-      getReadableError(error)
+      error.message ||
+      "Product remove nahi ho paya"
     );
 
   }
@@ -1242,13 +1518,21 @@ async function removeItem(cartId){
    CHECKOUT
    ============================================================ */
 
-function proceedCheckout(){
+async function proceedCheckout(){
+
+  if(!currentUser){
+
+    location.href =
+      "/ecom/account.html";
+
+    return;
+
+  }
+
 
   if(!cartItems.length){
 
-    toast(
-      "Cart is empty"
-    );
+    toast("Cart is empty");
 
     return;
 
@@ -1256,9 +1540,48 @@ function proceedCheckout(){
 
 
   /*
-   * Normal cart checkout.
-   * Checkout page will read cart_items
-   * for the logged-in user.
+   * Checkout se pehle latest cart
+   * aur stock verify kar lo.
+   */
+
+  const {
+    data,
+    error
+  } =
+  await sb
+    .from("cart_items")
+    .select("id,product_id,qty")
+    .eq(
+      "user_id",
+      currentUser.id
+    );
+
+
+  if(error){
+
+    toast(
+      error.message ||
+      "Cart verify nahi ho paya"
+    );
+
+    return;
+
+  }
+
+
+  if(!data || !data.length){
+
+    toast("Cart is empty");
+
+    await loadCart();
+
+    return;
+
+  }
+
+
+  /*
+   * Checkout existing page.
    */
 
   window.location.href =
@@ -1283,134 +1606,63 @@ function goAccount(){
    SEARCH
    ============================================================ */
 
-document.getElementById(
-  "search"
-).addEventListener(
-  "keydown",
-  function(event){
+document
+  .getElementById("search")
+  .addEventListener(
+    "keydown",
+    function(event){
 
-    if(
-      event.key === "Enter" &&
-      this.value.trim()
-    ){
+      if(
+        event.key === "Enter" &&
+        this.value.trim()
+      ){
 
-      window.location.href =
-        "/ecom/index.html?search=" +
-        encodeURIComponent(
-          this.value.trim()
-        );
+        window.location.href =
+          "/ecom/index.html?search=" +
+          encodeURIComponent(
+            this.value.trim()
+          );
+
+      }
 
     }
-
-  }
-);
+  );
 
 
 /* ============================================================
-   READABLE SUPABASE ERROR
-   ============================================================ */
-
-function getReadableError(error){
-
-  if(!error){
-
-    return "Unknown error";
-
-  }
-
-
-  const message =
-    error.message ||
-    error.error_description ||
-    String(error);
-
-
-  /*
-   * Helpful messages for common problems.
-   */
-
-  if(
-    /invalid api key/i.test(message)
-  ){
-
-    return (
-      "Supabase API key invalid hai. " +
-      "Dashboard → Settings → API Keys me " +
-      "current Publishable/anon key check karein."
-    );
-
-  }
-
-
-  if(
-    /could not find the table.*cart_items/i.test(
-      message
-    )
-  ){
-
-    return (
-      "Supabase me cart_items table nahi mil rahi. " +
-      "Pehle cart_items SQL create karein."
-    );
-
-  }
-
-
-  if(
-    /row level security|rls|permission denied/i.test(
-      message
-    )
-  ){
-
-    return (
-      "cart_items ki RLS policy request ko allow nahi kar rahi."
-    );
-
-  }
-
-
-  return message;
-
-}
-
-
-/* ============================================================
-   FATAL ERROR
+   ERROR
    ============================================================ */
 
 function showFatalError(message){
 
   document.getElementById(
     "loading"
-  ).style.display = "none";
+  ).style.display="none";
 
 
   document.getElementById(
     "loginState"
-  ).style.display = "none";
+  ).style.display="none";
 
 
   document.getElementById(
     "emptyState"
-  ).style.display = "none";
+  ).style.display="none";
 
 
   document.getElementById(
     "cartLayout"
-  ).style.display = "none";
+  ).style.display="none";
 
-
-  /*
-   * Put the actual error on screen.
-   */
 
   const state =
     document.createElement("div");
 
-  state.className = "state";
+
+  state.className="state";
 
 
-  state.innerHTML = `
+  state.innerHTML=`
 
     <div>
 
