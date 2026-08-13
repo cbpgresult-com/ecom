@@ -9,6 +9,25 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    :root {
+      --ink: #111214;
+      --ink-soft: #55585f;
+      --line: #e9e9ec;
+      --surface: #ffffff;
+      --bg: #f6f6f8;
+      --accent-green: #16803c;
+      --accent-green-soft: #eaf7ef;
+      --star: #f5a623;
+      --danger: #b91c1c;
+      --radius-lg: 22px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body { background: var(--bg); }
+
     .product-page {
       max-width: 1200px;
       margin: 40px auto;
@@ -20,26 +39,39 @@
       align-items: center;
       gap: 8px;
       border: none;
-      background: white;
-      padding: 10px 15px;
-      border-radius: 10px;
+      background: var(--surface);
+      color: var(--ink);
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       margin-bottom: 25px;
       font-weight: 600;
-      transition: opacity 0.15s ease;
+      font-size: 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .back-btn:hover {
-      opacity: 0.7;
+      transform: translateX(-2px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
+
+    .back-btn svg { width: 16px; height: 16px; }
 
     .product-detail {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 50px;
-      background: white;
-      padding: 30px;
-      border-radius: 22px;
+      background: var(--surface);
+      padding: 32px;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* ---------- Image column ---------- */
+
+    .image-col {
+      position: relative;
     }
 
     .product-detail-image {
@@ -47,92 +79,262 @@
       max-height: 600px;
       object-fit: contain;
       border-radius: 18px;
-      background: #f5f5f5;
+      background: #f2f2f4;
+      display: block;
     }
 
-    .detail-info {
-      padding: 10px;
+    .image-actions {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      transition: transform 0.15s ease;
+      color: var(--ink);
+    }
+
+    .icon-btn:hover { transform: scale(1.08); }
+
+    .icon-btn svg { width: 18px; height: 18px; }
+
+    /* ---------- Info column ---------- */
+
+    .detail-info { padding: 6px; }
 
     .detail-badge {
       display: inline-block;
-      background: #111;
+      background: var(--ink);
       color: white;
       padding: 6px 10px;
       border-radius: 6px;
       font-size: 11px;
       font-weight: 800;
-      margin-bottom: 15px;
-      letter-spacing: 0.03em;
+      margin-bottom: 14px;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
 
     .detail-title {
       font-size: 34px;
       line-height: 1.2;
-      margin-bottom: 15px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      color: var(--ink);
     }
 
-    .detail-rating {
+    .detail-rating-row {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 20px;
-      font-size: 15px;
-      color: #333;
+      gap: 10px;
+      margin-bottom: 22px;
+      font-size: 14px;
+      color: var(--ink-soft);
     }
 
-    .detail-rating svg {
-      width: 16px;
-      height: 16px;
-      fill: #f5a623;
-      flex-shrink: 0;
+    .rating-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent-green);
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .rating-pill svg {
+      width: 12px;
+      height: 12px;
+      fill: white;
+    }
+
+    .dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--ink-soft);
+    }
+
+    .detail-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
     }
 
     .detail-price {
       font-size: 32px;
       font-weight: 800;
-      margin-bottom: 5px;
+      color: var(--ink);
     }
 
     .detail-mrp {
-      color: #999;
+      color: #9a9ba0;
       text-decoration: line-through;
-      margin-right: 10px;
+      font-size: 16px;
     }
 
     .detail-discount {
-      color: #16803c;
+      color: var(--accent-green);
       font-weight: 700;
+      font-size: 15px;
     }
 
-    .detail-description {
-      color: #666;
-      line-height: 1.7;
-      margin: 25px 0;
+    .tax-note {
+      font-size: 13px;
+      color: #9a9ba0;
+      margin-bottom: 22px;
     }
+
+    /* ---------- Offers box ---------- */
+
+    .offers-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+
+    .offers-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--ink);
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .offers-heading svg {
+      width: 18px;
+      height: 18px;
+      color: var(--star);
+    }
+
+    .offer-row {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .offer-row:last-child { border-bottom: none; }
+
+    .offer-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--accent-green-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .offer-icon svg {
+      width: 18px;
+      height: 18px;
+      color: var(--accent-green);
+    }
+
+    .offer-text strong {
+      display: block;
+      font-size: 14px;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .offer-text span {
+      font-size: 13px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    /* ---------- Stock ---------- */
 
     .stock {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
       font-weight: 600;
+      font-size: 14px;
     }
 
-    .stock.in-stock {
-      color: #16803c;
+    .stock.in-stock { color: var(--accent-green); }
+    .stock.out-stock { color: var(--danger); }
+
+    .stock svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .stock .dot { background: currentColor; }
+
+    /* ---------- Quantity ---------- */
+
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 26px;
     }
 
-    .stock.out-stock {
-      color: #b91c1c;
+    .qty-label {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
     }
 
-    .stock svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
+    .qty-control {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
     }
+
+    .qty-btn {
+      width: 38px;
+      height: 38px;
+      border: none;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--ink);
+      font-size: 16px;
+      transition: background 0.15s ease;
+    }
+
+    .qty-btn:hover { background: var(--line); }
+
+    .qty-btn svg { width: 14px; height: 14px; }
+
+    .qty-value {
+      width: 42px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    /* ---------- Cart button ---------- */
 
     .detail-cart {
       display: flex;
@@ -141,7 +343,7 @@
       gap: 10px;
       width: 100%;
       padding: 16px;
-      background: #111;
+      background: var(--ink);
       color: white;
       border: none;
       border-radius: 12px;
@@ -151,18 +353,12 @@
       transition: opacity 0.15s ease;
     }
 
-    .detail-cart svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-    }
+    .detail-cart svg { width: 18px; height: 18px; }
 
-    .detail-cart:hover {
-      opacity: .85;
-    }
+    .detail-cart:hover { opacity: .85; }
 
     .detail-cart:disabled {
-      background: #ccc;
+      background: #cfd0d3;
       cursor: not-allowed;
     }
 
@@ -170,27 +366,14 @@
     .error-product {
       text-align: center;
       padding: 100px 20px;
+      color: var(--ink-soft);
     }
 
     @media (max-width: 700px) {
-      .product-page {
-        margin: 15px auto;
-        padding: 12px;
-      }
-
-      .product-detail {
-        grid-template-columns: 1fr;
-        gap: 25px;
-        padding: 15px;
-      }
-
-      .detail-title {
-        font-size: 25px;
-      }
-
-      .detail-price {
-        font-size: 27px;
-      }
+      .product-page { margin: 15px auto; padding: 12px; }
+      .product-detail { grid-template-columns: 1fr; gap: 25px; padding: 18px; }
+      .detail-title { font-size: 25px; }
+      .detail-price { font-size: 27px; }
     }
   </style>
 </head>
@@ -221,7 +404,7 @@
   <main class="product-page">
 
     <button class="back-btn" onclick="history.back()">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M19 12H5M12 19l-7-7 7-7"></path>
       </svg>
       Back
@@ -237,7 +420,7 @@
       <h2>Product not found</h2>
       <p>This product is unavailable or has been removed.</p>
       <br>
-      <button class="detail-cart" onclick="window.location.href='index.html'">
+      <button class="detail-cart" onclick="window.location.href='index.html'" style="max-width:220px;margin:0 auto;">
         Continue Shopping
       </button>
     </div>
@@ -258,28 +441,34 @@
 
       cross: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
 
-      cart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`
+      cart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`,
+
+      menu: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>`,
+
+      expand: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"></path></svg>`,
+
+      tag: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41L11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.58 9.58a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"></path><circle cx="7.5" cy="7.5" r="1.5"></circle></svg>`,
+
+      card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>`,
+
+      coin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v10M9.5 9.5c0-1.5 1.2-2 2.5-2s2.5.7 2.5 1.8c0 2.4-5 1.2-5 3.6 0 1.1 1.2 1.8 2.5 1.8s2.5-.5 2.5-2"></path></svg>`,
+
+      gift: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"></rect><path d="M12 8v13M19 8v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8"></path><path d="M12 8c-1.5 0-3-1-3-2.5S10.5 3 12 4c1.5-1 3.5-.5 3.5 1S13.5 8 12 8zM12 8c1.5 0 3-1 3-2.5S13.5 3 12 4c-1.5-1-3.5-.5-3.5 1S10.5 8 12 8z"></path></svg>`,
+
+      minus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+
+      plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`
     };
 
 
+    /* =========================================
+       SUPABASE CONFIG
+       ========================================= */
 
-/* =========================================
-   SUPABASE CONFIG
-   ========================================= */
+    const SUPABASE_URL = "TUMHARA_PROJECT_URL";
+    const SUPABASE_KEY = "TUMHARI_PUBLISHABLE_KEY";
 
-const SUPABASE_URL =
-  "https://bszojvhitsoamhksyjul.supabase.co";
-
-const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
     /* =========================================
@@ -288,6 +477,8 @@ const supabaseClient =
 
     const params = new URLSearchParams(window.location.search);
     const productId = params.get("id");
+
+    let currentQty = 1;
 
 
     /* =========================================
@@ -335,16 +526,21 @@ const supabaseClient =
         : "";
 
       const inStock = Number(product.stock) > 0;
+      const maxQty = Number(product.stock) || 0;
 
       container.innerHTML = `
         <div class="product-detail">
 
-          <div>
+          <div class="image-col">
             <img
               class="product-detail-image"
               src="${image}"
               alt="${escapeHTML(product.name)}"
             >
+            <div class="image-actions">
+              <button class="icon-btn" title="More options">${ICONS.menu}</button>
+              <button class="icon-btn" title="Expand image">${ICONS.expand}</button>
+            </div>
           </div>
 
           <div class="detail-info">
@@ -357,15 +553,15 @@ const supabaseClient =
 
             <h1 class="detail-title">${escapeHTML(product.name)}</h1>
 
-            <div class="detail-rating">
-              ${ICONS.star}
-              ${product.rating || 0}
-              ${product.review_count ? `(${product.review_count} reviews)` : ""}
+            <div class="detail-rating-row">
+              <span class="rating-pill">${ICONS.star} ${product.rating || 0}</span>
+              ${product.review_count ? `<span>${product.review_count} Reviews</span>` : ""}
+              ${product.review_count ? `<span class="dot"></span>` : ""}
+              <span>${escapeHTML(product.brand || "boAt")}</span>
             </div>
 
-            <div class="detail-price">₹${price}</div>
-
-            <div>
+            <div class="detail-price-row">
+              <span class="detail-price">₹${price}</span>
               ${mrp ? `<span class="detail-mrp">₹${mrp}</span>` : ""}
               ${
                 product.discount_percent
@@ -374,14 +570,56 @@ const supabaseClient =
               }
             </div>
 
-            <p class="detail-description">
-              ${escapeHTML(product.description || "No description available.")}
-            </p>
+            <div class="tax-note">Inclusive of all applicable taxes</div>
+
+            <div class="offers-box">
+              <div class="offers-heading">
+                ${ICONS.tag}
+                Available Offers
+              </div>
+              <div class="offer-row">
+                <span class="offer-icon">${ICONS.card}</span>
+                <span class="offer-text">
+                  <strong>Bank Offer</strong>
+                  <span>Get extra discount on selected bank cards.</span>
+                </span>
+              </div>
+              <div class="offer-row">
+                <span class="offer-icon">${ICONS.coin}</span>
+                <span class="offer-text">
+                  <strong>Special Price</strong>
+                  <span>Extra savings available on this product.</span>
+                </span>
+              </div>
+              <div class="offer-row">
+                <span class="offer-icon">${ICONS.gift}</span>
+                <span class="offer-text">
+                  <strong>Easy Payment</strong>
+                  <span>Multiple secure payment options available.</span>
+                </span>
+              </div>
+            </div>
 
             <div class="stock ${inStock ? "in-stock" : "out-stock"}">
               ${inStock ? ICONS.check : ICONS.cross}
-              ${inStock ? `In Stock (${product.stock} available)` : "Out of Stock"}
+              ${inStock ? `In Stock` : "Out of Stock"}
+              ${inStock ? `<span class="dot"></span> ${product.stock} available` : ""}
             </div>
+
+            ${
+              inStock
+                ? `
+                  <div class="qty-row">
+                    <span class="qty-label">Quantity:</span>
+                    <div class="qty-control">
+                      <button class="qty-btn" id="qtyMinus">${ICONS.minus}</button>
+                      <span class="qty-value" id="qtyValue">1</span>
+                      <button class="qty-btn" id="qtyPlus">${ICONS.plus}</button>
+                    </div>
+                  </div>
+                `
+                : ""
+            }
 
             <button
               class="detail-cart"
@@ -398,6 +636,26 @@ const supabaseClient =
 
       document.getElementById("loadingProduct").style.display = "none";
       container.style.display = "block";
+
+      if (inStock) {
+        currentQty = 1;
+
+        const qtyValueEl = document.getElementById("qtyValue");
+
+        document.getElementById("qtyMinus").addEventListener("click", () => {
+          if (currentQty > 1) {
+            currentQty -= 1;
+            qtyValueEl.textContent = currentQty;
+          }
+        });
+
+        document.getElementById("qtyPlus").addEventListener("click", () => {
+          if (currentQty < maxQty) {
+            currentQty += 1;
+            qtyValueEl.textContent = currentQty;
+          }
+        });
+      }
     }
 
 
@@ -422,14 +680,14 @@ const supabaseClient =
       const existing = cart.find(item => item.id === data.id);
 
       if (existing) {
-        existing.quantity += 1;
+        existing.quantity += currentQty;
       } else {
         cart.push({
           id: data.id,
           name: data.name,
           price: data.price,
           image: data.main_image,
-          quantity: 1
+          quantity: currentQty
         });
       }
 
