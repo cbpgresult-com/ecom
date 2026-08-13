@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+<title>Login | MyStore</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f6f8;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:420px;
+}
+
+.logo{
+  text-align:center;
+  font-size:28px;
+  font-weight:900;
+  margin-bottom:20px;
+  cursor:pointer;
+}
+
+.card{
+  background:#fff;
+  border-radius:22px;
+  padding:32px;
+  box-shadow:0 15px 50px rgba(0,0,0,.08);
+}
+
+h1{
+  margin:0;
+  text-align:center;
+  font-size:27px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#777;
+  font-size:13px;
+  margin:8px 0 28px;
+}
+
+.field{
+  margin-bottom:17px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+
+input{
+  width:100%;
+  height:50px;
+  border:1px solid #ddd;
+  border-radius:11px;
+  padding:0 14px;
+  font-size:14px;
+  outline:none;
+}
+
+input:focus{
+  border-color:#111;
+  box-shadow:0 0 0 3px rgba(0,0,0,.04);
+}
+
+.password-wrap{
+  position:relative;
+}
+
+.password-wrap input{
+  padding-right:50px;
+}
+
+.toggle{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  background:none;
+  cursor:pointer;
+  font-size:18px;
+}
+
+.btn{
+  width:100%;
+  height:52px;
+  border:0;
+  border-radius:12px;
+  background:#111;
+  color:#fff;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.message{
+  display:none;
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.error{
+  background:#fff0f0;
+  color:#c62828;
+}
+
+.message.success{
+  background:#effaf2;
+  color:#16743b;
+}
+
+.divider{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:24px 0;
+  color:#aaa;
+  font-size:11px;
+}
+
+.divider::before,
+.divider::after{
+  content:"";
+  height:1px;
+  background:#eee;
+  flex:1;
+}
+
+.register-link{
+  text-align:center;
+  font-size:13px;
+  color:#777;
+}
+
+.register-link a{
+  color:#111;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.back{
+  text-align:center;
+  margin-top:20px;
+}
+
+.back a{
+  color:#777;
+  font-size:12px;
+  text-decoration:none;
+}
+
+.note{
+  text-align:center;
+  color:#999;
+  font-size:11px;
+  line-height:1.5;
+  margin-top:18px;
+}
+
+@media(max-width:480px){
+
+  body{
+    padding:12px;
+  }
+
+  .card{
+    padding:24px 18px;
+    border-radius:18px;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+  <div
+    class="logo"
+    onclick="location.href='index.html'">
+
+    MyStore
+
+  </div>
+
+
+  <div class="card">
+
+
+    <h1>
+      Welcome Back
+    </h1>
+
+
+    <div class="subtitle">
+      Login to your MyStore account
+    </div>
+
+
+    <form id="loginForm">
+
+
+      <div class="field">
+
+        <label>
+          Email Address
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Password
+        </label>
+
+
+        <div class="password-wrap">
+
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required>
+
+
+          <button
+            type="button"
+            class="toggle"
+            onclick="togglePassword()">
+
+            👁️
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <button
+        id="loginBtn"
+        class="btn"
+        type="submit">
+
+        LOGIN
+
+      </button>
+
+
+    </form>
+
+
+    <div
+      id="message"
+      class="message">
+    </div>
+
+
+    <div class="divider">
+      OR
+    </div>
+
+
+    <div class="register-link">
+
+      Don't have an account?
+
+      <a href="register.html">
+        Create Account
+      </a>
+
+    </div>
+
+
+    <div class="back">
+
+      <a href="index.html">
+        ← Back to Store
+      </a>
+
+    </div>
+
+
+    <div class="note">
+
+      Secure authentication powered by Supabase.
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================
+   SUPABASE
+===================================== */
+
+const SUPABASE_URL =
+  "TUMHARA_PROJECT_URL";
+
+const SUPABASE_KEY =
+  "TUMHARI_PUBLISHABLE_KEY";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================
+   ELEMENTS
+===================================== */
+
+const form =
+  document.getElementById(
+    "loginForm"
+  );
+
+const loginBtn =
+  document.getElementById(
+    "loginBtn"
+  );
+
+const message =
+  document.getElementById(
+    "message"
+  );
+
+
+/* =====================================
+   MESSAGE
+===================================== */
+
+function showMessage(
+  text,
+  type
+){
+
+  message.textContent =
+    text;
+
+  message.className =
+    "message show " + type;
+
+}
+
+
+/* =====================================
+   PASSWORD
+===================================== */
+
+function togglePassword(){
+
+  const input =
+    document.getElementById(
+      "password"
+    );
+
+  const button =
+    document.querySelector(
+      ".toggle"
+    );
+
+
+  if(
+    input.type === "password"
+  ){
+
+    input.type =
+      "text";
+
+    button.textContent =
+      "🙈";
+
+  }else{
+
+    input.type =
+      "password";
+
+    button.textContent =
+      "👁️";
+
+  }
+
+}
+
+
+/* =====================================
+   LOGIN
+===================================== */
+
+form.addEventListener(
+  "submit",
+  async function(event){
+
+    event.preventDefault();
+
+
+    const email =
+      document
+        .getElementById(
+          "email"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const password =
+      document
+        .getElementById(
+          "password"
+        )
+        .value;
+
+
+    if(!email){
+
+      showMessage(
+        "Enter your email address.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if(!password){
+
+      showMessage(
+        "Enter your password.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    loginBtn.disabled =
+      true;
+
+    loginBtn.textContent =
+      "LOGGING IN...";
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth
+        .signInWithPassword({
+
+          email:
+            email,
+
+          password:
+            password
+
+        });
+
+
+    if(error){
+
+      console.error(
+        error
+      );
+
+
+      loginBtn.disabled =
+        false;
+
+      loginBtn.textContent =
+        "LOGIN";
+
+
+      showMessage(
+        getLoginError(
+          error.message
+        ),
+        "error"
+      );
+
+
+      return;
+
+    }
+
+
+    if(data.session){
+
+      showMessage(
+        "Login successful! Redirecting...",
+        "success"
+      );
+
+
+      setTimeout(
+        () => {
+
+          window.location.href =
+            "index.html";
+
+        },
+        500
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================
+   FRIENDLY LOGIN ERROR
+===================================== */
+
+function getLoginError(
+  error
+){
+
+  const text =
+    String(
+      error || ""
+    ).toLowerCase();
+
+
+  if(
+    text.includes(
+      "invalid login credentials"
+    )
+  ){
+
+    return(
+      "Incorrect email or password."
+    );
+
+  }
+
+
+  if(
+    text.includes(
+      "email not confirmed"
+    )
+  ){
+
+    return(
+      "Email confirmation is enabled. Turn OFF Confirm Email in Supabase."
+    );
+
+  }
+
+
+  if(
+    text.includes(
+      "too many requests"
+    )
+  ){
+
+    return(
+      "Too many login attempts. Please wait and try again."
+    );
+
+  }
+
+
+  return(
+    error ||
+    "Login failed. Please try again."
+  );
+
+}
+
+
+/* =====================================
+   ALREADY LOGGED IN
+===================================== */
+
+(async function(){
+
+  const {
+    data
+  } =
+    await supabaseClient.auth
+      .getSession();
+
+
+  if(data.session){
+
+    window.location.href =
+      "index.html";
+
+  }
+
+})();
+
+</script>
+
+
+</body>
+
+</html>
