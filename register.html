@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+<title>Create Account | MyStore</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f6f8;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:440px;
+}
+
+.logo{
+  text-align:center;
+  font-size:28px;
+  font-weight:900;
+  margin-bottom:20px;
+  cursor:pointer;
+}
+
+.card{
+  background:#fff;
+  border-radius:22px;
+  padding:30px;
+  box-shadow:0 15px 50px rgba(0,0,0,.08);
+}
+
+h1{
+  margin:0;
+  font-size:26px;
+  text-align:center;
+}
+
+.subtitle{
+  text-align:center;
+  color:#777;
+  font-size:13px;
+  margin:8px 0 25px;
+}
+
+.field{
+  margin-bottom:16px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+
+input{
+  width:100%;
+  height:48px;
+  border:1px solid #ddd;
+  border-radius:11px;
+  padding:0 14px;
+  font-size:14px;
+  outline:none;
+  transition:.2s;
+}
+
+input:focus{
+  border-color:#111;
+  box-shadow:0 0 0 3px rgba(0,0,0,.04);
+}
+
+.password-wrap{
+  position:relative;
+}
+
+.password-wrap input{
+  padding-right:50px;
+}
+
+.toggle{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  background:none;
+  cursor:pointer;
+  font-size:18px;
+}
+
+.password-strength{
+  height:4px;
+  background:#eee;
+  border-radius:10px;
+  margin-top:8px;
+  overflow:hidden;
+}
+
+.password-strength span{
+  display:block;
+  height:100%;
+  width:0;
+  transition:.3s;
+}
+
+.strength-text{
+  font-size:11px;
+  color:#777;
+  margin-top:5px;
+}
+
+.btn{
+  width:100%;
+  height:52px;
+  border:0;
+  border-radius:12px;
+  background:#111;
+  color:#fff;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.message{
+  display:none;
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.error{
+  background:#fff0f0;
+  color:#c62828;
+}
+
+.message.success{
+  background:#effaf2;
+  color:#16743b;
+}
+
+.login-link{
+  text-align:center;
+  font-size:13px;
+  color:#777;
+  margin-top:20px;
+}
+
+.login-link a{
+  color:#111;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.note{
+  text-align:center;
+  color:#999;
+  font-size:11px;
+  line-height:1.5;
+  margin-top:18px;
+}
+
+@media(max-width:480px){
+
+  body{
+    padding:12px;
+  }
+
+  .card{
+    padding:22px 18px;
+    border-radius:18px;
+  }
+
+  h1{
+    font-size:23px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+  <div
+    class="logo"
+    onclick="location.href='index.html'">
+
+    MyStore
+
+  </div>
+
+
+  <div class="card">
+
+    <h1>
+      Create Account
+    </h1>
+
+    <div class="subtitle">
+      Join MyStore and shop faster
+    </div>
+
+
+    <form id="registerForm">
+
+
+      <div class="field">
+
+        <label>
+          Full Name
+        </label>
+
+        <input
+          id="fullName"
+          type="text"
+          placeholder="Enter your full name"
+          autocomplete="name"
+          required>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Mobile Number
+        </label>
+
+        <input
+          id="mobile"
+          type="tel"
+          inputmode="numeric"
+          maxlength="10"
+          placeholder="10-digit mobile number"
+          autocomplete="tel"
+          required>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Email Address
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Password
+        </label>
+
+        <div class="password-wrap">
+
+          <input
+            id="password"
+            type="password"
+            placeholder="Create password"
+            autocomplete="new-password"
+            minlength="6"
+            required>
+
+          <button
+            type="button"
+            class="toggle"
+            onclick="togglePassword('password',this)">
+
+            👁️
+
+          </button>
+
+        </div>
+
+
+        <div class="password-strength">
+
+          <span id="strengthBar"></span>
+
+        </div>
+
+        <div
+          id="strengthText"
+          class="strength-text">
+
+          Minimum 6 characters
+
+        </div>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Confirm Password
+        </label>
+
+        <div class="password-wrap">
+
+          <input
+            id="confirmPassword"
+            type="password"
+            placeholder="Repeat password"
+            autocomplete="new-password"
+            minlength="6"
+            required>
+
+          <button
+            type="button"
+            class="toggle"
+            onclick="togglePassword('confirmPassword',this)">
+
+            👁️
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <button
+        id="registerBtn"
+        class="btn"
+        type="submit">
+
+        CREATE ACCOUNT
+
+      </button>
+
+
+    </form>
+
+
+    <div
+      id="message"
+      class="message">
+    </div>
+
+
+    <div class="login-link">
+
+      Already have an account?
+
+      <a href="login.html">
+        Login
+      </a>
+
+    </div>
+
+
+    <div class="note">
+
+      Your password is securely handled by
+      Supabase Authentication.
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================
+   SUPABASE
+===================================== */
+
+const SUPABASE_URL =
+  "TUMHARA_PROJECT_URL";
+
+const SUPABASE_KEY =
+  "TUMHARI_PUBLISHABLE_KEY";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================
+   ELEMENTS
+===================================== */
+
+const form =
+  document.getElementById(
+    "registerForm"
+  );
+
+const registerBtn =
+  document.getElementById(
+    "registerBtn"
+  );
+
+const message =
+  document.getElementById(
+    "message"
+  );
+
+const password =
+  document.getElementById(
+    "password"
+  );
+
+const confirmPassword =
+  document.getElementById(
+    "confirmPassword"
+  );
+
+
+/* =====================================
+   MESSAGE
+===================================== */
+
+function showMessage(
+  text,
+  type
+){
+
+  message.textContent =
+    text;
+
+  message.className =
+    "message show " + type;
+
+}
+
+
+/* =====================================
+   PASSWORD TOGGLE
+===================================== */
+
+function togglePassword(
+  id,
+  button
+){
+
+  const input =
+    document.getElementById(id);
+
+  if(
+    input.type === "password"
+  ){
+
+    input.type =
+      "text";
+
+    button.textContent =
+      "🙈";
+
+  }else{
+
+    input.type =
+      "password";
+
+    button.textContent =
+      "👁️";
+
+  }
+
+}
+
+
+/* =====================================
+   PASSWORD STRENGTH
+===================================== */
+
+password.addEventListener(
+  "input",
+  function(){
+
+    const value =
+      this.value;
+
+    const bar =
+      document.getElementById(
+        "strengthBar"
+      );
+
+    const text =
+      document.getElementById(
+        "strengthText"
+      );
+
+
+    let score = 0;
+
+
+    if(value.length >= 6)
+      score++;
+
+    if(value.length >= 10)
+      score++;
+
+    if(/[A-Z]/.test(value))
+      score++;
+
+    if(/[0-9]/.test(value))
+      score++;
+
+    if(/[^A-Za-z0-9]/.test(value))
+      score++;
+
+
+    const widths =
+      [
+        "0%",
+        "25%",
+        "45%",
+        "65%",
+        "82%",
+        "100%"
+      ];
+
+
+    bar.style.width =
+      widths[score];
+
+
+    if(score <= 1){
+
+      text.textContent =
+        "Weak password";
+
+    }else if(score <= 3){
+
+      text.textContent =
+        "Medium password";
+
+    }else{
+
+      text.textContent =
+        "Strong password";
+
+    }
+
+  }
+);
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+document
+  .getElementById("mobile")
+  .addEventListener(
+    "input",
+    function(){
+
+      this.value =
+        this.value
+          .replace(/\D/g,"")
+          .slice(0,10);
+
+    }
+  );
+
+
+/* =====================================
+   REGISTER
+===================================== */
+
+form.addEventListener(
+  "submit",
+  async function(event){
+
+    event.preventDefault();
+
+
+    const fullName =
+      document
+        .getElementById("fullName")
+        .value
+        .trim();
+
+
+    const mobile =
+      document
+        .getElementById("mobile")
+        .value
+        .trim();
+
+
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const pass =
+      password.value;
+
+
+    const confirm =
+      confirmPassword.value;
+
+
+    /* VALIDATION */
+
+
+    if(fullName.length < 2){
+
+      showMessage(
+        "Please enter your full name.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if(!/^[0-9]{10}$/.test(mobile)){
+
+      showMessage(
+        "Enter a valid 10-digit mobile number.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if(!email){
+
+      showMessage(
+        "Enter your email address.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if(pass.length < 6){
+
+      showMessage(
+        "Password must be at least 6 characters.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if(pass !== confirm){
+
+      showMessage(
+        "Passwords do not match.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    registerBtn.disabled =
+      true;
+
+    registerBtn.textContent =
+      "CREATING ACCOUNT...";
+
+
+    showMessage(
+      "Creating your account...",
+      "success"
+    );
+
+
+    /* =================================
+       SUPABASE SIGNUP
+    ================================= */
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.signUp({
+
+        email: email,
+
+        password: pass,
+
+        options: {
+
+          data: {
+
+            full_name:
+              fullName,
+
+            mobile:
+              mobile
+
+          }
+
+        }
+
+      });
+
+
+    if(error){
+
+      console.error(
+        error
+      );
+
+
+      registerBtn.disabled =
+        false;
+
+      registerBtn.textContent =
+        "CREATE ACCOUNT";
+
+
+      showMessage(
+        getFriendlyError(
+          error.message
+        ),
+        "error"
+      );
+
+
+      return;
+
+    }
+
+
+    /*
+      Email confirmation OFF होने पर
+      session तुरंत मिलना चाहिए.
+    */
+
+
+    if(data.session){
+
+      showMessage(
+        "Account created successfully! Redirecting...",
+        "success"
+      );
+
+
+      setTimeout(
+        () => {
+
+          window.location.href =
+            "index.html";
+
+        },
+        800
+      );
+
+
+      return;
+
+    }
+
+
+    /*
+      अगर session नहीं मिला,
+      तो इसका मतलब Supabase में
+      email confirmation अभी ON हो सकता है.
+    */
+
+
+    registerBtn.disabled =
+      false;
+
+    registerBtn.textContent =
+      "CREATE ACCOUNT";
+
+
+    showMessage(
+      "Account created, but email confirmation is enabled in Supabase. Turn OFF Confirm Email in Authentication settings.",
+      "error"
+    );
+
+  }
+);
+
+
+/* =====================================
+   FRIENDLY ERRORS
+===================================== */
+
+function getFriendlyError(
+  error
+){
+
+  const text =
+    String(error || "")
+      .toLowerCase();
+
+
+  if(
+    text.includes(
+      "already registered"
+    )
+  ){
+
+    return(
+      "This email is already registered. Please login."
+    );
+
+  }
+
+
+  if(
+    text.includes(
+      "password"
+    ) &&
+    text.includes(
+      "weak"
+    )
+  ){
+
+    return(
+      "Password is too weak. Use a stronger password."
+    );
+
+  }
+
+
+  if(
+    text.includes(
+      "invalid email"
+    )
+  ){
+
+    return(
+      "Please enter a valid email address."
+    );
+
+  }
+
+
+  return(
+    error ||
+    "Registration failed. Please try again."
+  );
+
+}
+
+
+/* =====================================
+   CHECK EXISTING SESSION
+===================================== */
+
+(async function(){
+
+  const {
+    data
+  } =
+    await supabaseClient.auth.getSession();
+
+
+  if(data.session){
+
+    window.location.href =
+      "index.html";
+
+  }
+
+})();
+
+</script>
+
+</body>
+</html>
