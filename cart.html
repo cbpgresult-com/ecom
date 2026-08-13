@@ -2,66 +2,1449 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cart | MyStore</title>
+<meta name="theme-color" content="#111111">
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f5f6f8;color:#111;font-family:Arial,Helvetica,sans-serif}button{font:inherit;cursor:pointer}a{text-decoration:none;color:inherit}.top{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 5%;gap:20px;position:sticky;top:0;z-index:10}.logo{font-size:25px;font-weight:800}.search{flex:1;max-width:850px;height:44px;border:1px solid #ddd;border-radius:12px;padding:0 15px;background:#f8f8f8}.account{margin-left:auto;background:#111;color:#fff;border:0;border-radius:12px;height:44px;padding:0 16px;font-weight:800}.page{width:min(1250px,100%);margin:auto;padding:25px 4%}.title{font-size:30px;margin:0 0 20px}.layout{display:grid;grid-template-columns:1fr 360px;gap:18px}.card,.summary{background:#fff;border:1px solid #e5e7eb;border-radius:18px}.item{display:grid;grid-template-columns:100px 1fr auto;gap:18px;padding:18px;border-bottom:1px solid #eee;align-items:center}.item:last-child{border-bottom:0}.img{width:100px;height:100px;border:1px solid #eee;border-radius:12px;object-fit:contain;padding:7px}.name{font-weight:800;font-size:15px}.price{font-weight:800;margin-top:10px}.mrp{text-decoration:line-through;color:#888;font-size:12px;margin-left:7px}.qty{display:flex;height:36px;border:1px solid #ddd;border-radius:9px;overflow:hidden;margin-top:12px}.qty button{width:36px;border:0;background:#f7f7f7}.qty span{width:38px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}.remove{border:0;background:none;color:#dc2626;font-size:12px;font-weight:800;margin-top:9px}.summary{padding:22px;height:max-content;position:sticky;top:90px}.summary h2{font-size:18px;margin:0 0 18px}.line{display:flex;justify-content:space-between;padding:9px 0;color:#555;font-size:13px}.total{border-top:1px solid #eee;margin-top:9px;padding-top:15px;font-size:17px;font-weight:800;color:#111}.checkout{width:100%;height:52px;margin-top:17px;border:0;border-radius:12px;background:#ff9900;font-weight:900}.empty{text-align:center;padding:70px 20px}.continue{display:inline-block;background:#111;color:#fff;padding:13px 18px;border-radius:10px;font-weight:800;margin-top:12px}.toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;background:#111;color:#fff;padding:13px 17px;border-radius:11px;font-size:12px;font-weight:800;transition:.25s}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:800px){.top{height:62px;padding:0 12px}.logo{font-size:20px}.search{display:none}.account{height:40px}.page{padding:15px 10px 30px}.title{font-size:25px}.layout{grid-template-columns:1fr}.summary{position:static}.item{grid-template-columns:78px 1fr}.img{width:78px;height:78px}.actions{grid-column:2}.checkout{position:relative}.summary{border-radius:15px}}
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f6f8;
+  color:#111;
+}
+
+body{padding-bottom:30px}
+
+button,input{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+/* ================= HEADER ================= */
+
+.topbar{
+  height:70px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  padding:0 5%;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.logo{
+  font-size:25px;
+  font-weight:800;
+  letter-spacing:-.8px;
+  white-space:nowrap;
+}
+
+.search{
+  flex:1;
+  max-width:850px;
+  height:44px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:0 16px;
+  outline:none;
+  background:#f8f8f8;
+}
+
+.search:focus{
+  background:#fff;
+  border-color:#111;
+}
+
+.account{
+  margin-left:auto;
+  height:44px;
+  padding:0 17px;
+  border:0;
+  border-radius:12px;
+  background:#111;
+  color:#fff;
+  font-weight:800;
+}
+
+/* ================= PAGE ================= */
+
+.page{
+  width:min(1280px,100%);
+  margin:auto;
+  padding:25px 4%;
+}
+
+.page-title{
+  margin:0 0 20px;
+  font-size:30px;
+  letter-spacing:-.8px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 370px;
+  gap:18px;
+  align-items:start;
+}
+
+/* ================= CARDS ================= */
+
+.card,
+.summary{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.item{
+  display:grid;
+  grid-template-columns:120px minmax(0,1fr) auto;
+  gap:20px;
+  align-items:center;
+  padding:20px;
+  border-bottom:1px solid #eee;
+}
+
+.item:last-child{
+  border-bottom:0;
+}
+
+.product-image{
+  width:120px;
+  height:120px;
+  border:1px solid #eee;
+  border-radius:14px;
+  object-fit:contain;
+  padding:8px;
+  background:#fff;
+}
+
+.product-name{
+  font-size:16px;
+  font-weight:800;
+  line-height:1.4;
+}
+
+.price{
+  margin-top:10px;
+  font-size:18px;
+  font-weight:800;
+}
+
+.mrp{
+  color:#888;
+  text-decoration:line-through;
+  font-size:12px;
+  margin-left:7px;
+  font-weight:500;
+}
+
+.discount{
+  color:#15803d;
+  font-size:12px;
+  font-weight:800;
+  margin-left:7px;
+}
+
+.quantity{
+  display:flex;
+  align-items:center;
+  width:max-content;
+  height:38px;
+  margin-top:13px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.quantity button{
+  width:38px;
+  height:100%;
+  border:0;
+  background:#f7f7f7;
+  font-size:18px;
+}
+
+.quantity span{
+  width:42px;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:800;
+}
+
+.remove{
+  border:0;
+  background:transparent;
+  color:#dc2626;
+  font-size:12px;
+  font-weight:800;
+  margin-top:10px;
+}
+
+.item-right{
+  text-align:right;
+  align-self:stretch;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+}
+
+/* ================= SUMMARY ================= */
+
+.summary{
+  padding:23px;
+  position:sticky;
+  top:90px;
+}
+
+.summary-title{
+  margin:0 0 18px;
+  font-size:19px;
+}
+
+.line{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:9px 0;
+  color:#555;
+  font-size:13px;
+}
+
+.line strong{
+  color:#111;
+}
+
+.total{
+  border-top:1px solid #eee;
+  margin-top:10px;
+  padding-top:16px;
+  color:#111;
+  font-size:18px;
+  font-weight:800;
+}
+
+.checkout-btn{
+  width:100%;
+  height:54px;
+  margin-top:18px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(135deg,#ffb000,#ff8a00);
+  color:#111;
+  font-size:14px;
+  font-weight:900;
+}
+
+.continue-btn{
+  display:block;
+  width:100%;
+  height:46px;
+  margin-top:10px;
+  border:1px solid #111;
+  border-radius:12px;
+  background:#fff;
+  text-align:center;
+  line-height:46px;
+  font-size:13px;
+  font-weight:800;
+}
+
+/* ================= EMPTY / LOGIN ================= */
+
+.state{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:20px;
+  min-height:430px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px;
+}
+
+.state-icon{
+  font-size:55px;
+}
+
+.state h2{
+  margin:12px 0 7px;
+  font-size:22px;
+}
+
+.state p{
+  margin:0;
+  color:#6b7280;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.state-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:46px;
+  padding:0 18px;
+  margin-top:17px;
+  border-radius:11px;
+  background:#111;
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:20px;
+  min-height:430px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.spinner{
+  width:42px;
+  height:42px;
+  border:4px solid #eee;
+  border-top-color:#111;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* ================= TOAST ================= */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  z-index:1000;
+  transform:translate(-50%,20px);
+  opacity:0;
+  pointer-events:none;
+  background:#111;
+  color:#fff;
+  border-radius:11px;
+  padding:13px 17px;
+  font-size:12px;
+  font-weight:800;
+  transition:.25s;
+  max-width:90%;
+  text-align:center;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:850px){
+
+  .topbar{
+    height:62px;
+    padding:0 12px;
+    gap:10px;
+  }
+
+  .logo{
+    font-size:20px;
+  }
+
+  .search{
+    display:none;
+  }
+
+  .account{
+    height:40px;
+    padding:0 14px;
+  }
+
+  .page{
+    padding:15px 10px 30px;
+  }
+
+  .page-title{
+    font-size:25px;
+  }
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .summary{
+    position:static;
+  }
+
+  .item{
+    grid-template-columns:82px minmax(0,1fr);
+    gap:14px;
+    padding:15px;
+  }
+
+  .product-image{
+    width:82px;
+    height:82px;
+  }
+
+  .item-right{
+    grid-column:2;
+    align-items:flex-start;
+    text-align:left;
+  }
+
+  .price{
+    font-size:16px;
+  }
+}
+
+@media(max-width:480px){
+
+  .page-title{
+    margin-bottom:14px;
+  }
+
+  .card,
+  .summary,
+  .state,
+  .loading{
+    border-radius:15px;
+  }
+
+  .item{
+    padding:13px;
+  }
+
+  .product-name{
+    font-size:14px;
+  }
+
+  .quantity{
+    height:36px;
+  }
+
+  .quantity button{
+    width:35px;
+  }
+
+  .quantity span{
+    width:38px;
+  }
+
+  .summary{
+    padding:18px;
+  }
+}
 </style>
 </head>
+
 <body>
-<header class="top"><a class="logo" href="/ecom/">MyStore</a><input class="search" placeholder="Search products..." id="search"><button class="account" onclick="location.href='/ecom/account.html'">Account</button></header>
+
+<header class="topbar">
+
+  <a class="logo" href="/ecom/">
+    MyStore
+  </a>
+
+  <input
+    id="search"
+    class="search"
+    placeholder="Search products..."
+    autocomplete="off"
+  >
+
+  <button
+    class="account"
+    onclick="goAccount()"
+  >
+    Account
+  </button>
+
+</header>
+
+
 <main class="page">
-<h1 class="title">My Cart</h1>
-<div id="login" class="card empty" style="display:none"><h2>Please login to view your cart</h2><p>Your cart is saved to your account.</p><a class="continue" href="/ecom/account.html">Login / Account</a></div>
-<div id="empty" class="card empty" style="display:none"><div style="font-size:50px">🛒</div><h2>Your cart is empty</h2><p>Add products to continue shopping.</p><a class="continue" href="/ecom/">Continue Shopping</a></div>
-<div id="layout" class="layout" style="display:none"><div id="items" class="card"></div><aside class="summary"><h2>Price Details</h2><div class="line"><span>Items</span><b id="itemCount">0</b></div><div class="line"><span>Subtotal</span><b id="subtotal">₹0</b></div><div class="line"><span>Delivery</span><b id="delivery">FREE</b></div><div class="line total"><span>Total</span><span id="total">₹0</span></div><button class="checkout" onclick="checkout()">Proceed to Checkout</button></aside></div>
+
+  <h1 class="page-title">
+    My Cart
+  </h1>
+
+
+  <!-- LOADING -->
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+  </div>
+
+
+  <!-- LOGIN REQUIRED -->
+
+  <div
+    id="loginState"
+    class="state"
+    style="display:none"
+  >
+
+    <div>
+
+      <div class="state-icon">🔐</div>
+
+      <h2>Login required</h2>
+
+      <p>
+        Please login to view and manage<br>
+        products saved in your account.
+      </p>
+
+      <a
+        class="state-btn"
+        href="/ecom/account.html"
+      >
+        Login / Account
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <!-- EMPTY CART -->
+
+  <div
+    id="emptyState"
+    class="state"
+    style="display:none"
+  >
+
+    <div>
+
+      <div class="state-icon">🛒</div>
+
+      <h2>Your cart is empty</h2>
+
+      <p>
+        Add some products to your cart<br>
+        and they will appear here.
+      </p>
+
+      <a
+        class="state-btn"
+        href="/ecom/"
+      >
+        Continue Shopping
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <!-- CART -->
+
+  <div
+    id="cartLayout"
+    class="layout"
+    style="display:none"
+  >
+
+    <section
+      id="items"
+      class="card"
+    ></section>
+
+
+    <aside class="summary">
+
+      <h2 class="summary-title">
+        Price Details
+      </h2>
+
+      <div class="line">
+        <span>Items</span>
+        <strong id="itemCount">0</strong>
+      </div>
+
+      <div class="line">
+        <span>Subtotal</span>
+        <strong id="subtotal">₹0</strong>
+      </div>
+
+      <div class="line">
+        <span>Delivery</span>
+        <strong style="color:#15803d">
+          FREE
+        </strong>
+      </div>
+
+      <div class="line total">
+        <span>Total Amount</span>
+        <strong id="total">₹0</strong>
+      </div>
+
+      <button
+        id="checkoutBtn"
+        class="checkout-btn"
+        onclick="proceedCheckout()"
+      >
+        Proceed to Checkout
+      </button>
+
+      <a
+        class="continue-btn"
+        href="/ecom/"
+      >
+        Continue Shopping
+      </a>
+
+    </aside>
+
+  </div>
+
 </main>
+
+
 <div id="toast" class="toast"></div>
+
+
+<!-- Supabase JS -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
-const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let user=null,cart=[];
-const money=n=>"₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
-function toast(x){const t=document.getElementById("toast");t.textContent=x;t.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.remove("show"),2200)}
+
+/* ============================================================
+   SUPABASE CONFIG
+   ============================================================ */
+
+const SUPABASE_URL =
+  "https://bszojvhitsoamhksyjul.supabase.co";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+
+/*
+ IMPORTANT:
+ This is the ANON/public key you supplied.
+ No service_role/secret key is used here.
+*/
+
+
+if (!window.supabase) {
+
+  showFatalError(
+    "Supabase library load nahi hui. Internet connection check karein."
+  );
+
+}
+
+
+const sb =
+  window.supabase
+    ? window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      )
+    : null;
+
+
+/* ============================================================
+   GLOBALS
+   ============================================================ */
+
+let currentUser = null;
+let cartItems = [];
+
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
+function money(value){
+
+  return "₹" +
+    Math.round(
+      Number(value) || 0
+    ).toLocaleString("en-IN");
+
+}
+
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/[&<>"']/g,function(char){
+
+      return {
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+
+      }[char];
+
+    });
+
+}
+
+
+function toast(message){
+
+  const el =
+    document.getElementById("toast");
+
+  el.textContent = message;
+
+  el.classList.add("show");
+
+  clearTimeout(window.__toast);
+
+  window.__toast =
+    setTimeout(function(){
+
+      el.classList.remove("show");
+
+    },2500);
+
+}
+
+
+function showOnly(id){
+
+  [
+    "loading",
+    "loginState",
+    "emptyState",
+    "cartLayout"
+  ].forEach(function(x){
+
+    const el =
+      document.getElementById(x);
+
+    if(el){
+      el.style.display =
+        x === id ? "" : "none";
+    }
+
+  });
+
+}
+
+
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
+
+
 async function init(){
- const {data}=await sbClient.auth.getSession();user=data.session?.user||null;
- if(!user){document.getElementById("login").style.display="block";return}
- await loadCart();
+
+  if(!sb){
+
+    showFatalError(
+      "Supabase client initialize nahi hua."
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    /*
+     * Get currently logged-in account
+     */
+
+    const {
+      data,
+      error
+    } =
+      await sb.auth.getSession();
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    currentUser =
+      data &&
+      data.session
+        ? data.session.user
+        : null;
+
+
+    /*
+     * Cart is account-based.
+     */
+
+    if(!currentUser){
+
+      showOnly("loginState");
+
+      return;
+
+    }
+
+
+    /*
+     * Load user's cart
+     */
+
+    await loadCart();
+
+
+  }catch(error){
+
+    console.error(
+      "CART INIT ERROR:",
+      error
+    );
+
+
+    showFatalError(
+      getReadableError(error)
+    );
+
+  }
+
 }
+
+
+/* ============================================================
+   LOAD CART
+   ============================================================ */
+
 async function loadCart(){
- const {data,error}=await sbClient.from("cart_items").select("*").eq("user_id",user.id).order("created_at",{ascending:true});
- if(error){toast(error.message);return}
- cart=data||[];
- render();
+
+  showOnly("loading");
+
+
+  const {
+    data,
+    error
+  } =
+    await sb
+      .from("cart_items")
+      .select("*")
+      .eq(
+        "user_id",
+        currentUser.id
+      )
+      .order(
+        "created_at",
+        {
+          ascending:true
+        }
+      );
+
+
+  if(error){
+
+    console.error(
+      "CART DATABASE ERROR:",
+      error
+    );
+
+
+    throw error;
+
+  }
+
+
+  cartItems =
+    Array.isArray(data)
+      ? data
+      : [];
+
+
+  renderCart();
+
 }
-function render(){
- if(!cart.length){document.getElementById("empty").style.display="block";document.getElementById("layout").style.display="none";return}
- document.getElementById("empty").style.display="none";document.getElementById("layout").style.display="grid";
- document.getElementById("items").innerHTML=cart.map((x,i)=>`
- <div class="item">
-   <img class="img" src="${x.image||""}" onerror="this.style.visibility='hidden'">
-   <div><div class="name">${escapeHtml(x.title)}</div><div class="price">${money(x.price)} <span class="mrp">${money(x.mrp)}</span></div><div class="qty"><button onclick="changeQty('${x.id}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${x.id}',1)">+</button></div></div>
-   <div class="actions"><button class="remove" onclick="removeItem('${x.id}')">Remove</button></div>
- </div>`).join("");
- const count=cart.reduce((s,x)=>s+Number(x.qty||0),0),sub=cart.reduce((s,x)=>s+Number(x.price||0)*Number(x.qty||0),0);
- itemCount.textContent=count;subtotal.textContent=money(sub);total.textContent=money(sub);
+
+
+/* ============================================================
+   RENDER CART
+   ============================================================ */
+
+function renderCart(){
+
+  if(!cartItems.length){
+
+    showOnly("emptyState");
+
+    return;
+
+  }
+
+
+  showOnly("cartLayout");
+
+
+  const container =
+    document.getElementById("items");
+
+
+  container.innerHTML =
+    cartItems.map(
+      function(item){
+
+        const price =
+          Number(item.price) || 0;
+
+        const mrp =
+          Number(item.mrp) || 0;
+
+        const qty =
+          Number(item.qty) || 1;
+
+        const itemTotal =
+          price * qty;
+
+
+        const discount =
+          mrp > price
+            ? Math.round(
+                (1 - price / mrp) * 100
+              )
+            : 0;
+
+
+        return `
+
+          <article
+            class="item"
+            data-id="${escapeHtml(item.id)}"
+          >
+
+            <img
+              class="product-image"
+              src="${escapeHtml(item.image || "")}"
+              alt="${escapeHtml(item.title || "Product")}"
+              onerror="this.style.visibility='hidden'"
+            >
+
+
+            <div>
+
+              <div class="product-name">
+                ${escapeHtml(
+                  item.title || "Product"
+                )}
+              </div>
+
+
+              <div class="price">
+
+                ${money(price)}
+
+                ${
+                  mrp > price
+                  ? `
+                    <span class="mrp">
+                      ${money(mrp)}
+                    </span>
+                  `
+                  : ""
+                }
+
+                ${
+                  discount
+                  ? `
+                    <span class="discount">
+                      ${discount}% OFF
+                    </span>
+                  `
+                  : ""
+                }
+
+              </div>
+
+
+              <div class="quantity">
+
+                <button
+                  onclick="changeQuantity('${escapeHtml(item.id)}',-1)"
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+
+
+                <span>
+                  ${qty}
+                </span>
+
+
+                <button
+                  onclick="changeQuantity('${escapeHtml(item.id)}',1)"
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <div class="item-right">
+
+              <strong>
+                ${money(itemTotal)}
+              </strong>
+
+
+              <button
+                class="remove"
+                onclick="removeItem('${escapeHtml(item.id)}')"
+              >
+                Remove
+              </button>
+
+            </div>
+
+          </article>
+
+        `;
+
+      }
+    ).join("");
+
+
+  updateSummary();
+
 }
-function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-async function changeQty(id,n){
- const x=cart.find(a=>String(a.id)===String(id));if(!x)return;
- const q=Math.max(1,Number(x.qty)+n);
- const {error}=await sbClient.from("cart_items").update({qty:q,updated_at:new Date().toISOString()}).eq("id",id).eq("user_id",user.id);
- if(error){toast(error.message);return}await loadCart();
+
+
+/* ============================================================
+   SUMMARY
+   ============================================================ */
+
+function updateSummary(){
+
+  let quantityTotal = 0;
+  let subtotal = 0;
+
+
+  cartItems.forEach(
+    function(item){
+
+      const qty =
+        Number(item.qty) || 0;
+
+      const price =
+        Number(item.price) || 0;
+
+
+      quantityTotal += qty;
+
+      subtotal +=
+        price * qty;
+
+    }
+  );
+
+
+  document.getElementById(
+    "itemCount"
+  ).textContent =
+    quantityTotal;
+
+
+  document.getElementById(
+    "subtotal"
+  ).textContent =
+    money(subtotal);
+
+
+  document.getElementById(
+    "total"
+  ).textContent =
+    money(subtotal);
+
 }
-async function removeItem(id){
- const {error}=await sbClient.from("cart_items").delete().eq("id",id).eq("user_id",user.id);
- if(error){toast(error.message);return}toast("Removed from cart");await loadCart();
+
+
+/* ============================================================
+   CHANGE QUANTITY
+   ============================================================ */
+
+async function changeQuantity(
+  cartId,
+  change
+){
+
+  const item =
+    cartItems.find(
+      function(x){
+
+        return String(x.id) ===
+          String(cartId);
+
+      }
+    );
+
+
+  if(!item) return;
+
+
+  const oldQty =
+    Number(item.qty) || 1;
+
+
+  const newQty =
+    oldQty + Number(change);
+
+
+  /*
+   * If quantity reaches zero,
+   * remove item.
+   */
+
+  if(newQty <= 0){
+
+    await removeItem(cartId);
+
+    return;
+
+  }
+
+
+  try{
+
+    const {
+      error
+    } =
+      await sb
+        .from("cart_items")
+        .update({
+
+          qty:newQty,
+
+          updated_at:
+            new Date().toISOString()
+
+        })
+        .eq(
+          "id",
+          cartId
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        );
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    await loadCart();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      getReadableError(error)
+    );
+
+  }
+
 }
-function checkout(){location.href="/ecom/checkout.html?mode=cart"}
-init();
+
+
+/* ============================================================
+   REMOVE
+   ============================================================ */
+
+async function removeItem(cartId){
+
+  try{
+
+    const {
+      error
+    } =
+      await sb
+        .from("cart_items")
+        .delete()
+        .eq(
+          "id",
+          cartId
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        );
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    toast(
+      "✓ Product removed"
+    );
+
+
+    await loadCart();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      getReadableError(error)
+    );
+
+  }
+
+}
+
+
+/* ============================================================
+   CHECKOUT
+   ============================================================ */
+
+function proceedCheckout(){
+
+  if(!cartItems.length){
+
+    toast(
+      "Cart is empty"
+    );
+
+    return;
+
+  }
+
+
+  /*
+   * Normal cart checkout.
+   * Checkout page will read cart_items
+   * for the logged-in user.
+   */
+
+  window.location.href =
+    "/ecom/checkout.html?mode=cart";
+
+}
+
+
+/* ============================================================
+   ACCOUNT
+   ============================================================ */
+
+function goAccount(){
+
+  window.location.href =
+    "/ecom/account.html";
+
+}
+
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+document.getElementById(
+  "search"
+).addEventListener(
+  "keydown",
+  function(event){
+
+    if(
+      event.key === "Enter" &&
+      this.value.trim()
+    ){
+
+      window.location.href =
+        "/ecom/index.html?search=" +
+        encodeURIComponent(
+          this.value.trim()
+        );
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   READABLE SUPABASE ERROR
+   ============================================================ */
+
+function getReadableError(error){
+
+  if(!error){
+
+    return "Unknown error";
+
+  }
+
+
+  const message =
+    error.message ||
+    error.error_description ||
+    String(error);
+
+
+  /*
+   * Helpful messages for common problems.
+   */
+
+  if(
+    /invalid api key/i.test(message)
+  ){
+
+    return (
+      "Supabase API key invalid hai. " +
+      "Dashboard → Settings → API Keys me " +
+      "current Publishable/anon key check karein."
+    );
+
+  }
+
+
+  if(
+    /could not find the table.*cart_items/i.test(
+      message
+    )
+  ){
+
+    return (
+      "Supabase me cart_items table nahi mil rahi. " +
+      "Pehle cart_items SQL create karein."
+    );
+
+  }
+
+
+  if(
+    /row level security|rls|permission denied/i.test(
+      message
+    )
+  ){
+
+    return (
+      "cart_items ki RLS policy request ko allow nahi kar rahi."
+    );
+
+  }
+
+
+  return message;
+
+}
+
+
+/* ============================================================
+   FATAL ERROR
+   ============================================================ */
+
+function showFatalError(message){
+
+  document.getElementById(
+    "loading"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "loginState"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "emptyState"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "cartLayout"
+  ).style.display = "none";
+
+
+  /*
+   * Put the actual error on screen.
+   */
+
+  const state =
+    document.createElement("div");
+
+  state.className = "state";
+
+
+  state.innerHTML = `
+
+    <div>
+
+      <div class="state-icon">
+        ⚠️
+      </div>
+
+      <h2>
+        Cart load nahi ho paya
+      </h2>
+
+      <p>
+        ${escapeHtml(message)}
+      </p>
+
+      <button
+        class="state-btn"
+        onclick="location.reload()"
+      >
+        Try Again
+      </button>
+
+    </div>
+
+  `;
+
+
+  document
+    .querySelector(".page")
+    .appendChild(state);
+
+}
+
 </script>
+
 </body>
 </html>
