@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Order Confirmed | MyStore</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f6f8;
+      color: #151515;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      height: 70px;
+      background: white;
+      display: flex;
+      align-items: center;
+      padding: 0 5%;
+      border-bottom: 1px solid #eee;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .success-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 15px;
+    }
+
+    .success-card {
+      width: 100%;
+      max-width: 650px;
+      background: white;
+      border-radius: 24px;
+      padding: 45px 35px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,.06);
+    }
+
+    .success-icon {
+      width: 82px;
+      height: 82px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      background: #16803c;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 43px;
+      font-weight: 900;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+    }
+
+    .message {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .order-box {
+      background: #f7f7f7;
+      border-radius: 14px;
+      padding: 18px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .order-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 9px 0;
+      font-size: 14px;
+    }
+
+    .order-row strong {
+      text-align: right;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      flex: 1;
+      height: 50px;
+      border-radius: 11px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .primary {
+      background: #111;
+      color: white;
+    }
+
+    .secondary {
+      background: white;
+      border: 1px solid #ddd;
+      color: #111;
+    }
+
+    .small-note {
+      color: #888;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+
+      .header {
+        height: 60px;
+        padding: 0 15px;
+      }
+
+      .logo {
+        font-size: 21px;
+      }
+
+      .success-card {
+        padding: 35px 20px;
+        border-radius: 18px;
+      }
+
+      .success-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 36px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+
+    <div
+      class="logo"
+      onclick="window.location.href='index.html'">
+
+      MyStore
+
+    </div>
+
+  </header>
+
+
+  <main class="success-wrapper">
+
+    <div class="success-card">
+
+      <div class="success-icon">
+        ✓
+      </div>
+
+      <h1>
+        Order Placed Successfully!
+      </h1>
+
+      <p class="message">
+        Thank you for shopping with MyStore.
+        Your order has been received successfully.
+      </p>
+
+
+      <div class="order-box">
+
+        <div class="order-row">
+
+          <span>
+            Order ID
+          </span>
+
+          <strong id="orderId">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="order-row">
+
+          <span>
+            Payment
+          </span>
+
+          <strong id="payment">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="order-row">
+
+          <span>
+            Amount
+          </span>
+
+          <strong id="amount">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="order-row">
+
+          <span>
+            Delivery
+          </span>
+
+          <strong>
+            Standard Delivery
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="buttons">
+
+        <button
+          class="btn secondary"
+          onclick="window.location.href='index.html'">
+
+          Continue Shopping
+
+        </button>
+
+
+        <button
+          class="btn primary"
+          onclick="window.location.href='index.html'">
+
+          Back to Home
+
+        </button>
+
+      </div>
+
+
+      <div class="small-note">
+
+        Your order information has been saved for this session.
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    const order =
+      JSON.parse(
+        localStorage.getItem("pendingOrder") || "null"
+      );
+
+
+    if (order) {
+
+      document.getElementById("orderId")
+        .textContent =
+        order.orderId || "—";
+
+
+      document.getElementById("payment")
+        .textContent =
+        order.paymentMethod === "COD"
+          ? "Cash on Delivery"
+          : order.paymentMethod || "—";
+
+
+      let total = 0;
+
+
+      if (Array.isArray(order.items)) {
+
+        order.items.forEach(item => {
+
+          total +=
+            Number(item.price || 0) *
+            Number(item.quantity || 1);
+
+        });
+
+      }
+
+
+      document.getElementById("amount")
+        .textContent =
+        "₹" +
+        total.toLocaleString("en-IN");
+
+    }
+
+  </script>
+
+</body>
+</html>
