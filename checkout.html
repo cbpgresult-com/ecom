@@ -334,6 +334,8 @@ body{padding:0 !important;margin:0 !important;}
 .ck-current-location-copy{min-width:0;flex:1}.ck-current-location-copy strong{display:block;font-size:13px;font-weight:800;color:var(--ink)}.ck-current-location-copy span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}.ck-current-location-copy small{display:block;min-height:15px;margin-top:3px;font-size:10.5px;font-weight:800;color:var(--brand)}
 .ck-current-location-btn{height:40px;padding:0 13px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--brand),#2f7a55);color:#fff;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand)}.ck-current-location-btn:disabled{opacity:.6;cursor:wait}
 /* CURRENT LOCATION ADDRESS DETAILS */
+.ck-plus-only{grid-template-columns:1.35fr 1fr 1fr}.ck-plus-code-box strong{letter-spacing:.4px;font-size:13px}.ck-plus-code-box{background:#f4faf6;border-color:#cfe5d7}.ck-plus-code-box small{color:var(--brand)}
+
 .ck-full-detected-address{margin-top:10px;padding:10px;border-radius:10px;background:#fafcfb;border:1px solid #edf1ef}
 .ck-full-detected-address small{display:block;font-size:9.5px;color:var(--muted);font-weight:700;margin-bottom:4px}
 .ck-full-detected-address div{font-size:11px;line-height:1.45;color:var(--ink);font-weight:750}
@@ -516,24 +518,18 @@ body{padding:0 !important;margin:0 !important;}
                   <circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path>
                 </svg>
               </div>
-              <div><strong>Current Location Detected</strong><span id="ckDetectedLocationText">Fetching address details…</span></div>
+              <div><strong>Current Location Detected</strong><span id="ckDetectedLocationText">Exact GPS location captured. Plus Code generated.</span></div>
             </div>
             <div class="ck-detected-address" id="ckDetectedAddressDetails">
               <div class="ck-detected-address-title">📍 Delivery location</div>
-              <div class="ck-location-details-grid">
-                <div class="ck-location-detail"><small>Area / Locality</small><strong id="ckDetectedArea">—</strong></div>
-                <div class="ck-location-detail"><small>District</small><strong id="ckDetectedDistrict">—</strong></div>
-                <div class="ck-location-detail"><small>City / Town / Village</small><strong id="ckDetectedCity">—</strong></div>
+              <div class="ck-location-details-grid ck-plus-only">
+                <div class="ck-location-detail ck-plus-code-box"><small>Area / Plus Code</small><strong id="ckDetectedArea">—</strong></div>
                 <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
                 <div class="ck-location-detail"><small>Pincode</small><strong id="ckDetectedPincode">—</strong></div>
               </div>
               <div class="ck-location-map-row">
                 <span>GPS accuracy: <b id="ckDetectedAccuracy">—</b></span>
                 <a id="ckDetectedMapLink" href="#" target="_blank" rel="noopener">Open Exact Map ↗</a>
-              </div>
-              <div class="ck-full-detected-address">
-                <small>Full detected address</small>
-                <div id="ckDetectedFullAddress">Fetching…</div>
               </div>
               <div class="ck-exact-coordinates">
                 <span>Exact GPS Coordinates</span>
@@ -1150,6 +1146,27 @@ body{padding:0 !important;margin:0 !important;}
     var box=el('ckCurrentLocationBox'); if(box)box.style.display='flex';
   }
 
+  function getExactPlusCode(latitude,longitude){
+    /* Open Location Code (Plus Code), calculated directly from the exact GPS coordinates. */
+    var alphabet='23456789CFGHJMPQRVWX';
+    var lat=Number(latitude), lon=Number(longitude);
+    if(!isFinite(lat)||!isFinite(lon)) return '';
+    lat=Math.max(-90,Math.min(90,lat));
+    lon=((lon+180)%360+360)%360-180;
+    if(lat===90) lat=89.999999999;
+    lat+=90; lon+=180;
+    var resolutions=[20,1,0.05,0.0025,0.000125];
+    var code='';
+    for(var i=0;i<5;i++){
+      var latDigit=Math.floor(lat/resolutions[i]);
+      var lonDigit=Math.floor(lon/resolutions[i]);
+      lat-=latDigit*resolutions[i];
+      lon-=lonDigit*resolutions[i];
+      code+=alphabet.charAt(latDigit)+alphabet.charAt(lonDigit);
+    }
+    return code.slice(0,8)+'+'+code.slice(8,10);
+  }
+
   async function reverseGeocodeCurrentLocation(lat,lon){
     /*
       GPS coordinates remain the source of truth.
@@ -1283,9 +1300,7 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   function showDetectedLocationDetails(){
-    setText('ckDetectedArea',currentLocationData.area||'Not available');
-    setText('ckDetectedDistrict',currentLocationData.district||'Not available');
-    setText('ckDetectedCity',currentLocationData.city||'Not available');
+    setText('ckDetectedArea',currentLocationData.plus_code||'Not available');
     setText('ckDetectedState',currentLocationData.state||'Not available');
     setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
 
@@ -1301,28 +1316,9 @@ body{padding:0 !important;margin:0 !important;}
       a.textContent='Open Exact Map ↗';
     }
 
-    var full=currentLocationData.display ||
-      [
-        currentLocationData.area,
-        currentLocationData.district,
-        currentLocationData.city,
-        currentLocationData.state,
-        currentLocationData.pincode
-      ].filter(Boolean).join(', ');
-
-    setText('ckDetectedFullAddress',full||'Exact GPS coordinates captured.');
-
-    var summary=[
-      currentLocationData.area,
-      currentLocationData.district,
-      currentLocationData.city,
-      currentLocationData.state,
-      currentLocationData.pincode
-    ].filter(Boolean).join(', ');
-
     setText(
       'ckDetectedLocationText',
-      summary || 'Exact GPS coordinates captured.'
+      'Plus Code: '+(currentLocationData.plus_code||'available')+' · Exact GPS location captured.'
     );
 
     setText(
@@ -1395,6 +1391,11 @@ body{padding:0 !important;margin:0 !important;}
           captured_at:new Date().toISOString()
         };
 
+        currentLocationData.plus_code=getExactPlusCode(
+          currentLocationData.latitude,
+          currentLocationData.longitude
+        );
+
         /* Reverse-geocode GPS → real Area/City/District/State/Pincode. */
         var geo=await reverseGeocodeCurrentLocation(currentLocationData.latitude,currentLocationData.longitude);
         currentLocationData.area=geo.area;
@@ -1465,8 +1466,8 @@ body{padding:0 !important;margin:0 !important;}
       id:null,name:p.name,phone:p.phone,
       pincode:currentLocationData.pincode||'',
       state:currentLocationData.state||'',
-      city:currentLocationData.city||'',
-      house:'',road:currentLocationData.area||'',
+      city:'',
+      house:'',road:currentLocationData.plus_code||'',
       type:'current location',map_link:currentLocationData.map_link,
       latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
       isCurrentLocation:true,location_row_id:currentLocationRowId
