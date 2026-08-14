@@ -334,6 +334,11 @@ body{padding:0 !important;margin:0 !important;}
 .ck-current-location-copy{min-width:0;flex:1}.ck-current-location-copy strong{display:block;font-size:13px;font-weight:800;color:var(--ink)}.ck-current-location-copy span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}.ck-current-location-copy small{display:block;min-height:15px;margin-top:3px;font-size:10.5px;font-weight:800;color:var(--brand)}
 .ck-current-location-btn{height:40px;padding:0 13px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--brand),#2f7a55);color:#fff;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand)}.ck-current-location-btn:disabled{opacity:.6;cursor:wait}
 /* CURRENT LOCATION ADDRESS DETAILS */
+.ck-exact-coordinates{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:9px;padding:9px 10px;border-radius:10px;background:#f4faf6;border:1px solid #dcece2}
+.ck-exact-coordinates span{font-size:9.5px;color:var(--muted);font-weight:700}
+.ck-exact-coordinates strong{font-size:10px;color:var(--brand);font-weight:900;text-align:right}
+.ck-exact-map{display:block;width:100%;height:190px;margin-top:10px;border:1px solid #dce7e0;border-radius:12px;background:#eef4f0}
+@media(max-width:480px){.ck-exact-map{height:175px}.ck-exact-coordinates{display:block}.ck-exact-coordinates strong{display:block;margin-top:3px;text-align:left}}
 .ck-detected-address{margin:0 0 14px;padding:14px;border:1px solid #d9e9df;border-radius:15px;background:#fff;box-shadow:0 8px 22px rgba(24,75,50,.06)}
 .ck-detected-address-title{font-size:12px;font-weight:900;color:var(--ink);margin-bottom:10px}
 .ck-location-details-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -520,8 +525,19 @@ body{padding:0 !important;margin:0 !important;}
               </div>
               <div class="ck-location-map-row">
                 <span>GPS accuracy: <b id="ckDetectedAccuracy">—</b></span>
-                <a id="ckDetectedMapLink" href="#" target="_blank" rel="noopener">Open Map ↗</a>
+                <a id="ckDetectedMapLink" href="#" target="_blank" rel="noopener">Open Exact Map ↗</a>
               </div>
+              <div class="ck-exact-coordinates">
+                <span>Exact GPS Coordinates</span>
+                <strong id="ckDetectedCoordinates">—</strong>
+              </div>
+              <iframe
+                id="ckExactLocationMap"
+                class="ck-exact-map"
+                title="Exact current location"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="about:blank"></iframe>
             </div>
             <button type="button" class="ckbtn block" onclick="ckUseDetectedLocation()">Continue with Current Location</button>
             <div class="ck-back-manual" onclick="ckUseManualAddress()">← Enter address manually</div>
@@ -1127,16 +1143,68 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   async function reverseGeocodeCurrentLocation(lat,lon){
-    var url='https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+
-      encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)+'&localityLanguage=en';
-    var response=await fetch(url,{headers:{'Accept':'application/json'}});
-    if(!response.ok) throw new Error('Address lookup failed ('+response.status+').');
-    var d=await response.json();
-    var area=d.locality||d.suburb||d.neighbourhood||d.village||d.town||'';
-    var city=d.city||d.district||d.town||d.village||d.locality||'';
-    var state=d.principalSubdivision||'';
-    var pincode=d.postcode||d.postCode||'';
-    return {area:String(area||'').trim(),city:String(city||'').trim(),state:String(state||'').trim(),pincode:String(pincode||'').trim()};
+    /*
+      IMPORTANT:
+      GPS coordinates are the exact location source.
+      Text address is only a reverse-geocoded label.
+      We first use OpenStreetMap/Nominatim at high zoom and
+      fall back to BigDataCloud if needed.
+    */
+    var result={area:'',city:'',state:'',pincode:'',display:''};
+
+    try{
+      var url='https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&lat='+
+        encodeURIComponent(lat)+'&lon='+encodeURIComponent(lon);
+      var response=await fetch(url,{
+        headers:{'Accept':'application/json'}
+      });
+
+      if(response.ok){
+        var d=await response.json();
+        var a=d.address||{};
+
+        result.area=String(
+          a.suburb||a.neighbourhood||a.quarter||a.hamlet||a.village||a.townland||''
+        ).trim();
+
+        result.city=String(
+          a.city_district||a.city||a.town||a.municipality||a.village||a.county||''
+        ).trim();
+
+        result.state=String(a.state||a.state_district||'').trim();
+        result.pincode=String(a.postcode||'').trim();
+        result.display=String(d.display_name||'').trim();
+
+        /*
+          In India Nominatim can put the district in county.
+          If city is missing, county is a useful fallback.
+        */
+        if(!result.city && a.county) result.city=String(a.county).trim();
+      }
+    }catch(e){
+      console.warn('Nominatim reverse geocode failed:',e);
+    }
+
+    /* Fallback only for missing text fields. GPS coordinates never change. */
+    if(!result.area || !result.city || !result.state || !result.pincode){
+      try{
+        var bdc='https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+
+          encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)+'&localityLanguage=en';
+        var br=await fetch(bdc,{headers:{'Accept':'application/json'}});
+        if(br.ok){
+          var bd=await br.json();
+          if(!result.area) result.area=String(bd.locality||bd.suburb||bd.neighbourhood||bd.village||bd.town||'').trim();
+          if(!result.city) result.city=String(bd.city||bd.district||bd.town||bd.village||bd.locality||'').trim();
+          if(!result.state) result.state=String(bd.principalSubdivision||'').trim();
+          if(!result.pincode) result.pincode=String(bd.postcode||bd.postCode||'').trim();
+          if(!result.display) result.display=String(bd.locality||'').trim();
+        }
+      }catch(e){
+        console.warn('Fallback reverse geocode failed:',e);
+      }
+    }
+
+    return result;
   }
 
   function showDetectedLocationDetails(){
@@ -1144,10 +1212,44 @@ body{padding:0 !important;margin:0 !important;}
     setText('ckDetectedCity',currentLocationData.city||'Not available');
     setText('ckDetectedState',currentLocationData.state||'Not available');
     setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
-    setText('ckDetectedAccuracy',currentLocationData.accuracy?Math.round(currentLocationData.accuracy)+' m':'GPS');
-    var a=el('ckDetectedMapLink');if(a)a.href=currentLocationData.map_link;
-    var summary=[currentLocationData.area,currentLocationData.city,currentLocationData.state,currentLocationData.pincode].filter(Boolean).join(', ');
-    setText('ckDetectedLocationText',summary||'Exact GPS location captured and saved.');
+
+    setText(
+      'ckDetectedAccuracy',
+      currentLocationData.accuracy ? '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS'
+    );
+
+    var a=el('ckDetectedMapLink');
+    if(a){
+      a.href=currentLocationData.map_link;
+      a.textContent='Open Exact Map ↗';
+    }
+
+    var summary=[
+      currentLocationData.area,
+      currentLocationData.city,
+      currentLocationData.state,
+      currentLocationData.pincode
+    ].filter(Boolean).join(', ');
+
+    setText(
+      'ckDetectedLocationText',
+      summary || 'Exact GPS coordinates captured.'
+    );
+
+    /* Show the actual coordinates so there is no ambiguity. */
+    setText(
+      'ckDetectedCoordinates',
+      Number(currentLocationData.latitude).toFixed(6)+'°, '+
+      Number(currentLocationData.longitude).toFixed(6)+'°'
+    );
+
+    var frame=el('ckExactLocationMap');
+    if(frame){
+      frame.src=
+        'https://www.google.com/maps?q='+
+        encodeURIComponent(currentLocationData.latitude+','+currentLocationData.longitude)+
+        '&z=18&output=embed';
+    }
   }
 
   async function saveCurrentLocationRow(){
@@ -1167,9 +1269,36 @@ body{padding:0 !important;margin:0 !important;}
     if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
 
     var btn=el('ckUseLocationBtn'); if(btn){btn.disabled=true;btn.textContent='Locating…';}
-    setText('ckLocationStatus','Getting your exact current location…');
+    setText('ckLocationStatus','Finding your most accurate GPS position…');
 
-    navigator.geolocation.getCurrentPosition(async function(pos){
+    /*
+      Take several fresh GPS readings and keep the one with the
+      smallest accuracy radius. This prevents a stale/coarse reading
+      from being shown as the current exact location.
+    */
+    var readings=[];
+    var watchId=null;
+    var finished=false;
+    var started=Date.now();
+
+    function finishBest(){
+      if(finished)return;
+      finished=true;
+      if(watchId!==null)navigator.geolocation.clearWatch(watchId);
+
+      if(!readings.length){
+        if(btn){btn.disabled=false;btn.textContent='Use Location';}
+        setText('ckLocationStatus','Exact GPS position could not be obtained. Please try again.');
+        return;
+      }
+
+      readings.sort(function(a,b){
+        return (a.coords.accuracy||999999)-(b.coords.accuracy||999999);
+      });
+
+      var pos=readings[0];
+
+      (async function(){
       try{
         currentLocationData={
           latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude),
@@ -1202,14 +1331,49 @@ body{padding:0 !important;margin:0 !important;}
       }finally{
         if(btn){btn.disabled=false;btn.textContent='Use Location';}
       }
+      }catch(e){
+        console.error('CURRENT LOCATION ERROR:',e);
+        currentLocationData=null;currentLocationRowId=null;
+        setText('ckLocationStatus','Location detected, but address lookup/save failed.');
+        alert('Current location save nahi ho paya.\n\n'+(e.message||'Supabase/geocoding error'));
+      }finally{
+        if(btn){btn.disabled=false;btn.textContent='Use Location';}
+      }
+      })();
+    }
+
+    watchId=navigator.geolocation.watchPosition(function(pos){
+      readings.push(pos);
+      var acc=pos.coords.accuracy||999999;
+      setText('ckLocationStatus','GPS accuracy ±'+Math.round(acc)+' m…');
+
+      /* Excellent fresh GPS reading. */
+      if(acc<=20){
+        finishBest();
+      }else if(Date.now()-started>=12000){
+        finishBest();
+      }
     },function(err){
+      if(readings.length){
+        finishBest();
+        return;
+      }
       if(btn){btn.disabled=false;btn.textContent='Use Location';}
       var m='Location nahi mil payi.';
       if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
       else if(err&&err.code===2)m='Location unavailable. GPS/Location ON karein.';
-      else if(err&&err.code===3)m='Location request timed out. Please try again.';
+      else if(err&&err.code===3)m='Location request timed out. GPS ON karke try karein.';
       setText('ckLocationStatus',m);
-    },{enableHighAccuracy:true,timeout:20000,maximumAge:0});
+    },{
+      enableHighAccuracy:true,
+      timeout:20000,
+      maximumAge:0
+    });
+
+    /* Give GPS up to 20 seconds to improve the accuracy. */
+    setTimeout(function(){
+      if(!finished)finishBest();
+    },20000);
   };
 
   window.ckUseDetectedLocation=function(){
