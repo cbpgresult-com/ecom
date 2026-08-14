@@ -1291,7 +1291,8 @@ body{padding:0 !important;margin:0 !important;}
           }
           if(!result.city){
             result.city=String(
-              bd.city||bd.town||bd.village||bd.locality||''
+              bd.city||bd.town||bd.municipality||bd.village||bd.locality||
+              (bd.localityInfo && bd.localityInfo.administrative && bd.localityInfo.administrative[3] && bd.localityInfo.administrative[3].name)||''
             ).trim();
           }
           if(!result.state){
@@ -1316,9 +1317,14 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   function showDetectedLocationDetails(){
+    /*
+      Show Plus Code + human-readable place name exactly like Google Maps:
+      QXW3+XXX Lucknow, Uttar Pradesh, India
+      Do not show district/locality as separate fields.
+    */
+    var placeName=currentLocationData.city || currentLocationData.area || currentLocationData.district || '';
     var placeParts=[];
-    if(currentLocationData.city) placeParts.push(currentLocationData.city);
-    else if(currentLocationData.area) placeParts.push(currentLocationData.area);
+    if(placeName) placeParts.push(placeName);
     if(currentLocationData.state) placeParts.push(currentLocationData.state);
     placeParts.push('India');
 
