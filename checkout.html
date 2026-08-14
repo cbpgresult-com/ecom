@@ -407,47 +407,6 @@ body{padding:0 !important;margin:0 !important;}
   .ckfooterbar{position:static;max-width:1450px;margin:0 auto;border:none;border-top:1px solid var(--line);border-radius:0 0 22px 22px;padding:18px 30px;background:#fff;}
   .ckfooterbar .ckbtn{max-width:340px;margin-left:auto;display:flex;}
 }
-
-/* Current Location: animated border while GPS is detecting */
-#ckCurrentLocationBox.ck-location-detecting{
-  position:relative;
-}
-
-#ckCurrentLocationBox.ck-location-detecting::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  padding:2px;
-  border-radius:inherit;
-  background:conic-gradient(
-    from 0deg,
-    transparent 0deg 305deg,
-    #1f7a52 325deg,
-    #55d79a 345deg,
-    transparent 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite:exclude;
-  animation:ckLocationBorderSpin 1.05s linear infinite;
-  pointer-events:none;
-  z-index:5;
-}
-
-#ckCurrentLocationBox.ck-location-detecting > *{
-  position:relative;
-  z-index:6;
-}
-
-@keyframes ckLocationBorderSpin{
-  to{transform:rotate(360deg);}
-}
-
 </style>
 </head>
 <body>
@@ -569,7 +528,7 @@ body{padding:0 !important;margin:0 !important;}
             </div>
             <div class="ck-current-location-copy">
               <strong>Use Current Location</strong>
-              <span>Use your current GPS location for delivery.</span>
+              <span>Use your current GPS location for Fast delivery.</span>
               <small id="ckLocationStatus"></small>
             </div>
             <button type="button" class="ck-current-location-btn" id="ckUseLocationBtn" onclick="ckUseCurrentLocation()">Use Location</button>
@@ -637,12 +596,8 @@ body{padding:0 !important;margin:0 !important;}
               <input id="ckDistrict" type="text" placeholder="District" autocomplete="address-level2" readonly>
             </div>
             <div class="ckfield">
-              <label for="ckCity">Village *</label>
-              <input id="ckCity" type="text" placeholder="Village / Locality" autocomplete="address-level2">
-            </div>
-            <div class="ckfield full">
-              <label for="ckHouse">House No., Building Name *</label>
-              <input id="ckHouse" type="text" placeholder="e.g. 12-B, Green Residency">
+              <label for="ckCity">Village,House *</label>
+              <input id="ckCity" type="text" placeholder="Village / Locality / City" autocomplete="address-level2">
             </div>
             <div class="ckfield full">
               <label for="ckRoad">Road name, Area, Colony *</label>
@@ -1086,7 +1041,6 @@ body{padding:0 !important;margin:0 !important;}
       id:a.id,
       name:a.name || '',
       phone:a.phone || '',
-      email:a.email || '',
       pincode:a.pincode || '',
       state:a.state || '',
 
@@ -1299,17 +1253,6 @@ body{padding:0 !important;margin:0 !important;}
     };
   }
 
-
-  function startLocationDetectAnimation(){
-    var box=el('ckCurrentLocationBox');
-    if(box) box.classList.add('ck-location-detecting');
-  }
-
-  function stopLocationDetectAnimation(){
-    var box=el('ckCurrentLocationBox');
-    if(box) box.classList.remove('ck-location-detecting');
-  }
-
   function hideAddressInputsAfterLocation(){
     var form=el('ckAddressFormSection'); if(!form)return;
     var grid=form.querySelector('.ckform-grid');
@@ -1322,7 +1265,7 @@ body{padding:0 !important;margin:0 !important;}
       grid.classList.add('ck-location-miniform');
 
       /* Keep only Full Name + Mobile + Village after GPS detection. */
-      ['ckPincode','ckState','ckDistrict','ckHouse','ckRoad'].forEach(function(id){
+      ['ckPincode','ckState','ckDistrict','ckRoad'].forEach(function(id){
         var input=el(id);
         if(input){
           var field=input.closest('.ckfield');
@@ -1352,7 +1295,6 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   function restoreAddressInputs(){
-    stopLocationDetectAnimation();
     var form=el('ckAddressFormSection'); if(!form)return;
     var grid=form.querySelector('.ckform-grid');
     var placeholder=el('ckAddressFormPlaceholder');
@@ -1366,7 +1308,7 @@ body{padding:0 !important;margin:0 !important;}
       grid.style.display='';
       grid.classList.remove('ck-location-miniform');
 
-      ['ckFullName','ckPhone','ckPincode','ckState','ckDistrict','ckCity','ckHouse','ckRoad'].forEach(function(id){
+      ['ckFullName','ckPhone','ckPincode','ckState','ckDistrict','ckCity','ckRoad'].forEach(function(id){
         var input=el(id);
         if(input){
           var field=input.closest('.ckfield');
@@ -1644,7 +1586,7 @@ body{padding:0 !important;margin:0 !important;}
 
     setText(
       'ckDetectedLocationText',
-      'Plus Code: '+(currentLocationData.plus_code||'available')+' · Exact GPS + postal details verified.'
+      'Plus Code: '+(currentLocationData.plus_code||'available')+' · Exact GPS · Fast Delivery Expected.'
     );
 
     setText(
@@ -1675,17 +1617,8 @@ body{padding:0 !important;margin:0 !important;}
 
   window.ckUseCurrentLocation=function(){
     if(!currentUser){alert('Please login first.');return;}
-    startLocationDetectAnimation();
-    if(!navigator.geolocation){
-      stopLocationDetectAnimation();
-      setText('ckLocationStatus','GPS is not supported.');
-      return;
-    }
-    if(!window.isSecureContext){
-      stopLocationDetectAnimation();
-      setText('ckLocationStatus','Location requires HTTPS.');
-      return;
-    }
+    if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
+    if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
 
     var btn=el('ckUseLocationBtn'); if(btn){btn.disabled=true;btn.textContent='Locating…';}
     setText('ckLocationStatus','Finding your most accurate GPS position…');
@@ -1706,7 +1639,6 @@ body{padding:0 !important;margin:0 !important;}
       if(watchId!==null)navigator.geolocation.clearWatch(watchId);
 
       if(!readings.length){
-        stopLocationDetectAnimation();
         if(btn){btn.disabled=false;btn.textContent='Use Location';}
         setText('ckLocationStatus','Exact GPS position could not be obtained. Please try again.');
         return;
@@ -1769,14 +1701,12 @@ body{padding:0 !important;margin:0 !important;}
         await saveCurrentLocationRow();
 
         /* Hide ALL input fields, then show detected location details. */
-        stopLocationDetectAnimation();
         hideAddressInputsAfterLocation();
         showDetectedLocationDetails();
         var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='block';
         setText('ckLocationStatus','✓ Current location + address detected and saved');
         window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
       }catch(e){
-        stopLocationDetectAnimation();
         console.error('CURRENT LOCATION ERROR:',e);
         currentLocationData=null;currentLocationRowId=null;
         setText('ckLocationStatus','Location detected, but address lookup/save failed.');
@@ -1803,7 +1733,6 @@ body{padding:0 !important;margin:0 !important;}
         finishBest();
         return;
       }
-      stopLocationDetectAnimation();
       if(btn){btn.disabled=false;btn.textContent='Use Location';}
       var m='Location nahi mil payi.';
       if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
@@ -1884,7 +1813,7 @@ body{padding:0 !important;margin:0 !important;}
 
     var ids=gpsMode
       ? ['ckFullName','ckPhone','ckCity']
-      : ['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckHouse','ckRoad'];
+      : ['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckRoad'];
 
     var valid=true;
     ids.forEach(function(id){
@@ -1925,7 +1854,7 @@ body{padding:0 !important;margin:0 !important;}
       state:gpsMode ? (currentLocationData.state||'') : (el('ckState')?.value||'').trim(),
       city:gpsMode ? '' : village,
       village:gpsMode ? village : '',
-      house:gpsMode ? '' : (el('ckHouse')?.value||'').trim(),
+      house:'',
       road:gpsMode ? '' : (el('ckRoad')?.value||'').trim(),
       plus_code:gpsMode ? (currentLocationData.plus_code||'') : '',
       type:gpsMode ? 'current location' : (addressType || 'home'),
@@ -1943,6 +1872,7 @@ body{padding:0 !important;margin:0 !important;}
         name:addr.name,
         phone:addr.phone,
         email:currentUser.email || '',
+
         pincode:addr.pincode,
         state:addr.state,
 
@@ -2223,7 +2153,6 @@ body{padding:0 !important;margin:0 !important;}
       }
 
       try{
-        stopLocationDetectAnimation();
         sessionStorage.removeItem('checkoutItems');
         sessionStorage.setItem('ckOrderJustPlaced','1');
       }catch(e){}
