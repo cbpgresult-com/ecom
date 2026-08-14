@@ -137,6 +137,7 @@ body{
   align-items:center;
   gap:8px;
   white-space:nowrap;
+  position:relative;
 }
 
 .cart-icon{
@@ -145,15 +146,28 @@ body{
 }
 
 .cart-number{
-  background:#fff;
-  color:var(--violet);
+  position:absolute;
+  top:-7px;
+  right:-7px;
   min-width:21px;
   height:21px;
-  border-radius:50%;
-  display:inline-flex;
+  padding:0 5px;
+  border-radius:999px;
+  display:none;
   justify-content:center;
   align-items:center;
-  font-size:12px;
+  background:#ef4444;
+  color:#fff;
+  border:2px solid #fff;
+  font-size:11px;
+  font-weight:800;
+  line-height:1;
+  box-shadow:0 2px 7px rgba(0,0,0,.2);
+  z-index:3;
+}
+
+.cart-number.show{
+  display:inline-flex;
 }
 
 /* ================= ACCOUNT DROPDOWN ================= */
@@ -480,10 +494,10 @@ main{
     min-height:112px;
     padding:10px 12px;
     display:grid;
-    grid-template-columns:1fr auto;
+    grid-template-columns:1fr;
     grid-template-areas:
-      "logo cart"
-      "search search";
+      "logo"
+      "search";
     gap:10px;
     position:sticky;
     top:0;
@@ -503,11 +517,10 @@ main{
     font-size:14px;
   }
 
-  /* mobile header cart only */
+  /* Cart is intentionally removed from mobile header.
+     Cart remains available in the fixed bottom navigation. */
   .cart-btn{
-    grid-area:cart;
-    height:38px;
-    padding:0 13px;
+    display:none;
   }
 
   .header-account{
@@ -818,7 +831,7 @@ main{
 
         <div class="account-divider"></div>
 
-        <div class="menu-item">
+        <div class="menu-item" onclick="goProfile()">
           <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
             <circle cx="12" cy="8" r="3.5"/>
             <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
@@ -835,11 +848,10 @@ main{
           Orders
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" onclick="goAddresses()">
           <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M20 12a8 8 0 0 1-16 0"/>
-            <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
-            <path d="M4 12h3M17 12h3"/>
+            <path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/>
+            <circle cx="12" cy="9" r="2.5"/>
           </svg>
           Saved Addresses
         </div>
@@ -1566,6 +1578,11 @@ document
 
 async function loadCartCount(){
 
+  const badge =
+    document.getElementById("cartCount");
+
+  if(!badge) return;
+
   try{
 
     const {
@@ -1575,18 +1592,11 @@ async function loadCartCount(){
     } =
     await supabaseClient.auth.getUser();
 
-
     if(!user){
-
-      document
-        .getElementById("cartCount")
-        .textContent =
-        "0";
-
+      badge.textContent = "";
+      badge.classList.remove("show");
       return;
-
     }
-
 
     const {
       data,
@@ -1597,47 +1607,32 @@ async function loadCartCount(){
       .select("id, quantity")
       .eq("user_id",user.id);
 
-
     if(error){
-
-      console.error(
-        "Cart count:",
-        error
-      );
-
+      console.error("Cart count:",error);
+      badge.textContent = "";
+      badge.classList.remove("show");
       return;
-
     }
-
 
     let total = 0;
 
+    (data || []).forEach(item => {
+      total += Number(item.quantity || 0);
+    });
 
-    (data || []).forEach(
-      item => {
+    if(total > 0){
+      badge.textContent = total > 99 ? "99+" : String(total);
+      badge.classList.add("show");
+    }else{
+      badge.textContent = "";
+      badge.classList.remove("show");
+    }
 
-        total +=
-          Number(
-            item.quantity || 1
-          );
-
-      }
-    );
-
-
-    document
-      .getElementById("cartCount")
-      .textContent =
-      total;
-
-
-  }
-  catch(error){
-
+  }catch(error){
     console.error(error);
-
+    badge.textContent = "";
+    badge.classList.remove("show");
   }
-
 }
 
 
@@ -1675,6 +1670,20 @@ function goSignup(){
 
 }
 
+function goProfile(){
+
+  window.location.href =
+    "profile.html";
+
+}
+
+function goAddresses(){
+
+  window.location.href =
+    "saved-addresses.html";
+
+}
+
 function goOrders(){
 
   window.location.href =
@@ -1704,6 +1713,11 @@ function goCategories(){
 }
 
 function goAccount(){
+
+  if(window.innerWidth <= 700){
+    goProfile();
+    return;
+  }
 
   const menu =
     document.getElementById(
