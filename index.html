@@ -9,25 +9,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
-}
-
-:root{
-    --violet:#6d28d9;
-    --violet2:#8b5cf6;
-    --light-violet:#f3e8ff;
-
-    --green:#dcfce7;
-    --green-dark:#15803d;
-
-    --white:#fff;
-    --text:#171717;
-    --muted:#6b7280;
-    --border:#e5e7eb;
-    --bg:#f7f7fb;
 }
 
 html{
@@ -35,16 +25,56 @@ html{
 }
 
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:var(--bg);
-    color:var(--text);
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+    background:#f7f7fb;
+    color:#17121f;
+    overflow-x:hidden;
 }
 
-/* ================= HEADER ================= */
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+/* =========================================================
+   COLORS
+========================================================= */
+
+:root{
+    --violet:#6d28d9;
+    --violet-dark:#5521b5;
+    --violet-light:#f1e9ff;
+
+    --green:#dcfce7;
+    --green-dark:#087443;
+
+    --white:#ffffff;
+    --text:#17121f;
+    --muted:#77727f;
+    --border:#e7e2ee;
+
+    --shadow:
+        0 4px 18px rgba(50,25,80,.07);
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .header{
+    width:100%;
     background:#fff;
     border-bottom:1px solid var(--border);
+
     position:sticky;
     top:0;
     z-index:1000;
@@ -53,19 +83,30 @@ body{
 .header-inner{
     max-width:1250px;
     margin:auto;
-    min-height:72px;
+
+    min-height:74px;
+
     display:flex;
     align-items:center;
-    gap:22px;
-    padding:10px 18px;
+    gap:24px;
+
+    padding:12px 20px;
 }
 
+/* LOGO */
+
 .logo{
-    font-size:29px;
+    flex-shrink:0;
+
+    font-size:28px;
     font-weight:900;
+
     color:var(--violet);
-    white-space:nowrap;
+
+    letter-spacing:-1px;
 }
+
+/* SEARCH */
 
 .search-box{
     flex:1;
@@ -76,18 +117,16 @@ body{
     width:100%;
     height:46px;
 
-    border:2px solid #ddd6fe;
-    background:#faf7ff;
+    border:2px solid #dfd0ff;
+    border-radius:14px;
 
-    border-radius:13px;
-
-    outline:none;
+    background:#fcfaff;
 
     padding:0 48px 0 18px;
 
-    font-size:15px;
+    outline:none;
 
-    transition:.2s;
+    color:#222;
 }
 
 .search-box input:focus{
@@ -97,76 +136,74 @@ body{
 
 .search-icon{
     position:absolute;
-
     right:16px;
     top:50%;
 
     transform:translateY(-50%);
 
-    width:21px;
-    height:21px;
-
-    color:#111;
+    width:20px;
+    height:20px;
 }
+
+/* HEADER BUTTONS */
 
 .header-actions{
     display:flex;
-    gap:10px;
     align-items:center;
+    gap:10px;
 }
 
 .login-btn,
 .cart-btn{
-    height:44px;
-
     border:0;
-    border-radius:12px;
 
-    padding:0 17px;
+    height:44px;
+    padding:0 16px;
 
-    font-weight:700;
-    cursor:pointer;
+    border-radius:13px;
 
     display:flex;
     align-items:center;
+    justify-content:center;
     gap:8px;
+
+    font-weight:700;
 }
 
 .login-btn{
-    background:var(--light-violet);
+    background:var(--violet-light);
     color:#4c1d95;
-}
-
-.login-btn:hover{
-    background:#e9d5ff;
 }
 
 .cart-btn{
     background:var(--violet);
-    color:#fff;
-}
+    color:white;
 
-.cart-btn:hover{
-    background:#5b21b6;
+    box-shadow:0 6px 14px rgba(109,40,217,.18);
 }
 
 .cart-count{
     min-width:22px;
     height:22px;
 
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
+    padding:0 6px;
 
-    background:#fff;
+    background:white;
     color:var(--violet);
 
     border-radius:50%;
 
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
     font-size:12px;
+    font-weight:900;
 }
 
-/* ================= CATEGORY ================= */
+/* =========================================================
+   CATEGORY BAR
+========================================================= */
 
 .category-wrap{
     background:#fff;
@@ -178,9 +215,11 @@ body{
     margin:auto;
 
     display:flex;
-    gap:26px;
+    align-items:center;
 
-    padding:12px 18px;
+    gap:28px;
+
+    padding:12px 20px;
 
     overflow-x:auto;
 
@@ -192,334 +231,177 @@ body{
 }
 
 .category{
-    min-width:70px;
+    flex:0 0 auto;
 
-    text-align:center;
+    min-width:64px;
 
-    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 
-    flex-shrink:0;
+    gap:6px;
 
-    color:#222;
+    background:none;
+    border:0;
+
+    color:#252027;
 
     font-size:13px;
 }
 
 .category-icon{
-    width:45px;
-    height:45px;
+    width:42px;
+    height:42px;
 
     border-radius:50%;
 
-    margin:0 auto 7px;
+    background:#f0e7ff;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
-    background:var(--light-violet);
-    color:var(--violet);
-
-    transition:.2s;
-}
-
-.category:hover .category-icon{
-    transform:translateY(-2px);
+    color:#5b21b6;
 }
 
 .category.active{
     color:var(--violet);
-    font-weight:700;
+    font-weight:800;
 }
 
 .category.active .category-icon{
-    background:var(--green);
-    color:var(--green-dark);
+    background:#ddf8e7;
+    color:#087443;
 }
 
-/* ================= MAIN ================= */
+/* =========================================================
+   MAIN
+========================================================= */
 
 main{
     max-width:1250px;
     margin:auto;
-
-    padding:20px 18px 40px;
+    padding:26px 20px 70px;
 }
 
-/* ================= SIMPLE HERO ================= */
-/* Slider nahi hai */
+/* =========================================================
+   TOP SECTION
+========================================================= */
 
-.hero-simple{
-    min-height:220px;
-
-    border-radius:22px;
-
-    padding:34px 38px;
-
-    background:
-        linear-gradient(
-            110deg,
-            #6d28d9 0%,
-            #8b5cf6 50%,
-            #d9fbe5 100%
-        );
-
-    color:#fff;
-
+.top-section{
     display:flex;
-    align-items:center;
+    align-items:flex-end;
     justify-content:space-between;
 
-    gap:30px;
-
-    overflow:hidden;
-
-    position:relative;
-
-    margin-bottom:28px;
+    margin-bottom:20px;
 }
 
-.hero-simple::after{
-    content:"";
-
-    position:absolute;
-
-    width:260px;
-    height:260px;
-
-    border-radius:50%;
-
-    background:rgba(255,255,255,.13);
-
-    right:-70px;
-    bottom:-100px;
+.top-title h1{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:-.8px;
 }
 
-.hero-content{
-    position:relative;
-    z-index:2;
-
-    max-width:600px;
-}
-
-.hero-badge{
-    display:inline-flex;
-
-    background:#fff;
-    color:var(--violet);
-
-    padding:7px 13px;
-
-    border-radius:30px;
-
-    font-size:12px;
-    font-weight:800;
-
-    margin-bottom:14px;
-}
-
-.hero-content h1{
-    font-size:34px;
-    line-height:1.1;
-
-    margin-bottom:10px;
-}
-
-.hero-content p{
-    font-size:15px;
-
-    color:#f5f3ff;
-
-    margin-bottom:18px;
-}
-
-.shop-btn{
-    border:0;
-
-    background:#fff;
-    color:var(--violet);
-
-    border-radius:10px;
-
-    padding:11px 18px;
-
-    font-weight:800;
-
-    cursor:pointer;
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:7px;
-}
-
-.shop-btn:hover{
-    transform:translateY(-1px);
-}
-
-/* ================= FEATURE BOXES ================= */
-
-.feature-side{
-    position:relative;
-    z-index:2;
-
-    display:grid;
-
-    gap:12px;
-
-    width:330px;
-}
-
-.feature-box{
-    min-height:88px;
-
-    border-radius:16px;
-
-    padding:18px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    color:#111;
-}
-
-.feature-box.green{
-    background:#dcfce7;
-}
-
-.feature-box.violet{
-    background:#f3e8ff;
-}
-
-.feature-text h3{
-    font-size:17px;
-    margin-bottom:5px;
-}
-
-.feature-text p{
-    font-size:12px;
-    color:#6b7280;
-}
-
-.feature-icon{
-    width:42px;
-    height:42px;
-}
-
-/* ================= SECTION ================= */
-
-.section-head{
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin:12px 0 15px;
-}
-
-.section-title{
-    font-size:24px;
-    font-weight:800;
-}
-
-.section-subtitle{
-    margin-top:5px;
-
+.top-title p{
     color:var(--muted);
-
+    margin-top:5px;
     font-size:14px;
 }
 
 .sort-select{
     height:40px;
 
-    padding:0 13px;
-
     border:1px solid var(--border);
-
-    background:#fff;
-
     border-radius:10px;
 
-    outline:none;
+    background:white;
 
-    cursor:pointer;
+    padding:0 14px;
+
+    outline:none;
 }
 
-/* ================= PRODUCT GRID ================= */
+/* =========================================================
+   PRODUCT GRID
+========================================================= */
 
 .product-grid{
     display:grid;
 
-    grid-template-columns:repeat(5,1fr);
+    grid-template-columns:
+        repeat(5,minmax(0,1fr));
 
-    gap:14px;
+    gap:16px;
 }
 
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
+
 .product-card{
-    background:#fff;
+    background:white;
 
-    border:1px solid #ececf2;
+    border:1px solid var(--border);
 
-    border-radius:15px;
+    border-radius:16px;
 
     overflow:hidden;
 
-    transition:.2s;
-
-    cursor:pointer;
-
     min-width:0;
+
+    box-shadow:var(--shadow);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
 }
 
 .product-card:hover{
     transform:translateY(-3px);
 
     box-shadow:
-        0 10px 30px
-        rgba(76,29,149,.10);
+        0 10px 30px rgba(40,20,70,.12);
 }
 
-/* PRODUCT IMAGE */
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
 
-.product-image{
-    height:220px;
+.product-image-wrap{
+    width:100%;
 
-    position:relative;
+    height:245px;
 
     background:#fff;
 
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    padding:10px;
+    position:relative;
 
     overflow:hidden;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.product-image img{
+.product-image{
     width:100%;
     height:100%;
+
+    display:block;
+
+    /*
+      IMPORTANT:
+      Product ko crop nahi karega.
+      Pura MAIN image dikhega.
+    */
 
     object-fit:contain;
 
     object-position:center;
 
-    display:block;
+    padding:12px;
 
-    transition:.2s;
-}
-
-.product-card:hover .product-image img{
-    transform:scale(1.03);
+    background:#fff;
 }
 
 /* DISCOUNT */
@@ -527,8 +409,8 @@ main{
 .discount{
     position:absolute;
 
-    top:10px;
     left:10px;
+    top:10px;
 
     background:var(--green);
 
@@ -536,137 +418,177 @@ main{
 
     padding:5px 8px;
 
+    border-radius:7px;
+
+    font-size:11px;
+    font-weight:900;
+
+    z-index:2;
+}
+
+/* RATING */
+
+.rating{
+    position:absolute;
+
+    left:10px;
+    bottom:10px;
+
+    background:var(--green);
+
+    color:var(--green-dark);
+
+    padding:4px 7px;
+
     border-radius:6px;
 
     font-size:11px;
-
     font-weight:800;
 
     z-index:2;
 }
 
-/* PRODUCT INFO */
+/* =========================================================
+   PRODUCT INFO
+========================================================= */
 
 .product-info{
     padding:12px;
+    min-width:0;
 }
 
-.rating{
-    display:inline-flex;
+/*
+  MOBILE ISSUE FIX:
+  Product name controlled line count.
+*/
 
-    align-items:center;
-
-    gap:3px;
-
-    background:var(--green);
-
-    color:#166534;
-
-    border-radius:5px;
-
-    padding:4px 7px;
-
-    font-size:11px;
-
-    font-weight:700;
-
-    margin-bottom:8px;
-}
-
-.product-title{
-    font-size:14px;
-
+.product-name{
+    font-size:15px;
     line-height:1.35;
 
-    font-weight:600;
+    font-weight:800;
 
-    height:38px;
+    color:#18131d;
+
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+
+    -webkit-line-clamp:2;
 
     overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    min-height:40px;
+
+    word-break:break-word;
 }
 
 .price-row{
-    margin-top:10px;
-
     display:flex;
-
     align-items:center;
+    gap:8px;
 
-    gap:7px;
+    margin-top:9px;
 
     flex-wrap:wrap;
 }
 
 .price{
-    font-size:18px;
+    font-size:20px;
+    font-weight:900;
 
-    font-weight:800;
+    color:#111;
 }
 
 .mrp{
-    font-size:12px;
+    font-size:11px;
 
-    color:#9ca3af;
+    color:#999;
 
     text-decoration:line-through;
 }
 
-.off{
-    font-size:11px;
-
-    color:#15803d;
-
+.offer{
+    color:#078444;
+    font-size:12px;
     font-weight:800;
 }
 
 .delivery{
     margin-top:8px;
 
+    color:#087443;
+
     font-size:11px;
-
-    color:#166534;
-
-    font-weight:600;
+    font-weight:700;
 }
 
-/* ================= LOADING ================= */
+/* =========================================================
+   LOADING
+========================================================= */
 
 .loading{
-    padding:50px;
-
     text-align:center;
 
-    color:#6b7280;
+    padding:50px;
+
+    color:var(--muted);
+
+    font-size:14px;
 }
 
 .hidden{
     display:none!important;
 }
 
-/* ================= MOBILE ================= */
+/* =========================================================
+   NO PRODUCTS
+========================================================= */
 
-@media(max-width:900px){
+.no-products{
+    text-align:center;
+    padding:70px 20px;
+    color:var(--muted);
+}
+
+/* =========================================================
+   MOBILE BOTTOM NAV
+========================================================= */
+
+.mobile-bottom-nav{
+    display:none;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:700px){
+
+    body{
+        padding-bottom:72px;
+    }
 
     .header-inner{
-        flex-wrap:wrap;
-
-        gap:9px;
+        min-height:auto;
 
         padding:10px 12px;
+
+        display:grid;
+
+        grid-template-columns:
+            1fr auto;
+
+        gap:9px 10px;
     }
 
     .logo{
-        font-size:24px;
-    }
-
-    .search-box{
-        order:3;
-
-        flex-basis:100%;
+        font-size:23px;
     }
 
     .header-actions{
-        margin-left:auto;
+        gap:6px;
     }
 
     .login-btn{
@@ -675,9 +597,22 @@ main{
 
     .cart-btn{
         height:40px;
-
         padding:0 12px;
+        font-size:13px;
     }
+
+    .search-box{
+        grid-column:1 / -1;
+        grid-row:2;
+    }
+
+    .search-box input{
+        height:42px;
+        border-radius:12px;
+        font-size:13px;
+    }
+
+    /* categories */
 
     .categories{
         gap:20px;
@@ -685,246 +620,262 @@ main{
         padding:10px 12px;
     }
 
-    main{
-        padding:12px 12px 35px;
-    }
-
-    /* Mobile hero */
-
-    .hero-simple{
-        min-height:auto;
-
-        padding:25px 20px;
-
-        display:block;
-
-        border-radius:17px;
-    }
-
-    .hero-content{
-        max-width:100%;
-    }
-
-    .hero-content h1{
-        font-size:26px;
-    }
-
-    .hero-content p{
-        font-size:13px;
-    }
-
-    .feature-side{
-        width:100%;
-
-        grid-template-columns:1fr 1fr;
-
-        margin-top:15px;
-    }
-
-    .feature-box{
-        min-height:85px;
-
-        padding:13px;
-    }
-
-    .feature-text h3{
-        font-size:14px;
-    }
-
-    .feature-text p{
-        font-size:10px;
-    }
-
-    .feature-icon{
-        width:32px;
-        height:32px;
-    }
-
-    /* Grid */
-
-    .product-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-
-        gap:10px;
-    }
-
-    .product-image{
-        height:190px;
-    }
-
-    .section-title{
-        font-size:20px;
-    }
-
-    .sort-select{
-        height:36px;
-
-        font-size:12px;
-    }
-}
-
-/* ================= SMALL PHONE ================= */
-
-@media(max-width:500px){
-
-    .header-inner{
-        min-height:auto;
-    }
-
-    .logo{
-        font-size:23px;
-    }
-
-    .search-box input{
-        height:42px;
-
-        font-size:13px;
-    }
-
     .category{
-        min-width:62px;
-
+        min-width:55px;
         font-size:11px;
     }
 
     .category-icon{
-        width:40px;
-        height:40px;
+        width:38px;
+        height:38px;
     }
 
-    .hero-simple{
-        padding:22px 16px;
+    /* MAIN */
+
+    main{
+        padding:
+            18px
+            12px
+            85px;
     }
 
-    .hero-content h1{
-        font-size:23px;
-    }
-
-    .hero-content p{
-        font-size:11px;
-    }
-
-    .shop-btn{
-        padding:8px 12px;
-
-        font-size:11px;
-    }
-
-    .feature-side{
-        gap:8px;
-    }
-
-    .feature-box{
-        padding:11px;
-
-        border-radius:12px;
-    }
-
-    .feature-text h3{
-        font-size:12px;
-    }
-
-    .feature-text p{
-        font-size:9px;
-    }
-
-    .feature-icon{
-        width:28px;
-        height:28px;
-    }
-
-    .section-head{
+    .top-section{
+        align-items:center;
         gap:10px;
     }
 
-    .section-title{
-        font-size:18px;
+    .top-title h1{
+        font-size:22px;
     }
 
-    .section-subtitle{
+    .top-title p{
         font-size:11px;
     }
 
-    .product-image{
-        height:175px;
+    .sort-select{
+        height:36px;
+        font-size:12px;
+        padding:0 8px;
+        max-width:115px;
+    }
 
+    /* GRID */
+
+    .product-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+
+        gap:10px;
+    }
+
+    .product-card{
+        border-radius:13px;
+    }
+
+    /* IMAGE */
+
+    .product-image-wrap{
+        height:185px;
+    }
+
+    .product-image{
         padding:8px;
     }
+
+    /* INFO */
 
     .product-info{
         padding:9px;
     }
 
-    .product-title{
-        font-size:12px;
+    .product-name{
+        font-size:13px;
+
+        line-height:1.3;
+
+        /*
+          exactly 2 lines,
+          then ...
+        */
+
+        -webkit-line-clamp:2;
+
+        min-height:34px;
     }
 
     .price{
-        font-size:16px;
+        font-size:17px;
     }
 
     .mrp{
-        font-size:10px;
-    }
-
-    .off{
         font-size:9px;
     }
 
+    .offer{
+        font-size:10px;
+    }
+
     .delivery{
+        font-size:10px;
+    }
+
+    .discount{
+        left:7px;
+        top:7px;
+
+        padding:4px 6px;
+
         font-size:9px;
     }
 
     .rating{
+        left:7px;
+        bottom:7px;
+
+        font-size:9px;
+    }
+
+    /* =====================================================
+       MOBILE BOTTOM NAV
+    ===================================================== */
+
+    .mobile-bottom-nav{
+        position:fixed;
+
+        left:0;
+        right:0;
+        bottom:0;
+
+        height:68px;
+
+        background:rgba(255,255,255,.97);
+
+        border-top:1px solid #e6e0ed;
+
+        display:grid;
+
+        grid-template-columns:
+            repeat(5,1fr);
+
+        align-items:center;
+
+        z-index:9999;
+
+        box-shadow:
+            0 -5px 20px rgba(30,10,50,.08);
+
+        padding-bottom:
+            env(safe-area-inset-bottom);
+    }
+
+    .bottom-item{
+        border:0;
+        background:none;
+
+        height:100%;
+
+        display:flex;
+        flex-direction:column;
+
+        align-items:center;
+        justify-content:center;
+
+        gap:3px;
+
+        color:#77727f;
+
         font-size:10px;
+        font-weight:700;
+
+        position:relative;
+    }
+
+    .bottom-item svg{
+        width:22px;
+        height:22px;
+    }
+
+    .bottom-item.active{
+        color:var(--violet);
+    }
+
+    .bottom-item.active svg{
+        stroke-width:2.5;
+    }
+
+    .bottom-cart-count{
+        position:absolute;
+
+        top:8px;
+        margin-left:23px;
+
+        min-width:16px;
+        height:16px;
+
+        padding:0 4px;
+
+        border-radius:20px;
+
+        background:var(--violet);
+
+        color:white;
+
+        font-size:8px;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
     }
 }
 
-/* ================= VERY SMALL ================= */
+/* =========================================================
+   TABLET
+========================================================= */
 
-@media(max-width:360px){
+@media(min-width:701px) and (max-width:1050px){
 
-    .product-image{
-        height:155px;
+    .product-grid{
+        grid-template-columns:
+            repeat(3,minmax(0,1fr));
     }
 
-    .product-title{
-        font-size:11px;
-    }
-
-    .price{
-        font-size:15px;
-    }
-
-    .hero-content h1{
-        font-size:21px;
+    .product-image-wrap{
+        height:230px;
     }
 }
+
 </style>
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
+
+<!-- ======================================================
+     HEADER
+====================================================== -->
 
 <header class="header">
 
     <div class="header-inner">
 
-        <div class="logo">
+        <div
+            class="logo"
+            onclick="goHome()"
+            style="cursor:pointer;"
+        >
             MyStore
         </div>
+
 
         <div class="search-box">
 
             <input
-                id="searchInput"
                 type="text"
+                id="searchInput"
                 placeholder="Search for Products, Brands and More"
                 autocomplete="off"
             >
 
-            <!-- Search SVG -->
             <svg
                 class="search-icon"
                 viewBox="0 0 24 24"
@@ -932,25 +883,18 @@ main{
                 stroke="currentColor"
                 stroke-width="2"
             >
-                <circle
-                    cx="11"
-                    cy="11"
-                    r="7"
-                ></circle>
-
-                <path
-                    d="m20 20-4-4"
-                ></path>
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-4-4"></path>
             </svg>
 
         </div>
 
+
         <div class="header-actions">
 
-            <!-- Login -->
             <button
                 class="login-btn"
-                onclick="goLogin()"
+                onclick="goAccount()"
             >
 
                 <svg
@@ -961,15 +905,8 @@ main{
                     stroke="currentColor"
                     stroke-width="2"
                 >
-                    <circle
-                        cx="12"
-                        cy="8"
-                        r="4"
-                    ></circle>
-
-                    <path
-                        d="M4 21c0-4 3.5-7 8-7s8 3 8 7"
-                    ></path>
+                    <circle cx="12" cy="8" r="4"></circle>
+                    <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>
                 </svg>
 
                 Login
@@ -977,7 +914,6 @@ main{
             </button>
 
 
-            <!-- Cart -->
             <button
                 class="cart-btn"
                 onclick="goCart()"
@@ -991,21 +927,10 @@ main{
                     stroke="currentColor"
                     stroke-width="2"
                 >
-                    <circle
-                        cx="9"
-                        cy="20"
-                        r="1"
-                    ></circle>
+                    <circle cx="9" cy="20" r="1"></circle>
+                    <circle cx="18" cy="20" r="1"></circle>
 
-                    <circle
-                        cx="18"
-                        cy="20"
-                        r="1"
-                    ></circle>
-
-                    <path
-                        d="M3 4h2l2.5 11h10l3-8H6"
-                    ></path>
+                    <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path>
                 </svg>
 
                 Cart
@@ -1026,83 +951,24 @@ main{
 </header>
 
 
-<!-- ================= CATEGORIES ================= -->
+<!-- ======================================================
+     CATEGORIES
+====================================================== -->
 
 <div class="category-wrap">
 
     <div
-        class="categories"
         id="categoryBar"
+        class="categories"
     >
 
-        <!-- ALL -->
-
-        <div
+        <button
             class="category active"
             data-category="all"
+            onclick="selectCategory('all',this)"
         >
 
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path d="m3 10 9-7 9 7"></path>
-
-                    <path d="M5 9v11h14V9"></path>
-
-                    <path d="M9 20v-6h6v6"></path>
-                </svg>
-
-            </div>
-
-            For You
-
-        </div>
-
-
-        <!-- FASHION -->
-
-        <div
-            class="category"
-            data-category="Fashion"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path
-                        d="M8 4l4 3 4-3 4 4-3 3v9H7v-9L4 8l4-4z"
-                    ></path>
-                </svg>
-
-            </div>
-
-            Fashion
-
-        </div>
-
-
-        <!-- MOBILES -->
-
-        <div
-            class="category"
-            data-category="Mobiles"
-        >
-
-            <div class="category-icon">
+            <span class="category-icon">
 
                 <svg
                     width="22"
@@ -1112,544 +978,239 @@ main{
                     stroke="currentColor"
                     stroke-width="2"
                 >
-                    <rect
-                        x="7"
-                        y="2"
-                        width="10"
-                        height="20"
-                        rx="2"
-                    ></rect>
-
-                    <path d="M11 18h2"></path>
+                    <path d="m3 10 9-7 9 7"></path>
+                    <path d="M5 9v11h14V9"></path>
+                    <path d="M9 20v-6h6v6"></path>
                 </svg>
 
-            </div>
+            </span>
 
-            Mobiles
+            <span>For You</span>
 
-        </div>
-
-
-        <!-- ELECTRONICS -->
-
-        <div
-            class="category"
-            data-category="Electronics"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <rect
-                        x="3"
-                        y="5"
-                        width="18"
-                        height="12"
-                        rx="1"
-                    ></rect>
-
-                    <path
-                        d="M8 21h8M12 17v4"
-                    ></path>
-                </svg>
-
-            </div>
-
-            Electronics
-
-        </div>
-
-
-        <!-- BEAUTY -->
-
-        <div
-            class="category"
-            data-category="Beauty"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path d="M9 3h6v6H9z"></path>
-
-                    <path
-                        d="M10 9v12h4V9"
-                    ></path>
-                </svg>
-
-            </div>
-
-            Beauty
-
-        </div>
-
-
-        <!-- HOME -->
-
-        <div
-            class="category"
-            data-category="Home"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path
-                        d="m3 11 9-8 9 8"
-                    ></path>
-
-                    <path
-                        d="M5 10v10h14V10"
-                    ></path>
-                </svg>
-
-            </div>
-
-            Home
-
-        </div>
-
-
-        <!-- APPLIANCES -->
-
-        <div
-            class="category"
-            data-category="Appliances"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <rect
-                        x="3"
-                        y="4"
-                        width="18"
-                        height="16"
-                        rx="2"
-                    ></rect>
-
-                    <path d="M3 9h18"></path>
-                </svg>
-
-            </div>
-
-            Appliances
-
-        </div>
-
-
-        <!-- TOYS -->
-
-        <div
-            class="category"
-            data-category="Toys"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <circle
-                        cx="12"
-                        cy="12"
-                        r="7"
-                    ></circle>
-
-                    <path
-                        d="M8 12h8M12 8v8"
-                    ></path>
-                </svg>
-
-            </div>
-
-            Toys
-
-        </div>
-
-
-        <!-- FOOD -->
-
-        <div
-            class="category"
-            data-category="Food"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path d="M5 11h14"></path>
-
-                    <path
-                        d="M7 11c0-4 2-6 5-6s5 2 5 6"
-                    ></path>
-
-                    <path
-                        d="M6 15h12M8 19h8"
-                    ></path>
-                </svg>
-
-            </div>
-
-            Food
-
-        </div>
-
-
-        <!-- SPORTS -->
-
-        <div
-            class="category"
-            data-category="Sports"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <circle
-                        cx="12"
-                        cy="12"
-                        r="9"
-                    ></circle>
-
-                    <path
-                        d="m8 4 4 4 4-4M4 12h5l3 8M20 12h-5l-3-4"
-                    ></path>
-                </svg>
-
-            </div>
-
-            Sports
-
-        </div>
-
-
-        <!-- FURNITURE -->
-
-        <div
-            class="category"
-            data-category="Furniture"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path
-                        d="M5 11h14v6H5z"
-                    ></path>
-
-                    <path
-                        d="M7 11V8a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v3"
-                    ></path>
-
-                    <path
-                        d="M7 17v3M17 17v3"
-                    ></path>
-                </svg>
-
-            </div>
-
-            Furniture
-
-        </div>
-
-
-        <!-- BOOKS -->
-
-        <div
-            class="category"
-            data-category="Books"
-        >
-
-            <div class="category-icon">
-
-                <svg
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path
-                        d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"
-                    ></path>
-
-                    <path d="M7 4v14"></path>
-                </svg>
-
-            </div>
-
-            Books
-
-        </div>
+        </button>
 
     </div>
 
 </div>
 
 
-<!-- ================= MAIN ================= -->
+<!-- ======================================================
+     MAIN
+====================================================== -->
 
 <main>
 
+    <section class="top-section">
 
-    <!-- ================= NO SLIDER HERO ================= -->
-
-    <section class="hero-simple">
-
-        <div class="hero-content">
-
-            <div class="hero-badge">
-                ✦ BIG SAVINGS
-            </div>
+        <div class="top-title">
 
             <h1>
-                Shop Smart.<br>
-                Live Better.
+                Suggested For You
             </h1>
 
             <p>
-                Discover amazing products at great prices.
+                Discover products you'll love.
             </p>
 
-            <button
-                class="shop-btn"
-                onclick="scrollToProducts()"
-            >
-                Shop Now
-
-                <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path d="M5 12h14"></path>
-                    <path d="m13 6 6 6-6 6"></path>
-                </svg>
-
-            </button>
-
         </div>
 
 
-        <!-- FEATURE SIDE -->
-
-        <div class="feature-side">
-
-            <div class="feature-box green">
-
-                <div class="feature-text">
-
-                    <h3>
-                        Fresh Deals
-                    </h3>
-
-                    <p>
-                        New products added
-                    </p>
-
-                </div>
-
-
-                <!-- Fire SVG -->
-
-                <svg
-                    class="feature-icon"
-                    viewBox="0 0 64 64"
-                    fill="none"
-                >
-                    <path
-                        d="M32 4c-4 12-14 17-14 29 0 9 7 16 16 16 12 0 19-9 17-20-1-7-6-12-10-17 0 8-3 11-7 14 1-8 0-15-2-22z"
-                        fill="#f97316"
-                        stroke="#111"
-                        stroke-width="3"
-                    ></path>
-                </svg>
-
-            </div>
-
-
-            <div class="feature-box violet">
-
-                <div class="feature-text">
-
-                    <h3>
-                        Fast Delivery
-                    </h3>
-
-                    <p>
-                        Easy & secure shopping
-                    </p>
-
-                </div>
-
-
-                <!-- Truck SVG -->
-
-                <svg
-                    class="feature-icon"
-                    viewBox="0 0 64 64"
-                    fill="none"
-                >
-                    <path
-                        d="M7 18h34v28H7z"
-                        fill="#60a5fa"
-                        stroke="#111"
-                        stroke-width="3"
-                    ></path>
-
-                    <path
-                        d="M41 28h10l7 8v10H41z"
-                        fill="#f97316"
-                        stroke="#111"
-                        stroke-width="3"
-                    ></path>
-
-                    <circle
-                        cx="19"
-                        cy="49"
-                        r="5"
-                        fill="#111"
-                    ></circle>
-
-                    <circle
-                        cx="49"
-                        cy="49"
-                        r="5"
-                        fill="#111"
-                    ></circle>
-
-                </svg>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================= PRODUCTS ================= -->
-
-    <section id="productsSection">
-
-        <div class="section-head">
-
-            <div>
-
-                <h2 class="section-title">
-                    Suggested For You
-                </h2>
-
-                <p class="section-subtitle">
-                    Discover products you'll love.
-                </p>
-
-            </div>
-
-
-            <select
-                id="sortSelect"
-                class="sort-select"
-            >
-
-                <option value="popular">
-                    Popular
-                </option>
-
-                <option value="low">
-                    Price: Low to High
-                </option>
-
-                <option value="high">
-                    Price: High to Low
-                </option>
-
-                <option value="new">
-                    Newest
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div
-            id="loading"
-            class="loading"
+        <select
+            id="sortSelect"
+            class="sort-select"
         >
-            Loading products...
-        </div>
 
+            <option value="popular">
+                Popular
+            </option>
 
-        <div
-            id="productGrid"
-            class="product-grid"
-        ></div>
+            <option value="low">
+                Price: Low to High
+            </option>
+
+            <option value="high">
+                Price: High to Low
+            </option>
+
+            <option value="new">
+                Newest
+            </option>
+
+        </select>
 
     </section>
+
+
+    <div
+        id="loading"
+        class="loading"
+    >
+        Loading products...
+    </div>
+
+
+    <section
+        id="productGrid"
+        class="product-grid"
+    ></section>
+
+
+    <div
+        id="noProducts"
+        class="no-products hidden"
+    >
+
+        <div style="font-size:40px;">
+            🔍
+        </div>
+
+        <h2>
+            No products found
+        </h2>
+
+        <p>
+            Try another search or category.
+        </p>
+
+    </div>
 
 </main>
 
 
+<!-- ======================================================
+     MOBILE BOTTOM NAV
+====================================================== -->
+
+<nav class="mobile-bottom-nav">
+
+    <!-- HOME -->
+
+    <button
+        class="bottom-item active"
+        onclick="goHome()"
+    >
+
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <path d="m3 10 9-7 9 7"></path>
+            <path d="M5 9v11h14V9"></path>
+            <path d="M9 20v-6h6v6"></path>
+        </svg>
+
+        <span>Home</span>
+
+    </button>
+
+
+    <!-- CATEGORIES -->
+
+    <button
+        class="bottom-item"
+        onclick="scrollToCategories()"
+    >
+
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+
+        <span>Categories</span>
+
+    </button>
+
+
+    <!-- ACCOUNT -->
+
+    <button
+        class="bottom-item"
+        onclick="goAccount()"
+    >
+
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>
+        </svg>
+
+        <span>Account</span>
+
+    </button>
+
+
+    <!-- ORDERS -->
+
+    <button
+        class="bottom-item"
+        onclick="goOrders()"
+    >
+
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <path d="M6 3h12v18H6z"></path>
+            <path d="M9 7h6"></path>
+            <path d="M9 11h6"></path>
+            <path d="M9 15h4"></path>
+        </svg>
+
+        <span>Orders</span>
+
+    </button>
+
+
+    <!-- CART -->
+
+    <button
+        class="bottom-item"
+        onclick="goCart()"
+    >
+
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <circle cx="9" cy="20" r="1"></circle>
+            <circle cx="18" cy="20" r="1"></circle>
+
+            <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path>
+        </svg>
+
+        <span>Cart</span>
+
+        <span
+            id="bottomCartCount"
+            class="bottom-cart-count"
+        >
+            0
+        </span>
+
+    </button>
+
+</nav>
+
+
 <script>
+
 
 /* =========================================
    SUPABASE CONFIG
@@ -1668,119 +1229,132 @@ const supabaseClient =
     );
 
 
-/* =========================================
+
+/* =========================================================
    GLOBAL
-========================================= */
+========================================================= */
 
 let allProducts = [];
 
-let filteredProducts = [];
+let currentCategory = "all";
 
 
-/* =========================================
-   IMAGE HELPER
-========================================= */
+/* =========================================================
+   MAIN IMAGE
+========================================================= */
+
+/*
+   IMPORTANT FIX:
+
+   Product card me second image nahi,
+   MAIN image use hogi.
+
+   Priority:
+
+   1. image
+   2. image_url
+   3. imageUrl
+   4. images[0]
+*/
 
 function getMainImage(product){
 
-    /*
-      Main/first image hi use hogi.
-    */
+    let image = null;
 
-    let image =
-        product.image ||
-        product.image_url ||
-        product.main_image ||
-        product.thumbnail ||
-        "";
 
-    /*
-      Agar images JSON array hai
-    */
+    /* MAIN IMAGE */
 
-    if(Array.isArray(product.images)){
+    if(
+        product.image &&
+        typeof product.image === "string"
+    ){
 
-        image =
-            product.images[0] ||
-            image;
+        image = product.image;
 
     }
 
 
-    /*
-      Agar images JSON string hai
-    */
+    /* image_url */
 
-    if(typeof product.images === "string"){
+    if(
+        !image &&
+        product.image_url
+    ){
+
+        image = product.image_url;
+
+    }
+
+
+    /* imageUrl */
+
+    if(
+        !image &&
+        product.imageUrl
+    ){
+
+        image = product.imageUrl;
+
+    }
+
+
+    /* images array */
+
+    if(
+        !image &&
+        Array.isArray(product.images)
+    ){
+
+        image = product.images[0];
+
+    }
+
+
+    /* images JSON string */
+
+    if(
+        !image &&
+        typeof product.images === "string"
+    ){
 
         try{
 
             const parsed =
                 JSON.parse(product.images);
 
-            if(Array.isArray(parsed)){
+            if(
+                Array.isArray(parsed) &&
+                parsed.length
+            ){
 
-                image =
-                    parsed[0] ||
-                    image;
-
-            }
-
-        }catch(e){
-
-            if(product.images.trim()){
-
-                image =
-                    product.images;
+                image = parsed[0];
 
             }
 
-        }
+        }catch(e){}
 
     }
 
 
+    /* fallback */
+
     return image ||
-        "https://via.placeholder.com/600x600?text=Product";
-}
-
-
-/* =========================================
-   PRICE
-========================================= */
-
-function getPrice(product){
-
-    return Number(
-        product.price ||
-        product.selling_price ||
-        product.sale_price ||
-        0
-    );
+        "https://via.placeholder.com/500x500?text=Product";
 
 }
 
 
-function getMrp(product){
-
-    return Number(
-        product.mrp ||
-        product.original_price ||
-        product.price ||
-        0
-    );
-
-}
-
-
-/* =========================================
+/* =========================================================
    LOAD PRODUCTS
-========================================= */
+========================================================= */
 
 async function loadProducts(){
 
     const loading =
         document.getElementById("loading");
+
+    const grid =
+        document.getElementById("productGrid");
 
     try{
 
@@ -1798,7 +1372,7 @@ async function loadProducts(){
             console.error(error);
 
             loading.innerHTML =
-                "Products load nahi ho paaye.";
+                "Unable to load products.";
 
             return;
 
@@ -1809,21 +1383,16 @@ async function loadProducts(){
             data || [];
 
 
-        filteredProducts =
-            [...allProducts];
+        loading.classList.add("hidden");
 
 
-        loading.classList.add(
-            "hidden"
-        );
+        createCategories();
 
 
         renderProducts();
 
-        updateCartCount();
-
-
-    }catch(error){
+    }
+    catch(error){
 
         console.error(error);
 
@@ -1835,9 +1404,129 @@ async function loadProducts(){
 }
 
 
-/* =========================================
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+function createCategories(){
+
+    const bar =
+        document.getElementById("categoryBar");
+
+
+    const categories =
+        [
+            ...new Set(
+                allProducts
+                .map(p =>
+                    p.category
+                )
+                .filter(Boolean)
+            )
+        ];
+
+
+    categories.forEach(category => {
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "category";
+
+        button.dataset.category =
+            category;
+
+        button.onclick =
+            function(){
+
+                selectCategory(
+                    category,
+                    this
+                );
+
+            };
+
+
+        button.innerHTML = `
+
+            <span class="category-icon">
+
+                <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <rect
+                        x="4"
+                        y="4"
+                        width="16"
+                        height="16"
+                        rx="2"
+                    ></rect>
+
+                    <path
+                        d="M8 8h8M8 12h8M8 16h5"
+                    ></path>
+
+                </svg>
+
+            </span>
+
+            <span>
+                ${escapeHTML(category)}
+            </span>
+
+        `;
+
+
+        bar.appendChild(button);
+
+    });
+
+}
+
+
+/* =========================================================
+   CATEGORY SELECT
+========================================================= */
+
+function selectCategory(
+    category,
+    element
+){
+
+    currentCategory =
+        category;
+
+
+    document
+        .querySelectorAll(".category")
+        .forEach(btn => {
+
+            btn.classList.remove("active");
+
+        });
+
+
+    if(element){
+
+        element.classList.add("active");
+
+    }
+
+
+    renderProducts();
+
+}
+
+
+/* =========================================================
    RENDER PRODUCTS
-========================================= */
+========================================================= */
 
 function renderProducts(){
 
@@ -1846,424 +1535,365 @@ function renderProducts(){
             "productGrid"
         );
 
+    const noProducts =
+        document.getElementById(
+            "noProducts"
+        );
+
+
+    const search =
+        document
+            .getElementById("searchInput")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    let products =
+        [...allProducts];
+
+
+    /* CATEGORY */
+
+    if(
+        currentCategory !== "all"
+    ){
+
+        products =
+            products.filter(
+                product =>
+                    String(
+                        product.category || ""
+                    ).toLowerCase()
+                    ===
+                    String(
+                        currentCategory
+                    ).toLowerCase()
+            );
+
+    }
+
+
+    /* SEARCH */
+
+    if(search){
+
+        products =
+            products.filter(product => {
+
+                const title =
+                    String(
+                        product.title ||
+                        product.name ||
+                        ""
+                    )
+                    .toLowerCase();
+
+
+                const category =
+                    String(
+                        product.category ||
+                        ""
+                    )
+                    .toLowerCase();
+
+
+                return(
+                    title.includes(search) ||
+                    category.includes(search)
+                );
+
+            });
+
+    }
+
+
+    /* SORT */
+
+    const sort =
+        document.getElementById(
+            "sortSelect"
+        ).value;
+
+
+    if(sort === "low"){
+
+        products.sort(
+            (a,b) =>
+                Number(
+                    a.price || 0
+                )
+                -
+                Number(
+                    b.price || 0
+                )
+        );
+
+    }
+
+
+    if(sort === "high"){
+
+        products.sort(
+            (a,b) =>
+                Number(
+                    b.price || 0
+                )
+                -
+                Number(
+                    a.price || 0
+                )
+        );
+
+    }
+
+
+    if(sort === "new"){
+
+        products.sort(
+            (a,b) =>
+                new Date(
+                    b.created_at || 0
+                )
+                -
+                new Date(
+                    a.created_at || 0
+                )
+        );
+
+    }
+
 
     grid.innerHTML = "";
 
 
-    if(!filteredProducts.length){
+    if(!products.length){
 
-        grid.innerHTML = `
-
-            <div style="
-                grid-column:1/-1;
-                padding:60px 20px;
-                text-align:center;
-                color:#777;
-            ">
-
-                <div style="
-                    font-size:40px;
-                    margin-bottom:10px;
-                ">
-                    🔍
-                </div>
-
-                <strong>
-                    No products found
-                </strong>
-
-                <div style="
-                    margin-top:6px;
-                    font-size:13px;
-                ">
-                    Try another search or category.
-                </div>
-
-            </div>
-
-        `;
+        noProducts.classList.remove(
+            "hidden"
+        );
 
         return;
 
     }
 
 
-    filteredProducts.forEach(
-        product => {
-
-            const image =
-                getMainImage(product);
-
-
-            const price =
-                getPrice(product);
-
-
-            const mrp =
-                getMrp(product);
-
-
-            let discount = 0;
-
-
-            if(
-                mrp > price &&
-                price > 0
-            ){
-
-                discount =
-                    Math.round(
-                        ((mrp - price) /
-                        mrp) * 100
-                    );
-
-            }
-
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "product-card";
-
-
-            card.onclick = () => {
-
-                if(product.id){
-
-                    window.location.href =
-                        `product.html?id=${product.id}`;
-
-                }
-
-            };
-
-
-            card.innerHTML = `
-
-                <div class="product-image">
-
-                    ${
-                        discount > 0
-                        ?
-                        `
-                        <span class="discount">
-                            ${discount}% OFF
-                        </span>
-                        `
-                        :
-                        ""
-                    }
-
-
-                    <img
-                        src="${escapeHtml(image)}"
-
-                        alt="${escapeHtml(
-                            product.title ||
-                            product.name ||
-                            "Product"
-                        )}"
-
-                        loading="lazy"
-
-                        onerror="
-                            this.src='https://via.placeholder.com/600x600?text=Product'
-                        "
-                    >
-
-                </div>
-
-
-                <div class="product-info">
-
-
-                    <div class="rating">
-
-                        <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                        >
-                            <path
-                                d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1L12 2z"
-                            ></path>
-                        </svg>
-
-                        ${product.rating || 4.6}
-
-                    </div>
-
-
-                    <div class="product-title">
-
-                        ${escapeHtml(
-                            product.title ||
-                            product.name ||
-                            "Product"
-                        )}
-
-                    </div>
-
-
-                    <div class="price-row">
-
-                        <span class="price">
-
-                            ₹${price.toLocaleString(
-                                "en-IN"
-                            )}
-
-                        </span>
-
-
-                        ${
-                            mrp > price
-                            ?
-                            `
-                            <span class="mrp">
-
-                                ₹${mrp.toLocaleString(
-                                    "en-IN"
-                                )}
-
-                            </span>
-                            `
-                            :
-                            ""
-                        }
-
-
-                        ${
-                            discount > 0
-                            ?
-                            `
-                            <span class="off">
-                                ${discount}% OFF
-                            </span>
-                            `
-                            :
-                            ""
-                        }
-
-                    </div>
-
-
-                    <div class="delivery">
-
-                        ✓ Delivery available
-
-                    </div>
-
-                </div>
-
-            `;
-
-
-            grid.appendChild(card);
-
-        }
+    noProducts.classList.add(
+        "hidden"
     );
+
+
+    products.forEach(product => {
+
+        grid.appendChild(
+            createProductCard(product)
+        );
+
+    });
 
 }
 
 
-/* =========================================
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
+
+function createProductCard(product){
+
+    const card =
+        document.createElement("article");
+
+    card.className =
+        "product-card";
+
+
+    const image =
+        getMainImage(product);
+
+
+    const title =
+        product.title ||
+        product.name ||
+        "Product";
+
+
+    const price =
+        Number(
+            product.price || 0
+        );
+
+
+    const mrp =
+        Number(
+            product.mrp || 0
+        );
+
+
+    let discount = "";
+
+
+    if(
+        mrp > price &&
+        price > 0
+    ){
+
+        discount =
+            Math.round(
+                ((mrp - price) / mrp) * 100
+            );
+
+    }
+
+
+    const rating =
+        product.rating ||
+        product.average_rating ||
+        "4.6";
+
+
+    card.innerHTML = `
+
+        <div class="product-image-wrap">
+
+            ${
+                discount
+                ?
+                `
+                <div class="discount">
+                    ${discount}% OFF
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            <img
+                class="product-image"
+                src="${escapeAttribute(image)}"
+                alt="${escapeAttribute(title)}"
+                loading="lazy"
+                onerror="
+                    this.src='https://via.placeholder.com/500x500?text=Product';
+                "
+            >
+
+
+            <div class="rating">
+                ★ ${escapeHTML(String(rating))}
+            </div>
+
+        </div>
+
+
+        <div class="product-info">
+
+            <div
+                class="product-name"
+                title="${escapeAttribute(title)}"
+            >
+                ${escapeHTML(title)}
+            </div>
+
+
+            <div class="price-row">
+
+                <span class="price">
+                    ₹${price.toLocaleString("en-IN")}
+                </span>
+
+
+                ${
+                    mrp > price
+                    ?
+                    `
+                    <span class="mrp">
+                        ₹${mrp.toLocaleString("en-IN")}
+                    </span>
+                    `
+                    :
+                    ""
+                }
+
+
+                ${
+                    discount
+                    ?
+                    `
+                    <span class="offer">
+                        ${discount}% OFF
+                    </span>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+
+            <div class="delivery">
+                ✓ Delivery available
+            </div>
+
+        </div>
+
+    `;
+
+
+    /*
+      Product click
+    */
+
+    card.addEventListener(
+        "click",
+        function(){
+
+            if(product.id){
+
+                window.location.href =
+                    "product.html?id=" +
+                    encodeURIComponent(
+                        product.id
+                    );
+
+            }
+
+        }
+    );
+
+
+    return card;
+
+}
+
+
+/* =========================================================
    SEARCH
-========================================= */
+========================================================= */
 
 document
     .getElementById("searchInput")
     .addEventListener(
         "input",
-        function(){
-
-            const query =
-                this.value
-                    .trim()
-                    .toLowerCase();
-
-
-            filteredProducts =
-                allProducts.filter(
-                    product => {
-
-                        const title =
-                            String(
-                                product.title ||
-                                product.name ||
-                                ""
-                            )
-                            .toLowerCase();
-
-
-                        const category =
-                            String(
-                                product.category ||
-                                ""
-                            )
-                            .toLowerCase();
-
-
-                        return (
-                            title.includes(query) ||
-                            category.includes(query)
-                        );
-
-                    }
-                );
-
-
-            renderProducts();
-
-        }
+        renderProducts
     );
 
 
-/* =========================================
+/* =========================================================
    SORT
-========================================= */
+========================================================= */
 
 document
     .getElementById("sortSelect")
     .addEventListener(
         "change",
-        function(){
-
-            const value =
-                this.value;
-
-
-            if(value === "low"){
-
-                filteredProducts.sort(
-                    (a,b) =>
-                        getPrice(a) -
-                        getPrice(b)
-                );
-
-            }
-
-
-            if(value === "high"){
-
-                filteredProducts.sort(
-                    (a,b) =>
-                        getPrice(b) -
-                        getPrice(a)
-                );
-
-            }
-
-
-            if(value === "new"){
-
-                filteredProducts.sort(
-                    (a,b) =>
-                        new Date(
-                            b.created_at || 0
-                        ) -
-                        new Date(
-                            a.created_at || 0
-                        )
-                );
-
-            }
-
-
-            if(value === "popular"){
-
-                filteredProducts =
-                    [...allProducts];
-
-            }
-
-
-            renderProducts();
-
-        }
+        renderProducts
     );
 
 
-/* =========================================
-   CATEGORY
-========================================= */
-
-document
-    .querySelectorAll(".category")
-    .forEach(
-        category => {
-
-            category.addEventListener(
-                "click",
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".category"
-                        )
-                        .forEach(
-                            c =>
-                                c.classList.remove(
-                                    "active"
-                                )
-                        );
-
-
-                    category.classList.add(
-                        "active"
-                    );
-
-
-                    const selected =
-                        category.dataset.category;
-
-
-                    if(selected === "all"){
-
-                        filteredProducts =
-                            [...allProducts];
-
-                    }else{
-
-                        filteredProducts =
-                            allProducts.filter(
-                                product => {
-
-                                    const cat =
-                                        String(
-                                            product.category ||
-                                            ""
-                                        ).toLowerCase();
-
-
-                                    return (
-                                        cat ===
-                                        selected.toLowerCase()
-                                    );
-
-                                }
-                            );
-
-                    }
-
-
-                    renderProducts();
-
-                }
-            );
-
-        }
-    );
-
-
-/* =========================================
+/* =========================================================
    CART COUNT
-========================================= */
+========================================================= */
 
 async function updateCartCount(){
 
@@ -2274,16 +1904,14 @@ async function updateCartCount(){
                 user
             }
         } =
-        await supabaseClient.auth.getUser();
+        await supabaseClient
+            .auth
+            .getUser();
 
 
         if(!user){
 
-            document
-                .getElementById(
-                    "cartCount"
-                )
-                .textContent = "0";
+            setCartCount(0);
 
             return;
 
@@ -2291,15 +1919,12 @@ async function updateCartCount(){
 
 
         const {
-            count,
+            data,
             error
         } =
         await supabaseClient
             .from("cart_items")
-            .select("*",{
-                count:"exact",
-                head:true
-            })
+            .select("quantity")
             .eq(
                 "user_id",
                 user.id
@@ -2308,33 +1933,72 @@ async function updateCartCount(){
 
         if(error){
 
-            console.error(error);
+            console.log(
+                "Cart count error:",
+                error
+            );
+
+            setCartCount(0);
 
             return;
 
         }
 
 
-        document
-            .getElementById(
-                "cartCount"
-            )
-            .textContent =
-                count || 0;
+        let total = 0;
 
 
-    }catch(e){
+        (data || []).forEach(item => {
 
-        console.error(e);
+            total +=
+                Number(
+                    item.quantity || 0
+                );
+
+        });
+
+
+        setCartCount(total);
+
+    }
+    catch(error){
+
+        console.log(error);
+
+        setCartCount(0);
 
     }
 
 }
 
 
-/* =========================================
+function setCartCount(count){
+
+    document.getElementById(
+        "cartCount"
+    ).textContent =
+        count;
+
+
+    document.getElementById(
+        "bottomCartCount"
+    ).textContent =
+        count;
+
+}
+
+
+/* =========================================================
    NAVIGATION
-========================================= */
+========================================================= */
+
+function goHome(){
+
+    window.location.href =
+        "index.html";
+
+}
+
 
 function goCart(){
 
@@ -2344,81 +2008,75 @@ function goCart(){
 }
 
 
-function goLogin(){
+function goAccount(){
 
     window.location.href =
-        "login.html";
+        "account.html";
 
 }
 
 
-function scrollToProducts(){
+function goOrders(){
 
-    const section =
-        document.getElementById(
-            "productsSection"
-        );
-
-    if(section){
-
-        section.scrollIntoView({
-            behavior:"smooth"
-        });
-
-    }
+    window.location.href =
+        "orders.html";
 
 }
 
 
-/* =========================================
-   HTML ESCAPE
-========================================= */
+function scrollToCategories(){
 
-function escapeHtml(value){
-
-    return String(value || "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
 
 }
 
 
-/* =========================================
-   AUTH CHANGE
-========================================= */
+/* =========================================================
+   ESCAPE
+========================================================= */
 
-supabaseClient.auth.onAuthStateChange(
-    () => {
+function escapeHTML(value){
 
-        updateCartCount();
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
 
-    }
-);
+}
 
 
-/* =========================================
+function escapeAttribute(value){
+
+    return escapeHTML(value);
+
+}
+
+
+/* =========================================================
    START
-========================================= */
+========================================================= */
 
 loadProducts();
+
+updateCartCount();
+
+
+/* update after login/logout */
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        function(){
+
+            updateCartCount();
+
+        }
+    );
 
 </script>
 
