@@ -810,8 +810,9 @@ body{padding:0 !important;margin:0 !important;}
   /* =========================================================
      SUPABASE
   ========================================================= */
-  var SUPABASE_URL = 'https://bszojvhitsoamhksyjul.supabase.co';
-  var SUPABASE_ANON_KEY = 'sb_publishable_YLxllWRMVI3IN8AQS-uJSw_wV9zNqe5';
+var SUPABASE_URL = 'https://bszojvhitsoamhksyjul.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_YLxllWRMVI3IN8AQS-uJSw_wV9zNqe5';
+var GOOGLE_GEOCODING_API_KEY = 'AIzaSyDGLQeWbPYiP04YtPQ7UJWmvdnrFDugMQA';
 
   if(!window.supabase || typeof window.supabase.createClient !== 'function'){
     throw new Error('Supabase library load nahi hui.');
@@ -1182,135 +1183,48 @@ body{padding:0 !important;margin:0 !important;}
 
     return code.slice(0,8)+'+'+code.slice(8,11);
   }
-
-  async function reverseGeocodeCurrentLocation(lat,lon){
-    /*
-      GPS coordinates remain the source of truth.
-      Nominatim is used at address level so we can separately map:
-      locality/area -> district -> city/town/village -> state -> pincode.
-    */
+async function reverseGeocodeCurrentLocation(lat,lon){
     var result={
-      area:'',district:'',city:'',state:'',pincode:'',display:''
+      area:'',district:'',city:'',state:'',pincode:'',display:'',place_name:''
     };
 
     try{
-      var url='https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
-        '&addressdetails=1&namedetails=1&zoom=18&lat=' +
-        encodeURIComponent(lat)+'&lon='+encodeURIComponent(lon);
+      var url='https://maps.googleapis.com/maps/api/geocode/json'
+        +'?latlng='+encodeURIComponent(lat)+','+encodeURIComponent(lon)
+        +'&key='+encodeURIComponent(GOOGLE_GEOCODING_API_KEY);
 
       var response=await fetch(url,{headers:{'Accept':'application/json'}});
       if(response.ok){
         var d=await response.json();
-        var a=d.address||{};
 
-        /*
-          LOCALITY / AREA:
-          Don't use city here. Prefer the smallest locality available.
-        */
-        result.area=String(
-          a.neighbourhood ||
-          a.suburb ||
-          a.quarter ||
-          a.hamlet ||
-          a.locality ||
-          a.village ||
-          ''
-        ).trim();
+        if(d.status==='OK' && d.results && d.results.length){
+          var top=d.results[0];
+          result.display=top.formatted_address||'';
 
-        /*
-          DISTRICT:
-          In India Nominatim normally exposes the administrative district
-          as "county". city_district is often a sub-district/zone, so
-          county gets priority.
-        */
-        result.district=String(
-          a.county ||
-          a.state_district ||
-          a.city_district ||
-          ''
-        ).trim();
+          function comp(types){
+            for(var i=0;i<top.address_components.length;i++){
+              var c=top.address_components[i];
+              for(var j=0;j<types.length;j++){
+                if(c.types.indexOf(types[j])!==-1) return c.long_name;
+              }
+            }
+            return '';
+          }
 
-        /*
-          CITY:
-          Never use county as city. Keep the actual settlement separate.
-        */
-        result.city=String(
-          a.city ||
-          a.town ||
-          a.municipality ||
-          a.village ||
-          ''
-        ).trim();
-
-        result.state=String(
-          a.state ||
-          a.state_district ||
-          ''
-        ).trim();
-
-        result.pincode=String(a.postcode||'').trim();
-        result.display=String(d.display_name||'').trim();
-
-        /*
-          If the address is rural and Nominatim has no city/town,
-          village is the actual settlement and is already used above.
-          Do NOT copy district into city.
-        */
+          result.area=comp(['sublocality_level_1','sublocality','neighborhood']);
+          result.city=comp(['locality','postal_town','administrative_area_level_2']);
+          result.district=comp(['administrative_area_level_2']);
+          result.state=comp(['administrative_area_level_1']);
+          result.pincode=comp(['postal_code']);
+          result.place_name=result.area || result.city || result.district || '';
+        }
       }
     }catch(e){
-      console.warn('Nominatim reverse geocode failed:',e);
+      console.warn('Google reverse geocode failed:',e);
     }
 
-    /*
-      BigDataCloud is fallback only for missing values.
-      We do NOT overwrite a value already obtained from Nominatim.
-    */
-    if(!result.area || !result.district || !result.city ||
-       !result.state || !result.pincode || !result.display){
-      try{
-        var bdc='https://api.bigdatacloud.net/data/reverse-geocode-client' +
-          '?latitude='+encodeURIComponent(lat) +
-          '&longitude='+encodeURIComponent(lon) +
-          '&localityLanguage=en';
-
-        var br=await fetch(bdc,{headers:{'Accept':'application/json'}});
-        if(br.ok){
-          var bd=await br.json();
-
-          if(!result.area){
-            result.area=String(
-              bd.locality||bd.suburb||bd.neighbourhood||bd.village||''
-            ).trim();
-          }
-          if(!result.district){
-            result.district=String(
-              bd.district||bd.localityInfo?.administrative?.find(function(x){
-                return x && (x.name||'').trim();
-              })?.name||''
-            ).trim();
-          }
-          if(!result.city){
-            result.city=String(
-              bd.city||bd.town||bd.municipality||bd.village||bd.locality||
-              (bd.localityInfo && bd.localityInfo.administrative && bd.localityInfo.administrative[3] && bd.localityInfo.administrative[3].name)||''
-            ).trim();
-          }
-          if(!result.state){
-            result.state=String(bd.principalSubdivision||'').trim();
-          }
-          if(!result.pincode){
-            result.pincode=String(bd.postcode||bd.postCode||'').trim();
-          }
-          if(!result.display){
-            result.display=String(
-              [result.area,result.district,result.city,result.state,result.pincode]
-                .filter(Boolean).join(', ')
-            );
-          }
-        }
-      }catch(e){
-        console.warn('Fallback reverse geocode failed:',e);
-      }
+    if(!result.place_name){
+      result.place_name=String(result.city||result.area||result.district||'').trim();
     }
 
     return result;
@@ -1322,7 +1236,7 @@ body{padding:0 !important;margin:0 !important;}
       QXW3+XXX Lucknow, Uttar Pradesh, India
       Do not show district/locality as separate fields.
     */
-    var placeName=currentLocationData.city || currentLocationData.area || currentLocationData.district || '';
+   var placeName=currentLocationData.place_name || currentLocationData.city || currentLocationData.area || currentLocationData.district || '';
     var placeParts=[];
     if(placeName) placeParts.push(placeName);
     if(currentLocationData.state) placeParts.push(currentLocationData.state);
@@ -1433,8 +1347,9 @@ body{padding:0 !important;margin:0 !important;}
         currentLocationData.district=geo.district;
         currentLocationData.city=geo.city;
         currentLocationData.state=geo.state;
-        currentLocationData.pincode=geo.pincode;
+     currentLocationData.pincode=geo.pincode;
         currentLocationData.display=geo.display;
+        currentLocationData.place_name=geo.place_name;
 
         /* Save GPS immediately; existing delivery_locations columns stay unchanged. */
         await saveCurrentLocationRow();
