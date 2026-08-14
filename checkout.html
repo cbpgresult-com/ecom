@@ -407,6 +407,32 @@ body{padding:0 !important;margin:0 !important;}
   .ckfooterbar{position:static;max-width:1450px;margin:0 auto;border:none;border-top:1px solid var(--line);border-radius:0 0 22px 22px;padding:18px 30px;background:#fff;}
   .ckfooterbar .ckbtn{max-width:340px;margin-left:auto;display:flex;}
 }
+
+/* Current Location: animated border while GPS is detecting */
+#ckCurrentLocationBox.ck-location-detecting{
+  position:relative;
+  overflow:hidden;
+  border:2px solid transparent !important;
+  background:
+    linear-gradient(#f7fff9,#f7fff9) padding-box,
+    conic-gradient(
+      from 0deg,
+      transparent 0deg 300deg,
+      #16a56a 320deg,
+      #55d79a 345deg,
+      transparent 360deg
+    ) border-box !important;
+  animation:ckLocationBorder 1.05s linear infinite;
+}
+@keyframes ckLocationBorder{
+  to{transform:translateZ(0);}
+}
+#ckCurrentLocationBox.ck-location-detected{
+  animation:none !important;
+  border:1px solid #dcebe2 !important;
+  box-shadow:none !important;
+}
+
 </style>
 </head>
 <body>
@@ -1045,6 +1071,7 @@ body{padding:0 !important;margin:0 !important;}
       id:a.id,
       name:a.name || '',
       phone:a.phone || '',
+      email:a.email || '',
       pincode:a.pincode || '',
       state:a.state || '',
 
@@ -1257,6 +1284,23 @@ body{padding:0 !important;margin:0 !important;}
     };
   }
 
+
+  function startLocationDetectAnimation(){
+    var box=el('ckCurrentLocationBox');
+    if(box){
+      box.classList.remove('ck-location-detected');
+      box.classList.add('ck-location-detecting');
+    }
+  }
+
+  function stopLocationDetectAnimation(){
+    var box=el('ckCurrentLocationBox');
+    if(box){
+      box.classList.remove('ck-location-detecting');
+      box.classList.add('ck-location-detected');
+    }
+  }
+
   function hideAddressInputsAfterLocation(){
     var form=el('ckAddressFormSection'); if(!form)return;
     var grid=form.querySelector('.ckform-grid');
@@ -1299,6 +1343,7 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   function restoreAddressInputs(){
+    stopLocationDetectAnimation();
     var form=el('ckAddressFormSection'); if(!form)return;
     var grid=form.querySelector('.ckform-grid');
     var placeholder=el('ckAddressFormPlaceholder');
@@ -1621,6 +1666,7 @@ body{padding:0 !important;margin:0 !important;}
 
   window.ckUseCurrentLocation=function(){
     if(!currentUser){alert('Please login first.');return;}
+    startLocationDetectAnimation();
     if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
     if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
 
@@ -1705,6 +1751,7 @@ body{padding:0 !important;margin:0 !important;}
         await saveCurrentLocationRow();
 
         /* Hide ALL input fields, then show detected location details. */
+        stopLocationDetectAnimation();
         hideAddressInputsAfterLocation();
         showDetectedLocationDetails();
         var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='block';
@@ -1875,6 +1922,7 @@ body{padding:0 !important;margin:0 !important;}
         user_id:currentUser.id,
         name:addr.name,
         phone:addr.phone,
+        email:currentUser.email || '',
         pincode:addr.pincode,
         state:addr.state,
 
@@ -2098,16 +2146,13 @@ body{padding:0 !important;margin:0 !important;}
         phone:selectedAddress.phone || '',
         pincode:selectedAddress.pincode || '',
         state:selectedAddress.state || '',
-        /* Current Location fields are kept inside the order address snapshot. */
-        city:selectedAddress.isCurrentLocation===true ? '' : (selectedAddress.city || ''),
-        village:selectedAddress.village || '',
+        city:selectedAddress.city || '',
         house:selectedAddress.house || '',
-        road:selectedAddress.isCurrentLocation===true ? '' : (selectedAddress.road || ''),
-        plus_code:selectedAddress.plus_code || '',
+        road:selectedAddress.road || '',
         type:selectedAddress.type || 'home',
         map_link:selectedAddress.map_link || '',
-        latitude:selectedAddress.latitude==null ? null : Number(selectedAddress.latitude),
-        longitude:selectedAddress.longitude==null ? null : Number(selectedAddress.longitude),
+        latitude:selectedAddress.latitude || null,
+        longitude:selectedAddress.longitude || null,
         is_current_location:selectedAddress.isCurrentLocation===true,
         location_row_id:selectedAddress.location_row_id || null
       };
@@ -2124,8 +2169,7 @@ body{padding:0 !important;margin:0 !important;}
         total_amount:lastTotal,
         status:'placed',
         user_email:currentUser.email || '',
-        /* Separate order-level map link for easy access in Table Editor. */
-        map_link:addressForOrder.map_link || ''
+        cod_due:lastTotal
       };
 
       console.log('Creating order:',orderPayload);
@@ -2159,6 +2203,7 @@ body{padding:0 !important;margin:0 !important;}
       }
 
       try{
+        stopLocationDetectAnimation();
         sessionStorage.removeItem('checkoutItems');
         sessionStorage.setItem('ckOrderJustPlaced','1');
       }catch(e){}
