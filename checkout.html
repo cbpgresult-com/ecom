@@ -384,6 +384,12 @@ body{padding:0 !important;margin:0 !important;}
   .ckfooterbar{position:static;max-width:1450px;margin:0 auto;border:none;border-top:1px solid var(--line);border-radius:0 0 22px 22px;padding:18px 30px;background:#fff;}
   .ckfooterbar .ckbtn{max-width:340px;margin-left:auto;display:flex;}
 }
+
+@media(max-width:480px){
+  .ck-location-details-grid.ck-plus-only{grid-template-columns:1fr;gap:8px}
+  .ck-plus-code-box strong{font-size:12px;line-height:1.5;white-space:normal;word-break:break-word;overflow-wrap:anywhere}
+  .ck-location-detail{min-width:0}
+}
 </style>
 </head>
 <body>
@@ -1190,7 +1196,8 @@ body{padding:0 !important;margin:0 !important;}
       locality/area -> district -> city/town/village -> state -> pincode.
     */
     var result={
-      area:'',district:'',city:'',state:'',pincode:'',display:'',place_name:''
+      area:'',district:'',city:'',state:'',pincode:'',display:'',place_name:'',
+      nearest_places:[],post_office:''
     };
 
     try{
@@ -1251,6 +1258,29 @@ body{padding:0 !important;margin:0 !important;}
         ).trim();
 
         result.pincode=String(a.postcode||'').trim();
+        result.post_office=String(a.post_office||a.postoffice||a.postal_town||'').trim();
+
+        /* Keep only the smallest useful locality names for the Area box. */
+        var nearbyRaw=[
+          ['Neighbourhood',a.neighbourhood],
+          ['Locality',a.locality],
+          ['Suburb',a.suburb],
+          ['Quarter',a.quarter],
+          ['Hamlet',a.hamlet],
+          ['Village',a.village],
+          ['Post',result.post_office]
+        ];
+        var seenNearby={};
+        result.nearest_places=[];
+        nearbyRaw.forEach(function(item){
+          var value=String(item[1]||'').trim();
+          var key=value.toLowerCase();
+          if(value && !seenNearby[key]){
+            seenNearby[key]=true;
+            result.nearest_places.push({label:item[0],value:value});
+          }
+        });
+
         result.display=String(d.display_name||'').trim();
 
         /* Google-Maps-like human place label. Prefer city/town, then
@@ -1312,6 +1342,25 @@ body{padding:0 !important;margin:0 !important;}
           if(!result.pincode){
             result.pincode=String(bd.postcode||bd.postCode||'').trim();
           }
+          if(!result.post_office){
+            result.post_office=String(bd.postOffice||bd.postoffice||bd.postalTown||'').trim();
+          }
+          if(!result.nearest_places.length){
+            var bNearby=[
+              ['Locality',bd.locality],['Suburb',bd.suburb],
+              ['Neighbourhood',bd.neighbourhood],['Village',bd.village],
+              ['Post',result.post_office]
+            ];
+            var bSeen={};
+            bNearby.forEach(function(item){
+              var value=String(item[1]||'').trim();
+              var key=value.toLowerCase();
+              if(value && !bSeen[key]){
+                bSeen[key]=true;
+                result.nearest_places.push({label:item[0],value:value});
+              }
+            });
+          }
           if(!result.display){
             result.display=String(
               [result.area,result.district,result.city,result.state,result.pincode]
@@ -1334,74 +1383,56 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   function showDetectedLocationDetails(){
-    /*
-      Show Plus Code + human-readable place name exactly like Google Maps:
-      QXW3+XXX Lucknow, Uttar Pradesh, India
-      Do not show district/locality as separate fields.
-    */
-    /* Prefer the NEAREST locality/area, not the larger city.
-       For example: neighbourhood/suburb/quarter/locality should win over
-       Lucknow. GPS remains the exact source of truth. */
-    var placeName=currentLocationData.area ||
-      currentLocationData.place_name ||
-      currentLocationData.city ||
-      currentLocationData.district || '';
-
-    /* Never show an empty label. If the geocoder does not return a locality,
-       use the district/county as the human-readable area name. */
-    if(!placeName){
-      placeName='Location area';
+    /* Area box = exact Plus Code + nearest granular locality names only.
+       State and country are intentionally kept out of this box. */
+    var fullPlus=currentLocationData.plus_code||'';
+    var shortPlus=fullPlus;
+    if(fullPlus.indexOf('+')>0){
+      var plusParts=fullPlus.split('+');
+      var before=plusParts[0]||'';
+      var after=plusParts[1]||'';
+      if(before.length>4) before=before.slice(-4);
+      shortPlus=before+'+'+after;
     }
 
-    var placeParts=[placeName];
-    if(currentLocationData.state) placeParts.push(currentLocationData.state);
-    placeParts.push('India');
+    var nearby=currentLocationData.nearest_places||[];
+    var labels=[];
+    var seen={};
+    nearby.forEach(function(item){
+      var value=String((item&&item.value)||'').trim();
+      var key=value.toLowerCase();
+      if(value && !seen[key]){
+        seen[key]=true;
+        labels.push(value);
+      }
+    });
+    if(!labels.length && currentLocationData.area){
+      labels.push(String(currentLocationData.area).trim());
+    }
 
-    var fullPlus=currentLocationData.plus_code||'';
-     /* Google Maps-style short Plus Code: QXW3+XXX */
-     var shortPlus=fullPlus;
-     if(fullPlus.indexOf('+')>0){
-       var plusParts=fullPlus.split('+');
-       var before=plusParts[0]||'';
-       var after=plusParts[1]||'';
-       if(before.length>4) before=before.slice(-4);
-       shortPlus=before+'+'+after;
-     }
-     var plusDisplay=(shortPlus||'Not available')+' '+placeParts.join(', ');
+    var areaDisplay=shortPlus||'Not available';
+    if(labels.length) areaDisplay+=' • '+labels.join(' • ');
 
-    setText('ckDetectedArea',plusDisplay);
+    setText('ckDetectedArea',areaDisplay);
     setText('ckDetectedState',currentLocationData.state||'Not available');
     setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
-
-    setText(
-      'ckDetectedAccuracy',
-      currentLocationData.accuracy ?
-        '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS'
-    );
+    setText('ckDetectedAccuracy',currentLocationData.accuracy ? '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS');
 
     var a=el('ckDetectedMapLink');
-    if(a){
-      a.href=currentLocationData.map_link;
-      a.textContent='Open Exact Map ↗';
-    }
+    if(a){ a.href=currentLocationData.map_link; a.textContent='Open Exact Map ↗'; }
 
-    setText(
-      'ckDetectedLocationText',
-      'Plus Code: '+((currentLocationData.plus_code||'').indexOf('+')>0 ? (currentLocationData.plus_code.split('+')[0].slice(-4)+'+'+currentLocationData.plus_code.split('+')[1]) : (currentLocationData.plus_code||'available'))+' · Exact GPS location captured.'
-    );
+    setText('ckDetectedLocationText',
+      'Plus Code: '+(shortPlus||'available')+' · Exact GPS location captured.');
 
-    setText(
-      'ckDetectedCoordinates',
+    setText('ckDetectedCoordinates',
       Number(currentLocationData.latitude).toFixed(6)+'°, '+
-      Number(currentLocationData.longitude).toFixed(6)+'°'
-    );
+      Number(currentLocationData.longitude).toFixed(6)+'°');
 
     var frame=el('ckExactLocationMap');
     if(frame){
       frame.src='https://www.google.com/maps?q='+
-        encodeURIComponent(
-          currentLocationData.latitude+','+currentLocationData.longitude
-        )+'&z=18&output=embed';
+        encodeURIComponent(currentLocationData.latitude+','+currentLocationData.longitude)+
+        '&z=19&output=embed';
     }
   }
 
