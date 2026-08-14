@@ -1041,7 +1041,16 @@ body{padding:0 !important;margin:0 !important;}
       city:a.city || '',
       house:a.house || '',
       road:a.road || '',
-      type:a.type || 'home'
+      type:a.type || 'home',
+      map_link:a.map_link || '',
+      latitude:a.latitude==null ? null : Number(a.latitude),
+      longitude:a.longitude==null ? null : Number(a.longitude),
+      location_accuracy:a.location_accuracy==null ? null : Number(a.location_accuracy),
+      location_captured_at:a.location_captured_at || null,
+      location_row_id:a.location_row_id || null,
+      isCurrentLocation:a.is_current_location===true ||
+                        a.isCurrentLocation===true ||
+                        a.type==='current location'
     };
   }
 
@@ -1079,7 +1088,9 @@ body{padding:0 !important;margin:0 !important;}
       return '<div class="ck-saved-card">'
         + '<div><span class="sa-name">'+escapeHtml(a.name)+'</span>'
         + '<span class="sa-tag">'+escapeHtml((a.type||'home').toUpperCase())+'</span></div>'
-        + '<div class="sa-addr">'+escapeHtml(addr)+'<br>Phone: '+escapeHtml(a.phone)+'</div>'
+        + '<div class="sa-addr">'+escapeHtml(addr)+'<br>Phone: '+escapeHtml(a.phone)
+        + (a.map_link ? '<br><a href="'+escapeHtml(a.map_link)+'" target="_blank" rel="noopener" style="color:#176b4d;font-weight:700;">Open Exact Map ↗</a>' : '')
+        + '</div>'
         + '<button class="sa-deliverbtn" type="button" onclick="ckUseSavedAddress(\''+escapeHtml(normalizeId(a.id))+'\')">Deliver Here</button>'
         + '</div>';
     }).join('');
@@ -1116,7 +1127,14 @@ body{padding:0 !important;margin:0 !important;}
     var a=savedAddresses.find(function(x){return normalizeId(x.id)===normalizeId(id);});
     if(!a) return;
     selectedAddress=a;
-    fillSummary(a);
+    if(a.isCurrentLocation || a.type==='current location'){
+      selectedAddress.map_link=a.map_link||'';
+      selectedAddress.latitude=a.latitude;
+      selectedAddress.longitude=a.longitude;
+      selectedAddress.location_row_id=a.location_row_id||null;
+      selectedAddress.isCurrentLocation=true;
+    }
+    fillSummary(selectedAddress);
   };
 
   window.ckSelectType=function(t){
@@ -1824,7 +1842,16 @@ body{padding:0 !important;margin:0 !important;}
         city:addr.city,
         house:addr.house,
         road:addr.road,
-        type:addr.type
+        type:addr.type,
+        map_link:gpsMode ? (currentLocationData.map_link||'') : '',
+        latitude:gpsMode ? Number(currentLocationData.latitude) : null,
+        longitude:gpsMode ? Number(currentLocationData.longitude) : null,
+        location_accuracy:gpsMode && currentLocationData.accuracy!=null
+          ? Number(currentLocationData.accuracy) : null,
+        location_captured_at:gpsMode
+          ? (currentLocationData.captured_at||new Date().toISOString()) : null,
+        location_row_id:gpsMode ? (currentLocationRowId||null) : null,
+        is_current_location:gpsMode
       };
 
       var res=await window.__MY_STORE_SUPABASE__
@@ -1860,6 +1887,8 @@ body{padding:0 !important;margin:0 !important;}
           selectedAddress.longitude=addr.longitude;
           selectedAddress.isCurrentLocation=true;
           selectedAddress.location_row_id=addr.location_row_id;
+          selectedAddress.location_accuracy=addr.location_accuracy;
+          selectedAddress.location_captured_at=addr.location_captured_at;
         }
       }
 
