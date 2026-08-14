@@ -1190,7 +1190,7 @@ body{padding:0 !important;margin:0 !important;}
       locality/area -> district -> city/town/village -> state -> pincode.
     */
     var result={
-      area:'',district:'',city:'',state:'',pincode:'',display:''
+      area:'',district:'',city:'',state:'',pincode:'',display:'',place_name:''
     };
 
     try{
@@ -1239,6 +1239,8 @@ body{padding:0 !important;margin:0 !important;}
           a.town ||
           a.municipality ||
           a.village ||
+          a.city_district ||
+          a.county ||
           ''
         ).trim();
 
@@ -1250,6 +1252,15 @@ body{padding:0 !important;margin:0 !important;}
 
         result.pincode=String(a.postcode||'').trim();
         result.display=String(d.display_name||'').trim();
+
+        /* Google-Maps-like human place label. Prefer city/town, then
+           locality/area, then district. This is only the display name;
+           the exact GPS coordinates remain the delivery source of truth. */
+        result.place_name=String(
+          a.city || a.town || a.municipality || a.village ||
+          a.suburb || a.neighbourhood || a.locality ||
+          a.county || a.state_district || ''
+        ).trim();
 
         /*
           If the address is rural and Nominatim has no city/town,
@@ -1313,6 +1324,12 @@ body{padding:0 !important;margin:0 !important;}
       }
     }
 
+    if(!result.place_name){
+      result.place_name=String(
+        result.city || result.area || result.district || ''
+      ).trim();
+    }
+
     return result;
   }
 
@@ -1322,14 +1339,20 @@ body{padding:0 !important;margin:0 !important;}
       QXW3+XXX Lucknow, Uttar Pradesh, India
       Do not show district/locality as separate fields.
     */
-    var placeName=currentLocationData.city || currentLocationData.area || currentLocationData.district || '';
-    var placeParts=[];
-    if(placeName) placeParts.push(placeName);
+    var placeName=currentLocationData.place_name ||
+      currentLocationData.city || currentLocationData.area || currentLocationData.district || '';
+
+    /* Never show an empty label. If the geocoder does not return a locality,
+       use the district/county as the human-readable area name. */
+    if(!placeName){
+      placeName='Location area';
+    }
+
+    var placeParts=[placeName];
     if(currentLocationData.state) placeParts.push(currentLocationData.state);
     placeParts.push('India');
 
-    var plusDisplay=(currentLocationData.plus_code||'Not available');
-    if(placeParts.length) plusDisplay+=' '+placeParts.join(', ');
+    var plusDisplay=(currentLocationData.plus_code||'Not available')+' '+placeParts.join(', ');
 
     setText('ckDetectedArea',plusDisplay);
     setText('ckDetectedState',currentLocationData.state||'Not available');
@@ -1435,6 +1458,7 @@ body{padding:0 !important;margin:0 !important;}
         currentLocationData.state=geo.state;
         currentLocationData.pincode=geo.pincode;
         currentLocationData.display=geo.display;
+        currentLocationData.place_name=geo.place_name || geo.city || geo.area || geo.district || '';
 
         /* Save GPS immediately; existing delivery_locations columns stay unchanged. */
         await saveCurrentLocationRow();
