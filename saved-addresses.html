@@ -5,7 +5,175 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#6d28d9">
 <title>Saved Addresses | MyStore</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+/* ===== SMART ADDRESS VALIDATION + PINCODE + LOCATION ===== */
+
+const PIN_API = "https://api.postalpincode.in/pincode/";
+
+function fieldEl(id){ return document.getElementById(id)?.closest(".field"); }
+
+function setFieldState(id, state, message){
+  const el=document.getElementById(id);
+  const wrap=fieldEl(id);
+  if(!el||!wrap)return;
+  wrap.classList.remove("invalid","valid");
+  let msg=wrap.querySelector(".field-msg");
+  if(!msg){
+    msg=document.createElement("div");
+    msg.className="field-msg";
+    el.parentElement.appendChild(msg);
+  }
+  msg.textContent=message||"";
+  if(state)wrap.classList.add(state);
+}
+
+function validateField(id){
+  const el=document.getElementById(id);
+  if(!el)return true;
+  const v=el.value.trim();
+  let ok=true,msg="";
+  if(id==="name"){
+    ok=/^[A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F .'-]{1,49}$/.test(v);
+    msg=ok?"✓ Name looks good":"Enter a valid name";
+  }else if(id==="phone"){
+    ok=/^[6-9]\d{9}$/.test(v);
+    msg=ok?"✓ Mobile number is valid":"Enter a valid 10-digit mobile number";
+  }else if(id==="pincode"){
+    ok=/^\d{6}$/.test(v);
+    msg=ok?"✓ PIN code is valid":"Enter a valid 6-digit PIN code";
+  }else if(["house","road","city","state"].includes(id)){
+    ok=v.length>=2;
+    msg=ok?"✓ Looks good":"Please enter this field";
+  }
+  setFieldState(id,ok?"valid":"invalid",msg);
+  return ok;
+}
+
+function addSmartValidation(){
+  ["name","phone","pincode","house","road","city","state"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.addEventListener("blur",()=>validateField(id));
+    el.addEventListener("input",()=>{
+      const wrap=fieldEl(id);
+      if(wrap?.classList.contains("invalid")||wrap?.classList.contains("valid"))validateField(id);
+    });
+  });
+}
+
+async function fetchPincode(){
+  const pin=document.getElementById("pincode")?.value.trim();
+  const status=document.getElementById("pinStatus");
+  if(!status)return;
+  if(!/^\d{6}$/.test(pin)){
+    status.className="pin-status err show";
+    status.textContent="Enter a valid 6-digit PIN code.";
+    setFieldState("pincode","invalid","Enter a valid 6-digit PIN code");
+    return;
+  }
+  status.className="pin-status loading show";
+  status.textContent="Fetching city, district & state…";
+  try{
+    const res=await fetch(PIN_API+pin);
+    const json=await res.json();
+    const post=json?.[0]?.PostOffice?.[0];
+    if(json?.[0]?.Status==="Success" && post){
+      const state=document.getElementById("state");
+      const city=document.getElementById("city");
+      if(state)state.value=post.State||"";
+      if(city)city.value=post.District||post.Block||post.Division||"";
+      status.className="pin-status ok show";
+      status.textContent=`✓ ${post.District||post.Block||""}, ${post.State||""}`;
+      setFieldState("pincode","valid","✓ PIN code verified");
+      setFieldState("state","valid","✓ Auto-filled from PIN code");
+      setFieldState("city","valid","✓ Auto-filled from PIN code");
+    }else{
+      status.className="pin-status err show";
+      status.textContent="PIN code not found.";
+      setFieldState("pincode","invalid","PIN code not found");
+    }
+  }catch(e){
+    status.className="pin-status err show";
+    status.textContent="Could not fetch PIN details. You can enter them manually.";
+  }
+}
+
+function reverseGeocode(lat,lon){
+  return fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&addressdetails=1`,{
+    headers:{"Accept":"application/json"}
+  }).then(r=>r.json());
+}
+
+async function useCurrentLocation(){
+  const btn=document.getElementById("useLocationBtn");
+  const status=document.getElementById("locationStatus");
+  if(!navigator.geolocation){
+    status.textContent="Location is not supported by this browser.";
+    return;
+  }
+  btn.disabled=true; btn.textContent="Locating…"; status.textContent="Getting your current location…";
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    try{
+      const lat=pos.coords.latitude, lon=pos.coords.longitude;
+      const data=await reverseGeocode(lat,lon);
+      const a=data.address||{};
+      const set=(id,v)=>{const e=document.getElementById(id);if(e&&v)e.value=v};
+      set("house",a.house_number||a.building||a.hamlet||"");
+      set("road",a.road||a.neighbourhood||a.suburb||"");
+      set("city",a.city||a.town||a.village||a.municipality||"");
+      set("state",a.state||"");
+      set("pincode",a.postcode||"");
+      if(document.getElementById("pincode")?.value.length===6) {
+        const ps=document.getElementById("pinStatus"); if(ps){ps.className="pin-status ok show";ps.textContent="✓ PIN code detected from location";}
+      }
+      status.textContent=`✓ Location detected: ${data.display_name||"Current location"}`;
+      // Keep precise coordinates in memory for the save handler.
+      window.currentDeliveryLocation={
+        latitude:lat,longitude:lon,
+        accuracy:pos.coords.accuracy||null,
+        address:data.display_name||"",
+        captured_at:new Date().toISOString(),
+        location_link:`https://www.google.com/maps?q=${encodeURIComponent(lat)},${encodeURIComponent(lon)}`
+      };
+      ["house","road","city","state","pincode"].forEach(id=>{if(document.getElementById(id)?.value)validateField(id)});
+    }catch(e){
+      status.textContent="Location found, but address details could not be read. Please enter manually.";
+    }finally{
+      btn.disabled=false;btn.textContent="Use Location";
+    }
+  },err=>{
+    btn.disabled=false;btn.textContent="Use Location";
+    status.textContent=err.code===1?"Location permission was denied. Please allow it in browser settings.":"Could not get your location. Please try again.";
+  },{enableHighAccuracy:true,timeout:15000,maximumAge:30000});
+}
+
+/* Add a location column only if it exists in the table; otherwise address still saves normally. */
+async function attachLocationToPayload(payload){
+  const loc = window.currentDeliveryLocation;
+  if(!loc) return payload;
+
+  return {
+    ...payload,
+    latitude: Number(loc.latitude),
+    longitude: Number(loc.longitude),
+    location_accuracy: loc.accuracy == null ? null : Number(loc.accuracy),
+    location_captured_at: loc.captured_at || new Date().toISOString()
+  };
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  addSmartValidation();
+  const pin=document.getElementById("pincode");
+  if(pin)pin.addEventListener("input",()=>{
+    if(pin.value.length===6)fetchPincode();
+  });
+  // Add PIN status below PIN field without altering existing markup.
+  const pf=fieldEl("pincode");
+  if(pf && !document.getElementById("pinStatus")){
+    const s=document.createElement("div");s.id="pinStatus";s.className="pin-status";pf.appendChild(s);
+  }
+});
+</script>
 <style>
 :root{
  --primary:#6d28d9;--primary2:#8b5cf6;--ink:#17151f;--muted:#74717c;
@@ -102,12 +270,81 @@ button,input,select{font:inherit}
  .add-btn{width:42px;padding:0;font-size:0}.add-btn svg{width:19px;height:19px}
  .card-btn{flex:1;justify-content:center}.actions{gap:8px}
 }
+
+/* ===== SMART ADDRESS UX ===== */
+.field.invalid input,.field.invalid select{
+  border-color:#ef4444!important;
+  background:#fffafa;
+  box-shadow:0 0 0 3px rgba(239,68,68,.10)!important;
+  animation:fieldShake .28s ease;
+}
+.field.valid input,.field.valid select{
+  border-color:#22c55e!important;
+  background:#f7fff9;
+  box-shadow:0 0 0 3px rgba(34,197,94,.08)!important;
+}
+.field-msg{
+  min-height:16px;
+  font-size:11px;
+  line-height:16px;
+  font-weight:700;
+  color:#ef4444;
+}
+.field.valid .field-msg{color:#16a34a}
+@keyframes fieldShake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-5px)}
+  75%{transform:translateX(5px)}
+}
+.location-banner{
+  display:flex;align-items:center;gap:13px;
+  padding:14px 15px;margin-bottom:18px;
+  border:1px solid #ddd1f5;border-radius:15px;
+  background:linear-gradient(135deg,#faf7ff,#f5f0ff);
+}
+.location-icon{
+  flex:0 0 40px;width:40px;height:40px;border-radius:12px;
+  display:grid;place-items:center;background:#6d28d9;color:#fff;
+}
+.location-icon svg{width:21px;height:21px}
+.location-copy{min-width:0;flex:1}
+.location-copy strong{display:block;font-size:13px}
+.location-copy span{display:block;color:#77717f;font-size:11px;margin-top:3px;line-height:1.4}
+.location-btn{
+  height:38px;padding:0 12px;border:0;border-radius:9px;
+  background:#6d28d9;color:#fff;font-size:11px;font-weight:800;cursor:pointer;
+  white-space:nowrap
+}
+.location-btn:disabled{opacity:.6;cursor:wait}
+.location-status{font-size:11px;font-weight:700;color:#6d28d9;margin-top:4px}
+.pin-row{display:flex;gap:8px}
+.pin-row input{flex:1}
+.pin-status{display:none;font-size:11px;font-weight:750;margin-top:4px}
+.pin-status.show{display:block}
+.pin-status.loading{color:#6d28d9}
+.pin-status.ok{color:#16a34a}
+.pin-status.err{color:#dc2626}
 </style>
 </head>
 <body>
 <header class="header"><div class="logo" onclick="location.href='index.html'"><span class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-7h6v7"/></svg></span>MyStore</div><div class="header-actions"><button class="header-btn" onclick="location.href='profile.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/></svg><span>My Account</span></button><button class="header-btn" onclick="location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.6L21 7H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg><span>Cart</span></button></div></header>
 <main class="container"><div class="page-title"><div><h1>Saved Addresses</h1><p>Add and manage your delivery addresses.</p></div><button class="add-btn" onclick="openAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Address</button></div><div id="loading" class="loading"><div class="spinner"></div>Loading your saved addresses...</div><div id="grid" class="grid" style="display:none"></div></main>
-<div id="modal" class="modal"><div class="box"><div class="modal-head"><div><h2 id="heading">Add New Address</h2><p>Enter your complete delivery details.</p></div><button class="close" onclick="closeModal()">×</button></div><div class="form"><div class="form-grid"><div class="field"><label>Full Name *</label><input id="name" autocomplete="name" placeholder="Enter receiver name"></div><div class="field"><label>Mobile Number *</label><input id="phone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10 digit mobile number"></div><div class="field full"><label>House / Flat / Building *</label><input id="house" autocomplete="address-line1" placeholder="House no., Flat no., Building name"></div><div class="field full"><label>Road / Area / Locality *</label><input id="road" autocomplete="address-line2" placeholder="Road, area, locality"></div><div class="field"><label>City *</label><input id="city" autocomplete="address-level2" placeholder="Enter city"></div><div class="field"><label>State *</label><input id="state" autocomplete="address-level1" placeholder="Enter state"></div><div class="field"><label>PIN Code *</label><input id="pincode" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="6 digit PIN code"></div><div class="field"><label>Address Type</label><select id="type"><option value="home">Home</option><option value="work">Work</option><option value="other">Other</option></select></div></div><div class="form-actions"><button class="cancel" onclick="closeModal()">Cancel</button><button id="save" class="save" onclick="saveAddress()">Save Address</button></div></div></div></div>
+<div id="modal" class="modal"><div class="box"><div class="modal-head"><div><h2 id="heading">Add New Address</h2><p>Enter your complete delivery details.</p></div><button class="close" onclick="closeModal()">×</button></div>
+<div class="location-banner">
+  <div class="location-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/>
+      <circle cx="12" cy="9" r="2.5"/>
+    </svg>
+  </div>
+  <div class="location-copy">
+    <strong>Use your current location</strong>
+    <span>Allow location to auto-fill your real delivery address. Your delivery location can also be saved with the order for faster delivery.</span>
+    <div id="locationStatus" class="location-status"></div>
+  </div>
+  <button type="button" class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">Use Location</button>
+</div>
+<div class="form"><div class="form-grid"><div class="field"><label>Full Name *</label><input id="name" autocomplete="name" placeholder="Enter receiver name"></div><div class="field"><label>Mobile Number *</label><input id="phone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10 digit mobile number"></div><div class="field full"><label>House / Flat / Building *</label><input id="house" autocomplete="address-line1" placeholder="House no., Flat no., Building name"></div><div class="field full"><label>Road / Area / Locality *</label><input id="road" autocomplete="address-line2" placeholder="Road, area, locality"></div><div class="field"><label>City *</label><input id="city" autocomplete="address-level2" placeholder="Enter city"></div><div class="field"><label>State *</label><input id="state" autocomplete="address-level1" placeholder="Enter state"></div><div class="field"><label>PIN Code *</label><input id="pincode" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="6 digit PIN code"></div><div class="field"><label>Address Type</label><select id="type"><option value="home">Home</option><option value="work">Work</option><option value="other">Other</option></select></div></div><div class="form-actions"><button class="cancel" onclick="closeModal()">Cancel</button><button id="save" class="save" onclick="saveAddress()">Save Address</button></div></div></div></div>
 <div id="toast" class="toast"></div>
 <script>
 const SUPABASE_URL='https://bszojvhitsoamhksyjul.supabase.co';
@@ -217,5 +454,75 @@ sb.auth.onAuthStateChange((event, session)=>{
 
 init();
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const form=document.querySelector(".form");
+  if(!form)return;
+  const saveBtn=document.querySelector(".save");
+  if(saveBtn){
+    saveBtn.addEventListener("click",()=>{
+      const ids=["name","phone","pincode","state","city","house","road"];
+      const ok=ids.every(id=>validateField(id));
+      if(!ok){
+        const first=ids.find(id=>!validateField(id));
+        document.getElementById(first)?.focus();
+      }
+    },true);
+  }
+});
+</script>
+
+<script>
+/* =========================================================
+   SAVE EXACT GPS LOCATION WITH SAVED ADDRESS
+   ========================================================= */
+(function(){
+  const originalFrom = supabaseClient.from.bind(supabaseClient);
+
+  supabaseClient.from = function(table){
+    const q = originalFrom(table);
+
+    if(table !== "saved_addresses") return q;
+
+    const originalInsert = q.insert.bind(q);
+    const originalUpdate = q.update.bind(q);
+
+    q.insert = async function(values, options){
+      if(window.currentDeliveryLocation){
+        const loc = window.currentDeliveryLocation;
+        const addLocation = (row) => ({
+          ...row,
+          latitude: Number(loc.latitude),
+          longitude: Number(loc.longitude),
+          location_accuracy: loc.accuracy == null ? null : Number(loc.accuracy),
+          location_captured_at: loc.captured_at || new Date().toISOString()
+        });
+
+        values = Array.isArray(values) ? values.map(addLocation) : addLocation(values);
+      }
+      return originalInsert(values, options);
+    };
+
+    q.update = async function(values, options){
+      if(window.currentDeliveryLocation){
+        const loc = window.currentDeliveryLocation;
+        values = {
+          ...values,
+          latitude: Number(loc.latitude),
+          longitude: Number(loc.longitude),
+          location_accuracy: loc.accuracy == null ? null : Number(loc.accuracy),
+          location_captured_at: loc.captured_at || new Date().toISOString(),
+          location_link: `https://www.google.com/maps?q=${encodeURIComponent(Number(loc.latitude))},${encodeURIComponent(Number(loc.longitude))}`
+        };
+      }
+      return originalUpdate(values, options);
+    };
+
+    return q;
+  };
+})();
+</script>
+
 </body>
 </html>
