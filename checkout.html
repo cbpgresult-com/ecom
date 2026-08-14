@@ -558,7 +558,6 @@ body{padding:0 !important;margin:0 !important;}
                 referrerpolicy="no-referrer-when-downgrade"
                 src="about:blank"></iframe>
             </div>
-            <button type="button" class="ckbtn block" onclick="ckUseDetectedLocation()">Continue with Current Location</button>
             <div class="ck-back-manual" onclick="ckUseManualAddress()">← Enter address manually</div>
           </div>
 
@@ -630,7 +629,7 @@ body{padding:0 !important;margin:0 !important;}
             Save this address for future orders
           </label>
 
-          <button class="ckbtn block" type="button" onclick="ckSaveAddress()">Save Address</button>
+          <button class="ckbtn block" type="button" onclick="ckSaveAddress()">Save &amp; Continue</button>
 
           <div class="ck-backtosaved-link" id="ckBackToSavedLink" style="display:none;" onclick="ckShowSavedList()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px;">
@@ -1570,11 +1569,9 @@ body{padding:0 !important;margin:0 !important;}
         currentLocationData.display=geo.display;
         currentLocationData.place_name=geo.place_name || geo.city || geo.area || geo.district || '';
 
-        /* GPS locality/village is only a starting value; user can edit it. */
-        var villageValue=currentLocationData.village ||
-          currentLocationData.area ||
-          currentLocationData.place_name || '';
-        if(el('ckCity')) el('ckCity').value=villageValue;
+        /* Do NOT prefill Village from reverse-geocoder.
+           User enters the Village manually. */
+        if(el('ckCity')) el('ckCity').value='';
 
         /* Always match Full Name + Mobile with the logged-in account. */
         if(currentUser){
@@ -1702,9 +1699,22 @@ body{padding:0 !important;margin:0 !important;}
      SAVE ADDRESS
   ========================================================= */
   window.ckSaveAddress=async function(){
-    var ids=['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckHouse','ckRoad'];
-    var valid=true;
+    if(!currentUser){
+      alert('Please login first.');
+      return;
+    }
 
+    /* This button is now the single "Save & Continue" action for
+       Current Location mode. */
+    var gpsMode=!!(currentLocationData &&
+      currentLocationData.latitude!=null &&
+      currentLocationData.longitude!=null);
+
+    var ids=gpsMode
+      ? ['ckFullName','ckPhone','ckCity']
+      : ['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckHouse','ckRoad'];
+
+    var valid=true;
     ids.forEach(function(id){
       var x=el(id);
       if(!x || !x.value.trim()){
@@ -1715,21 +1725,18 @@ body{padding:0 !important;margin:0 !important;}
       }
     });
 
-    var phone=el('ckPhone').value.trim();
-    var pincode=el('ckPincode').value.trim();
-
+    var phone=(el('ckPhone')?.value||'').trim();
     if(el('ckPhoneError')){
       el('ckPhoneError').classList.toggle('show',!/^[6-9]\d{9}$/.test(phone));
     }
-
     if(!/^[6-9]\d{9}$/.test(phone)) valid=false;
-    if(!/^\d{6}$/.test(pincode)) valid=false;
-    if(!valid) return;
 
-    if(!currentUser){
-      alert('Please login first.');
-      return;
+    if(!gpsMode){
+      var pincode=(el('ckPincode')?.value||'').trim();
+      if(!/^\d{6}$/.test(pincode)) valid=false;
     }
+
+    if(!valid) return;
 
     var btn=document.querySelector('#ckAddressFormSection .ckbtn.block');
     if(btn){
@@ -1737,23 +1744,26 @@ body{padding:0 !important;margin:0 !important;}
       btn.textContent='Saving...';
     }
 
+    var village=(el('ckCity')?.value||'').trim();
+
     var addr={
-      name:el('ckFullName').value.trim(),
+      name:(el('ckFullName')?.value||'').trim(),
       phone:phone,
-      pincode:pincode,
-      state:el('ckState').value.trim(),
-      city:el('ckCity').value.trim(),
-      house:el('ckHouse').value.trim(),
-      road:el('ckRoad').value.trim(),
-      type:addressType || 'home'
+      pincode:gpsMode ? (currentLocationData.pincode||'') : (el('ckPincode')?.value||'').trim(),
+      state:gpsMode ? (currentLocationData.state||'') : (el('ckState')?.value||'').trim(),
+      city:village,
+      house:gpsMode ? '' : (el('ckHouse')?.value||'').trim(),
+      road:gpsMode ? (currentLocationData.plus_code||'') : (el('ckRoad')?.value||'').trim(),
+      type:gpsMode ? 'current location' : (addressType || 'home'),
+      map_link:gpsMode ? (currentLocationData.map_link||'') : '',
+      latitude:gpsMode ? currentLocationData.latitude : null,
+      longitude:gpsMode ? currentLocationData.longitude : null,
+      isCurrentLocation:gpsMode,
+      location_row_id:gpsMode ? (currentLocationRowId||null) : null
     };
 
     try{
-      /*
-        IMPORTANT:
-        saved_addresses me exact columns use honge.
-        address_type/full_name/mobile/district nahi.
-      */
+      /* Always save this address to saved_addresses. */
       var insertPayload={
         user_id:currentUser.id,
         name:addr.name,
@@ -1776,27 +1786,40 @@ body{padding:0 !important;margin:0 !important;}
 
       selectedAddress=mapAddress(res.data);
 
-      /* Keep exact GPS metadata with the selected checkout address. */
-      if(currentLocationData){
-        selectedAddress.map_link=currentLocationData.map_link||'';
-        selectedAddress.latitude=currentLocationData.latitude;
-        selectedAddress.longitude=currentLocationData.longitude;
+      /* Exact GPS location is the address used for this order. */
+      if(gpsMode){
+        selectedAddress.map_link=addr.map_link;
+        selectedAddress.latitude=addr.latitude;
+        selectedAddress.longitude=addr.longitude;
         selectedAddress.isCurrentLocation=true;
-        selectedAddress.location_row_id=currentLocationRowId||null;
+        selectedAddress.location_row_id=addr.location_row_id;
       }
 
       await loadSavedAddresses();
 
-      /* Newly saved address should remain selected */
+      /* Re-select the newly saved row, then restore exact GPS metadata. */
       var fresh=savedAddresses.find(function(a){
         return normalizeId(a.id)===normalizeId(res.data.id);
       });
-      if(fresh) selectedAddress=fresh;
+      if(fresh){
+        selectedAddress=fresh;
+        if(gpsMode){
+          selectedAddress.map_link=addr.map_link;
+          selectedAddress.latitude=addr.latitude;
+          selectedAddress.longitude=addr.longitude;
+          selectedAddress.isCurrentLocation=true;
+          selectedAddress.location_row_id=addr.location_row_id;
+        }
+      }
 
       fillSummary(selectedAddress);
 
+      /* One button does both jobs:
+         save address + continue to Order. */
+      ckShowPanel(2);
+
     }catch(error){
-      console.error('SAVE ADDRESS ERROR:',error);
+      console.error('SAVE & CONTINUE ERROR:',error);
       alert(
         'Address save nahi ho paya.\n\n' +
         (error.message || 'Supabase error')
@@ -1804,7 +1827,7 @@ body{padding:0 !important;margin:0 !important;}
     }finally{
       if(btn){
         btn.disabled=false;
-        btn.textContent='Save Address';
+        btn.textContent='Save & Continue';
       }
     }
   };
