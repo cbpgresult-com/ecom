@@ -1,3 +1,12 @@
+<!--
+SUPABASE saved_addresses CURRENT LOCATION COLUMNS REQUIRED:
+
+ALTER TABLE public.saved_addresses
+ADD COLUMN IF NOT EXISTS village text;
+
+ALTER TABLE public.saved_addresses
+ADD COLUMN IF NOT EXISTS plus_code text;
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1038,10 +1047,17 @@ body{padding:0 !important;margin:0 !important;}
       phone:a.phone || '',
       pincode:a.pincode || '',
       state:a.state || '',
+
+      /* Current Location has its own Village + Plus Code fields. */
       city:a.city || '',
+      village:a.village || '',
       house:a.house || '',
       road:a.road || '',
+      plus_code:a.plus_code || '',
+
       type:a.type || 'home',
+
+      /* Exact location metadata. */
       map_link:a.map_link || '',
       latitude:a.latitude==null ? null : Number(a.latitude),
       longitude:a.longitude==null ? null : Number(a.longitude),
@@ -1084,13 +1100,22 @@ body{padding:0 !important;margin:0 !important;}
     }
 
     list.innerHTML=savedAddresses.map(function(a){
-      var addr=[a.house,a.road,a.city,a.state,a.pincode].filter(Boolean).join(', ');
+      var addr=a.isCurrentLocation
+        ? [a.village,a.state,a.pincode].filter(Boolean).join(', ')
+        : [a.house,a.road,a.city,a.state,a.pincode].filter(Boolean).join(', ');
+
+      var plus=a.isCurrentLocation && a.plus_code
+        ? '<br><span style="font-size:12px;color:#52695d;">Plus Code: '+escapeHtml(a.plus_code)+'</span>'
+        : '';
+
+      var map=a.map_link
+        ? '<br><a href="'+escapeHtml(a.map_link)+'" target="_blank" rel="noopener" style="color:#176b4d;font-weight:700;">Open Exact Map ↗</a>'
+        : '';
+
       return '<div class="ck-saved-card">'
         + '<div><span class="sa-name">'+escapeHtml(a.name)+'</span>'
         + '<span class="sa-tag">'+escapeHtml((a.type||'home').toUpperCase())+'</span></div>'
-        + '<div class="sa-addr">'+escapeHtml(addr)+'<br>Phone: '+escapeHtml(a.phone)
-        + (a.map_link ? '<br><a href="'+escapeHtml(a.map_link)+'" target="_blank" rel="noopener" style="color:#176b4d;font-weight:700;">Open Exact Map ↗</a>' : '')
-        + '</div>'
+        + '<div class="sa-addr">'+escapeHtml(addr)+plus+map+'<br>Phone: '+escapeHtml(a.phone)+'</div>'
         + '<button class="sa-deliverbtn" type="button" onclick="ckUseSavedAddress(\''+escapeHtml(normalizeId(a.id))+'\')">Deliver Here</button>'
         + '</div>';
     }).join('');
@@ -1103,7 +1128,11 @@ body{padding:0 !important;margin:0 !important;}
   function fillSummary(addr){
     setText('ckSummaryName',addr.name);
     setText('ckSummaryTag',(addr.type||'home').toUpperCase());
-    setText('ckSummaryAddr',[addr.house,addr.road,addr.city,addr.state,addr.pincode,'Phone: '+addr.phone].filter(Boolean).join(', '));
+    var summaryParts=addr.isCurrentLocation
+      ? [addr.village,addr.state,addr.pincode,addr.plus_code,'Phone: '+addr.phone]
+      : [addr.house,addr.road,addr.city,addr.state,addr.pincode,'Phone: '+addr.phone];
+
+    setText('ckSummaryAddr',summaryParts.filter(Boolean).join(', '));
     renderProducts();
     ckShowPanel(2);
   }
@@ -1126,14 +1155,21 @@ body{padding:0 !important;margin:0 !important;}
   window.ckUseSavedAddress=function(id){
     var a=savedAddresses.find(function(x){return normalizeId(x.id)===normalizeId(id);});
     if(!a) return;
+
     selectedAddress=a;
+
     if(a.isCurrentLocation || a.type==='current location'){
+      selectedAddress.city='';
+      selectedAddress.road='';
+      selectedAddress.village=a.village||'';
+      selectedAddress.plus_code=a.plus_code||'';
       selectedAddress.map_link=a.map_link||'';
       selectedAddress.latitude=a.latitude;
       selectedAddress.longitude=a.longitude;
       selectedAddress.location_row_id=a.location_row_id||null;
       selectedAddress.isCurrentLocation=true;
     }
+
     fillSummary(selectedAddress);
   };
 
@@ -1820,9 +1856,11 @@ body{padding:0 !important;margin:0 !important;}
       phone:phone,
       pincode:gpsMode ? (currentLocationData.pincode||'') : (el('ckPincode')?.value||'').trim(),
       state:gpsMode ? (currentLocationData.state||'') : (el('ckState')?.value||'').trim(),
-      city:village,
+      city:gpsMode ? '' : village,
+      village:gpsMode ? village : '',
       house:gpsMode ? '' : (el('ckHouse')?.value||'').trim(),
-      road:gpsMode ? (currentLocationData.plus_code||'') : (el('ckRoad')?.value||'').trim(),
+      road:gpsMode ? '' : (el('ckRoad')?.value||'').trim(),
+      plus_code:gpsMode ? (currentLocationData.plus_code||'') : '',
       type:gpsMode ? 'current location' : (addressType || 'home'),
       map_link:gpsMode ? (currentLocationData.map_link||'') : '',
       latitude:gpsMode ? currentLocationData.latitude : null,
@@ -1839,18 +1877,27 @@ body{padding:0 !important;margin:0 !important;}
         phone:addr.phone,
         pincode:addr.pincode,
         state:addr.state,
-        city:addr.city,
+
+        /* Manual addresses keep the old fields. */
+        city:gpsMode ? null : addr.city,
         house:addr.house,
-        road:addr.road,
+        road:gpsMode ? null : addr.road,
+
+        /* Current Location gets separate Village + Plus Code. */
+        village:gpsMode ? (addr.village||'') : null,
+        plus_code:gpsMode ? (addr.plus_code||'') : null,
+
         type:addr.type,
-        map_link:gpsMode ? (currentLocationData.map_link||'') : '',
-        latitude:gpsMode ? Number(currentLocationData.latitude) : null,
-        longitude:gpsMode ? Number(currentLocationData.longitude) : null,
+
+        /* Exact GPS metadata. */
+        map_link:gpsMode ? (addr.map_link||'') : '',
+        latitude:gpsMode ? Number(addr.latitude) : null,
+        longitude:gpsMode ? Number(addr.longitude) : null,
         location_accuracy:gpsMode && currentLocationData.accuracy!=null
           ? Number(currentLocationData.accuracy) : null,
         location_captured_at:gpsMode
           ? (currentLocationData.captured_at||new Date().toISOString()) : null,
-        location_row_id:gpsMode ? (currentLocationRowId||null) : null,
+        location_row_id:gpsMode ? (addr.location_row_id||null) : null,
         is_current_location:gpsMode
       };
 
@@ -1866,7 +1913,11 @@ body{padding:0 !important;margin:0 !important;}
 
       /* Exact GPS location is the address used for this order. */
       if(gpsMode){
-        selectedAddress.map_link=addr.map_link;
+        selectedAddress.city='';
+        selectedAddress.road='';
+        selectedAddress.village=addr.village||'';
+        selectedAddress.plus_code=addr.plus_code||'';
+        selectedAddress.map_link=addr.map_link||'';
         selectedAddress.latitude=addr.latitude;
         selectedAddress.longitude=addr.longitude;
         selectedAddress.isCurrentLocation=true;
@@ -1887,8 +1938,6 @@ body{padding:0 !important;margin:0 !important;}
           selectedAddress.longitude=addr.longitude;
           selectedAddress.isCurrentLocation=true;
           selectedAddress.location_row_id=addr.location_row_id;
-          selectedAddress.location_accuracy=addr.location_accuracy;
-          selectedAddress.location_captured_at=addr.location_captured_at;
         }
       }
 
