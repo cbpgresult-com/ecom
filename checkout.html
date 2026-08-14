@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIINfQ3M5Y8n2eJ7J5Zl8pKQJ5Y6c7v1YQ=" crossorigin=""/>
+
 <style>
 :root{
   --brand:#1f4d36;
@@ -360,6 +363,68 @@ body{padding:0 !important;margin:0 !important;}
 .ckform-grid{display:block;}
 .ckstep3-grid{display:block;}
 
+
+/* ─── HUMAN LOCATION PICKER ─── */
+.ck-location-picker-overlay{
+  display:none;position:fixed;inset:0;z-index:100200;
+  background:#fff;
+}
+.ck-location-picker-overlay.show{display:flex;flex-direction:column;}
+.ck-picker-head{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  padding-top:calc(14px + env(safe-area-inset-top));
+  background:linear-gradient(135deg,var(--brand),#2f7a55);color:#fff;
+  flex:none;box-shadow:0 4px 18px rgba(20,32,26,.16);z-index:3;
+}
+.ck-picker-close{
+  width:40px;height:40px;border:1px solid rgba(255,255,255,.25);
+  border-radius:12px;background:rgba(255,255,255,.12);color:#fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;
+}
+.ck-picker-title{font-size:16px;font-weight:850;line-height:1.2;}
+.ck-picker-sub{font-size:10.5px;opacity:.82;margin-top:3px;}
+.ck-picker-map{position:relative;flex:1;min-height:280px;background:#eef2ef;}
+#ckHumanLocationMap{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+.ck-picker-center{
+  position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-100%);
+  pointer-events:none;filter:drop-shadow(0 5px 7px rgba(0,0,0,.25));
+}
+.ck-picker-center .pin{
+  width:42px;height:42px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+  background:#1f4d36;border:4px solid #fff;display:flex;align-items:center;justify-content:center;
+}
+.ck-picker-center .pin::after{
+  content:"";width:10px;height:10px;border-radius:50%;background:#fff;
+}
+.ck-picker-center .shadow{
+  width:28px;height:8px;border-radius:50%;background:rgba(0,0,0,.18);
+  margin:12px auto 0;transform:rotate(0deg);
+}
+.ck-picker-recenter{
+  position:absolute;right:14px;top:14px;z-index:5;width:44px;height:44px;
+  border:1px solid #dce5df;border-radius:13px;background:#fff;color:var(--brand);
+  box-shadow:0 5px 18px rgba(20,32,26,.14);font-size:20px;cursor:pointer;
+}
+.ck-picker-card{
+  flex:none;background:#fff;border-top:1px solid var(--line);
+  padding:14px 16px calc(16px + env(safe-area-inset-bottom));
+  box-shadow:0 -8px 24px rgba(20,32,26,.08);z-index:4;
+}
+.ck-picker-label{font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.55px;color:var(--muted);}
+.ck-picker-address{
+  margin-top:6px;font-size:14px;font-weight:800;color:var(--ink);line-height:1.45;
+  min-height:42px;max-height:66px;overflow:auto;
+}
+.ck-picker-meta{display:flex;gap:8px;flex-wrap:wrap;margin:9px 0 12px;}
+.ck-picker-chip{font-size:10.5px;font-weight:750;color:var(--brand);background:var(--brand-100);border:1px solid #cfe4d7;padding:5px 8px;border-radius:999px;}
+.ck-picker-actions{display:flex;gap:9px;}
+.ck-picker-actions .ckbtn{flex:1;}
+.ck-picker-hint{text-align:center;color:var(--muted);font-size:10.5px;margin-top:8px;}
+@media(min-width:900px){
+  .ck-location-picker-overlay{align-items:center;justify-content:center;background:rgba(20,32,26,.52);backdrop-filter:blur(5px);}
+  .ck-picker-shell{width:min(900px,94vw);height:min(760px,92vh);border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 25px 80px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+}
+
 /* ─── PAYMENT STATUS ANIMATIONS ─── */
 .pp-anim-wrap{width:88px;height:88px;margin:0 auto 10px;}
 .pp-radar-ring{fill:none;stroke:#b8860b;stroke-width:2.5;opacity:0;transform-origin:60px 60px;animation:ppRadar 2.2s ease-out infinite;}
@@ -620,6 +685,46 @@ body{padding:0 !important;margin:0 !important;}
         </div>
       </div>
 
+
+      <!-- HUMAN LOCATION PICKER -->
+      <div class="ck-location-picker-overlay" id="ckLocationPicker">
+        <div class="ck-picker-shell">
+          <div class="ck-picker-head">
+            <button class="ck-picker-close" type="button" onclick="ckCloseLocationPicker()" aria-label="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </button>
+            <div>
+              <div class="ck-picker-title">Select delivery location</div>
+              <div class="ck-picker-sub">Move the map so the pin is exactly at your delivery point</div>
+            </div>
+          </div>
+
+          <div class="ck-picker-map">
+            <div id="ckHumanLocationMap"></div>
+            <div class="ck-picker-center" aria-hidden="true">
+              <div class="pin"></div><div class="shadow"></div>
+            </div>
+            <button class="ck-picker-recenter" type="button" onclick="ckPickerUseGPS()" title="Use my current location">⌖</button>
+          </div>
+
+          <div class="ck-picker-card">
+            <div class="ck-picker-label">Selected location</div>
+            <div class="ck-picker-address" id="ckPickerAddress">Getting your location…</div>
+            <div class="ck-picker-meta">
+              <span class="ck-picker-chip" id="ckPickerPlus">Plus Code: —</span>
+              <span class="ck-picker-chip" id="ckPickerPin">Pincode: —</span>
+            </div>
+            <div class="ck-picker-actions">
+              <button type="button" class="ckbtn" style="background:#fff;color:var(--brand);border:1.5px solid var(--brand);" onclick="ckCloseLocationPicker()">Cancel</button>
+              <button type="button" class="ckbtn" onclick="ckConfirmPickedLocation()">Save Address</button>
+            </div>
+            <div class="ck-picker-hint">After saving, your Name, Mobile, Pincode, State, City/District, House and Road fields will appear below.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- STEP 2: ORDER SUMMARY -->
       <div class="ckpanel" id="ckPanel2">
         <div class="ckdeliver">
@@ -801,6 +906,8 @@ body{padding:0 !important;margin:0 !important;}
   </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
@@ -1147,397 +1254,304 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   function getExactPlusCode(latitude,longitude){
-    /*
-      Open Location Code (Plus Code), calculated directly from GPS.
-      11 characters are used so the short code becomes e.g. QXW3+XXX.
-    */
     var alphabet='23456789CFGHJMPQRVWX';
     var lat=Number(latitude), lon=Number(longitude);
     if(!isFinite(lat)||!isFinite(lon)) return '';
-
     lat=Math.max(-90,Math.min(90,lat));
     lon=((lon+180)%360+360)%360-180;
     if(lat===90) lat=89.999999999;
-
-    lat+=90;
-    lon+=180;
-
-    var resolutions=[20,1,0.05,0.0025,0.000125];
-    var code='';
-
+    lat+=90; lon+=180;
+    var resolutions=[20,1,0.05,0.0025,0.000125], code='';
     for(var i=0;i<5;i++){
       var latDigit=Math.floor(lat/resolutions[i]);
       var lonDigit=Math.floor(lon/resolutions[i]);
-      lat-=latDigit*resolutions[i];
-      lon-=lonDigit*resolutions[i];
+      lat-=latDigit*resolutions[i]; lon-=lonDigit*resolutions[i];
       code+=alphabet.charAt(latDigit)+alphabet.charAt(lonDigit);
     }
-
-    /* Grid refinement: 5 rows × 4 columns, giving the final XXX. */
-    var latGridRes=0.000125/5;
-    var lonGridRes=0.000125/4;
+    var latGridRes=0.000125/5, lonGridRes=0.000125/4;
     var row=Math.min(4,Math.max(0,Math.floor(lat/latGridRes)));
     var col=Math.min(3,Math.max(0,Math.floor(lon/lonGridRes)));
     code+=alphabet.charAt(row*4+col);
-
     return code.slice(0,8)+'+'+code.slice(8,11);
   }
 
-  async function reverseGeocodeCurrentLocation(lat,lon){
-    /*
-      GPS coordinates remain the source of truth.
-      Nominatim is used at address level so we can separately map:
-      locality/area -> district -> city/town/village -> state -> pincode.
-    */
-    var result={
-      area:'',district:'',city:'',state:'',pincode:'',display:'',place_name:''
-    };
+  function shortPlusCode(full){
+    if(!full)return '';
+    var p=String(full).split('+');
+    if(p.length!==2)return full;
+    return (p[0].length>4?p[0].slice(-4):p[0])+'+'+p[1];
+  }
+
+  async function reverseGeocodePicker(lat,lon){
+    var result={house:'',road:'',area:'',city:'',district:'',state:'',pincode:'',display:''};
 
     try{
-      var url='https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
-        '&addressdetails=1&namedetails=1&zoom=18&lat=' +
+      var url='https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&lat='+
         encodeURIComponent(lat)+'&lon='+encodeURIComponent(lon);
-
-      var response=await fetch(url,{headers:{'Accept':'application/json'}});
-      if(response.ok){
-        var d=await response.json();
-        var a=d.address||{};
-
-        /*
-          LOCALITY / AREA:
-          Don't use city here. Prefer the smallest locality available.
-        */
-        result.area=String(
-          a.neighbourhood ||
-          a.suburb ||
-          a.quarter ||
-          a.hamlet ||
-          a.locality ||
-          a.village ||
-          ''
-        ).trim();
-
-        /*
-          DISTRICT:
-          In India Nominatim normally exposes the administrative district
-          as "county". city_district is often a sub-district/zone, so
-          county gets priority.
-        */
-        result.district=String(
-          a.county ||
-          a.state_district ||
-          a.city_district ||
-          ''
-        ).trim();
-
-        /*
-          CITY:
-          Never use county as city. Keep the actual settlement separate.
-        */
-        result.city=String(
-          a.city ||
-          a.town ||
-          a.municipality ||
-          a.village ||
-          a.city_district ||
-          a.county ||
-          ''
-        ).trim();
-
-        result.state=String(
-          a.state ||
-          a.state_district ||
-          ''
-        ).trim();
-
+      var r=await fetch(url,{headers:{'Accept':'application/json'}});
+      if(r.ok){
+        var d=await r.json(), a=d.address||{};
+        result.house=String(a.house_number||a.building||'').trim();
+        result.road=String(a.road||a.pedestrian||a.footway||a.path||'').trim();
+        result.area=String(a.neighbourhood||a.suburb||a.quarter||a.hamlet||a.locality||'').trim();
+        result.city=String(a.city||a.town||a.municipality||a.village||'').trim();
+        result.district=String(a.county||a.state_district||a.city_district||'').trim();
+        result.state=String(a.state||'').trim();
         result.pincode=String(a.postcode||'').trim();
         result.display=String(d.display_name||'').trim();
-
-        /* Google-Maps-like human place label. Prefer city/town, then
-           locality/area, then district. This is only the display name;
-           the exact GPS coordinates remain the delivery source of truth. */
-        result.place_name=String(
-          a.city || a.town || a.municipality || a.village ||
-          a.suburb || a.neighbourhood || a.locality ||
-          a.county || a.state_district || ''
-        ).trim();
-
-        /*
-          If the address is rural and Nominatim has no city/town,
-          village is the actual settlement and is already used above.
-          Do NOT copy district into city.
-        */
       }
-    }catch(e){
-      console.warn('Nominatim reverse geocode failed:',e);
-    }
+    }catch(e){ console.warn('Picker reverse geocode:',e); }
 
-    /*
-      BigDataCloud is fallback only for missing values.
-      We do NOT overwrite a value already obtained from Nominatim.
-    */
-    if(!result.area || !result.district || !result.city ||
-       !result.state || !result.pincode || !result.display){
+    /* Fallback only for missing state/pincode/city. */
+    if(!result.state || !result.pincode || !result.city || !result.district){
       try{
-        var bdc='https://api.bigdatacloud.net/data/reverse-geocode-client' +
-          '?latitude='+encodeURIComponent(lat) +
-          '&longitude='+encodeURIComponent(lon) +
-          '&localityLanguage=en';
-
-        var br=await fetch(bdc,{headers:{'Accept':'application/json'}});
+        var b='https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+
+          encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)+'&localityLanguage=en';
+        var br=await fetch(b,{headers:{'Accept':'application/json'}});
         if(br.ok){
           var bd=await br.json();
-
-          if(!result.area){
-            result.area=String(
-              bd.locality||bd.suburb||bd.neighbourhood||bd.village||''
-            ).trim();
-          }
-          if(!result.district){
-            result.district=String(
-              bd.district||bd.localityInfo?.administrative?.find(function(x){
-                return x && (x.name||'').trim();
-              })?.name||''
-            ).trim();
-          }
-          if(!result.city){
-            result.city=String(
-              bd.city||bd.town||bd.municipality||bd.village||bd.locality||
-              (bd.localityInfo && bd.localityInfo.administrative && bd.localityInfo.administrative[3] && bd.localityInfo.administrative[3].name)||''
-            ).trim();
-          }
-          if(!result.state){
-            result.state=String(bd.principalSubdivision||'').trim();
-          }
-          if(!result.pincode){
-            result.pincode=String(bd.postcode||bd.postCode||'').trim();
-          }
-          if(!result.display){
-            result.display=String(
-              [result.area,result.district,result.city,result.state,result.pincode]
-                .filter(Boolean).join(', ')
-            );
-          }
+          if(!result.city) result.city=String(bd.city||bd.town||bd.village||bd.locality||'').trim();
+          if(!result.district) result.district=String(bd.district||'').trim();
+          if(!result.state) result.state=String(bd.principalSubdivision||'').trim();
+          if(!result.pincode) result.pincode=String(bd.postcode||bd.postCode||'').trim();
         }
-      }catch(e){
-        console.warn('Fallback reverse geocode failed:',e);
-      }
+      }catch(e){ console.warn('Picker fallback geocode:',e); }
     }
 
-    if(!result.place_name){
-      result.place_name=String(
-        result.city || result.area || result.district || ''
-      ).trim();
+    if(!result.display){
+      result.display=[result.area,result.city,result.district,result.state,result.pincode].filter(Boolean).join(', ');
     }
-
     return result;
   }
 
-  function showDetectedLocationDetails(){
-    /*
-      Show Plus Code + human-readable place name exactly like Google Maps:
-      QXW3+XXX Lucknow, Uttar Pradesh, India
-      Do not show district/locality as separate fields.
-    */
-    var placeName=currentLocationData.place_name ||
-      currentLocationData.city || currentLocationData.area || currentLocationData.district || '';
+  var pickerMap=null,pickerMarker=null,pickerMoveTimer=null,pickerReverseToken=0;
+  var pickedLocation=null;
 
-    /* Never show an empty label. If the geocoder does not return a locality,
-       use the district/county as the human-readable area name. */
-    if(!placeName){
-      placeName='Location area';
-    }
-
-    var placeParts=[placeName];
-    if(currentLocationData.state) placeParts.push(currentLocationData.state);
-    placeParts.push('India');
-
-    var fullPlus=currentLocationData.plus_code||'';
-     /* Google Maps-style short Plus Code: QXW3+XXX */
-     var shortPlus=fullPlus;
-     if(fullPlus.indexOf('+')>0){
-       var plusParts=fullPlus.split('+');
-       var before=plusParts[0]||'';
-       var after=plusParts[1]||'';
-       if(before.length>4) before=before.slice(-4);
-       shortPlus=before+'+'+after;
-     }
-     var plusDisplay=(shortPlus||'Not available')+' '+placeParts.join(', ');
-
-    setText('ckDetectedArea',plusDisplay);
-    setText('ckDetectedState',currentLocationData.state||'Not available');
-    setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
-
-    setText(
-      'ckDetectedAccuracy',
-      currentLocationData.accuracy ?
-        '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS'
-    );
-
-    var a=el('ckDetectedMapLink');
-    if(a){
-      a.href=currentLocationData.map_link;
-      a.textContent='Open Exact Map ↗';
-    }
-
-    setText(
-      'ckDetectedLocationText',
-      'Plus Code: '+((currentLocationData.plus_code||'').indexOf('+')>0 ? (currentLocationData.plus_code.split('+')[0].slice(-4)+'+'+currentLocationData.plus_code.split('+')[1]) : (currentLocationData.plus_code||'available'))+' · Exact GPS location captured.'
-    );
-
-    setText(
-      'ckDetectedCoordinates',
-      Number(currentLocationData.latitude).toFixed(6)+'°, '+
-      Number(currentLocationData.longitude).toFixed(6)+'°'
-    );
-
-    var frame=el('ckExactLocationMap');
-    if(frame){
-      frame.src='https://www.google.com/maps?q='+
-        encodeURIComponent(
-          currentLocationData.latitude+','+currentLocationData.longitude
-        )+'&z=18&output=embed';
-    }
+  function pickerMapAddressFallback(lat,lon){
+    return 'Selected GPS location • '+Number(lat).toFixed(6)+', '+Number(lon).toFixed(6);
   }
+
+  async function pickerReverseAt(lat,lon){
+    var token=++pickerReverseToken;
+    setText('ckPickerAddress','Finding the selected place…');
+    var plus=getExactPlusCode(lat,lon);
+    setText('ckPickerPlus','Plus Code: '+shortPlusCode(plus));
+
+    var geo=await reverseGeocodePicker(lat,lon);
+    if(token!==pickerReverseToken)return;
+
+    pickedLocation=pickedLocation||{};
+    pickedLocation.latitude=Number(lat);
+    pickedLocation.longitude=Number(lon);
+    pickedLocation.plus_code=plus;
+    pickedLocation.geo=geo;
+    pickedLocation.map_link=currentLocationMapLink(lat,lon);
+
+    var human=[geo.area||geo.city||geo.district,geo.city && geo.city!==(geo.area||'')?geo.city:'',geo.state,'India']
+      .filter(function(v,i,a){return v && a.indexOf(v)===i;}).join(', ');
+    setText('ckPickerAddress',human || geo.display || pickerMapAddressFallback(lat,lon));
+    setText('ckPickerPin','Pincode: '+(geo.pincode||'—'));
+  }
+
+  function pickerSetCenter(lat,lon,zoom){
+    if(!pickerMap)return;
+    pickerMap.setView([lat,lon],zoom||18,{animate:true});
+    setTimeout(function(){pickerMap.invalidateSize();},150);
+  }
+
+  function initPickerMap(lat,lon){
+    if(!window.L){alert('Map library load nahi hui. Internet check karke retry karein.');return;}
+    if(!pickerMap){
+      pickerMap=L.map('ckHumanLocationMap',{zoomControl:true,attributionControl:true});
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        maxZoom:20,attribution:'&copy; OpenStreetMap contributors'
+      }).addTo(pickerMap);
+    }
+    if(pickerMarker)pickerMap.removeLayer(pickerMarker);
+    pickerMarker=L.marker([lat,lon],{draggable:true}).addTo(pickerMap);
+    pickerMarker.on('dragend',function(){
+      var p=pickerMarker.getLatLng();
+      clearTimeout(pickerMoveTimer);
+      pickerMoveTimer=setTimeout(function(){pickerReverseAt(p.lat,p.lng);},250);
+    });
+    pickerMap.on('moveend',function(){
+      if(!pickerMarker)return;
+      /* Keep the draggable marker and map center synchronized when user pans. */
+      var c=pickerMap.getCenter();
+      if(pickerMap._ckSyncing)return;
+      pickerMap._ckSyncing=true;
+      pickerMarker.setLatLng(c);
+      pickerMap._ckSyncing=false;
+      clearTimeout(pickerMoveTimer);
+      pickerMoveTimer=setTimeout(function(){pickerReverseAt(c.lat,c.lng);},250);
+    });
+    pickerSetCenter(lat,lon,18);
+    pickerReverseAt(lat,lon);
+  }
+
+  function openPickerAt(lat,lon){
+    var overlay=el('ckLocationPicker');
+    if(!overlay)return;
+    overlay.classList.add('show');
+    document.body.style.overflow='hidden';
+    pickedLocation={latitude:lat,longitude:lon};
+    setTimeout(function(){initPickerMap(lat,lon);},80);
+  }
+
+  window.ckCloseLocationPicker=function(){
+    var overlay=el('ckLocationPicker');
+    if(overlay)overlay.classList.remove('show');
+    document.body.style.overflow='';
+  };
+
+  function getFreshGPS(callback){
+    if(!navigator.geolocation){callback(new Error('GPS is not supported.'));return;}
+    navigator.geolocation.getCurrentPosition(function(pos){
+      callback(null,pos);
+    },function(err){
+      callback(err||new Error('Location unavailable.'));
+    },{
+      enableHighAccuracy:true,maximumAge:0,timeout:20000
+    });
+  }
+
+  window.ckPickerUseGPS=function(){
+    setText('ckPickerAddress','Getting a fresh GPS position…');
+    getFreshGPS(function(err,pos){
+      if(err){
+        setText('ckPickerAddress','GPS permission/location unavailable. You can move the pin manually.');
+        return;
+      }
+      var c=pos.coords;
+      pickerSetCenter(c.latitude,c.longitude,19);
+      if(pickerMarker)pickerMarker.setLatLng([c.latitude,c.longitude]);
+      pickerReverseAt(c.latitude,c.longitude);
+    });
+  };
 
   async function saveCurrentLocationRow(){
     var p=accountPerson();
     var res=await window.__MY_STORE_SUPABASE__.from('delivery_locations').insert({
       user_id:currentUser.id,email:currentUser.email||'',name:p.name,mobile:p.phone,
-      latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
-      map_link:currentLocationData.map_link
+      latitude:pickedLocation.latitude,longitude:pickedLocation.longitude,
+      map_link:currentLocationMapLink(pickedLocation.latitude,pickedLocation.longitude)
     }).select('id').single();
     if(res.error)throw res.error;
     currentLocationRowId=res.data.id;
   }
+
+  function fillFormFromPickedLocation(){
+    var g=pickedLocation && pickedLocation.geo ? pickedLocation.geo : {};
+    var p=accountPerson();
+
+    var name=el('ckFullName'),phone=el('ckPhone');
+    if(name)name.value=p.name||'';
+    if(phone)phone.value=p.phone||'';
+
+    if(el('ckPincode'))el('ckPincode').value=g.pincode||'';
+    if(el('ckState'))el('ckState').value=g.state||'';
+    if(el('ckCity'))el('ckCity').value=g.city||g.district||'';
+
+    /* These are the best available address components from the selected pin.
+       User can correct them before the final Save Address. */
+    if(el('ckHouse'))el('ckHouse').value=g.house||'';
+    if(el('ckRoad'))el('ckRoad').value=[g.road,g.area].filter(Boolean).join(', ')||shortPlusCode(pickedLocation.plus_code)||'';
+
+    currentLocationData={
+      latitude:Number(pickedLocation.latitude),
+      longitude:Number(pickedLocation.longitude),
+      accuracy:pickedLocation.accuracy||null,
+      plus_code:pickedLocation.plus_code||getExactPlusCode(pickedLocation.latitude,pickedLocation.longitude),
+      map_link:currentLocationMapLink(pickedLocation.latitude,pickedLocation.longitude),
+      state:g.state||'',pincode:g.pincode||'',city:g.city||g.district||'',
+      house:g.house||'',road:g.road||'',area:g.area||'',district:g.district||'',
+      display:g.display||'',place_name:g.area||g.city||g.district||'',
+      captured_at:new Date().toISOString()
+    };
+
+    restoreAddressInputs();
+    var box=el('ckCurrentLocationBox');if(box)box.style.display='none';
+    var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='block';
+    showDetectedLocationDetails();
+
+    var back=el('ckBackToSavedLink');if(back)back.style.display='none';
+    var form=el('ckAddressFormSection');if(form)form.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  async function confirmPickedLocation(){
+    if(!pickedLocation||!isFinite(pickedLocation.latitude)||!isFinite(pickedLocation.longitude)){
+      alert('Please select a location on the map.');return;
+    }
+
+    var btn=document.querySelector('#ckLocationPicker .ck-picker-actions .ckbtn:last-child');
+    if(btn){btn.disabled=true;btn.textContent='Saving…';}
+
+    try{
+      if(!pickedLocation.geo)pickedLocation.geo=await reverseGeocodePicker(pickedLocation.latitude,pickedLocation.longitude);
+      /* Save exact coordinates to delivery_locations only after the user confirms the pin. */
+      await saveCurrentLocationRow();
+      fillFormFromPickedLocation();
+      ckCloseLocationPicker();
+      setText('ckLocationStatus','✓ Location selected. Check the address and click Save Address.');
+    }catch(e){
+      console.error('PICKED LOCATION SAVE ERROR:',e);
+      alert('Location save nahi ho payi.\n\n'+(e.message||'Supabase error'));
+    }finally{
+      if(btn){btn.disabled=false;btn.textContent='Save Address';}
+    }
+  }
+  window.ckConfirmPickedLocation=confirmPickedLocation;
 
   window.ckUseCurrentLocation=function(){
     if(!currentUser){alert('Please login first.');return;}
     if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
     if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
 
-    var btn=el('ckUseLocationBtn'); if(btn){btn.disabled=true;btn.textContent='Locating…';}
-    setText('ckLocationStatus','Finding your most accurate GPS position…');
+    var btn=el('ckUseLocationBtn');
+    if(btn){btn.disabled=true;btn.textContent='Opening…';}
+    setText('ckLocationStatus','Getting your current location…');
 
-    /*
-      Take several fresh GPS readings and keep the one with the
-      smallest accuracy radius. This prevents a stale/coarse reading
-      from being shown as the current exact location.
-    */
-    var readings=[];
-    var watchId=null;
-    var finished=false;
-    var started=Date.now();
-
-    function finishBest(){
-      if(finished)return;
-      finished=true;
-      if(watchId!==null)navigator.geolocation.clearWatch(watchId);
-
-      if(!readings.length){
+    getFreshGPS(function(err,pos){
+      if(err){
         if(btn){btn.disabled=false;btn.textContent='Use Location';}
-        setText('ckLocationStatus','Exact GPS position could not be obtained. Please try again.');
+        var m='Location nahi mil payi.';
+        if(err.code===1)m='Location permission denied. Browser me Allow karein.';
+        else if(err.code===2)m='Location unavailable. GPS/Location ON karein.';
+        else if(err.code===3)m='Location request timed out. GPS ON karke try karein.';
+        setText('ckLocationStatus',m);
         return;
       }
 
-      readings.sort(function(a,b){
-        return (a.coords.accuracy||999999)-(b.coords.accuracy||999999);
-      });
-
-      var pos=readings[0];
-
-      (async function(){
-      try{
-        currentLocationData={
-          latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude),
-          accuracy:pos.coords.accuracy==null?null:Number(pos.coords.accuracy),
-          map_link:currentLocationMapLink(pos.coords.latitude,pos.coords.longitude),
-          captured_at:new Date().toISOString()
-        };
-
-        currentLocationData.plus_code=getExactPlusCode(
-          currentLocationData.latitude,
-          currentLocationData.longitude
-        );
-
-        /* Reverse-geocode GPS → real Area/City/District/State/Pincode. */
-        var geo=await reverseGeocodeCurrentLocation(currentLocationData.latitude,currentLocationData.longitude);
-        currentLocationData.area=geo.area;
-        currentLocationData.district=geo.district;
-        currentLocationData.city=geo.city;
-        currentLocationData.state=geo.state;
-        currentLocationData.pincode=geo.pincode;
-        currentLocationData.display=geo.display;
-        currentLocationData.place_name=geo.place_name || geo.city || geo.area || geo.district || '';
-
-        /* Save GPS immediately; existing delivery_locations columns stay unchanged. */
-        await saveCurrentLocationRow();
-
-        /* Hide ALL input fields, then show detected location details. */
-        hideAddressInputsAfterLocation();
-        showDetectedLocationDetails();
-        var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='block';
-        setText('ckLocationStatus','✓ Current location + address detected and saved');
-        window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
-      }catch(e){
-        console.error('CURRENT LOCATION ERROR:',e);
-        currentLocationData=null;currentLocationRowId=null;
-        setText('ckLocationStatus','Location detected, but address lookup/save failed.');
-        alert('Current location save nahi ho paya.\\n\\n'+(e.message||'Supabase/geocoding error'));
-      }finally{
-        if(btn){btn.disabled=false;btn.textContent='Use Location';}
-      }
-      })();
-    }
-
-    watchId=navigator.geolocation.watchPosition(function(pos){
-      readings.push(pos);
-      var acc=pos.coords.accuracy||999999;
-      setText('ckLocationStatus','GPS accuracy ±'+Math.round(acc)+' m…');
-
-      /* Excellent fresh GPS reading. */
-      if(acc<=20){
-        finishBest();
-      }else if(Date.now()-started>=12000){
-        finishBest();
-      }
-    },function(err){
-      if(readings.length){
-        finishBest();
-        return;
-      }
+      var c=pos.coords;
+      pickedLocation={
+        latitude:Number(c.latitude),longitude:Number(c.longitude),
+        accuracy:c.accuracy==null?null:Number(c.accuracy),
+        plus_code:getExactPlusCode(c.latitude,c.longitude),
+        map_link:currentLocationMapLink(c.latitude,c.longitude),
+        geo:null
+      };
       if(btn){btn.disabled=false;btn.textContent='Use Location';}
-      var m='Location nahi mil payi.';
-      if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
-      else if(err&&err.code===2)m='Location unavailable. GPS/Location ON karein.';
-      else if(err&&err.code===3)m='Location request timed out. GPS ON karke try karein.';
-      setText('ckLocationStatus',m);
-    },{
-      enableHighAccuracy:true,
-      timeout:20000,
-      maximumAge:0
+      setText('ckLocationStatus','Move the pin to the exact delivery point, then tap Save Address.');
+      openPickerAt(c.latitude,c.longitude);
     });
-
-    /* Give GPS up to 20 seconds to improve the accuracy. */
-    setTimeout(function(){
-      if(!finished)finishBest();
-    },20000);
   };
 
   window.ckUseDetectedLocation=function(){
-    if(!currentUser||!currentLocationData){alert('Current location available nahi hai.');return;}
-    var p=accountPerson();
-    selectedAddress={
-      id:null,name:p.name,phone:p.phone,
+    /* Kept for compatibility with any existing button/state. */
+    if(!currentLocationData){alert('Please select a location first.');return;}
+    fillSummary({
+      id:null,name:el('ckFullName')?.value||'',
+      phone:el('ckPhone')?.value||'',
       pincode:currentLocationData.pincode||'',
       state:currentLocationData.state||'',
-      city:'',
-      house:'',road:currentLocationData.plus_code||'',
-      type:'current location',map_link:currentLocationData.map_link,
+      city:currentLocationData.city||'',
+      house:el('ckHouse')?.value||'',
+      road:el('ckRoad')?.value||shortPlusCode(currentLocationData.plus_code),
+      type:'current location',
+      map_link:currentLocationData.map_link,
       latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
       isCurrentLocation:true,location_row_id:currentLocationRowId
-    };
-    fillSummary(selectedAddress);
+    });
   };
 
   window.ckUseManualAddress=function(){
@@ -1545,7 +1559,6 @@ body{padding:0 !important;margin:0 !important;}
     var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='none';
     restoreAddressInputs();setText('ckLocationStatus','');
   };
-
 
   /* =========================================================
      PINCODE
