@@ -9,754 +9,766 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
-  --violet:#6d28d9;
-  --violet-dark:#4c1d95;
-  --violet-light:#f3e8ff;
-  --green:#dff7e8;
-  --green-dark:#166534;
-  --white:#ffffff;
-  --bg:#f7f8fc;
-  --text:#171717;
-  --muted:#6b7280;
-  --border:#e5e7eb;
-  --shadow:0 5px 20px rgba(50,20,90,.08);
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+:root{
+    --violet:#6d28d9;
+    --violet2:#8b5cf6;
+    --light-violet:#f3e8ff;
+    --green:#dcfce7;
+    --green-dark:#15803d;
+    --white:#ffffff;
+    --text:#171717;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --bg:#f7f7fb;
 }
 
 body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg);
-  color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
 }
 
 /* ================= HEADER ================= */
 
 .header{
-  background:#fff;
-  border-bottom:1px solid var(--border);
-  position:sticky;
-  top:0;
-  z-index:1000;
+    background:#fff;
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:1000;
 }
 
-.header-top{
-  max-width:1280px;
-  margin:auto;
-  height:72px;
-  display:flex;
-  align-items:center;
-  gap:22px;
-  padding:0 18px;
+.header-inner{
+    max-width:1250px;
+    margin:auto;
+    min-height:72px;
+    display:flex;
+    align-items:center;
+    gap:22px;
+    padding:10px 18px;
 }
 
 .logo{
-  font-size:28px;
-  font-weight:900;
-  color:var(--violet);
-  white-space:nowrap;
-  cursor:pointer;
+    font-size:29px;
+    font-weight:900;
+    color:var(--violet);
+    white-space:nowrap;
 }
-
-.logo span{
-  color:#22a35a;
-}
-
-/* SEARCH */
 
 .search-box{
-  flex:1;
-  position:relative;
+    flex:1;
+    position:relative;
 }
 
 .search-box input{
-  width:100%;
-  height:46px;
-  border:2px solid #e4d4ff;
-  border-radius:12px;
-  padding:0 48px 0 18px;
-  font-size:15px;
-  outline:none;
-  background:#faf8ff;
-  transition:.2s;
+    width:100%;
+    height:46px;
+    border:2px solid #ddd6fe;
+    background:#faf7ff;
+    border-radius:13px;
+    outline:none;
+    padding:0 48px 0 18px;
+    font-size:15px;
+    transition:.2s;
 }
 
 .search-box input:focus{
-  border-color:var(--violet);
-  background:#fff;
+    border-color:var(--violet);
+    background:#fff;
 }
 
 .search-icon{
-  position:absolute;
-  right:17px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:20px;
+    position:absolute;
+    right:16px;
+    top:50%;
+    transform:translateY(-50%);
+    width:21px;
+    height:21px;
+    color:#111;
 }
 
-/* HEADER BUTTONS */
-
 .header-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
+    display:flex;
+    gap:10px;
+    align-items:center;
 }
 
 .login-btn,
 .cart-btn{
-  height:44px;
-  border:0;
-  border-radius:11px;
-  padding:0 16px;
-  cursor:pointer;
-  font-weight:700;
-  font-size:14px;
+    height:44px;
+    border:0;
+    border-radius:12px;
+    padding:0 17px;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 .login-btn{
-  background:var(--violet-light);
-  color:var(--violet-dark);
+    background:var(--light-violet);
+    color:#4c1d95;
 }
 
 .cart-btn{
-  background:var(--violet);
-  color:#fff;
+    background:var(--violet);
+    color:#fff;
 }
 
 .cart-count{
-  display:inline-flex;
-  min-width:22px;
-  height:22px;
-  align-items:center;
-  justify-content:center;
-  background:#fff;
-  color:var(--violet);
-  border-radius:50%;
-  margin-left:5px;
-  font-size:12px;
+    min-width:22px;
+    height:22px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:white;
+    color:var(--violet);
+    border-radius:50%;
+    font-size:12px;
 }
 
 /* ================= CATEGORY ================= */
 
 .category-wrap{
-  background:#fff;
-  border-top:1px solid #f0f0f0;
+    background:#fff;
+    border-bottom:1px solid var(--border);
 }
 
 .categories{
-  max-width:1280px;
-  margin:auto;
-  display:flex;
-  gap:5px;
-  overflow-x:auto;
-  padding:10px 18px 11px;
-  scrollbar-width:none;
+    max-width:1250px;
+    margin:auto;
+    display:flex;
+    gap:26px;
+    padding:12px 18px;
+    overflow-x:auto;
+    scrollbar-width:none;
 }
 
 .categories::-webkit-scrollbar{
-  display:none;
+    display:none;
 }
 
 .category{
-  min-width:88px;
-  border:0;
-  background:transparent;
-  padding:6px 12px;
-  border-radius:10px;
-  cursor:pointer;
-  text-align:center;
-  white-space:nowrap;
-  color:#333;
-  font-size:13px;
+    min-width:70px;
+    text-align:center;
+    cursor:pointer;
+    flex-shrink:0;
+    color:#222;
+    font-size:13px;
 }
 
 .category-icon{
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  background:var(--violet-light);
-  margin:0 auto 5px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    margin:0 auto 7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--light-violet);
+    color:var(--violet);
 }
 
 .category.active{
-  color:var(--violet);
-  font-weight:800;
+    color:var(--violet);
+    font-weight:700;
 }
 
 .category.active .category-icon{
-  background:var(--green);
+    background:var(--green);
+    color:var(--green-dark);
 }
 
 /* ================= MAIN ================= */
 
-.main{
-  max-width:1280px;
-  margin:auto;
-  padding:18px;
+main{
+    max-width:1250px;
+    margin:auto;
+    padding:18px;
 }
 
 /* ================= HERO ================= */
 
-.hero{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:14px;
-  margin-bottom:25px;
+.hero-area{
+    display:grid;
+    grid-template-columns:minmax(0,2.2fr) minmax(260px,1fr);
+    gap:14px;
+    margin-bottom:24px;
 }
 
-.hero-main{
-  min-height:245px;
-  border-radius:18px;
-  padding:35px;
-  background:
-    radial-gradient(circle at 80% 20%,rgba(255,255,255,.45),transparent 30%),
-    linear-gradient(120deg,#6d28d9,#8b5cf6,#dff7e8);
-  display:flex;
-  align-items:center;
-  overflow:hidden;
-  position:relative;
+.slider{
+    position:relative;
+    overflow:hidden;
+    border-radius:18px;
+    min-height:265px;
+    background:#ddd;
 }
 
-.hero-main::after{
-  content:"";
-  position:absolute;
-  width:250px;
-  height:250px;
-  right:-60px;
-  bottom:-90px;
-  background:rgba(255,255,255,.18);
-  border-radius:50%;
+.slides{
+    display:flex;
+    width:100%;
+    height:100%;
+    transition:transform .55s ease;
 }
 
-.hero-content{
-  position:relative;
-  z-index:2;
-  color:#fff;
+.slide{
+    min-width:100%;
+    position:relative;
+    height:265px;
+    overflow:hidden;
+    background:#eee;
 }
 
-.hero-tag{
-  display:inline-block;
-  background:#fff;
-  color:var(--violet);
-  padding:7px 12px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:12px;
+.slide img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
 }
 
-.hero h1{
-  font-size:34px;
-  line-height:1.1;
-  margin-bottom:10px;
+.slide-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        90deg,
+        rgba(0,0,0,.72),
+        rgba(0,0,0,.25),
+        transparent
+    );
+    display:flex;
+    align-items:center;
+    padding:30px;
 }
 
-.hero p{
-  font-size:15px;
-  margin-bottom:18px;
-  opacity:.95;
+.slide-content{
+    color:#fff;
+    max-width:420px;
+}
+
+.slide-content small{
+    display:inline-block;
+    padding:7px 12px;
+    border-radius:30px;
+    background:#fff;
+    color:var(--violet);
+    font-weight:800;
+    margin-bottom:13px;
+}
+
+.slide-content h2{
+    font-size:30px;
+    line-height:1.08;
+    margin-bottom:8px;
+}
+
+.slide-content p{
+    font-size:15px;
+    margin-bottom:17px;
 }
 
 .shop-btn{
-  border:0;
-  background:#fff;
-  color:var(--violet-dark);
-  border-radius:9px;
-  padding:11px 19px;
-  font-weight:800;
-  cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    background:#fff;
+    color:var(--violet);
+    border:0;
+    border-radius:9px;
+    padding:10px 17px;
+    font-weight:800;
+    cursor:pointer;
 }
 
-.hero-side{
-  display:grid;
-  grid-template-rows:1fr 1fr;
-  gap:14px;
+.slider-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:40px;
+    height:40px;
+    border:0;
+    border-radius:50%;
+    background:rgba(255,255,255,.95);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:3;
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
 }
 
-.hero-small{
-  border-radius:16px;
-  padding:22px;
-  background:var(--green);
-  border:1px solid #c9efd8;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  overflow:hidden;
+.prev{
+    left:12px;
 }
 
-.hero-small:nth-child(2){
-  background:var(--violet-light);
-  border-color:#e4d4ff;
+.next{
+    right:12px;
 }
 
-.hero-small h3{
-  font-size:18px;
-  margin-bottom:6px;
+.dots{
+    position:absolute;
+    bottom:12px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:6px;
+    z-index:4;
 }
 
-.hero-small p{
-  color:var(--muted);
-  font-size:13px;
+.dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#fff;
+    opacity:.6;
+    cursor:pointer;
 }
 
-.hero-emoji{
-  font-size:48px;
+.dot.active{
+    width:23px;
+    border-radius:10px;
+    opacity:1;
 }
 
-/* ================= SECTION HEADER ================= */
+/* ================= DEAL BOX ================= */
 
-.section-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:22px 0 14px;
+.deal-side{
+    display:grid;
+    gap:14px;
 }
 
-.section-header h2{
-  font-size:22px;
+.deal-box{
+    border-radius:17px;
+    padding:24px;
+    min-height:125px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
-.section-header p{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:4px;
+.deal-box.green{
+    background:var(--green);
 }
 
-.sort{
-  border:1px solid var(--border);
-  background:#fff;
-  border-radius:9px;
-  padding:10px 13px;
-  outline:none;
+.deal-box.violet{
+    background:var(--light-violet);
 }
 
-/* ================= PRODUCTS ================= */
+.deal-text h3{
+    font-size:20px;
+    margin-bottom:7px;
+}
+
+.deal-text p{
+    color:#6b7280;
+    font-size:14px;
+}
+
+.deal-icon{
+    width:52px;
+    height:52px;
+}
+
+/* ================= SECTION TITLE ================= */
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:18px 0 13px;
+}
+
+.section-title{
+    font-size:24px;
+    font-weight:800;
+}
+
+.section-subtitle{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:14px;
+}
+
+.sort-select{
+    height:40px;
+    padding:0 13px;
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:10px;
+    outline:none;
+}
+
+/* ================= PRODUCT GRID ================= */
 
 .product-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:15px;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
 }
 
 .product-card{
-  background:#fff;
-  border:1px solid #ececf0;
-  border-radius:14px;
-  overflow:hidden;
-  cursor:pointer;
-  transition:.22s ease;
-  box-shadow:0 2px 8px rgba(0,0,0,.03);
+    background:#fff;
+    border:1px solid #ececf2;
+    border-radius:15px;
+    overflow:hidden;
+    transition:.2s;
+    cursor:pointer;
+    min-width:0;
 }
 
 .product-card:hover{
-  transform:translateY(-4px);
-  box-shadow:var(--shadow);
-  border-color:#dcc8ff;
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(76,29,149,.10);
 }
 
 .product-image{
-  width:100%;
-  height:215px;
-  background:#f7f7f8;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+    height:220px;
+    position:relative;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+    overflow:hidden;
 }
 
-/*
- IMPORTANT:
- Image poori dikhegi.
- Product image crop nahi hogi.
-*/
 .product-image img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  padding:10px;
-  display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    display:block;
 }
 
-.discount-badge{
-  position:absolute;
-  top:9px;
-  left:9px;
-  background:var(--green);
-  color:var(--green-dark);
-  border-radius:6px;
-  padding:5px 7px;
-  font-size:11px;
-  font-weight:800;
+.discount{
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:var(--green);
+    color:var(--green-dark);
+    padding:5px 8px;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:800;
+    z-index:2;
 }
 
 .product-info{
-  padding:12px;
+    padding:12px;
 }
 
 .rating{
-  display:inline-flex;
-  align-items:center;
-  gap:3px;
-  background:#eefbf2;
-  color:#14753b;
-  padding:4px 7px;
-  border-radius:5px;
-  font-size:11px;
-  font-weight:800;
-  margin-bottom:8px;
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    background:var(--green);
+    color:#166534;
+    border-radius:5px;
+    padding:4px 7px;
+    font-size:11px;
+    font-weight:700;
+    margin-bottom:8px;
 }
 
 .product-title{
-  font-size:14px;
-  line-height:1.35;
-  font-weight:700;
-  min-height:38px;
-
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
+    font-size:14px;
+    line-height:1.35;
+    font-weight:600;
+    height:38px;
+    overflow:hidden;
 }
 
 .price-row{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  margin-top:9px;
+    margin-top:10px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    flex-wrap:wrap;
 }
 
 .price{
-  font-size:19px;
-  font-weight:900;
+    font-size:18px;
+    font-weight:800;
 }
 
 .mrp{
-  font-size:12px;
-  color:#999;
-  text-decoration:line-through;
+    font-size:12px;
+    color:#9ca3af;
+    text-decoration:line-through;
 }
 
 .off{
-  color:#159447;
-  font-size:12px;
-  font-weight:700;
+    font-size:11px;
+    color:#15803d;
+    font-weight:800;
 }
 
 .delivery{
-  margin-top:8px;
-  font-size:11px;
-  color:#16813e;
+    margin-top:8px;
+    font-size:11px;
+    color:#166534;
+    font-weight:600;
 }
 
 /* ================= LOADING ================= */
 
-.loading-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:15px;
+.loading{
+    padding:50px;
+    text-align:center;
+    color:#6b7280;
+}
+
+.skeleton-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
 }
 
 .skeleton{
-  background:#fff;
-  border-radius:14px;
-  overflow:hidden;
-  border:1px solid var(--border);
-}
-
-.skeleton-img{
-  height:215px;
-  background:linear-gradient(
-    90deg,
-    #f0f0f0 25%,
-    #fafafa 50%,
-    #f0f0f0 75%
-  );
-  background-size:200% 100%;
-  animation:loading 1.2s infinite;
-}
-
-.skeleton-line{
-  height:13px;
-  margin:12px;
-  border-radius:5px;
-  background:#eee;
+    height:300px;
+    border-radius:15px;
+    background:linear-gradient(
+        90deg,
+        #eee 25%,
+        #f7f7f7 50%,
+        #eee 75%
+    );
+    background-size:200% 100%;
+    animation:loading 1.2s infinite;
 }
 
 @keyframes loading{
-  0%{background-position:200% 0}
-  100%{background-position:-200% 0}
+    to{
+        background-position:-200% 0;
+    }
 }
 
 .hidden{
-  display:none!important;
-}
-
-/* ================= EMPTY ================= */
-
-.empty{
-  text-align:center;
-  padding:70px 20px;
-  background:#fff;
-  border-radius:15px;
-}
-
-.empty-icon{
-  font-size:50px;
-  margin-bottom:10px;
-}
-
-.empty h2{
-  margin-bottom:5px;
-}
-
-.empty p{
-  color:var(--muted);
+    display:none!important;
 }
 
 /* ================= MOBILE ================= */
 
 @media(max-width:900px){
 
-  .header-top{
-    height:auto;
-    padding:10px 12px;
-    flex-wrap:wrap;
-    gap:10px;
-  }
+    .header-inner{
+        flex-wrap:wrap;
+        gap:9px;
+        padding:10px 12px;
+    }
 
-  .logo{
-    font-size:23px;
-  }
+    .logo{
+        font-size:24px;
+    }
 
-  .search-box{
-    order:3;
-    flex-basis:100%;
-  }
+    .search-box{
+        order:3;
+        flex-basis:100%;
+    }
 
-  .header-actions{
-    margin-left:auto;
-  }
+    .header-actions{
+        margin-left:auto;
+    }
 
-  .login-btn{
-    display:none;
-  }
+    .login-btn{
+        display:none;
+    }
 
-  .main{
-    padding:12px;
-  }
+    .cart-btn{
+        height:40px;
+        padding:0 12px;
+    }
 
-  .hero{
-    grid-template-columns:1fr;
-  }
+    .categories{
+        gap:20px;
+        padding:10px 12px;
+    }
 
-  .hero-main{
-    min-height:210px;
-    padding:25px;
-  }
+    main{
+        padding:12px;
+    }
 
-  .hero h1{
-    font-size:27px;
-  }
+    .hero-area{
+        grid-template-columns:1fr;
+    }
 
-  .hero-side{
-    grid-template-columns:1fr 1fr;
-    grid-template-rows:1fr;
-  }
+    .deal-side{
+        grid-template-columns:1fr 1fr;
+    }
 
-  .hero-small{
-    padding:15px;
-  }
+    .slider,
+    .slide{
+        height:210px;
+    }
 
-  .hero-emoji{
-    font-size:32px;
-  }
+    .slide-content{
+        padding:22px;
+        max-width:270px;
+    }
 
-  .product-grid{
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-  }
+    .slide-content h2{
+        font-size:22px;
+    }
 
-  .loading-grid{
-    grid-template-columns:repeat(3,1fr);
-  }
+    .slide-content p{
+        font-size:12px;
+    }
 
-  .product-image{
-    height:190px;
-  }
+    .deal-box{
+        min-height:100px;
+        padding:16px;
+    }
 
-  .product-info{
-    padding:9px;
-  }
+    .deal-text h3{
+        font-size:16px;
+    }
 
-  .product-title{
-    font-size:13px;
-  }
+    .deal-text p{
+        font-size:11px;
+    }
 
-  .price{
-    font-size:17px;
-  }
+    .deal-icon{
+        width:38px;
+        height:38px;
+    }
+
+    .product-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+    }
+
+    .product-image{
+        height:190px;
+    }
+
+    .section-title{
+        font-size:20px;
+    }
+
+    .sort-select{
+        height:36px;
+        font-size:12px;
+    }
 }
 
-@media(max-width:600px){
+@media(max-width:500px){
 
-  .header-top{
-    padding:9px 10px;
-  }
+    .header-inner{
+        min-height:auto;
+    }
 
-  .logo{
-    font-size:22px;
-  }
+    .logo{
+        font-size:23px;
+    }
 
-  .cart-btn{
-    padding:0 12px;
-    height:40px;
-  }
+    .search-box input{
+        height:42px;
+    }
 
-  .search-box input{
-    height:42px;
-  }
+    .category{
+        min-width:62px;
+        font-size:11px;
+    }
 
-  .categories{
-    padding-left:8px;
-    padding-right:8px;
-  }
+    .category-icon{
+        width:40px;
+        height:40px;
+    }
 
-  .category{
-    min-width:75px;
-    padding:5px 8px;
-    font-size:11px;
-  }
+    .hero-area{
+        gap:10px;
+    }
 
-  .category-icon{
-    width:38px;
-    height:38px;
-    font-size:18px;
-  }
+    .slider,
+    .slide{
+        height:185px;
+        border-radius:14px;
+    }
 
-  .hero{
-    gap:10px;
-  }
+    .slide-overlay{
+        padding:16px;
+    }
 
-  .hero-main{
-    min-height:185px;
-    padding:20px;
-    border-radius:14px;
-  }
+    .slide-content h2{
+        font-size:18px;
+    }
 
-  .hero h1{
-    font-size:24px;
-  }
+    .slide-content p{
+        font-size:11px;
+        margin-bottom:10px;
+    }
 
-  .hero p{
-    font-size:12px;
-  }
+    .slide-content small{
+        padding:5px 8px;
+        font-size:9px;
+    }
 
-  .hero-small{
-    border-radius:12px;
-    min-height:105px;
-  }
+    .shop-btn{
+        padding:7px 11px;
+        font-size:11px;
+    }
 
-  .hero-small h3{
-    font-size:14px;
-  }
+    .slider-arrow{
+        width:32px;
+        height:32px;
+    }
 
-  .hero-small p{
-    font-size:10px;
-  }
+    .deal-side{
+        gap:8px;
+    }
 
-  .hero-emoji{
-    font-size:26px;
-  }
+    .deal-box{
+        padding:12px;
+        border-radius:13px;
+    }
 
-  .section-header{
-    align-items:flex-start;
-  }
+    .deal-text h3{
+        font-size:14px;
+    }
 
-  .section-header h2{
-    font-size:19px;
-  }
+    .deal-text p{
+        font-size:9px;
+    }
 
-  .sort{
-    font-size:11px;
-    padding:8px;
-  }
+    .deal-icon{
+        width:30px;
+        height:30px;
+    }
 
-  .product-grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:9px;
-  }
+    .product-image{
+        height:170px;
+        padding:8px;
+    }
 
-  .loading-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
+    .product-info{
+        padding:9px;
+    }
 
-  .product-image{
-    height:175px;
-  }
+    .product-title{
+        font-size:12px;
+    }
 
-  .product-image img{
-    padding:8px;
-  }
+    .price{
+        font-size:16px;
+    }
 
-  .product-info{
-    padding:9px;
-  }
+    .mrp{
+        font-size:10px;
+    }
 
-  .product-title{
-    font-size:12px;
-    min-height:33px;
-  }
+    .off{
+        font-size:9px;
+    }
 
-  .price-row{
-    flex-wrap:wrap;
-    gap:4px;
-  }
-
-  .price{
-    font-size:17px;
-  }
-
-  .mrp,
-  .off{
-    font-size:10px;
-  }
-
-  .delivery{
-    font-size:10px;
-  }
-
-  .rating{
-    font-size:10px;
-  }
-}
-
-@media(max-width:360px){
-
-  .product-grid{
-    gap:7px;
-  }
-
-  .product-image{
-    height:155px;
-  }
-
-  .product-title{
-    font-size:11px;
-  }
-
-  .price{
-    font-size:15px;
-  }
+    .delivery{
+        font-size:9px;
+    }
 }
 </style>
 </head>
@@ -767,257 +779,416 @@ body{
 
 <header class="header">
 
-  <div class="header-top">
+    <div class="header-inner">
 
-    <div class="logo" onclick="goHome()">
-      My<span>Store</span>
-    </div>
+        <div class="logo">MyStore</div>
 
-    <div class="search-box">
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Search for Products, Brands and More"
-        autocomplete="off"
-      >
-      <span class="search-icon">⌕</span>
-    </div>
+        <div class="search-box">
 
-    <div class="header-actions">
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="Search for Products, Brands and More"
+                autocomplete="off"
+            >
 
-      <button class="login-btn" onclick="handleLogin()">
-        👤 Login
-      </button>
+            <svg class="search-icon"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-4-4"></path>
+            </svg>
 
-      <button class="cart-btn" onclick="goCart()">
-        🛒 Cart
-        <span class="cart-count" id="cartCount">0</span>
-      </button>
+        </div>
 
-    </div>
+        <div class="header-actions">
 
-  </div>
+            <button class="login-btn" onclick="goLogin()">
 
-  <!-- CATEGORY BAR -->
+                <svg width="18" height="18"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <circle cx="12" cy="8" r="4"></circle>
+                    <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>
+                </svg>
 
-  <div class="category-wrap">
+                Login
 
-    <div class="categories" id="categoryBar">
+            </button>
 
-      <button class="category active" data-category="all">
-        <div class="category-icon">🏠</div>
-        For You
-      </button>
+            <button class="cart-btn" onclick="goCart()">
 
-      <button class="category" data-category="fashion">
-        <div class="category-icon">👕</div>
-        Fashion
-      </button>
+                <svg width="19" height="19"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <circle cx="9" cy="20" r="1"></circle>
+                    <circle cx="18" cy="20" r="1"></circle>
+                    <path d="M3 4h2l2.5 11h10l3-8H6"></path>
+                </svg>
 
-      <button class="category" data-category="mobiles">
-        <div class="category-icon">📱</div>
-        Mobiles
-      </button>
+                Cart
 
-      <button class="category" data-category="electronics">
-        <div class="category-icon">💻</div>
-        Electronics
-      </button>
+                <span id="cartCount" class="cart-count">0</span>
 
-      <button class="category" data-category="beauty">
-        <div class="category-icon">💄</div>
-        Beauty
-      </button>
+            </button>
 
-      <button class="category" data-category="home">
-        <div class="category-icon">🏠</div>
-        Home
-      </button>
-
-      <button class="category" data-category="appliances">
-        <div class="category-icon">📺</div>
-        Appliances
-      </button>
-
-      <button class="category" data-category="toys">
-        <div class="category-icon">🧸</div>
-        Toys
-      </button>
-
-      <button class="category" data-category="food">
-        <div class="category-icon">🍔</div>
-        Food
-      </button>
-
-      <button class="category" data-category="sports">
-        <div class="category-icon">⚽</div>
-        Sports
-      </button>
-
-      <button class="category" data-category="furniture">
-        <div class="category-icon">🛋️</div>
-        Furniture
-      </button>
-
-      <button class="category" data-category="books">
-        <div class="category-icon">📚</div>
-        Books
-      </button>
+        </div>
 
     </div>
-
-  </div>
 
 </header>
 
 
-<!-- ================= MAIN ================= -->
+<!-- ================= CATEGORIES ================= -->
 
-<main class="main">
+<div class="category-wrap">
 
-  <!-- HERO -->
+    <div class="categories" id="categoryBar">
 
-  <section class="hero">
+        <div class="category active" data-category="all">
 
-    <div class="hero-main">
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="m3 10 9-7 9 7"></path>
+                    <path d="M5 9v11h14V9"></path>
+                    <path d="M9 20v-6h6v6"></path>
+                </svg>
+            </div>
 
-      <div class="hero-content">
+            For You
 
-        <span class="hero-tag">
-          ✨ BIG SAVINGS
-        </span>
+        </div>
 
-        <h1>
-          Shop Smart.<br>
-          Live Better.
-        </h1>
+        <div class="category" data-category="Fashion">
 
-        <p>
-          Discover amazing products at great prices.
-        </p>
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="M8 4l4 3 4-3 4 4-3 3v9H7v-9L4 8l4-4z"></path>
+                </svg>
+            </div>
 
-        <button class="shop-btn" onclick="scrollProducts()">
-          Shop Now →
+            Fashion
+
+        </div>
+
+        <div class="category" data-category="Mobiles">
+
+            <div class="category-icon">
+                <svg width="22" height="22"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+                    <path d="M11 18h2"></path>
+                </svg>
+            </div>
+
+            Mobiles
+
+        </div>
+
+        <div class="category" data-category="Electronics">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <rect x="3" y="5" width="18" height="12" rx="1"></rect>
+                    <path d="M8 21h8M12 17v4"></path>
+                </svg>
+            </div>
+
+            Electronics
+
+        </div>
+
+        <div class="category" data-category="Beauty">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="M9 3h6v6H9z"></path>
+                    <path d="M10 9v12h4V9"></path>
+                </svg>
+            </div>
+
+            Beauty
+
+        </div>
+
+        <div class="category" data-category="Home">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="m3 11 9-8 9 8"></path>
+                    <path d="M5 10v10h14V10"></path>
+                </svg>
+            </div>
+
+            Home
+
+        </div>
+
+        <div class="category" data-category="Appliances">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                    <path d="M3 9h18"></path>
+                </svg>
+            </div>
+
+            Appliances
+
+        </div>
+
+        <div class="category" data-category="Toys">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <circle cx="12" cy="12" r="7"></circle>
+                    <path d="M8 12h8M12 8v8"></path>
+                </svg>
+            </div>
+
+            Toys
+
+        </div>
+
+        <div class="category" data-category="Food">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="M5 11h14"></path>
+                    <path d="M7 11c0-4 2-6 5-6s5 2 5 6"></path>
+                    <path d="M6 15h12M8 19h8"></path>
+                </svg>
+            </div>
+
+            Food
+
+        </div>
+
+        <div class="category" data-category="Sports">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="m8 4 4 4 4-4M4 12h5l3 8M20 12h-5l-3-4"></path>
+                </svg>
+            </div>
+
+            Sports
+
+        </div>
+
+        <div class="category" data-category="Furniture">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="M5 11h14v6H5z"></path>
+                    <path d="M7 11V8a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v3"></path>
+                    <path d="M7 17v3M17 17v3"></path>
+                </svg>
+            </div>
+
+            Furniture
+
+        </div>
+
+        <div class="category" data-category="Books">
+
+            <div class="category-icon">
+                <svg width="23" height="23"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"></path>
+                    <path d="M7 4v14"></path>
+                </svg>
+            </div>
+
+            Books
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<main>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero-area">
+
+    <div class="slider">
+
+        <div class="slides" id="slides"></div>
+
+        <button class="slider-arrow prev" onclick="previousSlide()">
+
+            <svg width="20" height="20"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path d="m15 18-6-6 6-6"></path>
+            </svg>
+
         </button>
 
-      </div>
+        <button class="slider-arrow next" onclick="nextSlide()">
+
+            <svg width="20" height="20"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path d="m9 18 6-6-6-6"></path>
+            </svg>
+
+        </button>
+
+        <div class="dots" id="dots"></div>
 
     </div>
 
 
-    <div class="hero-side">
+    <div class="deal-side">
 
-      <div class="hero-small">
+        <div class="deal-box green">
 
-        <div>
-          <h3>Fresh Deals</h3>
-          <p>New products added</p>
+            <div class="deal-text">
+
+                <h3>Fresh Deals</h3>
+                <p>New products added</p>
+
+            </div>
+
+            <svg class="deal-icon"
+                 viewBox="0 0 64 64"
+                 fill="none">
+                <path d="M32 4c-4 12-14 17-14 29 0 9 7 16 16 16 12 0 19-9 17-20-1-7-6-12-10-17 0 8-3 11-7 14 1-8 0-15-2-22z"
+                      fill="#f97316"
+                      stroke="#111"
+                      stroke-width="3"/>
+            </svg>
+
         </div>
 
-        <div class="hero-emoji">🔥</div>
 
-      </div>
+        <div class="deal-box violet">
 
-      <div class="hero-small">
+            <div class="deal-text">
 
-        <div>
-          <h3>Fast Delivery</h3>
-          <p>Easy & secure shopping</p>
+                <h3>Fast Delivery</h3>
+                <p>Easy & secure shopping</p>
+
+            </div>
+
+            <svg class="deal-icon"
+                 viewBox="0 0 64 64"
+                 fill="none">
+                <path d="M7 18h34v28H7z"
+                      fill="#60a5fa"
+                      stroke="#111"
+                      stroke-width="3"/>
+                <path d="M41 28h10l7 8v10H41z"
+                      fill="#f97316"
+                      stroke="#111"
+                      stroke-width="3"/>
+                <circle cx="19" cy="49" r="5"
+                        fill="#111"/>
+                <circle cx="49" cy="49" r="5"
+                        fill="#111"/>
+            </svg>
+
         </div>
 
-        <div class="hero-emoji">🚚</div>
+    </div>
 
-      </div>
+</section>
+
+
+<!-- ================= PRODUCTS ================= -->
+
+<section>
+
+    <div class="section-head">
+
+        <div>
+            <h2 class="section-title">Suggested For You</h2>
+            <p class="section-subtitle">
+                Discover products you'll love.
+            </p>
+        </div>
+
+        <select id="sortSelect" class="sort-select">
+
+            <option value="popular">Popular</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+            <option value="new">Newest</option>
+
+        </select>
 
     </div>
 
-  </section>
 
-
-  <!-- SECTION HEADER -->
-
-  <div class="section-header">
-
-    <div>
-      <h2>Suggested For You</h2>
-      <p>Discover products you'll love.</p>
+    <div id="loading" class="loading">
+        Loading products...
     </div>
 
-    <select id="sortSelect" class="sort">
-      <option value="popular">Popular</option>
-      <option value="low">Price: Low to High</option>
-      <option value="high">Price: High to Low</option>
-      <option value="new">Newest</option>
-    </select>
+    <div id="productGrid" class="product-grid"></div>
 
-  </div>
-
-
-  <!-- LOADING -->
-
-  <div id="loading">
-
-    <div class="loading-grid">
-
-      <div class="skeleton">
-        <div class="skeleton-img"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-      </div>
-
-      <div class="skeleton">
-        <div class="skeleton-img"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-      </div>
-
-      <div class="skeleton">
-        <div class="skeleton-img"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-      </div>
-
-      <div class="skeleton">
-        <div class="skeleton-img"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-      </div>
-
-      <div class="skeleton">
-        <div class="skeleton-img"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line"></div>
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- PRODUCTS -->
-
-  <section
-    id="productGrid"
-    class="product-grid"
-  ></section>
-
-
-  <!-- EMPTY -->
-
-  <div
-    id="noProducts"
-    class="empty hidden"
-  >
-
-    <div class="empty-icon">🔍</div>
-
-    <h2>No products found</h2>
-
-    <p>
-      Try another search or category.
-    </p>
-
-  </div>
+</section>
 
 </main>
 
@@ -1041,644 +1212,782 @@ const supabaseClient =
   );
 
 
-/* =====================================================
+/* =========================================================
    GLOBAL
-===================================================== */
+========================================================= */
 
 let allProducts = [];
-let currentCategory = "all";
-let currentSearch = "";
+let filteredProducts = [];
+
+let currentSlide = 0;
+let slideTimer;
 
 
-/* =====================================================
+/* =========================================================
+   IMAGE HELPER
+========================================================= */
+
+function getMainImage(product){
+
+    /*
+      IMPORTANT:
+      First/main image hi use hogi.
+      Agar images JSON array hai to [0].
+    */
+
+    let image =
+        product.image ||
+        product.image_url ||
+        product.main_image ||
+        product.thumbnail ||
+        "";
+
+    if(Array.isArray(product.images)){
+        image = product.images[0] || image;
+    }
+
+    if(typeof product.images === "string"){
+
+        try{
+
+            const parsed =
+                JSON.parse(product.images);
+
+            if(Array.isArray(parsed)){
+                image =
+                    parsed[0] || image;
+            }
+
+        }catch(e){
+
+            if(product.images.trim()){
+                image = product.images;
+            }
+
+        }
+
+    }
+
+    return image || "https://via.placeholder.com/600x600?text=Product";
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+function getPrice(p){
+
+    return Number(
+        p.price ||
+        p.selling_price ||
+        p.sale_price ||
+        0
+    );
+
+}
+
+function getMrp(p){
+
+    return Number(
+        p.mrp ||
+        p.original_price ||
+        p.price ||
+        0
+    );
+
+}
+
+
+/* =========================================================
    LOAD PRODUCTS
-===================================================== */
+========================================================= */
 
 async function loadProducts(){
 
-  const loading =
-    document.getElementById("loading");
+    const loading =
+        document.getElementById("loading");
 
-  const grid =
-    document.getElementById("productGrid");
+    try{
 
-  const empty =
-    document.getElementById("noProducts");
+        const { data, error } =
+            await supabaseClient
+            .from("products")
+            .select("*");
 
-  loading.classList.remove("hidden");
-  grid.innerHTML = "";
-  empty.classList.add("hidden");
+        if(error){
+            console.error(error);
+            loading.innerHTML =
+                "Products load nahi ho paaye.";
+            return;
+        }
 
-  try{
+        allProducts = data || [];
 
-    const { data, error } =
-      await supabaseClient
-      .from("products")
-      .select("*");
+        filteredProducts =
+            [...allProducts];
 
-    if(error){
-      console.error(error);
-      throw error;
+        loading.classList.add("hidden");
+
+        renderProducts();
+
+        createSlides();
+
+        updateCartCount();
+
+    }catch(error){
+
+        console.error(error);
+
+        loading.innerHTML =
+            "Something went wrong.";
+
     }
-
-    allProducts = data || [];
-
-    renderProducts();
-
-  }catch(error){
-
-    console.error(
-      "Products loading error:",
-      error
-    );
-
-    grid.innerHTML = "";
-
-    empty.classList.remove("hidden");
-
-    empty.querySelector("h2").textContent =
-      "Products load nahi ho rahe";
-
-    empty.querySelector("p").textContent =
-      "Supabase connection ya products table check karo.";
-
-  }finally{
-
-    loading.classList.add("hidden");
-
-  }
 
 }
 
 
-/* =====================================================
-   RENDER PRODUCTS
-===================================================== */
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
 
 function renderProducts(){
 
-  const grid =
-    document.getElementById("productGrid");
-
-  const empty =
-    document.getElementById("noProducts");
-
-  let products =
-    [...allProducts];
-
-
-  /* CATEGORY */
-
-  if(currentCategory !== "all"){
-
-    products =
-      products.filter(product => {
-
-        const category =
-          String(
-            product.category ||
-            product.categories ||
-            ""
-          ).toLowerCase();
-
-        return category.includes(
-          currentCategory.toLowerCase()
-        );
-
-      });
-
-  }
-
-
-  /* SEARCH */
-
-  if(currentSearch){
-
-    const search =
-      currentSearch.toLowerCase();
-
-    products =
-      products.filter(product => {
-
-        const title =
-          String(
-            product.title ||
-            product.name ||
-            ""
-          ).toLowerCase();
-
-        const category =
-          String(
-            product.category ||
-            ""
-          ).toLowerCase();
-
-        const brand =
-          String(
-            product.brand ||
-            ""
-          ).toLowerCase();
-
-        return (
-          title.includes(search) ||
-          category.includes(search) ||
-          brand.includes(search)
-        );
-
-      });
-
-  }
-
-
-  /* SORT */
-
-  const sort =
-    document.getElementById("sortSelect").value;
-
-
-  if(sort === "low"){
-
-    products.sort(
-      (a,b) =>
-        Number(
-          a.price ||
-          a.sale_price ||
-          a.selling_price ||
-          0
-        )
-        -
-        Number(
-          b.price ||
-          b.sale_price ||
-          b.selling_price ||
-          0
-        )
-    );
-
-  }
-
-
-  if(sort === "high"){
-
-    products.sort(
-      (a,b) =>
-        Number(
-          b.price ||
-          b.sale_price ||
-          b.selling_price ||
-          0
-        )
-        -
-        Number(
-          a.price ||
-          a.sale_price ||
-          a.selling_price ||
-          0
-        )
-    );
-
-  }
-
-
-  if(sort === "new"){
-
-    products.sort(
-      (a,b) =>
-        new Date(b.created_at || 0)
-        -
-        new Date(a.created_at || 0)
-    );
-
-  }
-
-
-  /* EMPTY */
-
-  if(products.length === 0){
+    const grid =
+        document.getElementById("productGrid");
 
     grid.innerHTML = "";
 
-    empty.classList.remove("hidden");
+    if(!filteredProducts.length){
 
-    return;
+        grid.innerHTML = `
+            <div style="
+                grid-column:1/-1;
+                padding:50px;
+                text-align:center;
+                color:#777;
+            ">
+                No products found
+            </div>
+        `;
 
-  }
-
-  empty.classList.add("hidden");
-
-
-  /* HTML */
-
-  grid.innerHTML =
-    products
-    .map(createProductCard)
-    .join("");
-
-}
+        return;
+    }
 
 
-/* =====================================================
-   PRODUCT CARD
-===================================================== */
+    filteredProducts.forEach(product => {
 
-function createProductCard(product){
+        const image =
+            getMainImage(product);
 
-  const id =
-    product.id;
+        const price =
+            getPrice(product);
 
-  const title =
-    product.title ||
-    product.name ||
-    "Product";
+        const mrp =
+            getMrp(product);
 
-  const image =
-    product.image ||
-    product.image_url ||
-    product.thumbnail ||
-    product.images?.[0] ||
-    "https://via.placeholder.com/500x500?text=Product";
+        let discount = 0;
 
+        if(mrp > price && price > 0){
 
-  const price =
-    Number(
-      product.price ||
-      product.sale_price ||
-      product.selling_price ||
-      0
-    );
+            discount =
+                Math.round(
+                    ((mrp-price)/mrp)*100
+                );
 
-
-  const mrp =
-    Number(
-      product.mrp ||
-      product.original_price ||
-      product.compare_price ||
-      price
-    );
-
-
-  const rating =
-    product.rating ||
-    product.average_rating ||
-    "4.5";
-
-
-  let discount = 0;
-
-  if(mrp > price && price > 0){
-
-    discount =
-      Math.round(
-        ((mrp-price)/mrp)*100
-      );
-
-  }
-
-
-  return `
-
-    <article
-      class="product-card"
-      onclick="openProduct('${escapeHtml(id)}')"
-    >
-
-      <div class="product-image">
-
-        ${
-          discount > 0
-          ?
-          `<div class="discount-badge">
-             ${discount}% OFF
-           </div>`
-          :
-          ""
         }
 
-        <img
-          src="${escapeHtml(image)}"
-          alt="${escapeHtml(title)}"
-          loading="lazy"
-          onerror="this.src='https://via.placeholder.com/500x500?text=Product'"
-        >
 
-      </div>
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "product-card";
 
 
-      <div class="product-info">
+        card.onclick = () => {
 
-        <div class="rating">
-          ★ ${escapeHtml(String(rating))}
-        </div>
+            if(product.id){
 
+                window.location.href =
+                    `product.html?id=${product.id}`;
 
-        <div class="product-title">
-          ${escapeHtml(title)}
-        </div>
+            }
 
-
-        <div class="price-row">
-
-          <span class="price">
-            ₹${formatPrice(price)}
-          </span>
-
-          ${
-            mrp > price
-            ?
-            `<span class="mrp">
-               ₹${formatPrice(mrp)}
-             </span>`
-            :
-            ""
-          }
-
-          ${
-            discount > 0
-            ?
-            `<span class="off">
-               ${discount}% OFF
-             </span>`
-            :
-            ""
-          }
-
-        </div>
+        };
 
 
-        <div class="delivery">
-          ✓ Free delivery available
-        </div>
+        card.innerHTML = `
 
-      </div>
+            <div class="product-image">
 
-    </article>
+                ${
+                    discount > 0
+                    ?
+                    `<span class="discount">
+                        ${discount}% OFF
+                    </span>`
+                    :
+                    ""
+                }
 
-  `;
+                <img
+                    src="${escapeHtml(image)}"
+                    alt="${escapeHtml(product.title || product.name || "Product")}"
+                    loading="lazy"
+                    onerror="
+                        this.src='https://via.placeholder.com/600x600?text=Product'
+                    "
+                >
+
+            </div>
+
+
+            <div class="product-info">
+
+                <div class="rating">
+
+                    <svg width="12" height="12"
+                         viewBox="0 0 24 24"
+                         fill="currentColor">
+                        <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1L12 2z"/>
+                    </svg>
+
+                    ${product.rating || 4.6}
+
+                </div>
+
+
+                <div class="product-title">
+
+                    ${escapeHtml(
+                        product.title ||
+                        product.name ||
+                        "Product"
+                    )}
+
+                </div>
+
+
+                <div class="price-row">
+
+                    <span class="price">
+                        ₹${price.toLocaleString("en-IN")}
+                    </span>
+
+                    ${
+                        mrp > price
+                        ?
+                        `<span class="mrp">
+                            ₹${mrp.toLocaleString("en-IN")}
+                        </span>`
+                        :
+                        ""
+                    }
+
+                    ${
+                        discount > 0
+                        ?
+                        `<span class="off">
+                            ${discount}% OFF
+                        </span>`
+                        :
+                        ""
+                    }
+
+                </div>
+
+
+                <div class="delivery">
+
+                    ✓ Delivery available
+
+                </div>
+
+            </div>
+        `;
+
+
+        grid.appendChild(card);
+
+    });
 
 }
 
 
-/* =====================================================
-   ESCAPE
-===================================================== */
+/* =========================================================
+   SLIDER
+========================================================= */
 
-function escapeHtml(value){
+function createSlides(){
 
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    const container =
+        document.getElementById("slides");
 
-}
+    const dots =
+        document.getElementById("dots");
 
+    container.innerHTML = "";
+    dots.innerHTML = "";
 
-/* =====================================================
-   PRICE
-===================================================== */
-
-function formatPrice(value){
-
-  return Number(value || 0)
-    .toLocaleString("en-IN");
-
-}
+    const products =
+        allProducts.slice(0,6);
 
 
-/* =====================================================
-   PRODUCT
-===================================================== */
-
-function openProduct(id){
-
-  window.location.href =
-    "product.html?id=" +
-    encodeURIComponent(id);
-
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-document
-.getElementById("searchInput")
-.addEventListener("input",function(){
-
-  currentSearch =
-    this.value.trim();
-
-  renderProducts();
-
-});
-
-
-/* =====================================================
-   SORT
-===================================================== */
-
-document
-.getElementById("sortSelect")
-.addEventListener("change",function(){
-
-  renderProducts();
-
-});
-
-
-/* =====================================================
-   CATEGORY
-===================================================== */
-
-document
-.getElementById("categoryBar")
-.addEventListener("click",function(e){
-
-  const button =
-    e.target.closest(".category");
-
-  if(!button) return;
-
-  document
-  .querySelectorAll(".category")
-  .forEach(btn =>
-    btn.classList.remove("active")
-  );
-
-  button.classList.add("active");
-
-  currentCategory =
-    button.dataset.category;
-
-  renderProducts();
-
-});
-
-
-/* =====================================================
-   CART
-===================================================== */
-
-async function loadCartCount(){
-
-  try{
-
-    const {
-      data:{
-        user
-      }
-    } =
-      await supabaseClient.auth.getUser();
-
-
-    if(!user){
-
-      document
-      .getElementById("cartCount")
-      .textContent = "0";
-
-      return;
-
+    if(!products.length){
+        return;
     }
 
 
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-      .from("cart_items")
-      .select("id,quantity")
-      .eq("user_id",user.id);
+    products.forEach((product,index) => {
+
+        const image =
+            getMainImage(product);
+
+        const price =
+            getPrice(product);
+
+        const slide =
+            document.createElement("div");
+
+        slide.className = "slide";
+
+        slide.innerHTML = `
+
+            <img
+                src="${escapeHtml(image)}"
+                alt=""
+                onerror="
+                    this.src='https://via.placeholder.com/1200x500?text=MyStore'
+                "
+            >
+
+            <div class="slide-overlay">
+
+                <div class="slide-content">
+
+                    <small>BIG SAVINGS</small>
+
+                    <h2>
+                        ${escapeHtml(
+                            product.title ||
+                            product.name ||
+                            "Amazing Product"
+                        )}
+                    </h2>
+
+                    <p>
+                        Starting from
+                        ₹${price.toLocaleString("en-IN")}
+                    </p>
+
+                    <button
+                        class="shop-btn"
+                        onclick="event.stopPropagation(); openProduct('${product.id}')"
+                    >
+                        Shop Now
+
+                        <svg width="16"
+                             height="16"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <path d="M5 12h14"></path>
+                            <path d="m13 6 6 6-6 6"></path>
+                        </svg>
+
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        slide.onclick = () => {
+            openProduct(product.id);
+        };
+
+        container.appendChild(slide);
 
 
-    if(error){
+        const dot =
+            document.createElement("span");
 
-      console.error(
-        "Cart count error:",
-        error
-      );
+        dot.className =
+            "dot" +
+            (index === 0 ? " active" : "");
 
-      return;
+        dot.onclick = () => {
+            currentSlide = index;
+            updateSlider();
+            restartSlider();
+        };
 
-    }
+        dots.appendChild(dot);
+
+    });
 
 
-    const count =
-      (data || [])
-      .reduce(
-        (total,item) =>
-          total +
-          Number(item.quantity || 1),
-        0
-      );
+    currentSlide = 0;
+
+    updateSlider();
+
+    restartSlider();
+
+}
+
+
+/* =========================================================
+   SLIDER CONTROLS
+========================================================= */
+
+function updateSlider(){
+
+    const slides =
+        document.getElementById("slides");
+
+    slides.style.transform =
+        `translateX(-${currentSlide * 100}%)`;
 
 
     document
-    .getElementById("cartCount")
-    .textContent =
-      count;
+        .querySelectorAll(".dot")
+        .forEach((dot,index) => {
 
+            dot.classList.toggle(
+                "active",
+                index === currentSlide
+            );
 
-  }catch(error){
-
-    console.error(error);
-
-  }
+        });
 
 }
 
 
-/* =====================================================
-   LOGIN
-===================================================== */
+function nextSlide(){
 
-async function handleLogin(){
+    const total =
+        document.querySelectorAll(".slide").length;
 
-  const {
-    data:{
-      user
+    if(!total) return;
+
+    currentSlide =
+        (currentSlide + 1) % total;
+
+    updateSlider();
+
+}
+
+
+function previousSlide(){
+
+    const total =
+        document.querySelectorAll(".slide").length;
+
+    if(!total) return;
+
+    currentSlide =
+        (currentSlide - 1 + total) % total;
+
+    updateSlider();
+
+}
+
+
+function restartSlider(){
+
+    clearInterval(slideTimer);
+
+    slideTimer =
+        setInterval(
+            nextSlide,
+            3500
+        );
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document
+.getElementById("searchInput")
+.addEventListener("input", function(){
+
+    const query =
+        this.value
+        .trim()
+        .toLowerCase();
+
+
+    filteredProducts =
+        allProducts.filter(product => {
+
+            const title =
+                String(
+                    product.title ||
+                    product.name ||
+                    ""
+                ).toLowerCase();
+
+
+            const category =
+                String(
+                    product.category ||
+                    ""
+                ).toLowerCase();
+
+
+            return (
+                title.includes(query) ||
+                category.includes(query)
+            );
+
+        });
+
+
+    renderProducts();
+
+});
+
+
+/* =========================================================
+   SORT
+========================================================= */
+
+document
+.getElementById("sortSelect")
+.addEventListener("change", function(){
+
+    const value = this.value;
+
+
+    if(value === "low"){
+
+        filteredProducts.sort(
+            (a,b) =>
+            getPrice(a)-getPrice(b)
+        );
+
     }
-  } =
-    await supabaseClient.auth.getUser();
 
 
-  if(user){
+    if(value === "high"){
 
-    window.location.href =
-      "account.html";
+        filteredProducts.sort(
+            (a,b) =>
+            getPrice(b)-getPrice(a)
+        );
 
-  }else{
+    }
 
-    window.location.href =
-      "login.html";
 
-  }
+    if(value === "new"){
+
+        filteredProducts.sort(
+            (a,b) =>
+            new Date(b.created_at || 0)
+            -
+            new Date(a.created_at || 0)
+        );
+
+    }
+
+
+    if(value === "popular"){
+
+        filteredProducts =
+            [...allProducts];
+
+    }
+
+
+    renderProducts();
+
+});
+
+
+/* =========================================================
+   CATEGORY
+========================================================= */
+
+document
+.querySelectorAll(".category")
+.forEach(category => {
+
+    category.addEventListener(
+        "click",
+        () => {
+
+            document
+            .querySelectorAll(".category")
+            .forEach(c =>
+                c.classList.remove("active")
+            );
+
+            category.classList.add("active");
+
+
+            const selected =
+                category.dataset.category;
+
+
+            if(selected === "all"){
+
+                filteredProducts =
+                    [...allProducts];
+
+            }else{
+
+                filteredProducts =
+                    allProducts.filter(p => {
+
+                        const cat =
+                            String(
+                                p.category || ""
+                            ).toLowerCase();
+
+                        return cat ===
+                            selected.toLowerCase();
+
+                    });
+
+            }
+
+
+            renderProducts();
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   CART COUNT
+========================================================= */
+
+async function updateCartCount(){
+
+    try{
+
+        const {
+            data: {
+                user
+            }
+        } =
+        await supabaseClient.auth.getUser();
+
+
+        if(!user){
+
+            document
+            .getElementById("cartCount")
+            .textContent = "0";
+
+            return;
+
+        }
+
+
+        const { count, error } =
+            await supabaseClient
+            .from("cart_items")
+            .select("*", {
+                count:"exact",
+                head:true
+            })
+            .eq("user_id", user.id);
+
+
+        if(error){
+
+            console.error(error);
+
+            return;
+
+        }
+
+
+        document
+        .getElementById("cartCount")
+        .textContent =
+            count || 0;
+
+
+    }catch(e){
+
+        console.error(e);
+
+    }
 
 }
 
 
-/* =====================================================
-   CART PAGE
-===================================================== */
+/* =========================================================
+   NAVIGATION
+========================================================= */
 
 function goCart(){
 
-  window.location.href =
-    "cart.html";
+    window.location.href =
+        "cart.html";
 
 }
 
 
-/* =====================================================
-   HOME
-===================================================== */
+function goLogin(){
 
-function goHome(){
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+    window.location.href =
+        "login.html";
 
 }
 
 
-/* =====================================================
-   SHOP NOW
-===================================================== */
+function openProduct(id){
 
-function scrollProducts(){
+    if(!id) return;
 
-  document
-  .getElementById("productGrid")
-  .scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
+    window.location.href =
+        `product.html?id=${id}`;
 
 }
 
 
-/* =====================================================
-   AUTH STATE
-===================================================== */
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(value){
+
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   AUTH CHANGE
+========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
-  () => {
-    loadCartCount();
-  }
+    () => {
+        updateCartCount();
+    }
 );
 
 
-/* =====================================================
+/* =========================================================
    START
-===================================================== */
+========================================================= */
 
 loadProducts();
-loadCartCount();
 
 </script>
 
