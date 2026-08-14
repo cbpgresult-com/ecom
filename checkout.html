@@ -349,7 +349,7 @@ body{padding:0 !important;margin:0 !important;}
 .ck-location-details-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ck-location-detail{padding:9px 10px;border:1px solid #edf1ef;border-radius:10px;background:#fafcfb;min-width:0}
 .ck-location-detail small{display:block;font-size:9.5px;color:var(--muted);font-weight:700;margin-bottom:3px}
-.ck-location-detail strong{display:block;font-size:12px;color:var(--ink);font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ck-location-detail strong{display:block;font-size:12px;color:var(--ink);font-weight:850;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.45;overflow-wrap:anywhere}.ck-plus-code-box strong{white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word;}
 .ck-location-map-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:10px;color:var(--muted)}
 .ck-location-map-row a{color:var(--brand);font-weight:850;text-decoration:none;white-space:nowrap}
 @media(max-width:480px){.ck-location-details-grid{grid-template-columns:1fr 1fr}.ck-location-map-row{font-size:9.5px}}
@@ -1190,7 +1190,7 @@ body{padding:0 !important;margin:0 !important;}
       locality/area -> district -> city/town/village -> state -> pincode.
     */
     var result={
-      area:'',district:'',city:'',state:'',pincode:'',display:''
+      area:'',district:'',city:'',state:'',pincode:'',display:'',place_name:''
     };
 
     try{
@@ -1239,6 +1239,8 @@ body{padding:0 !important;margin:0 !important;}
           a.town ||
           a.municipality ||
           a.village ||
+          a.city_district ||
+          a.county ||
           ''
         ).trim();
 
@@ -1250,6 +1252,15 @@ body{padding:0 !important;margin:0 !important;}
 
         result.pincode=String(a.postcode||'').trim();
         result.display=String(d.display_name||'').trim();
+
+        /* Google-Maps-like human place label. Prefer city/town, then
+           locality/area, then district. This is only the display name;
+           the exact GPS coordinates remain the delivery source of truth. */
+        result.place_name=String(
+          a.city || a.town || a.municipality || a.village ||
+          a.suburb || a.neighbourhood || a.locality ||
+          a.county || a.state_district || ''
+        ).trim();
 
         /*
           If the address is rural and Nominatim has no city/town,
@@ -1291,7 +1302,8 @@ body{padding:0 !important;margin:0 !important;}
           }
           if(!result.city){
             result.city=String(
-              bd.city||bd.town||bd.village||bd.locality||''
+              bd.city||bd.town||bd.municipality||bd.village||bd.locality||
+              (bd.localityInfo && bd.localityInfo.administrative && bd.localityInfo.administrative[3] && bd.localityInfo.administrative[3].name)||''
             ).trim();
           }
           if(!result.state){
@@ -1312,18 +1324,45 @@ body{padding:0 !important;margin:0 !important;}
       }
     }
 
+    if(!result.place_name){
+      result.place_name=String(
+        result.city || result.area || result.district || ''
+      ).trim();
+    }
+
     return result;
   }
 
   function showDetectedLocationDetails(){
-    var placeParts=[];
-    if(currentLocationData.city) placeParts.push(currentLocationData.city);
-    else if(currentLocationData.area) placeParts.push(currentLocationData.area);
+    /*
+      Show Plus Code + human-readable place name exactly like Google Maps:
+      QXW3+XXX Lucknow, Uttar Pradesh, India
+      Do not show district/locality as separate fields.
+    */
+    var placeName=currentLocationData.place_name ||
+      currentLocationData.city || currentLocationData.area || currentLocationData.district || '';
+
+    /* Never show an empty label. If the geocoder does not return a locality,
+       use the district/county as the human-readable area name. */
+    if(!placeName){
+      placeName='Location area';
+    }
+
+    var placeParts=[placeName];
     if(currentLocationData.state) placeParts.push(currentLocationData.state);
     placeParts.push('India');
 
-    var plusDisplay=(currentLocationData.plus_code||'Not available');
-    if(placeParts.length) plusDisplay+=' '+placeParts.join(', ');
+    var fullPlus=currentLocationData.plus_code||'';
+     /* Google Maps-style short Plus Code: QXW3+XXX */
+     var shortPlus=fullPlus;
+     if(fullPlus.indexOf('+')>0){
+       var plusParts=fullPlus.split('+');
+       var before=plusParts[0]||'';
+       var after=plusParts[1]||'';
+       if(before.length>4) before=before.slice(-4);
+       shortPlus=before+'+'+after;
+     }
+     var plusDisplay=(shortPlus||'Not available')+' '+placeParts.join(', ');
 
     setText('ckDetectedArea',plusDisplay);
     setText('ckDetectedState',currentLocationData.state||'Not available');
@@ -1343,7 +1382,7 @@ body{padding:0 !important;margin:0 !important;}
 
     setText(
       'ckDetectedLocationText',
-      'Plus Code: '+(currentLocationData.plus_code||'available')+' · Exact GPS location captured.'
+      'Plus Code: '+((currentLocationData.plus_code||'').indexOf('+')>0 ? (currentLocationData.plus_code.split('+')[0].slice(-4)+'+'+currentLocationData.plus_code.split('+')[1]) : (currentLocationData.plus_code||'available'))+' · Exact GPS location captured.'
     );
 
     setText(
@@ -1429,6 +1468,7 @@ body{padding:0 !important;margin:0 !important;}
         currentLocationData.state=geo.state;
         currentLocationData.pincode=geo.pincode;
         currentLocationData.display=geo.display;
+        currentLocationData.place_name=geo.place_name || geo.city || geo.area || geo.district || '';
 
         /* Save GPS immediately; existing delivery_locations columns stay unchanged. */
         await saveCurrentLocationRow();
