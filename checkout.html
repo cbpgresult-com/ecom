@@ -1324,18 +1324,10 @@ body{padding:0 !important;margin:0 !important;}
         setText('ckLocationStatus','✓ Current location + address detected and saved');
         window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
       }catch(e){
-        console.error('CURRENT LOCATION SAVE ERROR:',e);
-        currentLocationData=null;currentLocationRowId=null;
-        setText('ckLocationStatus','Location detected, but save failed.');
-        alert('Current location save nahi ho paya.\\n\\n'+(e.message||'Supabase error'));
-      }finally{
-        if(btn){btn.disabled=false;btn.textContent='Use Location';}
-      }
-      }catch(e){
         console.error('CURRENT LOCATION ERROR:',e);
         currentLocationData=null;currentLocationRowId=null;
         setText('ckLocationStatus','Location detected, but address lookup/save failed.');
-        alert('Current location save nahi ho paya.\n\n'+(e.message||'Supabase/geocoding error'));
+        alert('Current location save nahi ho paya.\\n\\n'+(e.message||'Supabase/geocoding error'));
       }finally{
         if(btn){btn.disabled=false;btn.textContent='Use Location';}
       }
