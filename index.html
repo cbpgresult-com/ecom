@@ -19,13 +19,19 @@
     --violet:#6d28d9;
     --violet2:#8b5cf6;
     --light-violet:#f3e8ff;
+
     --green:#dcfce7;
     --green-dark:#15803d;
-    --white:#ffffff;
+
+    --white:#fff;
     --text:#171717;
     --muted:#6b7280;
     --border:#e5e7eb;
     --bg:#f7f7fb;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
@@ -69,12 +75,18 @@ body{
 .search-box input{
     width:100%;
     height:46px;
+
     border:2px solid #ddd6fe;
     background:#faf7ff;
+
     border-radius:13px;
+
     outline:none;
+
     padding:0 48px 0 18px;
+
     font-size:15px;
+
     transition:.2s;
 }
 
@@ -85,11 +97,15 @@ body{
 
 .search-icon{
     position:absolute;
+
     right:16px;
     top:50%;
+
     transform:translateY(-50%);
+
     width:21px;
     height:21px;
+
     color:#111;
 }
 
@@ -102,11 +118,15 @@ body{
 .login-btn,
 .cart-btn{
     height:44px;
+
     border:0;
     border-radius:12px;
+
     padding:0 17px;
+
     font-weight:700;
     cursor:pointer;
+
     display:flex;
     align-items:center;
     gap:8px;
@@ -117,20 +137,32 @@ body{
     color:#4c1d95;
 }
 
+.login-btn:hover{
+    background:#e9d5ff;
+}
+
 .cart-btn{
     background:var(--violet);
     color:#fff;
 }
 
+.cart-btn:hover{
+    background:#5b21b6;
+}
+
 .cart-count{
     min-width:22px;
     height:22px;
+
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    background:white;
+
+    background:#fff;
     color:var(--violet);
+
     border-radius:50%;
+
     font-size:12px;
 }
 
@@ -144,10 +176,14 @@ body{
 .categories{
     max-width:1250px;
     margin:auto;
+
     display:flex;
     gap:26px;
+
     padding:12px 18px;
+
     overflow-x:auto;
+
     scrollbar-width:none;
 }
 
@@ -157,23 +193,38 @@ body{
 
 .category{
     min-width:70px;
+
     text-align:center;
+
     cursor:pointer;
+
     flex-shrink:0;
+
     color:#222;
+
     font-size:13px;
 }
 
 .category-icon{
     width:45px;
     height:45px;
+
     border-radius:50%;
+
     margin:0 auto 7px;
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     background:var(--light-violet);
     color:var(--violet);
+
+    transition:.2s;
+}
+
+.category:hover .category-icon{
+    transform:translateY(-2px);
 }
 
 .category.active{
@@ -191,197 +242,184 @@ body{
 main{
     max-width:1250px;
     margin:auto;
-    padding:18px;
+
+    padding:20px 18px 40px;
 }
 
-/* ================= HERO ================= */
+/* ================= SIMPLE HERO ================= */
+/* Slider nahi hai */
 
-.hero-area{
-    display:grid;
-    grid-template-columns:minmax(0,2.2fr) minmax(260px,1fr);
-    gap:14px;
-    margin-bottom:24px;
-}
+.hero-simple{
+    min-height:220px;
 
-.slider{
-    position:relative;
-    overflow:hidden;
-    border-radius:18px;
-    min-height:265px;
-    background:#ddd;
-}
+    border-radius:22px;
 
-.slides{
-    display:flex;
-    width:100%;
-    height:100%;
-    transition:transform .55s ease;
-}
+    padding:34px 38px;
 
-.slide{
-    min-width:100%;
-    position:relative;
-    height:265px;
-    overflow:hidden;
-    background:#eee;
-}
+    background:
+        linear-gradient(
+            110deg,
+            #6d28d9 0%,
+            #8b5cf6 50%,
+            #d9fbe5 100%
+        );
 
-.slide img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-}
+    color:#fff;
 
-.slide-overlay{
-    position:absolute;
-    inset:0;
-    background:linear-gradient(
-        90deg,
-        rgba(0,0,0,.72),
-        rgba(0,0,0,.25),
-        transparent
-    );
     display:flex;
     align-items:center;
-    padding:30px;
+    justify-content:space-between;
+
+    gap:30px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    margin-bottom:28px;
 }
 
-.slide-content{
-    color:#fff;
-    max-width:420px;
+.hero-simple::after{
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+    height:260px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.13);
+
+    right:-70px;
+    bottom:-100px;
 }
 
-.slide-content small{
-    display:inline-block;
-    padding:7px 12px;
-    border-radius:30px;
+.hero-content{
+    position:relative;
+    z-index:2;
+
+    max-width:600px;
+}
+
+.hero-badge{
+    display:inline-flex;
+
     background:#fff;
     color:var(--violet);
+
+    padding:7px 13px;
+
+    border-radius:30px;
+
+    font-size:12px;
     font-weight:800;
-    margin-bottom:13px;
+
+    margin-bottom:14px;
 }
 
-.slide-content h2{
-    font-size:30px;
-    line-height:1.08;
-    margin-bottom:8px;
+.hero-content h1{
+    font-size:34px;
+    line-height:1.1;
+
+    margin-bottom:10px;
 }
 
-.slide-content p{
+.hero-content p{
     font-size:15px;
-    margin-bottom:17px;
+
+    color:#f5f3ff;
+
+    margin-bottom:18px;
 }
 
 .shop-btn{
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
+    border:0;
+
     background:#fff;
     color:var(--violet);
-    border:0;
-    border-radius:9px;
-    padding:10px 17px;
-    font-weight:800;
-    cursor:pointer;
-}
 
-.slider-arrow{
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    width:40px;
-    height:40px;
-    border:0;
-    border-radius:50%;
-    background:rgba(255,255,255,.95);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    z-index:3;
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
-}
-
-.prev{
-    left:12px;
-}
-
-.next{
-    right:12px;
-}
-
-.dots{
-    position:absolute;
-    bottom:12px;
-    left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    gap:6px;
-    z-index:4;
-}
-
-.dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#fff;
-    opacity:.6;
-    cursor:pointer;
-}
-
-.dot.active{
-    width:23px;
     border-radius:10px;
-    opacity:1;
-}
 
-/* ================= DEAL BOX ================= */
+    padding:11px 18px;
 
-.deal-side{
-    display:grid;
-    gap:14px;
-}
+    font-weight:800;
 
-.deal-box{
-    border-radius:17px;
-    padding:24px;
-    min-height:125px;
-    display:flex;
-    justify-content:space-between;
+    cursor:pointer;
+
+    display:inline-flex;
+
     align-items:center;
+
+    gap:7px;
 }
 
-.deal-box.green{
-    background:var(--green);
+.shop-btn:hover{
+    transform:translateY(-1px);
 }
 
-.deal-box.violet{
-    background:var(--light-violet);
+/* ================= FEATURE BOXES ================= */
+
+.feature-side{
+    position:relative;
+    z-index:2;
+
+    display:grid;
+
+    gap:12px;
+
+    width:330px;
 }
 
-.deal-text h3{
-    font-size:20px;
-    margin-bottom:7px;
+.feature-box{
+    min-height:88px;
+
+    border-radius:16px;
+
+    padding:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    color:#111;
 }
 
-.deal-text p{
+.feature-box.green{
+    background:#dcfce7;
+}
+
+.feature-box.violet{
+    background:#f3e8ff;
+}
+
+.feature-text h3{
+    font-size:17px;
+    margin-bottom:5px;
+}
+
+.feature-text p{
+    font-size:12px;
     color:#6b7280;
-    font-size:14px;
 }
 
-.deal-icon{
-    width:52px;
-    height:52px;
+.feature-icon{
+    width:42px;
+    height:42px;
 }
 
-/* ================= SECTION TITLE ================= */
+/* ================= SECTION ================= */
 
 .section-head{
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
-    margin:18px 0 13px;
+
+    margin:12px 0 15px;
 }
 
 .section-title{
@@ -391,73 +429,123 @@ main{
 
 .section-subtitle{
     margin-top:5px;
+
     color:var(--muted);
+
     font-size:14px;
 }
 
 .sort-select{
     height:40px;
+
     padding:0 13px;
+
     border:1px solid var(--border);
+
     background:#fff;
+
     border-radius:10px;
+
     outline:none;
+
+    cursor:pointer;
 }
 
 /* ================= PRODUCT GRID ================= */
 
 .product-grid{
     display:grid;
+
     grid-template-columns:repeat(5,1fr);
+
     gap:14px;
 }
 
 .product-card{
     background:#fff;
+
     border:1px solid #ececf2;
+
     border-radius:15px;
+
     overflow:hidden;
+
     transition:.2s;
+
     cursor:pointer;
+
     min-width:0;
 }
 
 .product-card:hover{
     transform:translateY(-3px);
-    box-shadow:0 10px 30px rgba(76,29,149,.10);
+
+    box-shadow:
+        0 10px 30px
+        rgba(76,29,149,.10);
 }
+
+/* PRODUCT IMAGE */
 
 .product-image{
     height:220px;
+
     position:relative;
+
     background:#fff;
+
     display:flex;
+
     align-items:center;
+
     justify-content:center;
+
     padding:10px;
+
     overflow:hidden;
 }
 
 .product-image img{
     width:100%;
     height:100%;
+
     object-fit:contain;
+
     object-position:center;
+
     display:block;
+
+    transition:.2s;
 }
+
+.product-card:hover .product-image img{
+    transform:scale(1.03);
+}
+
+/* DISCOUNT */
 
 .discount{
     position:absolute;
+
     top:10px;
     left:10px;
+
     background:var(--green);
+
     color:var(--green-dark);
+
     padding:5px 8px;
+
     border-radius:6px;
+
     font-size:11px;
+
     font-weight:800;
+
     z-index:2;
 }
+
+/* PRODUCT INFO */
 
 .product-info{
     padding:12px;
@@ -465,54 +553,79 @@ main{
 
 .rating{
     display:inline-flex;
+
     align-items:center;
+
     gap:3px;
+
     background:var(--green);
+
     color:#166534;
+
     border-radius:5px;
+
     padding:4px 7px;
+
     font-size:11px;
+
     font-weight:700;
+
     margin-bottom:8px;
 }
 
 .product-title{
     font-size:14px;
+
     line-height:1.35;
+
     font-weight:600;
+
     height:38px;
+
     overflow:hidden;
 }
 
 .price-row{
     margin-top:10px;
+
     display:flex;
+
     align-items:center;
+
     gap:7px;
+
     flex-wrap:wrap;
 }
 
 .price{
     font-size:18px;
+
     font-weight:800;
 }
 
 .mrp{
     font-size:12px;
+
     color:#9ca3af;
+
     text-decoration:line-through;
 }
 
 .off{
     font-size:11px;
+
     color:#15803d;
+
     font-weight:800;
 }
 
 .delivery{
     margin-top:8px;
+
     font-size:11px;
+
     color:#166534;
+
     font-weight:600;
 }
 
@@ -520,33 +633,10 @@ main{
 
 .loading{
     padding:50px;
+
     text-align:center;
+
     color:#6b7280;
-}
-
-.skeleton-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:14px;
-}
-
-.skeleton{
-    height:300px;
-    border-radius:15px;
-    background:linear-gradient(
-        90deg,
-        #eee 25%,
-        #f7f7f7 50%,
-        #eee 75%
-    );
-    background-size:200% 100%;
-    animation:loading 1.2s infinite;
-}
-
-@keyframes loading{
-    to{
-        background-position:-200% 0;
-    }
 }
 
 .hidden{
@@ -559,7 +649,9 @@ main{
 
     .header-inner{
         flex-wrap:wrap;
+
         gap:9px;
+
         padding:10px 12px;
     }
 
@@ -569,6 +661,7 @@ main{
 
     .search-box{
         order:3;
+
         flex-basis:100%;
     }
 
@@ -582,64 +675,76 @@ main{
 
     .cart-btn{
         height:40px;
+
         padding:0 12px;
     }
 
     .categories{
         gap:20px;
+
         padding:10px 12px;
     }
 
     main{
-        padding:12px;
+        padding:12px 12px 35px;
     }
 
-    .hero-area{
-        grid-template-columns:1fr;
+    /* Mobile hero */
+
+    .hero-simple{
+        min-height:auto;
+
+        padding:25px 20px;
+
+        display:block;
+
+        border-radius:17px;
     }
 
-    .deal-side{
+    .hero-content{
+        max-width:100%;
+    }
+
+    .hero-content h1{
+        font-size:26px;
+    }
+
+    .hero-content p{
+        font-size:13px;
+    }
+
+    .feature-side{
+        width:100%;
+
         grid-template-columns:1fr 1fr;
+
+        margin-top:15px;
     }
 
-    .slider,
-    .slide{
-        height:210px;
+    .feature-box{
+        min-height:85px;
+
+        padding:13px;
     }
 
-    .slide-content{
-        padding:22px;
-        max-width:270px;
+    .feature-text h3{
+        font-size:14px;
     }
 
-    .slide-content h2{
-        font-size:22px;
+    .feature-text p{
+        font-size:10px;
     }
 
-    .slide-content p{
-        font-size:12px;
+    .feature-icon{
+        width:32px;
+        height:32px;
     }
 
-    .deal-box{
-        min-height:100px;
-        padding:16px;
-    }
-
-    .deal-text h3{
-        font-size:16px;
-    }
-
-    .deal-text p{
-        font-size:11px;
-    }
-
-    .deal-icon{
-        width:38px;
-        height:38px;
-    }
+    /* Grid */
 
     .product-grid{
         grid-template-columns:repeat(2,minmax(0,1fr));
+
         gap:10px;
     }
 
@@ -653,9 +758,12 @@ main{
 
     .sort-select{
         height:36px;
+
         font-size:12px;
     }
 }
+
+/* ================= SMALL PHONE ================= */
 
 @media(max-width:500px){
 
@@ -669,10 +777,13 @@ main{
 
     .search-box input{
         height:42px;
+
+        font-size:13px;
     }
 
     .category{
         min-width:62px;
+
         font-size:11px;
     }
 
@@ -681,68 +792,62 @@ main{
         height:40px;
     }
 
-    .hero-area{
-        gap:10px;
+    .hero-simple{
+        padding:22px 16px;
     }
 
-    .slider,
-    .slide{
-        height:185px;
-        border-radius:14px;
+    .hero-content h1{
+        font-size:23px;
     }
 
-    .slide-overlay{
-        padding:16px;
-    }
-
-    .slide-content h2{
-        font-size:18px;
-    }
-
-    .slide-content p{
+    .hero-content p{
         font-size:11px;
-        margin-bottom:10px;
-    }
-
-    .slide-content small{
-        padding:5px 8px;
-        font-size:9px;
     }
 
     .shop-btn{
-        padding:7px 11px;
+        padding:8px 12px;
+
         font-size:11px;
     }
 
-    .slider-arrow{
-        width:32px;
-        height:32px;
-    }
-
-    .deal-side{
+    .feature-side{
         gap:8px;
     }
 
-    .deal-box{
-        padding:12px;
-        border-radius:13px;
+    .feature-box{
+        padding:11px;
+
+        border-radius:12px;
     }
 
-    .deal-text h3{
-        font-size:14px;
+    .feature-text h3{
+        font-size:12px;
     }
 
-    .deal-text p{
+    .feature-text p{
         font-size:9px;
     }
 
-    .deal-icon{
-        width:30px;
-        height:30px;
+    .feature-icon{
+        width:28px;
+        height:28px;
+    }
+
+    .section-head{
+        gap:10px;
+    }
+
+    .section-title{
+        font-size:18px;
+    }
+
+    .section-subtitle{
+        font-size:11px;
     }
 
     .product-image{
-        height:170px;
+        height:175px;
+
         padding:8px;
     }
 
@@ -769,6 +874,31 @@ main{
     .delivery{
         font-size:9px;
     }
+
+    .rating{
+        font-size:10px;
+    }
+}
+
+/* ================= VERY SMALL ================= */
+
+@media(max-width:360px){
+
+    .product-image{
+        height:155px;
+    }
+
+    .product-title{
+        font-size:11px;
+    }
+
+    .price{
+        font-size:15px;
+    }
+
+    .hero-content h1{
+        font-size:21px;
+    }
 }
 </style>
 </head>
@@ -781,7 +911,9 @@ main{
 
     <div class="header-inner">
 
-        <div class="logo">MyStore</div>
+        <div class="logo">
+            MyStore
+        </div>
 
         <div class="search-box">
 
@@ -792,49 +924,98 @@ main{
                 autocomplete="off"
             >
 
-            <svg class="search-icon"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
-                <circle cx="11" cy="11" r="7"></circle>
-                <path d="m20 20-4-4"></path>
+            <!-- Search SVG -->
+            <svg
+                class="search-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                ></circle>
+
+                <path
+                    d="m20 20-4-4"
+                ></path>
             </svg>
 
         </div>
 
         <div class="header-actions">
 
-            <button class="login-btn" onclick="goLogin()">
+            <!-- Login -->
+            <button
+                class="login-btn"
+                onclick="goLogin()"
+            >
 
-                <svg width="18" height="18"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>
+                <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <circle
+                        cx="12"
+                        cy="8"
+                        r="4"
+                    ></circle>
+
+                    <path
+                        d="M4 21c0-4 3.5-7 8-7s8 3 8 7"
+                    ></path>
                 </svg>
 
                 Login
 
             </button>
 
-            <button class="cart-btn" onclick="goCart()">
 
-                <svg width="19" height="19"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <circle cx="9" cy="20" r="1"></circle>
-                    <circle cx="18" cy="20" r="1"></circle>
-                    <path d="M3 4h2l2.5 11h10l3-8H6"></path>
+            <!-- Cart -->
+            <button
+                class="cart-btn"
+                onclick="goCart()"
+            >
+
+                <svg
+                    width="19"
+                    height="19"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <circle
+                        cx="9"
+                        cy="20"
+                        r="1"
+                    ></circle>
+
+                    <circle
+                        cx="18"
+                        cy="20"
+                        r="1"
+                    ></circle>
+
+                    <path
+                        d="M3 4h2l2.5 11h10l3-8H6"
+                    ></path>
                 </svg>
 
                 Cart
 
-                <span id="cartCount" class="cart-count">0</span>
+                <span
+                    id="cartCount"
+                    class="cart-count"
+                >
+                    0
+                </span>
 
             </button>
 
@@ -849,208 +1030,408 @@ main{
 
 <div class="category-wrap">
 
-    <div class="categories" id="categoryBar">
+    <div
+        class="categories"
+        id="categoryBar"
+    >
 
-        <div class="category active" data-category="all">
+        <!-- ALL -->
+
+        <div
+            class="category active"
+            data-category="all"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
                     <path d="m3 10 9-7 9 7"></path>
+
                     <path d="M5 9v11h14V9"></path>
+
                     <path d="M9 20v-6h6v6"></path>
                 </svg>
+
             </div>
 
             For You
 
         </div>
 
-        <div class="category" data-category="Fashion">
+
+        <!-- FASHION -->
+
+        <div
+            class="category"
+            data-category="Fashion"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path d="M8 4l4 3 4-3 4 4-3 3v9H7v-9L4 8l4-4z"></path>
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path
+                        d="M8 4l4 3 4-3 4 4-3 3v9H7v-9L4 8l4-4z"
+                    ></path>
                 </svg>
+
             </div>
 
             Fashion
 
         </div>
 
-        <div class="category" data-category="Mobiles">
+
+        <!-- MOBILES -->
+
+        <div
+            class="category"
+            data-category="Mobiles"
+        >
 
             <div class="category-icon">
-                <svg width="22" height="22"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+
+                <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <rect
+                        x="7"
+                        y="2"
+                        width="10"
+                        height="20"
+                        rx="2"
+                    ></rect>
+
                     <path d="M11 18h2"></path>
                 </svg>
+
             </div>
 
             Mobiles
 
         </div>
 
-        <div class="category" data-category="Electronics">
+
+        <!-- ELECTRONICS -->
+
+        <div
+            class="category"
+            data-category="Electronics"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <rect x="3" y="5" width="18" height="12" rx="1"></rect>
-                    <path d="M8 21h8M12 17v4"></path>
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <rect
+                        x="3"
+                        y="5"
+                        width="18"
+                        height="12"
+                        rx="1"
+                    ></rect>
+
+                    <path
+                        d="M8 21h8M12 17v4"
+                    ></path>
                 </svg>
+
             </div>
 
             Electronics
 
         </div>
 
-        <div class="category" data-category="Beauty">
+
+        <!-- BEAUTY -->
+
+        <div
+            class="category"
+            data-category="Beauty"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
                     <path d="M9 3h6v6H9z"></path>
-                    <path d="M10 9v12h4V9"></path>
+
+                    <path
+                        d="M10 9v12h4V9"
+                    ></path>
                 </svg>
+
             </div>
 
             Beauty
 
         </div>
 
-        <div class="category" data-category="Home">
+
+        <!-- HOME -->
+
+        <div
+            class="category"
+            data-category="Home"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path d="m3 11 9-8 9 8"></path>
-                    <path d="M5 10v10h14V10"></path>
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path
+                        d="m3 11 9-8 9 8"
+                    ></path>
+
+                    <path
+                        d="M5 10v10h14V10"
+                    ></path>
                 </svg>
+
             </div>
 
             Home
 
         </div>
 
-        <div class="category" data-category="Appliances">
+
+        <!-- APPLIANCES -->
+
+        <div
+            class="category"
+            data-category="Appliances"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <rect
+                        x="3"
+                        y="4"
+                        width="18"
+                        height="16"
+                        rx="2"
+                    ></rect>
+
                     <path d="M3 9h18"></path>
                 </svg>
+
             </div>
 
             Appliances
 
         </div>
 
-        <div class="category" data-category="Toys">
+
+        <!-- TOYS -->
+
+        <div
+            class="category"
+            data-category="Toys"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <circle cx="12" cy="12" r="7"></circle>
-                    <path d="M8 12h8M12 8v8"></path>
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="7"
+                    ></circle>
+
+                    <path
+                        d="M8 12h8M12 8v8"
+                    ></path>
                 </svg>
+
             </div>
 
             Toys
 
         </div>
 
-        <div class="category" data-category="Food">
+
+        <!-- FOOD -->
+
+        <div
+            class="category"
+            data-category="Food"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
                     <path d="M5 11h14"></path>
-                    <path d="M7 11c0-4 2-6 5-6s5 2 5 6"></path>
-                    <path d="M6 15h12M8 19h8"></path>
+
+                    <path
+                        d="M7 11c0-4 2-6 5-6s5 2 5 6"
+                    ></path>
+
+                    <path
+                        d="M6 15h12M8 19h8"
+                    ></path>
                 </svg>
+
             </div>
 
             Food
 
         </div>
 
-        <div class="category" data-category="Sports">
+
+        <!-- SPORTS -->
+
+        <div
+            class="category"
+            data-category="Sports"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="m8 4 4 4 4-4M4 12h5l3 8M20 12h-5l-3-4"></path>
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="9"
+                    ></circle>
+
+                    <path
+                        d="m8 4 4 4 4-4M4 12h5l3 8M20 12h-5l-3-4"
+                    ></path>
                 </svg>
+
             </div>
 
             Sports
 
         </div>
 
-        <div class="category" data-category="Furniture">
+
+        <!-- FURNITURE -->
+
+        <div
+            class="category"
+            data-category="Furniture"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path d="M5 11h14v6H5z"></path>
-                    <path d="M7 11V8a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v3"></path>
-                    <path d="M7 17v3M17 17v3"></path>
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path
+                        d="M5 11h14v6H5z"
+                    ></path>
+
+                    <path
+                        d="M7 11V8a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v3"
+                    ></path>
+
+                    <path
+                        d="M7 17v3M17 17v3"
+                    ></path>
                 </svg>
+
             </div>
 
             Furniture
 
         </div>
 
-        <div class="category" data-category="Books">
+
+        <!-- BOOKS -->
+
+        <div
+            class="category"
+            data-category="Books"
+        >
 
             <div class="category-icon">
-                <svg width="23" height="23"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"></path>
+
+                <svg
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path
+                        d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"
+                    ></path>
+
                     <path d="M7 4v14"></path>
                 </svg>
+
             </div>
 
             Books
@@ -1062,133 +1443,208 @@ main{
 </div>
 
 
+<!-- ================= MAIN ================= -->
+
 <main>
 
-<!-- ================= HERO ================= -->
 
-<section class="hero-area">
+    <!-- ================= NO SLIDER HERO ================= -->
 
-    <div class="slider">
+    <section class="hero-simple">
 
-        <div class="slides" id="slides"></div>
+        <div class="hero-content">
 
-        <button class="slider-arrow prev" onclick="previousSlide()">
-
-            <svg width="20" height="20"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
-                <path d="m15 18-6-6 6-6"></path>
-            </svg>
-
-        </button>
-
-        <button class="slider-arrow next" onclick="nextSlide()">
-
-            <svg width="20" height="20"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
-                <path d="m9 18 6-6-6-6"></path>
-            </svg>
-
-        </button>
-
-        <div class="dots" id="dots"></div>
-
-    </div>
-
-
-    <div class="deal-side">
-
-        <div class="deal-box green">
-
-            <div class="deal-text">
-
-                <h3>Fresh Deals</h3>
-                <p>New products added</p>
-
+            <div class="hero-badge">
+                ✦ BIG SAVINGS
             </div>
 
-            <svg class="deal-icon"
-                 viewBox="0 0 64 64"
-                 fill="none">
-                <path d="M32 4c-4 12-14 17-14 29 0 9 7 16 16 16 12 0 19-9 17-20-1-7-6-12-10-17 0 8-3 11-7 14 1-8 0-15-2-22z"
-                      fill="#f97316"
-                      stroke="#111"
-                      stroke-width="3"/>
-            </svg>
+            <h1>
+                Shop Smart.<br>
+                Live Better.
+            </h1>
 
-        </div>
-
-
-        <div class="deal-box violet">
-
-            <div class="deal-text">
-
-                <h3>Fast Delivery</h3>
-                <p>Easy & secure shopping</p>
-
-            </div>
-
-            <svg class="deal-icon"
-                 viewBox="0 0 64 64"
-                 fill="none">
-                <path d="M7 18h34v28H7z"
-                      fill="#60a5fa"
-                      stroke="#111"
-                      stroke-width="3"/>
-                <path d="M41 28h10l7 8v10H41z"
-                      fill="#f97316"
-                      stroke="#111"
-                      stroke-width="3"/>
-                <circle cx="19" cy="49" r="5"
-                        fill="#111"/>
-                <circle cx="49" cy="49" r="5"
-                        fill="#111"/>
-            </svg>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ================= PRODUCTS ================= -->
-
-<section>
-
-    <div class="section-head">
-
-        <div>
-            <h2 class="section-title">Suggested For You</h2>
-            <p class="section-subtitle">
-                Discover products you'll love.
+            <p>
+                Discover amazing products at great prices.
             </p>
+
+            <button
+                class="shop-btn"
+                onclick="scrollToProducts()"
+            >
+                Shop Now
+
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path d="M5 12h14"></path>
+                    <path d="m13 6 6 6-6 6"></path>
+                </svg>
+
+            </button>
+
         </div>
 
-        <select id="sortSelect" class="sort-select">
 
-            <option value="popular">Popular</option>
-            <option value="low">Price: Low to High</option>
-            <option value="high">Price: High to Low</option>
-            <option value="new">Newest</option>
+        <!-- FEATURE SIDE -->
 
-        </select>
+        <div class="feature-side">
 
-    </div>
+            <div class="feature-box green">
+
+                <div class="feature-text">
+
+                    <h3>
+                        Fresh Deals
+                    </h3>
+
+                    <p>
+                        New products added
+                    </p>
+
+                </div>
 
 
-    <div id="loading" class="loading">
-        Loading products...
-    </div>
+                <!-- Fire SVG -->
 
-    <div id="productGrid" class="product-grid"></div>
+                <svg
+                    class="feature-icon"
+                    viewBox="0 0 64 64"
+                    fill="none"
+                >
+                    <path
+                        d="M32 4c-4 12-14 17-14 29 0 9 7 16 16 16 12 0 19-9 17-20-1-7-6-12-10-17 0 8-3 11-7 14 1-8 0-15-2-22z"
+                        fill="#f97316"
+                        stroke="#111"
+                        stroke-width="3"
+                    ></path>
+                </svg>
 
-</section>
+            </div>
+
+
+            <div class="feature-box violet">
+
+                <div class="feature-text">
+
+                    <h3>
+                        Fast Delivery
+                    </h3>
+
+                    <p>
+                        Easy & secure shopping
+                    </p>
+
+                </div>
+
+
+                <!-- Truck SVG -->
+
+                <svg
+                    class="feature-icon"
+                    viewBox="0 0 64 64"
+                    fill="none"
+                >
+                    <path
+                        d="M7 18h34v28H7z"
+                        fill="#60a5fa"
+                        stroke="#111"
+                        stroke-width="3"
+                    ></path>
+
+                    <path
+                        d="M41 28h10l7 8v10H41z"
+                        fill="#f97316"
+                        stroke="#111"
+                        stroke-width="3"
+                    ></path>
+
+                    <circle
+                        cx="19"
+                        cy="49"
+                        r="5"
+                        fill="#111"
+                    ></circle>
+
+                    <circle
+                        cx="49"
+                        cy="49"
+                        r="5"
+                        fill="#111"
+                    ></circle>
+
+                </svg>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= PRODUCTS ================= -->
+
+    <section id="productsSection">
+
+        <div class="section-head">
+
+            <div>
+
+                <h2 class="section-title">
+                    Suggested For You
+                </h2>
+
+                <p class="section-subtitle">
+                    Discover products you'll love.
+                </p>
+
+            </div>
+
+
+            <select
+                id="sortSelect"
+                class="sort-select"
+            >
+
+                <option value="popular">
+                    Popular
+                </option>
+
+                <option value="low">
+                    Price: Low to High
+                </option>
+
+                <option value="high">
+                    Price: High to Low
+                </option>
+
+                <option value="new">
+                    Newest
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            id="loading"
+            class="loading"
+        >
+            Loading products...
+        </div>
+
+
+        <div
+            id="productGrid"
+            class="product-grid"
+        ></div>
+
+    </section>
 
 </main>
 
@@ -1197,42 +1653,38 @@ main{
 
 /* =========================================
    SUPABASE CONFIG
-   ========================================= */
+========================================= */
 
 const SUPABASE_URL =
-  "https://bszojvhitsoamhksyjul.supabase.co";
+    "https://bszojvhitsoamhksyjul.supabase.co";
 
 const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
 
 const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
-/* =========================================================
+/* =========================================
    GLOBAL
-========================================================= */
+========================================= */
 
 let allProducts = [];
+
 let filteredProducts = [];
 
-let currentSlide = 0;
-let slideTimer;
 
-
-/* =========================================================
+/* =========================================
    IMAGE HELPER
-========================================================= */
+========================================= */
 
 function getMainImage(product){
 
     /*
-      IMPORTANT:
-      First/main image hi use hogi.
-      Agar images JSON array hai to [0].
+      Main/first image hi use hogi.
     */
 
     let image =
@@ -1242,9 +1694,22 @@ function getMainImage(product){
         product.thumbnail ||
         "";
 
+    /*
+      Agar images JSON array hai
+    */
+
     if(Array.isArray(product.images)){
-        image = product.images[0] || image;
+
+        image =
+            product.images[0] ||
+            image;
+
     }
+
+
+    /*
+      Agar images JSON string hai
+    */
 
     if(typeof product.images === "string"){
 
@@ -1254,54 +1719,63 @@ function getMainImage(product){
                 JSON.parse(product.images);
 
             if(Array.isArray(parsed)){
+
                 image =
-                    parsed[0] || image;
+                    parsed[0] ||
+                    image;
+
             }
 
         }catch(e){
 
             if(product.images.trim()){
-                image = product.images;
+
+                image =
+                    product.images;
+
             }
 
         }
 
     }
 
-    return image || "https://via.placeholder.com/600x600?text=Product";
+
+    return image ||
+        "https://via.placeholder.com/600x600?text=Product";
 }
 
 
-/* =========================================================
+/* =========================================
    PRICE
-========================================================= */
+========================================= */
 
-function getPrice(p){
-
-    return Number(
-        p.price ||
-        p.selling_price ||
-        p.sale_price ||
-        0
-    );
-
-}
-
-function getMrp(p){
+function getPrice(product){
 
     return Number(
-        p.mrp ||
-        p.original_price ||
-        p.price ||
+        product.price ||
+        product.selling_price ||
+        product.sale_price ||
         0
     );
 
 }
 
 
-/* =========================================================
+function getMrp(product){
+
+    return Number(
+        product.mrp ||
+        product.original_price ||
+        product.price ||
+        0
+    );
+
+}
+
+
+/* =========================================
    LOAD PRODUCTS
-========================================================= */
+========================================= */
 
 async function loadProducts(){
 
@@ -1310,30 +1784,44 @@ async function loadProducts(){
 
     try{
 
-        const { data, error } =
-            await supabaseClient
+        const {
+            data,
+            error
+        } =
+        await supabaseClient
             .from("products")
             .select("*");
 
+
         if(error){
+
             console.error(error);
+
             loading.innerHTML =
                 "Products load nahi ho paaye.";
+
             return;
+
         }
 
-        allProducts = data || [];
+
+        allProducts =
+            data || [];
+
 
         filteredProducts =
             [...allProducts];
 
-        loading.classList.add("hidden");
+
+        loading.classList.add(
+            "hidden"
+        );
+
 
         renderProducts();
 
-        createSlides();
-
         updateCartCount();
+
 
     }catch(error){
 
@@ -1347,512 +1835,350 @@ async function loadProducts(){
 }
 
 
-/* =========================================================
-   PRODUCT CARD
-========================================================= */
+/* =========================================
+   RENDER PRODUCTS
+========================================= */
 
 function renderProducts(){
 
     const grid =
-        document.getElementById("productGrid");
+        document.getElementById(
+            "productGrid"
+        );
+
 
     grid.innerHTML = "";
+
 
     if(!filteredProducts.length){
 
         grid.innerHTML = `
+
             <div style="
                 grid-column:1/-1;
-                padding:50px;
+                padding:60px 20px;
                 text-align:center;
                 color:#777;
             ">
-                No products found
+
+                <div style="
+                    font-size:40px;
+                    margin-bottom:10px;
+                ">
+                    🔍
+                </div>
+
+                <strong>
+                    No products found
+                </strong>
+
+                <div style="
+                    margin-top:6px;
+                    font-size:13px;
+                ">
+                    Try another search or category.
+                </div>
+
             </div>
+
         `;
 
         return;
+
     }
 
 
-    filteredProducts.forEach(product => {
+    filteredProducts.forEach(
+        product => {
 
-        const image =
-            getMainImage(product);
-
-        const price =
-            getPrice(product);
-
-        const mrp =
-            getMrp(product);
-
-        let discount = 0;
-
-        if(mrp > price && price > 0){
-
-            discount =
-                Math.round(
-                    ((mrp-price)/mrp)*100
-                );
-
-        }
+            const image =
+                getMainImage(product);
 
 
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "product-card";
+            const price =
+                getPrice(product);
 
 
-        card.onclick = () => {
+            const mrp =
+                getMrp(product);
 
-            if(product.id){
 
-                window.location.href =
-                    `product.html?id=${product.id}`;
+            let discount = 0;
+
+
+            if(
+                mrp > price &&
+                price > 0
+            ){
+
+                discount =
+                    Math.round(
+                        ((mrp - price) /
+                        mrp) * 100
+                    );
 
             }
 
-        };
+
+            const card =
+                document.createElement(
+                    "div"
+                );
 
 
-        card.innerHTML = `
+            card.className =
+                "product-card";
 
-            <div class="product-image">
 
-                ${
-                    discount > 0
-                    ?
-                    `<span class="discount">
-                        ${discount}% OFF
-                    </span>`
-                    :
-                    ""
+            card.onclick = () => {
+
+                if(product.id){
+
+                    window.location.href =
+                        `product.html?id=${product.id}`;
+
                 }
 
-                <img
-                    src="${escapeHtml(image)}"
-                    alt="${escapeHtml(product.title || product.name || "Product")}"
-                    loading="lazy"
-                    onerror="
-                        this.src='https://via.placeholder.com/600x600?text=Product'
-                    "
-                >
-
-            </div>
+            };
 
 
-            <div class="product-info">
+            card.innerHTML = `
 
-                <div class="rating">
-
-                    <svg width="12" height="12"
-                         viewBox="0 0 24 24"
-                         fill="currentColor">
-                        <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1L12 2z"/>
-                    </svg>
-
-                    ${product.rating || 4.6}
-
-                </div>
-
-
-                <div class="product-title">
-
-                    ${escapeHtml(
-                        product.title ||
-                        product.name ||
-                        "Product"
-                    )}
-
-                </div>
-
-
-                <div class="price-row">
-
-                    <span class="price">
-                        ₹${price.toLocaleString("en-IN")}
-                    </span>
-
-                    ${
-                        mrp > price
-                        ?
-                        `<span class="mrp">
-                            ₹${mrp.toLocaleString("en-IN")}
-                        </span>`
-                        :
-                        ""
-                    }
+                <div class="product-image">
 
                     ${
                         discount > 0
                         ?
-                        `<span class="off">
+                        `
+                        <span class="discount">
                             ${discount}% OFF
-                        </span>`
+                        </span>
+                        `
                         :
                         ""
                     }
 
+
+                    <img
+                        src="${escapeHtml(image)}"
+
+                        alt="${escapeHtml(
+                            product.title ||
+                            product.name ||
+                            "Product"
+                        )}"
+
+                        loading="lazy"
+
+                        onerror="
+                            this.src='https://via.placeholder.com/600x600?text=Product'
+                        "
+                    >
+
                 </div>
 
 
-                <div class="delivery">
-
-                    ✓ Delivery available
-
-                </div>
-
-            </div>
-        `;
+                <div class="product-info">
 
 
-        grid.appendChild(card);
+                    <div class="rating">
 
-    });
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1L12 2z"
+                            ></path>
+                        </svg>
 
-}
+                        ${product.rating || 4.6}
 
-
-/* =========================================================
-   SLIDER
-========================================================= */
-
-function createSlides(){
-
-    const container =
-        document.getElementById("slides");
-
-    const dots =
-        document.getElementById("dots");
-
-    container.innerHTML = "";
-    dots.innerHTML = "";
-
-    const products =
-        allProducts.slice(0,6);
+                    </div>
 
 
-    if(!products.length){
-        return;
-    }
+                    <div class="product-title">
 
-
-    products.forEach((product,index) => {
-
-        const image =
-            getMainImage(product);
-
-        const price =
-            getPrice(product);
-
-        const slide =
-            document.createElement("div");
-
-        slide.className = "slide";
-
-        slide.innerHTML = `
-
-            <img
-                src="${escapeHtml(image)}"
-                alt=""
-                onerror="
-                    this.src='https://via.placeholder.com/1200x500?text=MyStore'
-                "
-            >
-
-            <div class="slide-overlay">
-
-                <div class="slide-content">
-
-                    <small>BIG SAVINGS</small>
-
-                    <h2>
                         ${escapeHtml(
                             product.title ||
                             product.name ||
-                            "Amazing Product"
+                            "Product"
                         )}
-                    </h2>
 
-                    <p>
-                        Starting from
-                        ₹${price.toLocaleString("en-IN")}
-                    </p>
+                    </div>
 
-                    <button
-                        class="shop-btn"
-                        onclick="event.stopPropagation(); openProduct('${product.id}')"
-                    >
-                        Shop Now
 
-                        <svg width="16"
-                             height="16"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2">
-                            <path d="M5 12h14"></path>
-                            <path d="m13 6 6 6-6 6"></path>
-                        </svg>
+                    <div class="price-row">
 
-                    </button>
+                        <span class="price">
+
+                            ₹${price.toLocaleString(
+                                "en-IN"
+                            )}
+
+                        </span>
+
+
+                        ${
+                            mrp > price
+                            ?
+                            `
+                            <span class="mrp">
+
+                                ₹${mrp.toLocaleString(
+                                    "en-IN"
+                                )}
+
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+
+                        ${
+                            discount > 0
+                            ?
+                            `
+                            <span class="off">
+                                ${discount}% OFF
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+
+
+                    <div class="delivery">
+
+                        ✓ Delivery available
+
+                    </div>
 
                 </div>
 
-            </div>
-        `;
-
-        slide.onclick = () => {
-            openProduct(product.id);
-        };
-
-        container.appendChild(slide);
+            `;
 
 
-        const dot =
-            document.createElement("span");
+            grid.appendChild(card);
 
-        dot.className =
-            "dot" +
-            (index === 0 ? " active" : "");
-
-        dot.onclick = () => {
-            currentSlide = index;
-            updateSlider();
-            restartSlider();
-        };
-
-        dots.appendChild(dot);
-
-    });
-
-
-    currentSlide = 0;
-
-    updateSlider();
-
-    restartSlider();
+        }
+    );
 
 }
 
 
-/* =========================================================
-   SLIDER CONTROLS
-========================================================= */
-
-function updateSlider(){
-
-    const slides =
-        document.getElementById("slides");
-
-    slides.style.transform =
-        `translateX(-${currentSlide * 100}%)`;
-
-
-    document
-        .querySelectorAll(".dot")
-        .forEach((dot,index) => {
-
-            dot.classList.toggle(
-                "active",
-                index === currentSlide
-            );
-
-        });
-
-}
-
-
-function nextSlide(){
-
-    const total =
-        document.querySelectorAll(".slide").length;
-
-    if(!total) return;
-
-    currentSlide =
-        (currentSlide + 1) % total;
-
-    updateSlider();
-
-}
-
-
-function previousSlide(){
-
-    const total =
-        document.querySelectorAll(".slide").length;
-
-    if(!total) return;
-
-    currentSlide =
-        (currentSlide - 1 + total) % total;
-
-    updateSlider();
-
-}
-
-
-function restartSlider(){
-
-    clearInterval(slideTimer);
-
-    slideTimer =
-        setInterval(
-            nextSlide,
-            3500
-        );
-
-}
-
-
-/* =========================================================
+/* =========================================
    SEARCH
-========================================================= */
+========================================= */
 
 document
-.getElementById("searchInput")
-.addEventListener("input", function(){
+    .getElementById("searchInput")
+    .addEventListener(
+        "input",
+        function(){
 
-    const query =
-        this.value
-        .trim()
-        .toLowerCase();
-
-
-    filteredProducts =
-        allProducts.filter(product => {
-
-            const title =
-                String(
-                    product.title ||
-                    product.name ||
-                    ""
-                ).toLowerCase();
+            const query =
+                this.value
+                    .trim()
+                    .toLowerCase();
 
 
-            const category =
-                String(
-                    product.category ||
-                    ""
-                ).toLowerCase();
+            filteredProducts =
+                allProducts.filter(
+                    product => {
+
+                        const title =
+                            String(
+                                product.title ||
+                                product.name ||
+                                ""
+                            )
+                            .toLowerCase();
 
 
-            return (
-                title.includes(query) ||
-                category.includes(query)
-            );
-
-        });
-
-
-    renderProducts();
-
-});
+                        const category =
+                            String(
+                                product.category ||
+                                ""
+                            )
+                            .toLowerCase();
 
 
-/* =========================================================
+                        return (
+                            title.includes(query) ||
+                            category.includes(query)
+                        );
+
+                    }
+                );
+
+
+            renderProducts();
+
+        }
+    );
+
+
+/* =========================================
    SORT
-========================================================= */
+========================================= */
 
 document
-.getElementById("sortSelect")
-.addEventListener("change", function(){
+    .getElementById("sortSelect")
+    .addEventListener(
+        "change",
+        function(){
 
-    const value = this.value;
-
-
-    if(value === "low"){
-
-        filteredProducts.sort(
-            (a,b) =>
-            getPrice(a)-getPrice(b)
-        );
-
-    }
+            const value =
+                this.value;
 
 
-    if(value === "high"){
+            if(value === "low"){
 
-        filteredProducts.sort(
-            (a,b) =>
-            getPrice(b)-getPrice(a)
-        );
+                filteredProducts.sort(
+                    (a,b) =>
+                        getPrice(a) -
+                        getPrice(b)
+                );
 
-    }
-
-
-    if(value === "new"){
-
-        filteredProducts.sort(
-            (a,b) =>
-            new Date(b.created_at || 0)
-            -
-            new Date(a.created_at || 0)
-        );
-
-    }
+            }
 
 
-    if(value === "popular"){
+            if(value === "high"){
 
-        filteredProducts =
-            [...allProducts];
+                filteredProducts.sort(
+                    (a,b) =>
+                        getPrice(b) -
+                        getPrice(a)
+                );
 
-    }
-
-
-    renderProducts();
-
-});
+            }
 
 
-/* =========================================================
-   CATEGORY
-========================================================= */
+            if(value === "new"){
 
-document
-.querySelectorAll(".category")
-.forEach(category => {
+                filteredProducts.sort(
+                    (a,b) =>
+                        new Date(
+                            b.created_at || 0
+                        ) -
+                        new Date(
+                            a.created_at || 0
+                        )
+                );
 
-    category.addEventListener(
-        "click",
-        () => {
-
-            document
-            .querySelectorAll(".category")
-            .forEach(c =>
-                c.classList.remove("active")
-            );
-
-            category.classList.add("active");
+            }
 
 
-            const selected =
-                category.dataset.category;
-
-
-            if(selected === "all"){
+            if(value === "popular"){
 
                 filteredProducts =
                     [...allProducts];
-
-            }else{
-
-                filteredProducts =
-                    allProducts.filter(p => {
-
-                        const cat =
-                            String(
-                                p.category || ""
-                            ).toLowerCase();
-
-                        return cat ===
-                            selected.toLowerCase();
-
-                    });
 
             }
 
@@ -1862,12 +2188,82 @@ document
         }
     );
 
-});
+
+/* =========================================
+   CATEGORY
+========================================= */
+
+document
+    .querySelectorAll(".category")
+    .forEach(
+        category => {
+
+            category.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".category"
+                        )
+                        .forEach(
+                            c =>
+                                c.classList.remove(
+                                    "active"
+                                )
+                        );
 
 
-/* =========================================================
+                    category.classList.add(
+                        "active"
+                    );
+
+
+                    const selected =
+                        category.dataset.category;
+
+
+                    if(selected === "all"){
+
+                        filteredProducts =
+                            [...allProducts];
+
+                    }else{
+
+                        filteredProducts =
+                            allProducts.filter(
+                                product => {
+
+                                    const cat =
+                                        String(
+                                            product.category ||
+                                            ""
+                                        ).toLowerCase();
+
+
+                                    return (
+                                        cat ===
+                                        selected.toLowerCase()
+                                    );
+
+                                }
+                            );
+
+                    }
+
+
+                    renderProducts();
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================
    CART COUNT
-========================================================= */
+========================================= */
 
 async function updateCartCount(){
 
@@ -1884,22 +2280,30 @@ async function updateCartCount(){
         if(!user){
 
             document
-            .getElementById("cartCount")
-            .textContent = "0";
+                .getElementById(
+                    "cartCount"
+                )
+                .textContent = "0";
 
             return;
 
         }
 
 
-        const { count, error } =
-            await supabaseClient
+        const {
+            count,
+            error
+        } =
+        await supabaseClient
             .from("cart_items")
-            .select("*", {
+            .select("*",{
                 count:"exact",
                 head:true
             })
-            .eq("user_id", user.id);
+            .eq(
+                "user_id",
+                user.id
+            );
 
 
         if(error){
@@ -1912,9 +2316,11 @@ async function updateCartCount(){
 
 
         document
-        .getElementById("cartCount")
-        .textContent =
-            count || 0;
+            .getElementById(
+                "cartCount"
+            )
+            .textContent =
+                count || 0;
 
 
     }catch(e){
@@ -1926,9 +2332,9 @@ async function updateCartCount(){
 }
 
 
-/* =========================================================
+/* =========================================
    NAVIGATION
-========================================================= */
+========================================= */
 
 function goCart(){
 
@@ -1946,46 +2352,71 @@ function goLogin(){
 }
 
 
-function openProduct(id){
+function scrollToProducts(){
 
-    if(!id) return;
+    const section =
+        document.getElementById(
+            "productsSection"
+        );
 
-    window.location.href =
-        `product.html?id=${id}`;
+    if(section){
+
+        section.scrollIntoView({
+            behavior:"smooth"
+        });
+
+    }
 
 }
 
 
-/* =========================================================
+/* =========================================
    HTML ESCAPE
-========================================================= */
+========================================= */
 
 function escapeHtml(value){
 
     return String(value || "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 
-/* =========================================================
+/* =========================================
    AUTH CHANGE
-========================================================= */
+========================================= */
 
 supabaseClient.auth.onAuthStateChange(
     () => {
+
         updateCartCount();
+
     }
 );
 
 
-/* =========================================================
+/* =========================================
    START
-========================================================= */
+========================================= */
 
 loadProducts();
 
