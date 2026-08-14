@@ -328,6 +328,41 @@ body{padding:0 !important;margin:0 !important;}
 }
 @keyframes ckShimmer{0%{background-position:100% 50%;}100%{background-position:0 50%;}}
 
+/* ===== CURRENT LOCATION — ADD-ON ONLY ===== */
+.ck-current-location{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 14px;margin:0 0 18px;
+  border:1.5px solid #cfe3d7;border-radius:14px;
+  background:linear-gradient(135deg,#f7fcf9,#edf7f1);
+}
+.ck-current-location-icon{
+  width:42px;height:42px;flex:0 0 42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--brand);background:#fff;border:1px solid #d9e9df;
+}
+.ck-current-location-copy{min-width:0;flex:1;}
+.ck-current-location-copy strong{
+  display:block;font-size:13px;font-weight:800;color:var(--ink);
+}
+.ck-current-location-copy span{
+  display:block;margin-top:3px;font-size:11px;line-height:1.4;color:var(--muted);
+}
+.ck-current-location-copy small{
+  display:block;min-height:15px;margin-top:3px;font-size:10.5px;
+  line-height:1.35;font-weight:700;color:var(--brand);
+}
+.ck-current-location-btn{
+  height:39px;padding:0 13px;border:0;border-radius:10px;
+  background:linear-gradient(135deg,var(--brand),#2f7a55);
+  color:#fff;font-family:inherit;font-size:11px;font-weight:800;
+  cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand);
+}
+.ck-current-location-btn:disabled{opacity:.6;cursor:wait;box-shadow:none;}
+@media(max-width:480px){
+  .ck-current-location{align-items:flex-start;padding:12px;}
+  .ck-current-location-icon{width:38px;height:38px;flex-basis:38px;}
+  .ck-current-location-btn{height:38px;padding:0 10px;font-size:10.5px;}
+}
 .ckform-grid{display:block;}
 .ckstep3-grid{display:block;}
 
@@ -465,6 +500,24 @@ body{padding:0 !important;margin:0 !important;}
         </div>
 
         <div id="ckAddressFormSection">
+          <!-- CURRENT LOCATION: added above the existing address fields; nothing else removed -->
+          <div class="ck-current-location">
+            <div class="ck-current-location-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"></path>
+                <circle cx="12" cy="9" r="2.5"></circle>
+              </svg>
+            </div>
+            <div class="ck-current-location-copy">
+              <strong>Use Current Location</strong>
+              <span>Allow location to auto-fill your current delivery address.</span>
+              <small id="ckLocationStatus"></small>
+            </div>
+            <button type="button" id="ckUseLocationBtn" class="ck-current-location-btn" onclick="ckUseCurrentLocation()">
+              Use Location
+            </button>
+          </div>
+
           <div class="ckform-grid">
             <div class="ckfield full">
               <label for="ckFullName">Full Name *</label>
@@ -729,7 +782,7 @@ body{padding:0 !important;margin:0 !important;}
      SUPABASE
   ========================================================= */
   var SUPABASE_URL = 'https://bszojvhitsoamhksyjul.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6IkFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE';
 
   if(!window.supabase || typeof window.supabase.createClient !== 'function'){
     throw new Error('Supabase library load nahi hui.');
@@ -1015,6 +1068,133 @@ body{padding:0 !important;margin:0 !important;}
     addressType=t;
     el('ckTypeHome').classList.toggle('selected',t==='home');
     el('ckTypeWork').classList.toggle('selected',t==='work');
+  };
+
+  /* =========================================================
+     CURRENT LOCATION — ADD-ON ONLY
+     Uses browser GPS. Existing checkout logic remains unchanged.
+  ========================================================= */
+  window.ckUseCurrentLocation = async function(){
+    var btn=el('ckUseLocationBtn');
+    var status=el('ckLocationStatus');
+
+    if(!navigator.geolocation){
+      if(status) status.textContent='Location is not supported by this browser.';
+      return;
+    }
+
+    if(!window.isSecureContext){
+      if(status) status.textContent='Location requires HTTPS.';
+      return;
+    }
+
+    if(btn){
+      btn.disabled=true;
+      btn.textContent='Locating…';
+    }
+    if(status) status.textContent='Getting your current location…';
+
+    navigator.geolocation.getCurrentPosition(async function(pos){
+      try{
+        var lat=pos.coords.latitude;
+        var lon=pos.coords.longitude;
+
+        var url='https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='
+          +encodeURIComponent(lat)+'&lon='+encodeURIComponent(lon)+'&addressdetails=1';
+
+        var response=await fetch(url,{
+          headers:{'Accept':'application/json'}
+        });
+
+        if(!response.ok) throw new Error('Address lookup failed');
+
+        var data=await response.json();
+        var a=data.address||{};
+
+        function put(id,value){
+          var x=el(id);
+          if(x && value) x.value=value;
+        }
+
+        /*
+          Existing checkout fields only:
+          Full Name, Phone, Pincode, State, City/District,
+          House, Road/Area.
+        */
+        put('ckHouse',a.house_number || a.building || '');
+        put('ckRoad',a.road || a.neighbourhood || a.suburb || a.residential || '');
+        put('ckCity',a.city || a.town || a.village || a.municipality || a.district || '');
+        put('ckState',a.state || '');
+        put('ckPincode',a.postcode || '');
+
+        /* Keep the precise GPS point available for the current checkout page. */
+        window.ckCurrentDeliveryLocation={
+          latitude:lat,
+          longitude:lon,
+          accuracy:pos.coords.accuracy==null?null:pos.coords.accuracy,
+          captured_at:new Date().toISOString(),
+          location_link:'https://www.google.com/maps?q='
+            +encodeURIComponent(lat)+','+encodeURIComponent(lon)
+        };
+
+        if(status){
+          status.textContent='✓ Current location detected';
+        }
+
+        /*
+          If location supplied a PIN, use the existing checkout PIN API
+          to verify/fill State + City/District exactly as before.
+        */
+        var pin=el('ckPincode');
+        if(pin && /^\d{6}$/.test(pin.value)){
+          var loader=el('ckPinLoader');
+          if(loader) loader.classList.add('show');
+
+          try{
+            var pinRes=await fetch('https://api.postalpincode.in/pincode/'+pin.value);
+            var pinData=await pinRes.json();
+            var po=pinData && pinData[0] && pinData[0].PostOffice && pinData[0].PostOffice[0];
+
+            if(pinData && pinData[0] && pinData[0].Status==='Success' && po){
+              if(po.State) el('ckState').value=po.State;
+              if(po.District) el('ckCity').value=po.District;
+            }
+          }catch(pinErr){
+            console.warn('Location PIN verification:',pinErr);
+          }finally{
+            if(loader) loader.classList.remove('show');
+          }
+        }
+
+      }catch(err){
+        console.error('CURRENT LOCATION ERROR:',err);
+        if(status) status.textContent='Location found, but address details could not be filled. Please enter manually.';
+      }finally{
+        if(btn){
+          btn.disabled=false;
+          btn.textContent='Use Location';
+        }
+      }
+    },function(err){
+      if(btn){
+        btn.disabled=false;
+        btn.textContent='Use Location';
+      }
+
+      if(status){
+        if(err && err.code===1){
+          status.textContent='Permission denied — browser Location permission me Allow karein.';
+        }else if(err && err.code===2){
+          status.textContent='Location unavailable — device Location ON karein.';
+        }else{
+          status.textContent='Location timeout — Please try again.';
+        }
+      }
+    },{
+      enableHighAccuracy:true,
+      timeout:20000,
+      maximumAge:0
+    });
   };
 
   /* =========================================================
