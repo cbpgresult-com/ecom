@@ -330,8 +330,8 @@
 <script>
 (function(){
   // ⚠️ SAME Supabase project as the main site
-  var SUPABASE_URL = 'https://cblfmqcszdungpkbfrof.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNibGZtcWNzemR1bmdwa2Jmcm9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMjU2MTAsImV4cCI6MjEwMDgwMTYxMH0._pOV5pHVGlE-Fl73hZ6VouR0atfq3xRVoui3WxESy9g';
+  var SUPABASE_URL = 'https://bszojvhitsoamhksyjul.supabase.co;
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE';
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   var WHATSAPP_NUMBER = '917494748884';
 
@@ -518,7 +518,7 @@ function money(n){ return String.fromCharCode(8377) + Math.round(n).toLocaleStri
   });
 
   // ===== SAVE ADDRESS (from the form) =====
-  window.ckSaveAddress = function(){
+  window.ckSaveAddress = async function(){
     var ids = ['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckHouse','ckRoad'];
     var ok = true;
     ids.forEach(function(id){
