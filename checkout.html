@@ -358,6 +358,20 @@ body{padding:0 !important;margin:0 !important;}
 @media(max-width:480px){.ck-current-location{align-items:flex-start;padding:12px}.ck-current-location-icon{width:39px;height:39px;flex-basis:39px}.ck-current-location-btn{height:38px;padding:0 10px;font-size:10.5px}}
 
 .ckform-grid{display:block;}
+.ck-location-miniform{
+  display:grid !important;
+  grid-template-columns:1fr 1fr;
+  gap:0 12px;
+  margin-top:14px;
+  padding:14px;
+  border:1px solid #dcebe2;
+  border-radius:15px;
+  background:#fbfefc;
+}
+.ck-location-miniform .ckfield{margin-bottom:12px;}
+@media(max-width:480px){
+  .ck-location-miniform{grid-template-columns:1fr;gap:0;}
+}
 .ckstep3-grid{display:block;}
 
 /* ─── PAYMENT STATUS ANIMATIONS ─── */
@@ -573,8 +587,8 @@ body{padding:0 !important;margin:0 !important;}
               <input id="ckDistrict" type="text" placeholder="District" autocomplete="address-level2" readonly>
             </div>
             <div class="ckfield">
-              <label for="ckCity">City *</label>
-              <input id="ckCity" type="text" placeholder="City / Town / Village" autocomplete="address-level2">
+              <label for="ckCity">Village *</label>
+              <input id="ckCity" type="text" placeholder="Village / Locality" autocomplete="address-level2">
             </div>
             <div class="ckfield full">
               <label for="ckHouse">House No., Building Name *</label>
@@ -1134,17 +1148,50 @@ body{padding:0 !important;margin:0 !important;}
 
   function hideAddressInputsAfterLocation(){
     var form=el('ckAddressFormSection'); if(!form)return;
-    var grid=form.querySelector('.ckform-grid'); if(grid)grid.style.display='none';
+    var grid=form.querySelector('.ckform-grid');
+    if(grid){
+      grid.style.display='grid';
+      grid.classList.add('ck-location-miniform');
+
+      /* After GPS detection keep only Full Name, Mobile and Village. */
+      ['ckPincode','ckState','ckDistrict','ckHouse','ckRoad'].forEach(function(id){
+        var input=el(id);
+        if(input){
+          var field=input.closest('.ckfield');
+          if(field) field.style.display='none';
+        }
+      });
+
+      ['ckFullName','ckPhone','ckCity'].forEach(function(id){
+        var input=el(id);
+        if(input){
+          var field=input.closest('.ckfield');
+          if(field) field.style.display='';
+        }
+      });
+    }
+
     var type=form.querySelector('.cktypewrap'); if(type)type.style.display='none';
-    var save=form.querySelector('.ck-savecheck'); if(save)save.style.display='none';
-    var saveBtn=form.querySelector(':scope > .ckbtn.block'); if(saveBtn)saveBtn.style.display='none';
+    var save=form.querySelector('.ck-savecheck'); if(save)save.style.display='flex';
+    var saveBtn=form.querySelector(':scope > .ckbtn.block'); if(saveBtn)saveBtn.style.display='';
     var back=el('ckBackToSavedLink'); if(back)back.style.display='none';
     var box=el('ckCurrentLocationBox'); if(box)box.style.display='none';
   }
 
   function restoreAddressInputs(){
     var form=el('ckAddressFormSection'); if(!form)return;
-    var grid=form.querySelector('.ckform-grid'); if(grid)grid.style.display='';
+    var grid=form.querySelector('.ckform-grid');
+    if(grid){
+      grid.style.display='';
+      grid.classList.remove('ck-location-miniform');
+      ['ckFullName','ckPhone','ckPincode','ckState','ckDistrict','ckCity','ckHouse','ckRoad'].forEach(function(id){
+        var input=el(id);
+        if(input){
+          var field=input.closest('.ckfield');
+          if(field) field.style.display='';
+        }
+      });
+    }
     var type=form.querySelector('.cktypewrap'); if(type)type.style.display='';
     var save=form.querySelector('.ck-savecheck'); if(save)save.style.display='flex';
     var saveBtn=form.querySelector(':scope > .ckbtn.block'); if(saveBtn)saveBtn.style.display='';
@@ -1505,13 +1552,29 @@ body{padding:0 !important;margin:0 !important;}
         currentLocationData.display=geo.display;
         currentLocationData.place_name=geo.place_name || geo.city || geo.area || geo.district || '';
 
+        /* GPS locality/village is only a starting value; user can edit it. */
+        var villageValue=currentLocationData.village ||
+          currentLocationData.area ||
+          currentLocationData.place_name || '';
+        if(el('ckCity')) el('ckCity').value=villageValue;
+
+        /* Always match Full Name + Mobile with the logged-in account. */
+        if(currentUser){
+          var meta=currentUser.user_metadata||{};
+          var accountName=meta.full_name||meta.name||meta.display_name||'';
+          var accountPhone=meta.phone||currentUser.phone||'';
+          if(el('ckFullName') && accountName) el('ckFullName').value=accountName;
+          if(el('ckPhone') && accountPhone) el('ckPhone').value=String(accountPhone).replace(/\D/g,'').slice(-10);
+        }
+
         /* Pincode is already correct from GPS. Use postal data for exact
            District/City/State instead of reverse-geocoder county names. */
         if(currentLocationData.pincode){
           var pinData=await lookupPincodeDetails(currentLocationData.pincode);
           if(pinData){
             currentLocationData.district=pinData.district || currentLocationData.district;
-            currentLocationData.city=pinData.city || currentLocationData.city;
+            /* Village field stays based on GPS/locality; don't replace it with postal city. */
+            currentLocationData.city=currentLocationData.city || '';
             currentLocationData.state=pinData.state || currentLocationData.state;
             currentLocationData.pincode=pinData.pincode || currentLocationData.pincode;
             currentLocationData.post_office=currentLocationData.post_office || ((pinData.post_offices&&pinData.post_offices[0]&&pinData.post_offices[0].Name)||'');
@@ -1694,6 +1757,15 @@ body{padding:0 !important;margin:0 !important;}
       if(res.error) throw res.error;
 
       selectedAddress=mapAddress(res.data);
+
+      /* Keep exact GPS metadata with the selected checkout address. */
+      if(currentLocationData){
+        selectedAddress.map_link=currentLocationData.map_link||'';
+        selectedAddress.latitude=currentLocationData.latitude;
+        selectedAddress.longitude=currentLocationData.longitude;
+        selectedAddress.isCurrentLocation=true;
+        selectedAddress.location_row_id=currentLocationRowId||null;
+      }
 
       await loadSavedAddresses();
 
