@@ -1257,8 +1257,8 @@ body{padding:0 !important;margin:0 !important;}
            locality/area, then district. This is only the display name;
            the exact GPS coordinates remain the delivery source of truth. */
         result.place_name=String(
-          a.city || a.town || a.municipality || a.village ||
-          a.suburb || a.neighbourhood || a.locality ||
+          a.neighbourhood || a.suburb || a.quarter || a.locality ||
+          a.hamlet || a.village || a.city || a.town || a.municipality ||
           a.county || a.state_district || ''
         ).trim();
 
@@ -1339,8 +1339,13 @@ body{padding:0 !important;margin:0 !important;}
       QXW3+XXX Lucknow, Uttar Pradesh, India
       Do not show district/locality as separate fields.
     */
-    var placeName=currentLocationData.place_name ||
-      currentLocationData.city || currentLocationData.area || currentLocationData.district || '';
+    /* Prefer the NEAREST locality/area, not the larger city.
+       For example: neighbourhood/suburb/quarter/locality should win over
+       Lucknow. GPS remains the exact source of truth. */
+    var placeName=currentLocationData.area ||
+      currentLocationData.place_name ||
+      currentLocationData.city ||
+      currentLocationData.district || '';
 
     /* Never show an empty label. If the geocoder does not return a locality,
        use the district/county as the human-readable area name. */
