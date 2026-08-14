@@ -328,85 +328,13 @@ body{padding:0 !important;margin:0 !important;}
 }
 @keyframes ckShimmer{0%{background-position:100% 50%;}100%{background-position:0 50%;}}
 
-
-/* =========================================================
-   CURRENT LOCATION — ADD-ON ONLY
-   ========================================================= */
-.ck-location-box{
-  display:flex;align-items:center;gap:12px;
-  padding:13px 14px;margin:0 0 18px;
-  border:1.5px solid #cfe3d7;border-radius:15px;
-  background:linear-gradient(135deg,#f7fcf9,#edf7f1);
-  box-shadow:0 2px 8px rgba(31,77,54,.05);
-}
-.ck-location-icon{
-  width:43px;height:43px;flex:0 0 43px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--brand);background:#fff;border:1px solid #d9e9df;
-}
-.ck-location-copy{flex:1;min-width:0;}
-.ck-location-copy strong{
-  display:block;font-size:13px;font-weight:800;color:var(--ink);
-}
-.ck-location-copy span{
-  display:block;margin-top:3px;font-size:11px;line-height:1.4;color:var(--muted);
-}
-.ck-location-copy small{
-  display:block;min-height:15px;margin-top:3px;
-  font-size:10.5px;line-height:1.35;font-weight:800;color:var(--brand);
-}
-.ck-location-btn{
-  height:40px;padding:0 13px;border:0;border-radius:10px;
-  background:linear-gradient(135deg,var(--brand),#2f7a55);
-  color:#fff;font-family:inherit;font-size:11px;font-weight:800;
-  cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand);
-}
-.ck-location-btn:disabled{opacity:.6;cursor:wait;box-shadow:none;}
-
-.ck-location-detected{
-  display:flex;align-items:center;gap:12px;
-  padding:14px;margin:0 0 18px;
-  border:1.5px solid #bfe5cd;border-radius:15px;
-  background:linear-gradient(135deg,#f3fcf6,#e9f8ef);
-}
-.ck-location-detected-icon{
-  width:43px;height:43px;flex:0 0 43px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  color:#1f8a4c;background:#fff;border:1px solid #bfe5cd;
-}
-.ck-location-detected strong{
-  display:block;font-size:14px;font-weight:800;color:#1f6b3d;
-}
-.ck-location-detected span{
-  display:block;margin-top:3px;font-size:11.5px;color:#557064;
-}
-.ck-location-map-note{
-  display:flex;align-items:flex-start;gap:8px;
-  padding:11px 12px;margin:0 0 16px;
-  border-radius:11px;background:#f6f8f7;
-  border:1px solid var(--line-2);
-  color:var(--muted);font-size:11.5px;line-height:1.45;font-weight:600;
-}
-.ck-location-map-note svg{flex:none;margin-top:1px;color:var(--brand);}
-.ck-back-to-manual{
-  text-align:center;margin-top:14px;color:var(--brand);
-  font-size:13px;font-weight:800;cursor:pointer;
-}
-.ck-back-to-manual:hover{text-decoration:underline;}
-#ckCurrentLocationMode .ckfield{margin-bottom:16px;}
-#ckCurrentLocationMode .ckfield input.invalid{
-  animation:ckLocationShake .28s ease;
-}
-@keyframes ckLocationShake{
-  0%,100%{transform:translateX(0)}
-  25%{transform:translateX(-5px)}
-  75%{transform:translateX(5px)}
-}
-@media(max-width:480px){
-  .ck-location-box{align-items:flex-start;padding:12px;}
-  .ck-location-icon{width:39px;height:39px;flex-basis:39px;}
-  .ck-location-btn{height:38px;padding:0 10px;font-size:10.5px;}
-}
+/* CURRENT LOCATION - only inside Add New Address */
+.ck-current-location{display:flex;align-items:center;gap:12px;padding:13px 14px;margin:0 0 18px;border:1.5px solid #cfe3d7;border-radius:15px;background:linear-gradient(135deg,#f7fcf9,#edf7f1);}
+.ck-current-location-icon{width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--brand);background:#fff;border:1px solid #d9e9df;}
+.ck-current-location-copy{min-width:0;flex:1}.ck-current-location-copy strong{display:block;font-size:13px;font-weight:800;color:var(--ink)}.ck-current-location-copy span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}.ck-current-location-copy small{display:block;min-height:15px;margin-top:3px;font-size:10.5px;font-weight:800;color:var(--brand)}
+.ck-current-location-btn{height:40px;padding:0 13px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--brand),#2f7a55);color:#fff;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand)}.ck-current-location-btn:disabled{opacity:.6;cursor:wait}
+.ck-location-success{display:flex;align-items:center;gap:12px;padding:14px;margin:0 0 14px;border:1.5px solid #bfe5cd;border-radius:15px;background:linear-gradient(135deg,#f3fcf6,#e9f8ef)}.ck-location-success-icon{width:43px;height:43px;flex:0 0 43px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1f8a4c;background:#fff;border:1px solid #bfe5cd}.ck-location-success strong{display:block;font-size:14px;font-weight:800;color:#1f6b3d}.ck-location-success span{display:block;margin-top:3px;font-size:11px;color:#557064}.ck-back-manual{text-align:center;margin-top:12px;color:var(--brand);font-size:13px;font-weight:800;cursor:pointer}
+@media(max-width:480px){.ck-current-location{align-items:flex-start;padding:12px}.ck-current-location-icon{width:39px;height:39px;flex-basis:39px}.ck-current-location-btn{height:38px;padding:0 10px;font-size:10.5px}}
 
 .ckform-grid{display:block;}
 .ckstep3-grid{display:block;}
@@ -544,72 +472,37 @@ body{padding:0 !important;margin:0 !important;}
           <div class="ck-addnew-link" onclick="ckShowAddressForm()">+ Add New Address</div>
         </div>
 
+        <div id="ckAddressFormSection">
 
-          <!-- CURRENT LOCATION: ADD-ON ONLY -->
-          <div class="ck-location-box" id="ckCurrentLocationBox">
-            <div class="ck-location-icon">
+          <!-- Current Location is shown ONLY after + Add New Address is opened -->
+          <div class="ck-current-location" id="ckCurrentLocationBox">
+            <div class="ck-current-location-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"></path>
                 <circle cx="12" cy="10" r="2.5"></circle>
               </svg>
             </div>
-            <div class="ck-location-copy">
+            <div class="ck-current-location-copy">
               <strong>Use Current Location</strong>
-              <span>Use your phone/laptop GPS for exact delivery location.</span>
+              <span>Use your current GPS location for delivery.</span>
               <small id="ckLocationStatus"></small>
             </div>
-            <button type="button" class="ck-location-btn" id="ckUseLocationBtn" onclick="ckUseCurrentLocation()">
-              Use Location
-            </button>
+            <button type="button" class="ck-current-location-btn" id="ckUseLocationBtn" onclick="ckUseCurrentLocation()">Use Location</button>
           </div>
 
-          <!-- Current-location-only mode -->
-          <div id="ckCurrentLocationMode" style="display:none;">
-            <div class="ck-location-detected">
-              <div class="ck-location-detected-icon">
+          <div id="ckCurrentLocationDetected" style="display:none;">
+            <div class="ck-location-success">
+              <div class="ck-location-success-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="m8 12 2.5 2.5L16 9"></path>
+                  <circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path>
                 </svg>
               </div>
-              <div>
-                <strong>Current Location Detected</strong>
-                <span>Exact GPS location captured successfully.</span>
-              </div>
+              <div><strong>Current Location Detected</strong><span>Exact GPS location captured and saved.</span></div>
             </div>
-
-            <div class="ckform-grid ck-location-person-fields">
-              <div class="ckfield full">
-                <label for="ckLocationName">Full Name *</label>
-                <input id="ckLocationName" type="text" placeholder="Your full name" autocomplete="name">
-                <div class="ckerror" id="ckLocationNameError">Please enter your name.</div>
-              </div>
-
-              <div class="ckfield full">
-                <label for="ckLocationPhone">Mobile Number *</label>
-                <input id="ckLocationPhone" type="tel" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel">
-                <div class="ckerror" id="ckLocationPhoneError">Enter a valid 10-digit mobile number.</div>
-              </div>
-            </div>
-
-            <div class="ck-location-map-note">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12Z"></path>
-                <circle cx="12" cy="9" r="2"></circle>
-              </svg>
-              Your exact map location has been securely saved for delivery.
-            </div>
-
-            <button class="ckbtn block" type="button" id="ckContinueLocationBtn" onclick="ckContinueWithCurrentLocation()">
-              Continue with Current Location
-            </button>
-
-            <div class="ck-back-to-manual" onclick="ckUseManualAddress()">
-              ← Enter address manually
-            </div>
+            <button type="button" class="ckbtn block" onclick="ckUseDetectedLocation()">Continue with Current Location</button>
+            <div class="ck-back-manual" onclick="ckUseManualAddress()">← Enter address manually</div>
           </div>
 
-        <div id="ckAddressFormSection">
           <div class="ckform-grid">
             <div class="ckfield full">
               <label for="ckFullName">Full Name *</label>
@@ -1143,8 +1036,21 @@ body{padding:0 !important;margin:0 !important;}
   window.ckShowAddressForm=function(){
     el('ckSavedAddrSection').style.display='none';
     el('ckAddressFormSection').style.display='block';
-    var back=el('ckBackToSavedLink');
-    if(back) back.style.display=savedAddresses.length?'block':'none';
+
+    /* Auto-fill Name + Mobile from logged-in account. */
+    if(currentUser){
+      var meta=currentUser.user_metadata||{};
+      var n=el('ckFullName'),p=el('ckPhone');
+      var name=meta.full_name||meta.name||meta.display_name||'';
+      var phone=meta.phone||currentUser.phone||'';
+      if(n&&!n.value.trim()&&name)n.value=name;
+      if(p&&!p.value.trim()&&phone)p.value=String(phone).replace(/\\D/g,'').slice(-10);
+    }
+
+    currentLocationData=null;currentLocationRowId=null;
+    var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='none';
+    restoreAddressInputs();
+    var back=el('ckBackToSavedLink');if(back)back.style.display=savedAddresses.length?'block':'none';
   };
 
   window.ckShowSavedList=function(){ renderSavedAddresses(); };
@@ -1162,347 +1068,109 @@ body{padding:0 !important;margin:0 !important;}
     el('ckTypeWork').classList.toggle('selected',t==='work');
   };
 
-
   /* =========================================================
-     CURRENT LOCATION — NEW delivery_locations SYSTEM
-     Existing saved_addresses system is untouched.
-     ========================================================= */
-  var currentLocationData = null;
-  var currentLocationRowId = null;
-  var currentLocationSaving = false;
+     CURRENT LOCATION - separate delivery_locations table
+  ========================================================= */
+  var currentLocationData=null,currentLocationRowId=null;
 
-  function currentLocationMapLink(lat,lon){
-    return 'https://www.google.com/maps?q='
-      +encodeURIComponent(lat)+','+encodeURIComponent(lon);
+  function currentLocationMapLink(lat,lon){return 'https://www.google.com/maps?q='+encodeURIComponent(lat)+','+encodeURIComponent(lon);}
+
+  function accountPerson(){
+    var meta=currentUser && currentUser.user_metadata ? currentUser.user_metadata : {};
+    var name=(el('ckFullName')?.value||'').trim() || meta.full_name || meta.name || meta.display_name || '';
+    var phone=(el('ckPhone')?.value||'').trim() || meta.phone || (currentUser&&currentUser.phone)||'';
+    return {name:String(name),phone:String(phone).replace(/\\D/g,'').slice(-10)};
   }
 
-  function setCurrentLocationStatus(text){
-    var x=el('ckLocationStatus');
-    if(x) x.textContent=text||'';
+  function hideAddressInputsAfterLocation(){
+    var form=el('ckAddressFormSection'); if(!form)return;
+    var grid=form.querySelector('.ckform-grid'); if(grid)grid.style.display='none';
+    var type=form.querySelector('.cktypewrap'); if(type)type.style.display='none';
+    var save=form.querySelector('.ck-savecheck'); if(save)save.style.display='none';
+    var saveBtn=form.querySelector(':scope > .ckbtn.block'); if(saveBtn)saveBtn.style.display='none';
+    var back=el('ckBackToSavedLink'); if(back)back.style.display='none';
+    var box=el('ckCurrentLocationBox'); if(box)box.style.display='none';
   }
 
-  function hideManualAddressFields(){
-    var grid=document.querySelector('#ckAddressFormSection .ckform-grid');
-    var typeWrap=document.querySelector('#ckAddressFormSection .cktypewrap');
-    var saveCheck=el('ckSaveAddrCheck');
-    var saveBtn=document.querySelector('#ckAddressFormSection .ckbtn.block');
-    var backLink=el('ckBackToSavedLink');
-
-    if(grid) grid.style.display='none';
-    if(typeWrap) typeWrap.style.display='none';
-    if(saveCheck){
-      var parent=saveCheck.parentElement;
-      if(parent) parent.style.display='none';
-    }
-    if(saveBtn) saveBtn.style.display='none';
-    if(backLink) backLink.style.display='none';
+  function restoreAddressInputs(){
+    var form=el('ckAddressFormSection'); if(!form)return;
+    var grid=form.querySelector('.ckform-grid'); if(grid)grid.style.display='';
+    var type=form.querySelector('.cktypewrap'); if(type)type.style.display='';
+    var save=form.querySelector('.ck-savecheck'); if(save)save.style.display='flex';
+    var saveBtn=form.querySelector(':scope > .ckbtn.block'); if(saveBtn)saveBtn.style.display='';
+    var back=el('ckBackToSavedLink'); if(back)back.style.display=savedAddresses.length?'block':'none';
+    var box=el('ckCurrentLocationBox'); if(box)box.style.display='flex';
   }
 
-  function showManualAddressFields(){
-    var grid=document.querySelector('#ckAddressFormSection .ckform-grid');
-    var typeWrap=document.querySelector('#ckAddressFormSection .cktypewrap');
-    var saveCheck=el('ckSaveAddrCheck');
-    var saveBtn=document.querySelector('#ckAddressFormSection .ckbtn.block');
-    var backLink=el('ckBackToSavedLink');
-
-    if(grid) grid.style.display='';
-    if(typeWrap) typeWrap.style.display='';
-    if(saveCheck){
-      var parent=saveCheck.parentElement;
-      if(parent) parent.style.display='';
-    }
-    if(saveBtn) saveBtn.style.display='';
-    if(backLink) backLink.style.display=savedAddresses.length?'block':'none';
-  }
-
-  function getCurrentLocationPerson(){
-    var name='';
-    var phone='';
-
-    var locName=el('ckLocationName');
-    var locPhone=el('ckLocationPhone');
-
-    if(locName && locName.value.trim()) name=locName.value.trim();
-    if(locPhone && locPhone.value.trim()) phone=locPhone.value.trim();
-
-    /* If user had already typed name/mobile in the normal form,
-       keep those values when switching to current location. */
-    if(!name){
-      var normalName=el('ckFullName');
-      if(normalName) name=normalName.value.trim();
-    }
-    if(!phone){
-      var normalPhone=el('ckPhone');
-      if(normalPhone) phone=normalPhone.value.trim();
-    }
-
-    return {name:name,phone:phone};
-  }
-
-  async function insertCurrentLocationRow(){
-    if(!currentUser || !currentLocationData) return null;
-
-    var person=getCurrentLocationPerson();
-
-    var payload={
-      user_id:currentUser.id,
-      email:currentUser.email || '',
-      name:person.name || '',
-      mobile:person.phone || '',
-      map_link:currentLocationData.map_link,
-      latitude:currentLocationData.latitude,
-      longitude:currentLocationData.longitude
-    };
-
-    currentLocationSaving=true;
-
-    var res=await window.__MY_STORE_SUPABASE__
-      .from('delivery_locations')
-      .insert(payload)
-      .select('id,email,name,mobile,map_link')
-      .single();
-
-    currentLocationSaving=false;
-
-    if(res.error) throw res.error;
-
+  async function saveCurrentLocationRow(){
+    var p=accountPerson();
+    var res=await window.__MY_STORE_SUPABASE__.from('delivery_locations').insert({
+      user_id:currentUser.id,email:currentUser.email||'',name:p.name,mobile:p.phone,
+      latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
+      map_link:currentLocationData.map_link
+    }).select('id').single();
+    if(res.error)throw res.error;
     currentLocationRowId=res.data.id;
-    return res.data;
-  }
-
-  async function updateCurrentLocationRow(){
-    if(!currentLocationRowId || !currentUser) return;
-
-    var person=getCurrentLocationPerson();
-
-    var res=await window.__MY_STORE_SUPABASE__
-      .from('delivery_locations')
-      .update({
-        email:currentUser.email || '',
-        name:person.name || '',
-        mobile:person.phone || ''
-      })
-      .eq('id',currentLocationRowId)
-      .eq('user_id',currentUser.id);
-
-    if(res.error){
-      console.warn('CURRENT LOCATION PERSON UPDATE:',res.error);
-    }
-  }
-
-  function bindCurrentLocationPersonInputs(){
-    var name=el('ckLocationName');
-    var phone=el('ckLocationPhone');
-
-    if(name){
-      name.addEventListener('input',function(){
-        this.classList.remove('invalid');
-        var e=el('ckLocationNameError');
-        if(e) e.classList.remove('show');
-        updateCurrentLocationRow();
-      });
-    }
-
-    if(phone){
-      phone.addEventListener('input',function(){
-        this.value=this.value.replace(/\D/g,'').slice(0,10);
-        this.classList.remove('invalid');
-        var e=el('ckLocationPhoneError');
-        if(e) e.classList.remove('show');
-        updateCurrentLocationRow();
-      });
-    }
   }
 
   window.ckUseCurrentLocation=function(){
-    if(!currentUser){
-      alert('Please login first.');
-      return;
-    }
+    if(!currentUser){alert('Please login first.');return;}
+    if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
+    if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
 
-    if(!navigator.geolocation){
-      setCurrentLocationStatus('Location is not supported by this browser.');
-      return;
-    }
-
-    if(!window.isSecureContext){
-      setCurrentLocationStatus('Location requires HTTPS.');
-      return;
-    }
-
-    var btn=el('ckUseLocationBtn');
-    if(btn){
-      btn.disabled=true;
-      btn.textContent='Locating…';
-    }
-
-    setCurrentLocationStatus('Getting your exact current location…');
+    var btn=el('ckUseLocationBtn'); if(btn){btn.disabled=true;btn.textContent='Locating…';}
+    setText('ckLocationStatus','Getting your exact current location…');
 
     navigator.geolocation.getCurrentPosition(async function(pos){
       try{
-        var lat=Number(pos.coords.latitude);
-        var lon=Number(pos.coords.longitude);
-
-        if(!Number.isFinite(lat) || !Number.isFinite(lon)){
-          throw new Error('Invalid GPS coordinates.');
-        }
-
         currentLocationData={
-          latitude:lat,
-          longitude:lon,
+          latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude),
           accuracy:pos.coords.accuracy==null?null:Number(pos.coords.accuracy),
-          map_link:currentLocationMapLink(lat,lon),
+          map_link:currentLocationMapLink(pos.coords.latitude,pos.coords.longitude),
           captured_at:new Date().toISOString()
         };
 
-        /* Immediately save the map link in the NEW table. */
-        await insertCurrentLocationRow();
+        /* Save immediately after GPS detection. */
+        await saveCurrentLocationRow();
 
-        /* Copy existing typed name/mobile into the current-location fields. */
-        var person=getCurrentLocationPerson();
-        el('ckLocationName').value=person.name || '';
-        el('ckLocationPhone').value=person.phone || '';
-
-        /* Hide every normal address input; show only Name + Mobile. */
-        hideManualAddressFields();
-
-        var mode=el('ckCurrentLocationMode');
-        if(mode) mode.style.display='block';
-
-        setCurrentLocationStatus('✓ Current location detected and saved');
-
-        var box=el('ckCurrentLocationBox');
-        if(box) box.style.borderColor='#bfe5cd';
-
-        /* Bind update listeners after the row exists. */
-        bindCurrentLocationPersonInputs();
-
-        /* Keep the exact map link available to the rest of checkout. */
+        hideAddressInputsAfterLocation();
+        var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='block';
+        setText('ckLocationStatus','✓ Current location detected and saved');
         window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
-
-      }catch(error){
-        console.error('CURRENT LOCATION SAVE ERROR:',error);
-        currentLocationData=null;
-        currentLocationRowId=null;
-        setCurrentLocationStatus(
-          'Location detected, but it could not be saved. Please try again.'
-        );
-        alert(
-          'Current location save nahi ho paya.\n\n' +
-          (error.message || 'Supabase error')
-        );
+      }catch(e){
+        console.error('CURRENT LOCATION SAVE ERROR:',e);
+        currentLocationData=null;currentLocationRowId=null;
+        setText('ckLocationStatus','Location detected, but save failed.');
+        alert('Current location save nahi ho paya.\\n\\n'+(e.message||'Supabase error'));
       }finally{
-        if(btn){
-          btn.disabled=false;
-          btn.textContent='Use Location';
-        }
+        if(btn){btn.disabled=false;btn.textContent='Use Location';}
       }
-
     },function(err){
-      if(btn){
-        btn.disabled=false;
-        btn.textContent='Use Location';
-      }
-
-      var message='Location nahi mil payi.';
-      if(err && err.code===1){
-        message='Location permission denied. Browser me Location ko Allow karein.';
-      }else if(err && err.code===2){
-        message='Location unavailable. Device Location/GPS ON karein.';
-      }else if(err && err.code===3){
-        message='Location request timed out. Please try again.';
-      }
-
-      setCurrentLocationStatus(message);
-    },{
-      enableHighAccuracy:true,
-      timeout:20000,
-      maximumAge:0
-    });
+      if(btn){btn.disabled=false;btn.textContent='Use Location';}
+      var m='Location nahi mil payi.';
+      if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
+      else if(err&&err.code===2)m='Location unavailable. GPS/Location ON karein.';
+      else if(err&&err.code===3)m='Location request timed out. Please try again.';
+      setText('ckLocationStatus',m);
+    },{enableHighAccuracy:true,timeout:20000,maximumAge:0});
   };
 
-  window.ckContinueWithCurrentLocation=async function(){
-    if(!currentUser || !currentLocationData){
-      alert('Please use Current Location first.');
-      return;
-    }
-
-    var name=el('ckLocationName').value.trim();
-    var phone=el('ckLocationPhone').value.trim();
-
-    var valid=true;
-
-    if(!name){
-      el('ckLocationName').classList.add('invalid');
-      el('ckLocationNameError').classList.add('show');
-      valid=false;
-    }
-
-    if(!/^[6-9]\d{9}$/.test(phone)){
-      el('ckLocationPhone').classList.add('invalid');
-      el('ckLocationPhoneError').classList.add('show');
-      valid=false;
-    }
-
-    if(!valid) return;
-
-    var btn=el('ckContinueLocationBtn');
-    if(btn){
-      btn.disabled=true;
-      btn.textContent='Saving...';
-    }
-
-    try{
-      await updateCurrentLocationRow();
-
-      selectedAddress={
-        id:null,
-        name:name,
-        phone:phone,
-        pincode:'',
-        state:'',
-        city:'Current Location',
-        house:'',
-        road:'',
-        type:'current location',
-        map_link:currentLocationData.map_link,
-        latitude:currentLocationData.latitude,
-        longitude:currentLocationData.longitude,
-        isCurrentLocation:true,
-        location_row_id:currentLocationRowId
-      };
-
-      fillSummary(selectedAddress);
-
-    }catch(error){
-      console.error('CURRENT LOCATION CONTINUE ERROR:',error);
-      alert(
-        'Current location save nahi ho paya.\n\n' +
-        (error.message || 'Supabase error')
-      );
-    }finally{
-      if(btn){
-        btn.disabled=false;
-        btn.textContent='Continue with Current Location';
-      }
-    }
+  window.ckUseDetectedLocation=function(){
+    if(!currentUser||!currentLocationData){alert('Current location available nahi hai.');return;}
+    var p=accountPerson();
+    selectedAddress={
+      id:null,name:p.name,phone:p.phone,pincode:'',state:'',city:'Current Location',
+      house:'',road:'',type:'current location',map_link:currentLocationData.map_link,
+      latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
+      isCurrentLocation:true,location_row_id:currentLocationRowId
+    };
+    fillSummary(selectedAddress);
   };
 
   window.ckUseManualAddress=function(){
-    currentLocationData=null;
-    currentLocationRowId=null;
-    window.__MY_STORE_CURRENT_LOCATION__=null;
-
-    var mode=el('ckCurrentLocationMode');
-    if(mode) mode.style.display='none';
-
-    showManualAddressFields();
-
-    var status=el('ckLocationStatus');
-    if(status) status.textContent='';
-
-    var box=el('ckCurrentLocationBox');
-    if(box) box.style.borderColor='#cfe3d7';
+    currentLocationData=null;currentLocationRowId=null;window.__MY_STORE_CURRENT_LOCATION__=null;
+    var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='none';
+    restoreAddressInputs();setText('ckLocationStatus','');
   };
 
 
@@ -1782,7 +1450,8 @@ body{padding:0 !important;margin:0 !important;}
         map_link:selectedAddress.map_link || '',
         latitude:selectedAddress.latitude || null,
         longitude:selectedAddress.longitude || null,
-        is_current_location:selectedAddress.isCurrentLocation===true
+        is_current_location:selectedAddress.isCurrentLocation===true,
+        location_row_id:selectedAddress.location_row_id || null
       };
 
       /*
