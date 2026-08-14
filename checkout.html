@@ -411,26 +411,41 @@ body{padding:0 !important;margin:0 !important;}
 /* Current Location: animated border while GPS is detecting */
 #ckCurrentLocationBox.ck-location-detecting{
   position:relative;
-  overflow:hidden;
-  border:2px solid transparent !important;
-  background:
-    linear-gradient(#f7fff9,#f7fff9) padding-box,
-    conic-gradient(
-      from 0deg,
-      transparent 0deg 300deg,
-      #16a56a 320deg,
-      #55d79a 345deg,
-      transparent 360deg
-    ) border-box !important;
-  animation:ckLocationBorder 1.05s linear infinite;
 }
-@keyframes ckLocationBorder{
-  to{transform:translateZ(0);}
+
+#ckCurrentLocationBox.ck-location-detecting::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  padding:2px;
+  border-radius:inherit;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0deg 305deg,
+    #1f7a52 325deg,
+    #55d79a 345deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite:exclude;
+  animation:ckLocationBorderSpin 1.05s linear infinite;
+  pointer-events:none;
+  z-index:5;
 }
-#ckCurrentLocationBox.ck-location-detected{
-  animation:none !important;
-  border:1px solid #dcebe2 !important;
-  box-shadow:none !important;
+
+#ckCurrentLocationBox.ck-location-detecting > *{
+  position:relative;
+  z-index:6;
+}
+
+@keyframes ckLocationBorderSpin{
+  to{transform:rotate(360deg);}
 }
 
 </style>
@@ -1287,18 +1302,12 @@ body{padding:0 !important;margin:0 !important;}
 
   function startLocationDetectAnimation(){
     var box=el('ckCurrentLocationBox');
-    if(box){
-      box.classList.remove('ck-location-detected');
-      box.classList.add('ck-location-detecting');
-    }
+    if(box) box.classList.add('ck-location-detecting');
   }
 
   function stopLocationDetectAnimation(){
     var box=el('ckCurrentLocationBox');
-    if(box){
-      box.classList.remove('ck-location-detecting');
-      box.classList.add('ck-location-detected');
-    }
+    if(box) box.classList.remove('ck-location-detecting');
   }
 
   function hideAddressInputsAfterLocation(){
@@ -1667,8 +1676,16 @@ body{padding:0 !important;margin:0 !important;}
   window.ckUseCurrentLocation=function(){
     if(!currentUser){alert('Please login first.');return;}
     startLocationDetectAnimation();
-    if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
-    if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
+    if(!navigator.geolocation){
+      stopLocationDetectAnimation();
+      setText('ckLocationStatus','GPS is not supported.');
+      return;
+    }
+    if(!window.isSecureContext){
+      stopLocationDetectAnimation();
+      setText('ckLocationStatus','Location requires HTTPS.');
+      return;
+    }
 
     var btn=el('ckUseLocationBtn'); if(btn){btn.disabled=true;btn.textContent='Locating…';}
     setText('ckLocationStatus','Finding your most accurate GPS position…');
@@ -1689,6 +1706,7 @@ body{padding:0 !important;margin:0 !important;}
       if(watchId!==null)navigator.geolocation.clearWatch(watchId);
 
       if(!readings.length){
+        stopLocationDetectAnimation();
         if(btn){btn.disabled=false;btn.textContent='Use Location';}
         setText('ckLocationStatus','Exact GPS position could not be obtained. Please try again.');
         return;
@@ -1758,6 +1776,7 @@ body{padding:0 !important;margin:0 !important;}
         setText('ckLocationStatus','✓ Current location + address detected and saved');
         window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
       }catch(e){
+        stopLocationDetectAnimation();
         console.error('CURRENT LOCATION ERROR:',e);
         currentLocationData=null;currentLocationRowId=null;
         setText('ckLocationStatus','Location detected, but address lookup/save failed.');
@@ -1784,6 +1803,7 @@ body{padding:0 !important;margin:0 !important;}
         finishBest();
         return;
       }
+      stopLocationDetectAnimation();
       if(btn){btn.disabled=false;btn.textContent='Use Location';}
       var m='Location nahi mil payi.';
       if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
