@@ -334,7 +334,7 @@ body{padding:0 !important;margin:0 !important;}
 .ck-current-location-copy{min-width:0;flex:1}.ck-current-location-copy strong{display:block;font-size:13px;font-weight:800;color:var(--ink)}.ck-current-location-copy span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}.ck-current-location-copy small{display:block;min-height:15px;margin-top:3px;font-size:10.5px;font-weight:800;color:var(--brand)}
 .ck-current-location-btn{height:40px;padding:0 13px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--brand),#2f7a55);color:#fff;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand)}.ck-current-location-btn:disabled{opacity:.6;cursor:wait}
 /* CURRENT LOCATION ADDRESS DETAILS */
-.ck-plus-only{grid-template-columns:1.7fr 1fr 1fr}.ck-plus-code-box strong{letter-spacing:.4px;font-size:13px}.ck-plus-code-box{background:#f4faf6;border-color:#cfe5d7}.ck-plus-code-box small{color:var(--brand)}
+.ck-plus-layout{grid-template-columns:1fr 1fr}.ck-detail-full{grid-column:1 / -1}.ck-plus-code-box strong{letter-spacing:.25px;font-size:13px}.ck-plus-code-box{background:#f4faf6;border-color:#cfe5d7}.ck-plus-code-box small{color:var(--brand)}
 
 .ck-full-detected-address{margin-top:10px;padding:10px;border-radius:10px;background:#fafcfb;border:1px solid #edf1ef}
 .ck-full-detected-address small{display:block;font-size:9.5px;color:var(--muted);font-weight:700;margin-bottom:4px}
@@ -352,7 +352,14 @@ body{padding:0 !important;margin:0 !important;}
 .ck-location-detail strong{display:block;font-size:12px;color:var(--ink);font-weight:850;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.45;overflow-wrap:anywhere}.ck-plus-code-box strong{white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word;}
 .ck-location-map-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:10px;color:var(--muted)}
 .ck-location-map-row a{color:var(--brand);font-weight:850;text-decoration:none;white-space:nowrap}
-@media(max-width:480px){.ck-location-details-grid{grid-template-columns:1fr 1fr}.ck-location-map-row{font-size:9.5px}}
+@media(max-width:480px){
+  .ck-location-details-grid{grid-template-columns:1fr 1fr;gap:7px}
+  .ck-location-detail{padding:9px 9px}
+  .ck-location-detail small{font-size:9px}
+  .ck-location-detail strong{font-size:11.5px;line-height:1.35}
+  .ck-plus-code-box strong{font-size:12px}
+  .ck-location-map-row{font-size:9.5px}
+}
 
 .ck-location-success{display:flex;align-items:center;gap:12px;padding:14px;margin:0 0 14px;border:1.5px solid #bfe5cd;border-radius:15px;background:linear-gradient(135deg,#f3fcf6,#e9f8ef)}.ck-location-success-icon{width:43px;height:43px;flex:0 0 43px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1f8a4c;background:#fff;border:1px solid #bfe5cd}.ck-location-success strong{display:block;font-size:14px;font-weight:800;color:#1f6b3d}.ck-location-success span{display:block;margin-top:3px;font-size:11px;color:#557064}.ck-back-manual{text-align:center;margin-top:12px;color:var(--brand);font-size:13px;font-weight:800;cursor:pointer}
 @media(max-width:480px){.ck-current-location{align-items:flex-start;padding:12px}.ck-current-location-icon{width:39px;height:39px;flex-basis:39px}.ck-current-location-btn{height:38px;padding:0 10px;font-size:10.5px}}
@@ -386,7 +393,7 @@ body{padding:0 !important;margin:0 !important;}
 }
 
 @media(max-width:480px){
-  .ck-location-details-grid.ck-plus-only{grid-template-columns:1fr;gap:8px}
+  .ck-location-details-grid.ck-plus-layout{grid-template-columns:1fr 1fr;gap:8px}.ck-detail-full{grid-column:1 / -1}
   .ck-plus-code-box strong{font-size:12px;line-height:1.5;white-space:normal;word-break:break-word;overflow-wrap:anywhere}
   .ck-location-detail{min-width:0}
 }
@@ -528,8 +535,10 @@ body{padding:0 !important;margin:0 !important;}
             </div>
             <div class="ck-detected-address" id="ckDetectedAddressDetails">
               <div class="ck-detected-address-title">📍 Delivery location</div>
-              <div class="ck-location-details-grid ck-plus-only">
-                <div class="ck-location-detail ck-plus-code-box"><small>Area / Plus Code</small><strong id="ckDetectedArea">—</strong></div>
+              <div class="ck-location-details-grid ck-plus-layout">
+                <div class="ck-location-detail ck-plus-code-box ck-detail-full"><small>Area / Plus Code</small><strong id="ckDetectedArea">—</strong></div>
+                <div class="ck-location-detail"><small>District</small><strong id="ckDetectedDistrict">—</strong></div>
+                <div class="ck-location-detail"><small>City</small><strong id="ckDetectedCity">—</strong></div>
                 <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
                 <div class="ck-location-detail"><small>Pincode</small><strong id="ckDetectedPincode">—</strong></div>
               </div>
@@ -1411,9 +1420,11 @@ body{padding:0 !important;margin:0 !important;}
     }
 
     var areaDisplay=shortPlus||'Not available';
-    if(labels.length) areaDisplay+=' • '+labels.join(' • ');
+    if(labels.length) areaDisplay+=' • '+labels.slice(0,3).join(' • ');
 
     setText('ckDetectedArea',areaDisplay);
+    setText('ckDetectedDistrict',currentLocationData.district||'Not available');
+    setText('ckDetectedCity',currentLocationData.city||'Not available');
     setText('ckDetectedState',currentLocationData.state||'Not available');
     setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
     setText('ckDetectedAccuracy',currentLocationData.accuracy ? '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS');
