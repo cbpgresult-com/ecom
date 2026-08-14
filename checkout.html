@@ -334,6 +334,9 @@ body{padding:0 !important;margin:0 !important;}
 .ck-current-location-copy{min-width:0;flex:1}.ck-current-location-copy strong{display:block;font-size:13px;font-weight:800;color:var(--ink)}.ck-current-location-copy span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}.ck-current-location-copy small{display:block;min-height:15px;margin-top:3px;font-size:10.5px;font-weight:800;color:var(--brand)}
 .ck-current-location-btn{height:40px;padding:0 13px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--brand),#2f7a55);color:#fff;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand)}.ck-current-location-btn:disabled{opacity:.6;cursor:wait}
 /* CURRENT LOCATION ADDRESS DETAILS */
+.ck-full-detected-address{margin-top:10px;padding:10px;border-radius:10px;background:#fafcfb;border:1px solid #edf1ef}
+.ck-full-detected-address small{display:block;font-size:9.5px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.ck-full-detected-address div{font-size:11px;line-height:1.45;color:var(--ink);font-weight:750}
 .ck-exact-coordinates{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:9px;padding:9px 10px;border-radius:10px;background:#f4faf6;border:1px solid #dcece2}
 .ck-exact-coordinates span{font-size:9.5px;color:var(--muted);font-weight:700}
 .ck-exact-coordinates strong{font-size:10px;color:var(--brand);font-weight:900;text-align:right}
@@ -519,13 +522,18 @@ body{padding:0 !important;margin:0 !important;}
               <div class="ck-detected-address-title">📍 Delivery location</div>
               <div class="ck-location-details-grid">
                 <div class="ck-location-detail"><small>Area / Locality</small><strong id="ckDetectedArea">—</strong></div>
-                <div class="ck-location-detail"><small>City / District</small><strong id="ckDetectedCity">—</strong></div>
+                <div class="ck-location-detail"><small>District</small><strong id="ckDetectedDistrict">—</strong></div>
+                <div class="ck-location-detail"><small>City / Town / Village</small><strong id="ckDetectedCity">—</strong></div>
                 <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
                 <div class="ck-location-detail"><small>Pincode</small><strong id="ckDetectedPincode">—</strong></div>
               </div>
               <div class="ck-location-map-row">
                 <span>GPS accuracy: <b id="ckDetectedAccuracy">—</b></span>
                 <a id="ckDetectedMapLink" href="#" target="_blank" rel="noopener">Open Exact Map ↗</a>
+              </div>
+              <div class="ck-full-detected-address">
+                <small>Full detected address</small>
+                <div id="ckDetectedFullAddress">Fetching…</div>
               </div>
               <div class="ck-exact-coordinates">
                 <span>Exact GPS Coordinates</span>
@@ -1144,60 +1152,127 @@ body{padding:0 !important;margin:0 !important;}
 
   async function reverseGeocodeCurrentLocation(lat,lon){
     /*
-      IMPORTANT:
-      GPS coordinates are the exact location source.
-      Text address is only a reverse-geocoded label.
-      We first use OpenStreetMap/Nominatim at high zoom and
-      fall back to BigDataCloud if needed.
+      GPS coordinates remain the source of truth.
+      Nominatim is used at address level so we can separately map:
+      locality/area -> district -> city/town/village -> state -> pincode.
     */
-    var result={area:'',city:'',state:'',pincode:'',display:''};
+    var result={
+      area:'',district:'',city:'',state:'',pincode:'',display:''
+    };
 
     try{
-      var url='https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&lat='+
+      var url='https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
+        '&addressdetails=1&namedetails=1&zoom=18&lat=' +
         encodeURIComponent(lat)+'&lon='+encodeURIComponent(lon);
-      var response=await fetch(url,{
-        headers:{'Accept':'application/json'}
-      });
 
+      var response=await fetch(url,{headers:{'Accept':'application/json'}});
       if(response.ok){
         var d=await response.json();
         var a=d.address||{};
 
+        /*
+          LOCALITY / AREA:
+          Don't use city here. Prefer the smallest locality available.
+        */
         result.area=String(
-          a.suburb||a.neighbourhood||a.quarter||a.hamlet||a.village||a.townland||''
+          a.neighbourhood ||
+          a.suburb ||
+          a.quarter ||
+          a.hamlet ||
+          a.locality ||
+          a.village ||
+          ''
         ).trim();
 
+        /*
+          DISTRICT:
+          In India Nominatim normally exposes the administrative district
+          as "county". city_district is often a sub-district/zone, so
+          county gets priority.
+        */
+        result.district=String(
+          a.county ||
+          a.state_district ||
+          a.city_district ||
+          ''
+        ).trim();
+
+        /*
+          CITY:
+          Never use county as city. Keep the actual settlement separate.
+        */
         result.city=String(
-          a.city_district||a.city||a.town||a.municipality||a.village||a.county||''
+          a.city ||
+          a.town ||
+          a.municipality ||
+          a.village ||
+          ''
         ).trim();
 
-        result.state=String(a.state||a.state_district||'').trim();
+        result.state=String(
+          a.state ||
+          a.state_district ||
+          ''
+        ).trim();
+
         result.pincode=String(a.postcode||'').trim();
         result.display=String(d.display_name||'').trim();
 
         /*
-          In India Nominatim can put the district in county.
-          If city is missing, county is a useful fallback.
+          If the address is rural and Nominatim has no city/town,
+          village is the actual settlement and is already used above.
+          Do NOT copy district into city.
         */
-        if(!result.city && a.county) result.city=String(a.county).trim();
       }
     }catch(e){
       console.warn('Nominatim reverse geocode failed:',e);
     }
 
-    /* Fallback only for missing text fields. GPS coordinates never change. */
-    if(!result.area || !result.city || !result.state || !result.pincode){
+    /*
+      BigDataCloud is fallback only for missing values.
+      We do NOT overwrite a value already obtained from Nominatim.
+    */
+    if(!result.area || !result.district || !result.city ||
+       !result.state || !result.pincode || !result.display){
       try{
-        var bdc='https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+
-          encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)+'&localityLanguage=en';
+        var bdc='https://api.bigdatacloud.net/data/reverse-geocode-client' +
+          '?latitude='+encodeURIComponent(lat) +
+          '&longitude='+encodeURIComponent(lon) +
+          '&localityLanguage=en';
+
         var br=await fetch(bdc,{headers:{'Accept':'application/json'}});
         if(br.ok){
           var bd=await br.json();
-          if(!result.area) result.area=String(bd.locality||bd.suburb||bd.neighbourhood||bd.village||bd.town||'').trim();
-          if(!result.city) result.city=String(bd.city||bd.district||bd.town||bd.village||bd.locality||'').trim();
-          if(!result.state) result.state=String(bd.principalSubdivision||'').trim();
-          if(!result.pincode) result.pincode=String(bd.postcode||bd.postCode||'').trim();
-          if(!result.display) result.display=String(bd.locality||'').trim();
+
+          if(!result.area){
+            result.area=String(
+              bd.locality||bd.suburb||bd.neighbourhood||bd.village||''
+            ).trim();
+          }
+          if(!result.district){
+            result.district=String(
+              bd.district||bd.localityInfo?.administrative?.find(function(x){
+                return x && (x.name||'').trim();
+              })?.name||''
+            ).trim();
+          }
+          if(!result.city){
+            result.city=String(
+              bd.city||bd.town||bd.village||bd.locality||''
+            ).trim();
+          }
+          if(!result.state){
+            result.state=String(bd.principalSubdivision||'').trim();
+          }
+          if(!result.pincode){
+            result.pincode=String(bd.postcode||bd.postCode||'').trim();
+          }
+          if(!result.display){
+            result.display=String(
+              [result.area,result.district,result.city,result.state,result.pincode]
+                .filter(Boolean).join(', ')
+            );
+          }
         }
       }catch(e){
         console.warn('Fallback reverse geocode failed:',e);
@@ -1209,13 +1284,15 @@ body{padding:0 !important;margin:0 !important;}
 
   function showDetectedLocationDetails(){
     setText('ckDetectedArea',currentLocationData.area||'Not available');
+    setText('ckDetectedDistrict',currentLocationData.district||'Not available');
     setText('ckDetectedCity',currentLocationData.city||'Not available');
     setText('ckDetectedState',currentLocationData.state||'Not available');
     setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
 
     setText(
       'ckDetectedAccuracy',
-      currentLocationData.accuracy ? '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS'
+      currentLocationData.accuracy ?
+        '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS'
     );
 
     var a=el('ckDetectedMapLink');
@@ -1224,8 +1301,20 @@ body{padding:0 !important;margin:0 !important;}
       a.textContent='Open Exact Map ↗';
     }
 
+    var full=currentLocationData.display ||
+      [
+        currentLocationData.area,
+        currentLocationData.district,
+        currentLocationData.city,
+        currentLocationData.state,
+        currentLocationData.pincode
+      ].filter(Boolean).join(', ');
+
+    setText('ckDetectedFullAddress',full||'Exact GPS coordinates captured.');
+
     var summary=[
       currentLocationData.area,
+      currentLocationData.district,
       currentLocationData.city,
       currentLocationData.state,
       currentLocationData.pincode
@@ -1236,7 +1325,6 @@ body{padding:0 !important;margin:0 !important;}
       summary || 'Exact GPS coordinates captured.'
     );
 
-    /* Show the actual coordinates so there is no ambiguity. */
     setText(
       'ckDetectedCoordinates',
       Number(currentLocationData.latitude).toFixed(6)+'°, '+
@@ -1245,10 +1333,10 @@ body{padding:0 !important;margin:0 !important;}
 
     var frame=el('ckExactLocationMap');
     if(frame){
-      frame.src=
-        'https://www.google.com/maps?q='+
-        encodeURIComponent(currentLocationData.latitude+','+currentLocationData.longitude)+
-        '&z=18&output=embed';
+      frame.src='https://www.google.com/maps?q='+
+        encodeURIComponent(
+          currentLocationData.latitude+','+currentLocationData.longitude
+        )+'&z=18&output=embed';
     }
   }
 
@@ -1310,9 +1398,11 @@ body{padding:0 !important;margin:0 !important;}
         /* Reverse-geocode GPS → real Area/City/District/State/Pincode. */
         var geo=await reverseGeocodeCurrentLocation(currentLocationData.latitude,currentLocationData.longitude);
         currentLocationData.area=geo.area;
+        currentLocationData.district=geo.district;
         currentLocationData.city=geo.city;
         currentLocationData.state=geo.state;
         currentLocationData.pincode=geo.pincode;
+        currentLocationData.display=geo.display;
 
         /* Save GPS immediately; existing delivery_locations columns stay unchanged. */
         await saveCurrentLocationRow();
