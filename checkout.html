@@ -334,7 +334,7 @@ body{padding:0 !important;margin:0 !important;}
 .ck-current-location-copy{min-width:0;flex:1}.ck-current-location-copy strong{display:block;font-size:13px;font-weight:800;color:var(--ink)}.ck-current-location-copy span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}.ck-current-location-copy small{display:block;min-height:15px;margin-top:3px;font-size:10.5px;font-weight:800;color:var(--brand)}
 .ck-current-location-btn{height:40px;padding:0 13px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--brand),#2f7a55);color:#fff;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand)}.ck-current-location-btn:disabled{opacity:.6;cursor:wait}
 /* CURRENT LOCATION ADDRESS DETAILS */
-.ck-plus-layout{grid-template-columns:1fr 1fr}.ck-detail-full{grid-column:1 / -1}.ck-plus-code-box strong{letter-spacing:.25px;font-size:13px}.ck-plus-code-box{background:#f4faf6;border-color:#cfe5d7}.ck-plus-code-box small{color:var(--brand)}
+.ck-plus-only{grid-template-columns:1fr 1fr}.ck-plus-code-box{background:#f4faf6;border-color:#cfe5d7}.ck-plus-code-box small{color:var(--brand)}.ck-location-full{grid-column:1 / -1}.ck-plus-code-box strong{letter-spacing:.2px;font-size:12.5px;line-height:1.45;white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word}.ck-location-detail strong{white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word;line-height:1.35}
 
 .ck-full-detected-address{margin-top:10px;padding:10px;border-radius:10px;background:#fafcfb;border:1px solid #edf1ef}
 .ck-full-detected-address small{display:block;font-size:9.5px;color:var(--muted);font-weight:700;margin-bottom:4px}
@@ -349,17 +349,10 @@ body{padding:0 !important;margin:0 !important;}
 .ck-location-details-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ck-location-detail{padding:9px 10px;border:1px solid #edf1ef;border-radius:10px;background:#fafcfb;min-width:0}
 .ck-location-detail small{display:block;font-size:9.5px;color:var(--muted);font-weight:700;margin-bottom:3px}
-.ck-location-detail strong{display:block;font-size:12px;color:var(--ink);font-weight:850;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.45;overflow-wrap:anywhere}.ck-plus-code-box strong{white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word;}
+.ck-location-detail strong{display:block;font-size:12px;color:var(--ink);font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ck-location-map-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:10px;color:var(--muted)}
 .ck-location-map-row a{color:var(--brand);font-weight:850;text-decoration:none;white-space:nowrap}
-@media(max-width:480px){
-  .ck-location-details-grid{grid-template-columns:1fr 1fr;gap:7px}
-  .ck-location-detail{padding:9px 9px}
-  .ck-location-detail small{font-size:9px}
-  .ck-location-detail strong{font-size:11.5px;line-height:1.35}
-  .ck-plus-code-box strong{font-size:12px}
-  .ck-location-map-row{font-size:9.5px}
-}
+@media(max-width:480px){.ck-location-details-grid{grid-template-columns:1fr 1fr}.ck-location-map-row{font-size:9.5px}}
 
 .ck-location-success{display:flex;align-items:center;gap:12px;padding:14px;margin:0 0 14px;border:1.5px solid #bfe5cd;border-radius:15px;background:linear-gradient(135deg,#f3fcf6,#e9f8ef)}.ck-location-success-icon{width:43px;height:43px;flex:0 0 43px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1f8a4c;background:#fff;border:1px solid #bfe5cd}.ck-location-success strong{display:block;font-size:14px;font-weight:800;color:#1f6b3d}.ck-location-success span{display:block;margin-top:3px;font-size:11px;color:#557064}.ck-back-manual{text-align:center;margin-top:12px;color:var(--brand);font-size:13px;font-weight:800;cursor:pointer}
 @media(max-width:480px){.ck-current-location{align-items:flex-start;padding:12px}.ck-current-location-icon{width:39px;height:39px;flex-basis:39px}.ck-current-location-btn{height:38px;padding:0 10px;font-size:10.5px}}
@@ -390,12 +383,6 @@ body{padding:0 !important;margin:0 !important;}
   .ckstep3-grid .ckpricecol{position:sticky;top:24px;}
   .ckfooterbar{position:static;max-width:1450px;margin:0 auto;border:none;border-top:1px solid var(--line);border-radius:0 0 22px 22px;padding:18px 30px;background:#fff;}
   .ckfooterbar .ckbtn{max-width:340px;margin-left:auto;display:flex;}
-}
-
-@media(max-width:480px){
-  .ck-location-details-grid.ck-plus-layout{grid-template-columns:1fr 1fr;gap:8px}.ck-detail-full{grid-column:1 / -1}
-  .ck-plus-code-box strong{font-size:12px;line-height:1.5;white-space:normal;word-break:break-word;overflow-wrap:anywhere}
-  .ck-location-detail{min-width:0}
 }
 </style>
 </head>
@@ -535,8 +522,8 @@ body{padding:0 !important;margin:0 !important;}
             </div>
             <div class="ck-detected-address" id="ckDetectedAddressDetails">
               <div class="ck-detected-address-title">📍 Delivery location</div>
-              <div class="ck-location-details-grid ck-plus-layout">
-                <div class="ck-location-detail ck-plus-code-box ck-detail-full"><small>Area / Plus Code</small><strong id="ckDetectedArea">—</strong></div>
+              <div class="ck-location-details-grid ck-plus-only">
+                <div class="ck-location-detail ck-plus-code-box ck-location-full"><small>Area / Plus Code</small><strong id="ckDetectedArea">—</strong></div>
                 <div class="ck-location-detail"><small>District</small><strong id="ckDetectedDistrict">—</strong></div>
                 <div class="ck-location-detail"><small>City</small><strong id="ckDetectedCity">—</strong></div>
                 <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
@@ -582,8 +569,12 @@ body{padding:0 !important;margin:0 !important;}
               <input id="ckState" type="text" placeholder="State">
             </div>
             <div class="ckfield">
-              <label for="ckCity">City / District *</label>
-              <input id="ckCity" type="text" placeholder="City or district">
+              <label for="ckDistrict">District *</label>
+              <input id="ckDistrict" type="text" placeholder="District" autocomplete="address-level2" readonly>
+            </div>
+            <div class="ckfield">
+              <label for="ckCity">City *</label>
+              <input id="ckCity" type="text" placeholder="City / Town / Village" autocomplete="address-level2">
             </div>
             <div class="ckfield full">
               <label for="ckHouse">House No., Building Name *</label>
@@ -1198,6 +1189,44 @@ body{padding:0 !important;margin:0 !important;}
     return code.slice(0,8)+'+'+code.slice(8,11);
   }
 
+  /* =========================================================
+     INDIA PINCODE -> DISTRICT / CITY / STATE
+     GPS gives the pincode; postal data is then the source of truth.
+  ========================================================= */
+  async function lookupPincodeDetails(pincode){
+    var pin=String(pincode||'').replace(/\D/g,'').slice(0,6);
+    if(!/^\d{6}$/.test(pin)) return null;
+    var result={pincode:pin,district:'',city:'',state:'',post_offices:[]};
+
+    try{
+      var r=await fetch('https://api.postalpincode.in/pincode/'+encodeURIComponent(pin),{headers:{'Accept':'application/json'}});
+      if(r.ok){
+        var data=await r.json(), first=data&&data[0];
+        if(first&&first.Status==='Success'&&Array.isArray(first.PostOffice)&&first.PostOffice.length){
+          result.post_offices=first.PostOffice;
+          var po=first.PostOffice[0]||{};
+          result.district=String(po.District||'').trim();
+          result.state=String(po.State||'').trim();
+        }
+      }
+    }catch(e){ console.warn('Postal PIN lookup failed:',e); }
+
+    try{
+      var cr=await fetch('https://www.postpincode.in/api/getCityName.php?pincode='+encodeURIComponent(pin),{headers:{'Accept':'application/json'}});
+      if(cr.ok){
+        var cd=await cr.json();
+        if(Array.isArray(cd)&&cd.length){
+          var row=cd[0]||{};
+          if(row.City) result.city=String(row.City).trim();
+          if(row.District) result.district=String(row.District).trim();
+          if(row.State) result.state=String(row.State).trim();
+        }
+      }
+    }catch(e){ console.warn('City-by-PIN lookup failed:',e); }
+
+    return (result.district||result.city||result.state)?result:null;
+  }
+
   async function reverseGeocodeCurrentLocation(lat,lon){
     /*
       GPS coordinates remain the source of truth.
@@ -1205,8 +1234,7 @@ body{padding:0 !important;margin:0 !important;}
       locality/area -> district -> city/town/village -> state -> pincode.
     */
     var result={
-      area:'',district:'',city:'',state:'',pincode:'',display:'',place_name:'',
-      nearest_places:[],post_office:''
+      area:'',district:'',city:'',state:'',pincode:'',display:'',place_name:''
     };
 
     try{
@@ -1266,38 +1294,17 @@ body{padding:0 !important;margin:0 !important;}
           ''
         ).trim();
 
+        result.village=String(a.village||a.hamlet||'').trim();
+        result.post_office=String(a.post_office||a.postal_town||'').trim();
         result.pincode=String(a.postcode||'').trim();
-        result.post_office=String(a.post_office||a.postoffice||a.postal_town||'').trim();
-
-        /* Keep only the smallest useful locality names for the Area box. */
-        var nearbyRaw=[
-          ['Neighbourhood',a.neighbourhood],
-          ['Locality',a.locality],
-          ['Suburb',a.suburb],
-          ['Quarter',a.quarter],
-          ['Hamlet',a.hamlet],
-          ['Village',a.village],
-          ['Post',result.post_office]
-        ];
-        var seenNearby={};
-        result.nearest_places=[];
-        nearbyRaw.forEach(function(item){
-          var value=String(item[1]||'').trim();
-          var key=value.toLowerCase();
-          if(value && !seenNearby[key]){
-            seenNearby[key]=true;
-            result.nearest_places.push({label:item[0],value:value});
-          }
-        });
-
         result.display=String(d.display_name||'').trim();
 
         /* Google-Maps-like human place label. Prefer city/town, then
            locality/area, then district. This is only the display name;
            the exact GPS coordinates remain the delivery source of truth. */
         result.place_name=String(
-          a.neighbourhood || a.suburb || a.quarter || a.locality ||
-          a.hamlet || a.village || a.city || a.town || a.municipality ||
+          a.city || a.town || a.municipality || a.village ||
+          a.suburb || a.neighbourhood || a.locality ||
           a.county || a.state_district || ''
         ).trim();
 
@@ -1351,25 +1358,6 @@ body{padding:0 !important;margin:0 !important;}
           if(!result.pincode){
             result.pincode=String(bd.postcode||bd.postCode||'').trim();
           }
-          if(!result.post_office){
-            result.post_office=String(bd.postOffice||bd.postoffice||bd.postalTown||'').trim();
-          }
-          if(!result.nearest_places.length){
-            var bNearby=[
-              ['Locality',bd.locality],['Suburb',bd.suburb],
-              ['Neighbourhood',bd.neighbourhood],['Village',bd.village],
-              ['Post',result.post_office]
-            ];
-            var bSeen={};
-            bNearby.forEach(function(item){
-              var value=String(item[1]||'').trim();
-              var key=value.toLowerCase();
-              if(value && !bSeen[key]){
-                bSeen[key]=true;
-                result.nearest_places.push({label:item[0],value:value});
-              }
-            });
-          }
           if(!result.display){
             result.display=String(
               [result.area,result.district,result.city,result.state,result.pincode]
@@ -1392,58 +1380,56 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   function showDetectedLocationDetails(){
-    /* Area box = exact Plus Code + nearest granular locality names only.
-       State and country are intentionally kept out of this box. */
-    var fullPlus=currentLocationData.plus_code||'';
-    var shortPlus=fullPlus;
-    if(fullPlus.indexOf('+')>0){
-      var plusParts=fullPlus.split('+');
-      var before=plusParts[0]||'';
-      var after=plusParts[1]||'';
-      if(before.length>4) before=before.slice(-4);
-      shortPlus=before+'+'+after;
-    }
-
-    var nearby=currentLocationData.nearest_places||[];
-    var labels=[];
-    var seen={};
-    nearby.forEach(function(item){
-      var value=String((item&&item.value)||'').trim();
-      var key=value.toLowerCase();
-      if(value && !seen[key]){
-        seen[key]=true;
-        labels.push(value);
-      }
+    /*
+      Show Plus Code + human-readable place name exactly like Google Maps:
+      QXW3+XXX Lucknow, Uttar Pradesh, India
+      Do not show district/locality as separate fields.
+    */
+    var nearestParts=[];
+    [currentLocationData.area,currentLocationData.village,currentLocationData.post_office].forEach(function(v){
+      v=String(v||'').trim();
+      if(v&&nearestParts.indexOf(v)===-1) nearestParts.push(v);
     });
-    if(!labels.length && currentLocationData.area){
-      labels.push(String(currentLocationData.area).trim());
-    }
+    var placeName=nearestParts.join(' • ');
+    if(!placeName) placeName='Nearest locality unavailable';
 
-    var areaDisplay=shortPlus||'Not available';
-    if(labels.length) areaDisplay+=' • '+labels.slice(0,3).join(' • ');
+    var plusDisplay=(currentLocationData.plus_code||'Not available')+' • '+placeName;
 
-    setText('ckDetectedArea',areaDisplay);
+    setText('ckDetectedArea',plusDisplay);
     setText('ckDetectedDistrict',currentLocationData.district||'Not available');
     setText('ckDetectedCity',currentLocationData.city||'Not available');
     setText('ckDetectedState',currentLocationData.state||'Not available');
     setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
-    setText('ckDetectedAccuracy',currentLocationData.accuracy ? '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS');
+
+    setText(
+      'ckDetectedAccuracy',
+      currentLocationData.accuracy ?
+        '±'+Math.round(currentLocationData.accuracy)+' m' : 'GPS'
+    );
 
     var a=el('ckDetectedMapLink');
-    if(a){ a.href=currentLocationData.map_link; a.textContent='Open Exact Map ↗'; }
+    if(a){
+      a.href=currentLocationData.map_link;
+      a.textContent='Open Exact Map ↗';
+    }
 
-    setText('ckDetectedLocationText',
-      'Plus Code: '+(shortPlus||'available')+' · Exact GPS location captured.');
+    setText(
+      'ckDetectedLocationText',
+      'Plus Code: '+(currentLocationData.plus_code||'available')+' · Exact GPS + postal details verified.'
+    );
 
-    setText('ckDetectedCoordinates',
+    setText(
+      'ckDetectedCoordinates',
       Number(currentLocationData.latitude).toFixed(6)+'°, '+
-      Number(currentLocationData.longitude).toFixed(6)+'°');
+      Number(currentLocationData.longitude).toFixed(6)+'°'
+    );
 
     var frame=el('ckExactLocationMap');
     if(frame){
       frame.src='https://www.google.com/maps?q='+
-        encodeURIComponent(currentLocationData.latitude+','+currentLocationData.longitude)+
-        '&z=19&output=embed';
+        encodeURIComponent(
+          currentLocationData.latitude+','+currentLocationData.longitude
+        )+'&z=18&output=embed';
     }
   }
 
@@ -1510,12 +1496,27 @@ body{padding:0 !important;margin:0 !important;}
         /* Reverse-geocode GPS → real Area/City/District/State/Pincode. */
         var geo=await reverseGeocodeCurrentLocation(currentLocationData.latitude,currentLocationData.longitude);
         currentLocationData.area=geo.area;
+        currentLocationData.village=geo.village || '';
+        currentLocationData.post_office=geo.post_office || '';
         currentLocationData.district=geo.district;
         currentLocationData.city=geo.city;
         currentLocationData.state=geo.state;
         currentLocationData.pincode=geo.pincode;
         currentLocationData.display=geo.display;
         currentLocationData.place_name=geo.place_name || geo.city || geo.area || geo.district || '';
+
+        /* Pincode is already correct from GPS. Use postal data for exact
+           District/City/State instead of reverse-geocoder county names. */
+        if(currentLocationData.pincode){
+          var pinData=await lookupPincodeDetails(currentLocationData.pincode);
+          if(pinData){
+            currentLocationData.district=pinData.district || currentLocationData.district;
+            currentLocationData.city=pinData.city || currentLocationData.city;
+            currentLocationData.state=pinData.state || currentLocationData.state;
+            currentLocationData.pincode=pinData.pincode || currentLocationData.pincode;
+            currentLocationData.post_office=currentLocationData.post_office || ((pinData.post_offices&&pinData.post_offices[0]&&pinData.post_offices[0].Name)||'');
+          }
+        }
 
         /* Save GPS immediately; existing delivery_locations columns stay unchanged. */
         await saveCurrentLocationRow();
@@ -1598,29 +1599,21 @@ body{padding:0 !important;margin:0 !important;}
      PINCODE
   ========================================================= */
   function setupPincode(){
-    var pin=el('ckPincode');
-    var state=el('ckState');
-    var city=el('ckCity');
-    var loader=el('ckPinLoader');
-    if(!pin) return;
-
+    var pin=el('ckPincode'), state=el('ckState'), district=el('ckDistrict'), city=el('ckCity'), loader=el('ckPinLoader');
+    if(!pin)return;
+    var timer=null;
     pin.addEventListener('input',function(){
-      var value=this.value.replace(/\D/g,'').slice(0,6);
-      this.value=value;
-      if(value.length!==6) return;
-
-      loader.classList.add('show');
-      fetch('https://api.postalpincode.in/pincode/'+value)
-        .then(function(r){return r.json();})
-        .then(function(data){
-          if(data && data[0] && data[0].Status==='Success' && data[0].PostOffice && data[0].PostOffice[0]){
-            var po=data[0].PostOffice[0];
-            if(po.State) state.value=po.State;
-            if(po.District) city.value=po.District;
-          }
-        })
-        .catch(function(err){console.warn('Pincode lookup:',err);})
-        .finally(function(){loader.classList.remove('show');});
+      var value=this.value.replace(/\D/g,'').slice(0,6); this.value=value;
+      if(timer)clearTimeout(timer);
+      if(value.length!==6){ if(district)district.value=''; if(city)city.value=''; if(state)state.value=''; return; }
+      timer=setTimeout(async function(){
+        loader.classList.add('show');
+        try{
+          var info=await lookupPincodeDetails(value);
+          if(info){ if(district)district.value=info.district||''; if(city)city.value=info.city||''; if(state)state.value=info.state||''; }
+        }catch(e){ console.warn('Pincode lookup:',e); }
+        finally{ loader.classList.remove('show'); }
+      },180);
     });
   }
 
