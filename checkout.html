@@ -2098,13 +2098,16 @@ body{padding:0 !important;margin:0 !important;}
         phone:selectedAddress.phone || '',
         pincode:selectedAddress.pincode || '',
         state:selectedAddress.state || '',
-        city:selectedAddress.city || '',
+        /* Current Location fields are kept inside the order address snapshot. */
+        city:selectedAddress.isCurrentLocation===true ? '' : (selectedAddress.city || ''),
+        village:selectedAddress.village || '',
         house:selectedAddress.house || '',
-        road:selectedAddress.road || '',
+        road:selectedAddress.isCurrentLocation===true ? '' : (selectedAddress.road || ''),
+        plus_code:selectedAddress.plus_code || '',
         type:selectedAddress.type || 'home',
         map_link:selectedAddress.map_link || '',
-        latitude:selectedAddress.latitude || null,
-        longitude:selectedAddress.longitude || null,
+        latitude:selectedAddress.latitude==null ? null : Number(selectedAddress.latitude),
+        longitude:selectedAddress.longitude==null ? null : Number(selectedAddress.longitude),
         is_current_location:selectedAddress.isCurrentLocation===true,
         location_row_id:selectedAddress.location_row_id || null
       };
@@ -2121,7 +2124,8 @@ body{padding:0 !important;margin:0 !important;}
         total_amount:lastTotal,
         status:'placed',
         user_email:currentUser.email || '',
-        cod_due:lastTotal
+        /* Separate order-level map link for easy access in Table Editor. */
+        map_link:addressForOrder.map_link || ''
       };
 
       console.log('Creating order:',orderPayload);
