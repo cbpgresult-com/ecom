@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Trikund Printers | Online Shopping</title>
+<title>MyStore - Online Shopping</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -15,438 +15,414 @@
   padding:0;
 }
 
+:root{
+  --violet:#6d28d9;
+  --violet2:#7c3aed;
+  --light-violet:#f3e8ff;
+  --green:#dcfce7;
+  --green-dark:#15803d;
+  --white:#fff;
+  --text:#171717;
+  --muted:#737373;
+  --border:#e5e7eb;
+  --bg:#f7f7fb;
+}
+
 body{
   font-family:Arial,Helvetica,sans-serif;
-  background:#f7f8fb;
-  color:#171717;
-  padding-bottom:75px;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:0;
 }
 
 /* ================= HEADER ================= */
 
 .header{
-  width:100%;
+  height:72px;
   background:#fff;
-  border-bottom:1px solid #e5e5e5;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:22px;
+  padding:0 5%;
   position:sticky;
   top:0;
   z-index:1000;
 }
 
-.header-main{
-  max-width:1220px;
-  margin:auto;
-  min-height:82px;
-  display:flex;
-  align-items:center;
-  gap:28px;
-  padding:12px 18px;
-}
-
-/* ================= LOGO ================= */
-
 .logo{
-  width:210px;
-  min-width:210px;
-  display:flex;
-  align-items:center;
-  text-decoration:none;
-}
-
-.logo svg{
-  width:100%;
-  height:auto;
-  display:block;
-}
-
-/* ================= SEARCH ================= */
-
-.search-box{
-  flex:1;
-  height:52px;
-  display:flex;
-  align-items:center;
-  border:1px solid #ddd;
-  border-radius:28px;
-  background:#fff;
-  overflow:hidden;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
-}
-
-.search-icon{
-  width:48px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.search-icon svg{
-  width:22px;
-  height:22px;
-  stroke:#555;
-}
-
-.search-box input{
-  flex:1;
-  border:0;
-  outline:0;
-  font-size:15px;
-  color:#333;
-  background:transparent;
-}
-
-.search-box input::placeholder{
-  color:#999;
-}
-
-.search-btn{
-  height:40px;
-  margin-right:6px;
-  padding:0 20px;
-  border:0;
-  border-radius:22px;
-  background:#ff7a00;
-  color:white;
-  font-weight:700;
-  cursor:pointer;
-}
-
-/* ================= RIGHT MENU ================= */
-
-.header-right{
-  display:flex;
-  align-items:center;
-  gap:22px;
+  font-size:28px;
+  font-weight:900;
+  color:var(--violet);
   white-space:nowrap;
 }
 
-.login-area{
+.search{
+  flex:1;
   position:relative;
 }
 
-.login-btn{
-  background:none;
-  border:0;
-  display:flex;
-  align-items:center;
-  gap:7px;
+.search input{
+  width:100%;
+  height:46px;
+  border:2px solid #dfcaff;
+  border-radius:13px;
+  padding:0 48px 0 18px;
+  outline:none;
   font-size:15px;
-  cursor:pointer;
-  color:#222;
-  padding:10px 4px;
+  background:#fff;
 }
 
-.login-btn svg{
+.search input:focus{
+  border-color:var(--violet);
+}
+
+.search-icon{
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
   width:20px;
   height:20px;
 }
 
+/* desktop account */
+
+.header-account{
+  position:relative;
+}
+
+.account-btn{
+  border:0;
+  background:#fff;
+  height:44px;
+  padding:0 8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:15px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.account-btn:hover{
+  color:var(--violet);
+}
+
+.account-icon{
+  width:21px;
+  height:21px;
+}
+
 .arrow{
-  font-size:12px;
+  width:14px;
+  height:14px;
   transition:.2s;
 }
 
-.login-area.open .arrow{
+.account-btn.open .arrow{
   transform:rotate(180deg);
+}
+
+.cart-btn{
+  height:44px;
+  border:0;
+  background:var(--violet);
+  color:white;
+  padding:0 17px;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+}
+
+.cart-icon{
+  width:20px;
+  height:20px;
+}
+
+.cart-number{
+  background:#fff;
+  color:var(--violet);
+  min-width:21px;
+  height:21px;
+  border-radius:50%;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  font-size:12px;
 }
 
 /* ================= ACCOUNT DROPDOWN ================= */
 
 .account-menu{
   position:absolute;
-  top:48px;
-  right:-15px;
-  width:285px;
+  right:0;
+  top:53px;
+  width:310px;
   background:#fff;
-  border-radius:4px;
-  box-shadow:0 4px 20px rgba(0,0,0,.22);
+  border-radius:14px;
+  box-shadow:0 12px 35px rgba(0,0,0,.20);
   border:1px solid #ddd;
-  display:none;
   overflow:hidden;
+  display:none;
+  z-index:2000;
 }
 
-.login-area.open .account-menu{
+.account-menu.show{
   display:block;
+  animation:menuIn .16s ease;
 }
 
-.account-menu:before{
-  content:"";
-  position:absolute;
-  top:-7px;
-  right:75px;
-  width:14px;
-  height:14px;
-  background:#fff;
-  transform:rotate(45deg);
-  border-left:1px solid #ddd;
-  border-top:1px solid #ddd;
+@keyframes menuIn{
+  from{
+    opacity:0;
+    transform:translateY(-5px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 .account-top{
-  padding:18px 20px;
-  border-bottom:1px solid #eee;
-  position:relative;
-  z-index:2;
-  background:#fff;
+  padding:18px 20px 10px;
 }
 
-.new-user{
+.new-customer{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  font-size:16px;
+  font-size:15px;
 }
 
 .signup{
-  color:#2874f0;
+  color:#2563eb;
   font-weight:700;
   cursor:pointer;
 }
 
+.account-divider{
+  height:1px;
+  background:#eee;
+  margin:8px 0;
+}
+
 .menu-item{
+  height:47px;
   display:flex;
   align-items:center;
-  gap:15px;
-  padding:13px 20px;
-  font-size:15px;
-  color:#333;
+  gap:14px;
+  padding:0 20px;
   cursor:pointer;
-  transition:.15s;
+  font-size:15px;
 }
 
 .menu-item:hover{
-  background:#f5f5f5;
+  background:#f7f7f7;
+  color:var(--violet);
 }
 
-.menu-item svg{
-  width:19px;
-  height:19px;
-  stroke:#333;
+.menu-svg{
+  width:20px;
+  height:20px;
+  flex:none;
 }
 
-/* ================= CART ================= */
-
-.cart-btn{
-  border:0;
-  background:none;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:15px;
-  cursor:pointer;
+.logout{
+  color:#dc2626;
 }
 
-.cart-btn svg{
-  width:23px;
-  height:23px;
-}
+/* ================= CATEGORY ================= */
 
-.cart-count{
-  min-width:19px;
-  height:19px;
-  padding:0 5px;
-  border-radius:50%;
-  background:#e91e3a;
-  color:#fff;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11px;
-  font-weight:bold;
-}
-
-/* ================= CATEGORY NAV ================= */
-
-.category-nav{
+.categories{
+  height:82px;
   background:#fff;
-  border-bottom:1px solid #ddd;
-}
-
-.category-inner{
-  max-width:1220px;
-  margin:auto;
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  gap:30px;
+  padding:0 5%;
+  border-bottom:1px solid var(--border);
   overflow-x:auto;
-  padding:8px 18px 7px;
   scrollbar-width:none;
 }
 
-.category-inner::-webkit-scrollbar{
+.categories::-webkit-scrollbar{
   display:none;
 }
 
 .category{
-  min-width:70px;
-  text-align:center;
+  min-width:64px;
+  border:0;
+  background:transparent;
   cursor:pointer;
-  padding:4px 7px;
-  color:#333;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
   font-size:13px;
+  white-space:nowrap;
 }
 
 .category-icon{
   width:42px;
   height:42px;
-  margin:auto;
   border-radius:50%;
-  background:#f0e6ff;
+  background:var(--light-violet);
   display:flex;
   align-items:center;
   justify-content:center;
-  margin-bottom:5px;
 }
 
 .category-icon svg{
   width:23px;
   height:23px;
-  stroke:#6426d8;
 }
 
 .category.active{
-  color:#6326d8;
+  color:var(--violet);
   font-weight:700;
 }
 
 .category.active .category-icon{
-  background:#ddffea;
+  background:var(--green);
 }
 
 /* ================= MAIN ================= */
 
 main{
-  max-width:1220px;
+  width:90%;
+  max-width:1250px;
   margin:auto;
-  padding:22px 18px;
 }
 
-/* ================= PRODUCTS HEADER ================= */
+.top-space{
+  height:20px;
+}
 
-.products-head{
+/* ================= PRODUCT HEADER ================= */
+
+.product-heading{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  margin-bottom:16px;
+  align-items:end;
+  margin:28px 0 18px;
 }
 
-.products-head h1{
+.product-heading h1{
   font-size:25px;
-  margin-bottom:4px;
 }
 
-.products-head p{
-  color:#777;
+.product-heading p{
+  color:var(--muted);
+  margin-top:5px;
   font-size:14px;
 }
 
-.sort{
+#sortSelect{
+  padding:10px 30px 10px 12px;
   border:1px solid #ddd;
+  border-radius:10px;
   background:white;
-  border-radius:8px;
-  padding:10px 14px;
-  outline:none;
 }
 
 /* ================= PRODUCT GRID ================= */
 
 .product-grid{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:16px;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  padding-bottom:50px;
 }
 
 .product-card{
-  background:#fff;
-  border:1px solid #e6e6e6;
-  border-radius:13px;
+  background:white;
+  border:1px solid #e8e8e8;
+  border-radius:14px;
   overflow:hidden;
-  cursor:pointer;
   transition:.2s;
+  cursor:pointer;
   min-width:0;
 }
 
 .product-card:hover{
   transform:translateY(-3px);
-  box-shadow:0 7px 22px rgba(0,0,0,.1);
+  box-shadow:0 8px 25px rgba(0,0,0,.09);
 }
 
-/* MAIN IMAGE ONLY */
-
-.product-image{
-  width:100%;
-  height:245px;
-  background:#fff;
+.product-image-box{
+  height:250px;
+  background:#fafafa;
+  position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:10px;
-  position:relative;
   overflow:hidden;
 }
 
-.product-image img{
+.product-image{
   width:100%;
   height:100%;
   object-fit:contain;
+  padding:10px;
   display:block;
 }
 
-/* discount */
-
 .discount{
   position:absolute;
-  left:9px;
-  top:9px;
-  background:#d9fbe7;
-  color:#08783e;
-  padding:5px 8px;
-  border-radius:6px;
+  top:10px;
+  left:10px;
+  background:var(--green);
+  color:var(--green-dark);
+  padding:6px 8px;
+  border-radius:7px;
   font-size:11px;
-  font-weight:bold;
+  font-weight:700;
 }
 
-/* product info */
-
 .product-info{
-  padding:11px;
+  padding:12px;
 }
 
 .rating{
   display:inline-flex;
   align-items:center;
   gap:4px;
-  background:#dcfae8;
-  color:#08783e;
+  background:var(--green);
+  color:#166534;
   padding:4px 7px;
-  border-radius:5px;
+  border-radius:6px;
   font-size:11px;
   margin-bottom:8px;
 }
 
-.product-title{
+.product-name{
   font-size:14px;
-  line-height:1.35;
   font-weight:500;
-  color:#222;
+  line-height:1.35;
+  color:#333;
 
   display:-webkit-box;
   -webkit-box-orient:vertical;
   -webkit-line-clamp:2;
   overflow:hidden;
+
   min-height:38px;
 }
 
 .price-row{
   display:flex;
   align-items:center;
-  gap:7px;
+  gap:8px;
   margin-top:9px;
 }
 
 .price{
   font-size:20px;
-  font-weight:700;
+  font-weight:800;
 }
 
 .mrp{
@@ -456,30 +432,29 @@ main{
 }
 
 .off{
-  color:#079447;
   font-size:11px;
-  font-weight:bold;
+  color:var(--green-dark);
+  font-weight:700;
 }
 
 .delivery{
-  color:#08783e;
+  color:#15803d;
   font-size:11px;
+  margin-top:10px;
   font-weight:600;
-  margin-top:9px;
 }
 
 /* ================= LOADING ================= */
 
 .loading{
-  text-align:center;
   padding:50px;
+  text-align:center;
   color:#777;
 }
 
 .no-products{
   text-align:center;
-  padding:70px 20px;
-  color:#777;
+  padding:60px;
 }
 
 .hidden{
@@ -488,7 +463,7 @@ main{
 
 /* ================= MOBILE BOTTOM NAV ================= */
 
-.mobile-bottom-nav{
+.bottom-nav{
   display:none;
 }
 
@@ -497,101 +472,97 @@ main{
 @media(max-width:700px){
 
   body{
-    padding-bottom:75px;
+    padding-bottom:72px;
   }
 
   .header{
+    height:auto;
+    min-height:112px;
+    padding:10px 12px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-areas:
+      "logo cart"
+      "search search";
+    gap:10px;
     position:sticky;
     top:0;
   }
 
-  .header-main{
-    min-height:auto;
-    padding:9px 12px;
-    display:grid;
-    grid-template-columns:1fr auto;
-    gap:8px;
-  }
-
   .logo{
-    width:145px;
-    min-width:145px;
+    grid-area:logo;
+    font-size:23px;
   }
 
-  .header-right{
-    gap:0;
+  .search{
+    grid-area:search;
   }
 
-  /* mobile header cart hidden */
-  .header-right .cart-btn{
-    display:none;
-  }
-
-  .login-btn{
-    font-size:13px;
-  }
-
-  .login-btn svg{
-    width:18px;
-    height:18px;
-  }
-
-  .search-box{
-    grid-column:1 / -1;
-    width:100%;
-    height:44px;
-    order:3;
-  }
-
-  .search-btn{
-    display:none;
-  }
-
-  .search-icon{
-    width:40px;
-  }
-
-  .search-box input{
+  .search input{
+    height:42px;
     font-size:14px;
   }
 
-  .category-nav{
+  /* mobile header cart only */
+  .cart-btn{
+    grid-area:cart;
+    height:38px;
+    padding:0 13px;
+  }
+
+  .header-account{
     display:none;
   }
 
-  main{
-    padding:15px 12px 20px;
+  .categories{
+    height:76px;
+    padding:0 10px;
+    gap:20px;
   }
 
-  .products-head{
-    align-items:flex-end;
-    gap:10px;
-  }
-
-  .products-head h1{
-    font-size:20px;
-  }
-
-  .products-head p{
+  .category{
+    min-width:58px;
     font-size:11px;
   }
 
-  .sort{
-    font-size:12px;
+  .category-icon{
+    width:36px;
+    height:36px;
+  }
+
+  main{
+    width:calc(100% - 20px);
+  }
+
+  .product-heading{
+    margin:20px 0 12px;
+    align-items:center;
+  }
+
+  .product-heading h1{
+    font-size:20px;
+  }
+
+  .product-heading p{
+    font-size:11px;
+  }
+
+  #sortSelect{
+    font-size:11px;
     padding:8px;
   }
 
   .product-grid{
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:10px;
+    padding-bottom:20px;
   }
 
-  .product-card{
-    border-radius:11px;
+  .product-image-box{
+    height:175px;
   }
 
   .product-image{
-    height:205px;
     padding:8px;
   }
 
@@ -599,27 +570,23 @@ main{
     padding:9px;
   }
 
-  .product-title{
-    font-size:12.5px;
-    line-height:1.35;
-    min-height:34px;
+  .product-name{
+    font-size:12px;
+    line-height:1.3;
+    min-height:31px;
   }
 
   .price{
-    font-size:18px;
+    font-size:16px;
   }
 
-  .mrp{
-    font-size:9px;
-  }
-
+  .mrp,
   .off{
-    font-size:10px;
+    font-size:9px;
   }
 
-  .discount{
+  .delivery{
     font-size:9px;
-    padding:4px 6px;
   }
 
   .rating{
@@ -627,38 +594,25 @@ main{
     padding:3px 5px;
   }
 
-  .delivery{
+  .discount{
+    top:7px;
+    left:7px;
     font-size:9px;
+    padding:5px 6px;
   }
 
-  /* ACCOUNT MENU MOBILE */
-
-  .account-menu{
-    position:fixed;
-    top:60px;
-    right:10px;
-    width:285px;
-    max-height:75vh;
-    overflow-y:auto;
-  }
-
-  .account-menu:before{
-    right:35px;
-  }
-
-  /* FIXED BOTTOM NAV */
-
-  .mobile-bottom-nav{
+  /* fixed bottom nav */
+  .bottom-nav{
     position:fixed;
     display:flex;
     left:0;
     right:0;
     bottom:0;
-    height:67px;
+    height:68px;
     background:#fff;
     border-top:1px solid #ddd;
-    z-index:9999;
-    box-shadow:0 -3px 15px rgba(0,0,0,.08);
+    z-index:99999;
+    box-shadow:0 -5px 20px rgba(0,0,0,.08);
     justify-content:space-around;
     align-items:center;
   }
@@ -666,56 +620,42 @@ main{
   .bottom-item{
     flex:1;
     height:100%;
+    border:0;
+    background:#fff;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:4px;
-    color:#555;
+    gap:3px;
+    color:#666;
     font-size:10px;
     cursor:pointer;
-    text-decoration:none;
   }
 
   .bottom-item svg{
-    width:22px;
-    height:22px;
-    stroke:#333;
+    width:23px;
+    height:23px;
   }
 
   .bottom-item.active{
-    color:#6426d8;
+    color:var(--violet);
     font-weight:700;
   }
 
   .bottom-item.active svg{
-    stroke:#6426d8;
+    stroke:var(--violet);
   }
 }
 
-/* small phones */
-
-@media(max-width:380px){
-
-  .logo{
-    width:125px;
-    min-width:125px;
+@media(min-width:701px){
+  .mobile-only{
+    display:none;
   }
+}
 
+@media(min-width:701px) and (max-width:1000px){
   .product-grid{
-    gap:8px;
-  }
-
-  .product-image{
-    height:180px;
-  }
-
-  .product-title{
-    font-size:12px;
-  }
-
-  .price{
-    font-size:16px;
+    grid-template-columns:repeat(3,1fr);
   }
 }
 </style>
@@ -727,442 +667,335 @@ main{
 
 <header class="header">
 
-  <div class="header-main">
+  <div class="logo">MyStore</div>
 
-    <!-- TRIKUND PRINTERS LOGO -->
-    <a href="index.html" class="logo">
+  <div class="search">
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Search for Products, Brands and More"
+    >
 
-      <svg viewBox="0 0 520 125" xmlns="http://www.w3.org/2000/svg">
+    <svg class="search-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2">
+      <circle cx="11" cy="11" r="7"></circle>
+      <path d="m20 20-4-4"></path>
+    </svg>
+  </div>
 
-        <!-- Logo circle -->
-        <defs>
-          <linearGradient id="logoGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#6d28d9"/>
-            <stop offset="50%" stop-color="#8b5cf6"/>
-            <stop offset="100%" stop-color="#22c55e"/>
-          </linearGradient>
-        </defs>
+  <!-- DESKTOP ACCOUNT -->
+  <div class="header-account" id="accountArea">
 
-        <circle cx="62" cy="62" r="51" fill="url(#logoGradient)"/>
+    <button class="account-btn" id="accountBtn">
 
-        <!-- printer -->
-        <rect x="31" y="48" width="62" height="38"
-              rx="8"
-              fill="#fff"/>
-
-        <rect x="41" y="31" width="42" height="28"
-              rx="3"
-              fill="#fff"/>
-
-        <rect x="41" y="73" width="42" height="25"
-              rx="3"
-              fill="#fff"/>
-
-        <rect x="48" y="79" width="28" height="12"
-              rx="2"
-              fill="#8b5cf6"/>
-
-        <circle cx="83" cy="62" r="4" fill="#22c55e"/>
-
-        <!-- Text -->
-        <text x="125" y="59"
-              font-family="Arial, Helvetica, sans-serif"
-              font-size="40"
-              font-weight="800"
-              fill="#222">
-          Trikund
-        </text>
-
-        <text x="126" y="93"
-              font-family="Arial, Helvetica, sans-serif"
-              font-size="28"
-              font-weight="700"
-              fill="#6d28d9"
-              letter-spacing="3">
-          PRINTERS
-        </text>
-
+      <svg class="account-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8">
+        <circle cx="12" cy="8" r="3.5"></circle>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"></path>
+        <circle cx="12" cy="12" r="10"></circle>
       </svg>
 
-    </a>
+      <span id="accountName">Login</span>
+
+      <svg class="arrow"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2">
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+
+    </button>
 
 
-    <!-- SEARCH -->
-    <div class="search-box">
+    <!-- ACCOUNT DROPDOWN -->
 
-      <div class="search-icon">
-        <svg viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="M16 16L21 21"></path>
-        </svg>
-      </div>
+    <div class="account-menu" id="accountMenu">
 
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Search for products, categories..."
-      >
+      <div id="loggedOutMenu">
 
-      <button class="search-btn">
-        Search →
-      </button>
+        <div class="account-top">
 
-    </div>
-
-
-    <!-- RIGHT SIDE -->
-    <div class="header-right">
-
-      <!-- LOGIN / ACCOUNT -->
-      <div class="login-area" id="loginArea">
-
-        <button class="login-btn" id="loginBtn">
-
-          <svg viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="4"></circle>
-            <path d="M4 21c1.5-4 4-6 8-6s6.5 2 8 6"></path>
-          </svg>
-
-          <span id="loginName">Login</span>
-
-          <span class="arrow">▼</span>
-
-        </button>
-
-
-        <!-- ACCOUNT DROPDOWN -->
-        <div class="account-menu" id="accountMenu">
-
-          <!-- LOGGED OUT -->
-          <div id="loggedOutMenu">
-
-            <div class="account-top">
-              <div class="new-user">
-                <span>New customer?</span>
-                <span class="signup">Sign Up</span>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M4 21c1.5-4 4-6 8-6s6.5 2 8 6"/>
-              </svg>
-              My Profile
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 7h16v13H4z"/>
-                <path d="M8 7V4h8v3"/>
-              </svg>
-              Flipkart Plus Zone
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 7h16v13H4z"/>
-                <path d="M8 7V4h8v3"/>
-              </svg>
-              Orders
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M12 21s-7-4.5-9-9c-2-4.5 4-8 9-3 5-5 11-1.5 9 3-2 4.5-9 9-9 9z"/>
-              </svg>
-              Wishlist
-            </div>
-
-            <div class="menu-item">
-              🎁
-              Rewards
-            </div>
-
-            <div class="menu-item">
-              🎁
-              Gift Cards
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M18 8a6 6 0 0 0-12 0v5l-2 3h16l-2-3z"/>
-                <path d="M10 20h4"/>
-              </svg>
-              Notification Preferences
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 10h16"/>
-                <path d="M7 10v5"/>
-                <path d="M17 10v5"/>
-                <path d="M12 10v5"/>
-                <path d="M3 19h18"/>
-              </svg>
-              24x7 Customer Care
-            </div>
-
-          </div>
-
-
-          <!-- LOGGED IN -->
-          <div id="loggedInMenu" style="display:none">
-
-            <div class="account-top">
-              <strong id="welcomeName">Your Account</strong>
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M4 21c1.5-4 4-6 8-6s6.5 2 8 6"/>
-              </svg>
-              My Profile
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 7h16v13H4z"/>
-                <path d="M8 7V4h8v3"/>
-              </svg>
-              Orders
-            </div>
-
-            <div class="menu-item">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M12 21s-7-4.5-9-9c-2-4.5 4-8 9-3 5-5 11-1.5 9 3-2 4.5-9 9-9 9z"/>
-              </svg>
-              Wishlist
-            </div>
-
-            <div class="menu-item">
-              🏠
-              Saved Addresses
-            </div>
-
-            <div class="menu-item">
-              🎁
-              Gift Cards
-            </div>
-
-            <div class="menu-item">
-              🔔
-              Notifications
-            </div>
-
-            <div class="menu-item" id="logoutBtn">
-              ↪
-              Logout
-            </div>
-
+          <div class="new-customer">
+            <span>New customer?</span>
+            <span class="signup" onclick="goSignup()">Sign Up</span>
           </div>
 
         </div>
 
-      </div>
+        <div class="account-divider"></div>
 
-
-      <!-- CART -->
-      <button class="cart-btn" id="cartBtn">
-
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M3 4h2l2.5 11h10L21 7H6"/>
-          <circle cx="9" cy="20" r="1.5"/>
-          <circle cx="18" cy="20" r="1.5"/>
-        </svg>
-
-        Cart
-
-        <span class="cart-count" id="cartCount">0</span>
-
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- CATEGORY NAV -->
-  <div class="category-nav">
-
-    <div class="category-inner">
-
-      <div class="category active">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M3 11l9-8 9 8"/>
-            <path d="M5 10v10h14V10"/>
-            <path d="M9 20v-6h6v6"/>
+        <div class="menu-item" onclick="goLogin()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
           </svg>
+          My Profile
         </div>
-        For You
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M6 5l3-2 3 3 3-3 3 2 2 6-3 1v9H7v-9l-3-1z"/>
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/>
+            <path d="m8 12 2.5 2.5L16 9"/>
           </svg>
+          MyStore Plus Zone
         </div>
-        Fashion
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <rect x="7" y="2" width="10" height="20" rx="2"/>
-            <path d="M10 5h4"/>
-            <circle cx="12" cy="19" r="1"/>
+        <div class="menu-item" onclick="goOrders()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m4 7 8-4 8 4-8 4z"/>
+            <path d="M4 7v10l8 4 8-4V7"/>
+            <path d="M12 11v10"/>
           </svg>
+          Orders
         </div>
-        Mobiles
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="4" width="18" height="13" rx="2"/>
-            <path d="M8 21h8"/>
-            <path d="M12 17v4"/>
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m20 12-8 8-8-8 8-8z"/>
+            <path d="M9 12h6"/>
           </svg>
+          Wishlist
         </div>
-        Electronics
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M8 21h8"/>
-            <path d="M9 17h6"/>
-            <path d="M10 17V9l2-6 2 6v8"/>
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <rect x="3" y="4" width="18" height="16" rx="2"/>
+            <path d="M7 8h10M7 12h10M7 16h6"/>
           </svg>
+          Become a Seller
         </div>
-        Beauty
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M3 11l9-8 9 8"/>
-            <path d="M5 10v10h14V10"/>
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M12 3v18M3 8h18M3 16h18"/>
           </svg>
+          Rewards
         </div>
-        Home
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="5" width="18" height="12"/>
-            <path d="M8 21h8"/>
-            <path d="M12 17v4"/>
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M20 12a8 8 0 0 1-16 0"/>
+            <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
+            <path d="M4 12h3M17 12h3"/>
           </svg>
+          Gift Cards
         </div>
-        Appliances
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="8"/>
-            <circle cx="9" cy="10" r="1"/>
-            <circle cx="15" cy="14" r="1"/>
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
           </svg>
+          Notification Preferences
         </div>
-        Toys
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M4 10h16"/>
-            <path d="M5 10l2-5h10l2 5"/>
-            <path d="M6 10v8h12v-8"/>
-          </svg>
-        </div>
-        Food
-      </div>
-
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
             <circle cx="12" cy="12" r="9"/>
-            <path d="M8 12l2 2 6-6"/>
+            <path d="M8 10a4 4 0 0 1 8 0v2a4 4 0 0 1-8 0z"/>
+            <path d="M8 12H5M19 12h-3"/>
           </svg>
+          24×7 Customer Care
         </div>
-        Sports
+
       </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M4 10h16v9H4z"/>
-            <path d="M2 10l3-6h14l3 6"/>
-          </svg>
-        </div>
-        Furniture
-      </div>
 
-      <div class="category">
-        <div class="category-icon">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M5 4h14v17H5z"/>
-            <path d="M8 8h8M8 12h8M8 16h5"/>
-          </svg>
+      <!-- LOGGED IN -->
+
+      <div id="loggedInMenu" style="display:none">
+
+        <div class="account-top">
+          <strong id="welcomeName">Welcome</strong>
         </div>
-        Books
+
+        <div class="account-divider"></div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+          </svg>
+          My Profile
+        </div>
+
+        <div class="menu-item" onclick="goOrders()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m4 7 8-4 8 4-8 4z"/>
+            <path d="M4 7v10l8 4 8-4V7"/>
+            <path d="M12 11v10"/>
+          </svg>
+          Orders
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M20 12a8 8 0 0 1-16 0"/>
+            <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
+            <path d="M4 12h3M17 12h3"/>
+          </svg>
+          Saved Addresses
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M20 8a5 5 0 0 0-8-4 5 5 0 0 0-8 4c0 5 8 11 8 11s8-6 8-11z"/>
+          </svg>
+          Wishlist
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          Notifications
+        </div>
+
+        <div class="account-divider"></div>
+
+        <div class="menu-item logout" onclick="logoutUser()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M10 17l5-5-5-5"/>
+            <path d="M15 12H3"/>
+            <path d="M21 3v18"/>
+          </svg>
+          Logout
+        </div>
+
       </div>
 
     </div>
 
   </div>
+
+
+  <button class="cart-btn" onclick="goCart()">
+
+    <svg class="cart-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8">
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="18" cy="20" r="1"/>
+      <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+    </svg>
+
+    Cart
+
+    <span class="cart-number" id="cartCount">0</span>
+
+  </button>
 
 </header>
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<div class="categories">
+
+  <button class="category active">
+    <span class="category-icon">🏠</span>
+    For You
+  </button>
+
+  <button class="category">
+    <span class="category-icon">👕</span>
+    Fashion
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📱</span>
+    Mobiles
+  </button>
+
+  <button class="category">
+    <span class="category-icon">💻</span>
+    Electronics
+  </button>
+
+  <button class="category">
+    <span class="category-icon">💄</span>
+    Beauty
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🏠</span>
+    Home
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📺</span>
+    Appliances
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🎮</span>
+    Toys
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🍔</span>
+    Food
+  </button>
+
+  <button class="category">
+    <span class="category-icon">⚽</span>
+    Sports
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🛋️</span>
+    Furniture
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📚</span>
+    Books
+  </button>
+
+</div>
 
 
 <!-- ================= MAIN ================= -->
 
 <main>
 
-  <section class="products-head">
+  <div class="top-space"></div>
+
+  <div class="product-heading">
 
     <div>
       <h1>Suggested For You</h1>
       <p>Discover products you'll love.</p>
     </div>
 
-    <select class="sort" id="sortSelect">
+    <select id="sortSelect">
       <option value="popular">Popular</option>
       <option value="low">Price: Low to High</option>
       <option value="high">Price: High to Low</option>
       <option value="new">Newest</option>
     </select>
 
-  </section>
-
+  </div>
 
   <div id="loading" class="loading">
     Loading products...
   </div>
 
+  <section id="productGrid" class="product-grid"></section>
 
-  <section
-    id="productGrid"
-    class="product-grid">
-  </section>
-
-
-  <div
-    id="noProducts"
-    class="no-products hidden">
-
-    <div style="font-size:40px">🔍</div>
-
+  <div id="noProducts" class="no-products hidden">
     <h2>No products found</h2>
-
     <p>Try another search.</p>
-
   </div>
 
 </main>
@@ -1170,70 +1003,52 @@ main{
 
 <!-- ================= MOBILE BOTTOM NAV ================= -->
 
-<nav class="mobile-bottom-nav">
+<nav class="bottom-nav">
 
-  <a href="index.html" class="bottom-item active">
-
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M3 11l9-8 9 8"/>
+  <button class="bottom-item active" onclick="goHome()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m3 11 9-8 9 8"/>
       <path d="M5 10v10h14V10"/>
       <path d="M9 20v-6h6v6"/>
     </svg>
-
     Home
+  </button>
 
-  </a>
-
-
-  <a href="categories.html" class="bottom-item">
-
-    <svg viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="3" width="7" height="7"/>
-      <rect x="14" y="3" width="7" height="7"/>
-      <rect x="3" y="14" width="7" height="7"/>
-      <rect x="14" y="14" width="7" height="7"/>
+  <button class="bottom-item" onclick="goCategories()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="4" y="4" width="6" height="6" rx="1"/>
+      <rect x="14" y="4" width="6" height="6" rx="1"/>
+      <rect x="4" y="14" width="6" height="6" rx="1"/>
+      <rect x="14" y="14" width="6" height="6" rx="1"/>
     </svg>
-
     Categories
+  </button>
 
-  </a>
-
-
-  <a href="account.html" class="bottom-item">
-
-    <svg viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="8" r="4"/>
-      <path d="M4 21c1.5-4 4-6 8-6s6.5 2 8 6"/>
+  <button class="bottom-item" onclick="goAccount()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="8" r="3.5"/>
+      <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
     </svg>
-
     Account
+  </button>
 
-  </a>
-
-
-  <a href="orders.html" class="bottom-item">
-
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M4 4h16v16H4z"/>
-      <path d="M8 8h8M8 12h6M8 16h4"/>
+  <button class="bottom-item" onclick="goOrders()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m4 7 8-4 8 4-8 4z"/>
+      <path d="M4 7v10l8 4 8-4V7"/>
+      <path d="M12 11v10"/>
     </svg>
-
     Orders
+  </button>
 
-  </a>
-
-
-  <a href="cart.html" class="bottom-item">
-
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M3 4h2l2.5 11h10L21 7H6"/>
-      <circle cx="9" cy="20" r="1.5"/>
-      <circle cx="18" cy="20" r="1.5"/>
+  <button class="bottom-item" onclick="goCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="18" cy="20" r="1"/>
+      <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
     </svg>
-
     Cart
-
-  </a>
+  </button>
 
 </nav>
 
@@ -1258,36 +1073,18 @@ const supabaseClient =
     );
 
 
-/* =========================================
-   ELEMENTS
-========================================= */
+/* =========================================================
+   ACCOUNT
+========================================================= */
 
-const productGrid =
-  document.getElementById("productGrid");
+const accountBtn =
+  document.getElementById("accountBtn");
 
-const loading =
-  document.getElementById("loading");
+const accountMenu =
+  document.getElementById("accountMenu");
 
-const noProducts =
-  document.getElementById("noProducts");
-
-const searchInput =
-  document.getElementById("searchInput");
-
-const sortSelect =
-  document.getElementById("sortSelect");
-
-const cartCount =
-  document.getElementById("cartCount");
-
-const loginArea =
-  document.getElementById("loginArea");
-
-const loginBtn =
-  document.getElementById("loginBtn");
-
-const loginName =
-  document.getElementById("loginName");
+const accountName =
+  document.getElementById("accountName");
 
 const loggedOutMenu =
   document.getElementById("loggedOutMenu");
@@ -1298,81 +1095,72 @@ const loggedInMenu =
 const welcomeName =
   document.getElementById("welcomeName");
 
-const logoutBtn =
-  document.getElementById("logoutBtn");
 
-
-let allProducts = [];
-
-
-/* =========================================
-   LOGIN DROPDOWN
-========================================= */
-
-loginBtn.addEventListener("click", function(e){
+accountBtn.addEventListener("click", function(e){
 
   e.stopPropagation();
 
-  loginArea.classList.toggle("open");
+  accountMenu.classList.toggle("show");
+
+  accountBtn.classList.toggle(
+    "open",
+    accountMenu.classList.contains("show")
+  );
 
 });
 
 
-document.addEventListener("click", function(e){
+document.addEventListener("click",function(e){
 
-  if(!loginArea.contains(e.target)){
-    loginArea.classList.remove("open");
+  if(!document.getElementById("accountArea").contains(e.target)){
+
+    accountMenu.classList.remove("show");
+
+    accountBtn.classList.remove("open");
+
   }
 
 });
 
 
-/* =========================================
-   AUTH
-========================================= */
+/* =========================================================
+   GET FIRST NAME
+========================================================= */
 
-async function checkLogin(){
+function getFirstName(fullName){
+
+  if(!fullName) return "User";
+
+  fullName =
+    String(fullName).trim();
+
+  return fullName
+    .split(/\s+/)[0];
+
+}
+
+
+/* =========================================================
+   LOAD LOGIN STATE
+========================================================= */
+
+async function loadAccount(){
 
   try{
 
     const {
       data:{
-        session
+        user
       }
-    } = await supabaseClient.auth.getSession();
+    } =
+    await supabaseClient.auth.getUser();
 
 
-    if(session && session.user){
+    if(!user){
 
-      let name =
-        session.user.user_metadata?.full_name ||
-        session.user.user_metadata?.name ||
-        session.user.email?.split("@")[0] ||
-        "Account";
+      /* NOT LOGGED IN */
 
-
-      /* FIRST NAME ONLY */
-
-      name =
-        name.trim().split(" ")[0];
-
-
-      loginName.textContent =
-        name;
-
-      welcomeName.textContent =
-        "Hello, " + name + "!";
-
-
-      loggedOutMenu.style.display =
-        "none";
-
-      loggedInMenu.style.display =
-        "block";
-
-    }else{
-
-      loginName.textContent =
+      accountName.textContent =
         "Login";
 
       loggedOutMenu.style.display =
@@ -1381,123 +1169,163 @@ async function checkLogin(){
       loggedInMenu.style.display =
         "none";
 
+      return;
+
     }
 
-  }catch(error){
 
-    console.error(error);
+    /* LOGGED IN */
+
+    let firstName = "";
+
+
+    /*
+      accounts table:
+      id
+      email
+      full_name
+      mobile
+    */
+
+    const {
+      data:account
+    } =
+    await supabaseClient
+      .from("accounts")
+      .select("full_name")
+      .eq("id",user.id)
+      .maybeSingle();
+
+
+    if(account && account.full_name){
+
+      firstName =
+        getFirstName(account.full_name);
+
+    }
+
+
+    /* fallback */
+
+    if(!firstName && user.user_metadata){
+
+      firstName =
+        getFirstName(
+          user.user_metadata.full_name ||
+          user.user_metadata.name ||
+          user.email
+        );
+
+    }
+
+
+    if(!firstName){
+
+      firstName = "User";
+
+    }
+
+
+    accountName.textContent =
+      firstName;
+
+    welcomeName.textContent =
+      "Welcome, " + firstName + "!";
+
+
+    loggedOutMenu.style.display =
+      "none";
+
+    loggedInMenu.style.display =
+      "block";
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Account error:",
+      error
+    );
 
   }
 
 }
 
 
-/* =========================================
-   LOGOUT
-========================================= */
+/* =========================================================
+   AUTH STATE
+========================================================= */
 
-if(logoutBtn){
+supabaseClient.auth.onAuthStateChange(
+  function(){
 
-  logoutBtn.addEventListener(
-    "click",
-    async function(){
+    setTimeout(
+      loadAccount,
+      100
+    );
 
-      await supabaseClient.auth.signOut();
-
-      location.reload();
-
-    }
-  );
-
-}
+  }
+);
 
 
-/* =========================================
-   LOAD PRODUCTS
-========================================= */
+/* =========================================================
+   PRODUCTS
+========================================================= */
 
 async function loadProducts(){
+
+  const loading =
+    document.getElementById("loading");
+
+  const grid =
+    document.getElementById("productGrid");
+
+  const noProducts =
+    document.getElementById("noProducts");
+
 
   loading.style.display =
     "block";
 
-  try{
+  grid.innerHTML =
+    "";
 
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("products")
-      .select("*");
-
-
-    if(error)
-      throw error;
-
-
-    allProducts =
-      data || [];
-
-
-    renderProducts(
-      allProducts
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Products Error:",
-      error
-    );
-
-    loading.innerHTML =
-      "Unable to load products.";
-
-  }
-
-}
-
-
-/* =========================================
-   IMAGE GETTER
-   MAIN IMAGE FIRST
-========================================= */
-
-function getMainImage(product){
-
-  /*
-    IMPORTANT:
-    main_image / image / image_url
-    me se jo available ho wahi first image
-  */
-
-  return (
-    product.main_image ||
-    product.image ||
-    product.image_url ||
-    product.thumbnail ||
-    ""
+  noProducts.classList.add(
+    "hidden"
   );
 
-}
 
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("products")
+    .select("*");
 
-/* =========================================
-   RENDER PRODUCTS
-========================================= */
-
-function renderProducts(products){
 
   loading.style.display =
     "none";
 
 
-  productGrid.innerHTML =
-    "";
+  if(error){
+
+    console.error(error);
+
+    noProducts.classList.remove(
+      "hidden"
+    );
+
+    noProducts.innerHTML =
+      "<h2>Products load nahi ho paaye</h2>";
+
+    return;
+
+  }
 
 
-  if(!products.length){
+  if(!data || data.length===0){
 
     noProducts.classList.remove(
       "hidden"
@@ -1508,303 +1336,252 @@ function renderProducts(products){
   }
 
 
-  noProducts.classList.add(
-    "hidden"
-  );
+  data.forEach(
+    product => {
 
-
-  products.forEach(product => {
-
-    const image =
-      getMainImage(product);
-
-
-    const title =
-      product.title ||
-      product.name ||
-      "Product";
-
-
-    const price =
-      Number(
-        product.price || 0
+      grid.appendChild(
+        createProductCard(product)
       );
-
-
-    const mrp =
-      Number(
-        product.mrp ||
-        product.original_price ||
-        price
-      );
-
-
-    let discount = 0;
-
-    if(mrp > price){
-
-      discount =
-        Math.round(
-          ((mrp-price)/mrp)*100
-        );
 
     }
-
-
-    const card =
-      document.createElement("article");
-
-
-    card.className =
-      "product-card";
-
-
-    card.innerHTML = `
-
-      <div class="product-image">
-
-        ${
-          discount > 0
-          ?
-          `<div class="discount">
-             ${discount}% OFF
-           </div>`
-          :
-          ""
-        }
-
-        <img
-          src="${image}"
-          alt="${title}"
-          loading="lazy"
-          onerror="this.style.display='none'"
-        >
-
-      </div>
-
-
-      <div class="product-info">
-
-        <div class="rating">
-          ★ ${product.rating || "4.6"}
-        </div>
-
-
-        <div
-          class="product-title"
-          title="${title}">
-          ${title}
-        </div>
-
-
-        <div class="price-row">
-
-          <span class="price">
-            ₹${price.toLocaleString("en-IN")}
-          </span>
-
-          ${
-            mrp > price
-            ?
-            `
-            <span class="mrp">
-              ₹${mrp.toLocaleString("en-IN")}
-            </span>
-            `
-            :
-            ""
-          }
-
-        </div>
-
-
-        ${
-          discount > 0
-          ?
-          `<div class="off">
-             ${discount}% OFF
-           </div>`
-          :
-          ""
-        }
-
-
-        <div class="delivery">
-          ✓ Delivery available
-        </div>
-
-      </div>
-
-    `;
-
-
-    card.addEventListener(
-      "click",
-      function(){
-
-        if(product.id){
-
-          window.location.href =
-            "product.html?id=" +
-            encodeURIComponent(
-              product.id
-            );
-
-        }
-
-      }
-    );
-
-
-    productGrid.appendChild(
-      card
-    );
-
-  });
-
-
-  updateCartCount();
+  );
 
 }
 
 
-/* =========================================
-   SEARCH
-========================================= */
+/* =========================================================
+   MAIN IMAGE
+========================================================= */
 
-searchInput.addEventListener(
-  "input",
-  function(){
+function getMainImage(product){
 
-    const query =
-      this.value
-        .trim()
-        .toLowerCase();
+  /*
+    IMPORTANT:
+    Main image first priority.
+  */
+
+  return (
+    product.image ||
+    product.image_url ||
+    product.main_image ||
+    product.thumbnail ||
+    product.images?.[0] ||
+    ""
+  );
+
+}
 
 
-    if(!query){
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
 
-      renderProducts(
-        allProducts
+function createProductCard(product){
+
+  const card =
+    document.createElement("article");
+
+  card.className =
+    "product-card";
+
+
+  const image =
+    getMainImage(product);
+
+
+  const title =
+    product.title ||
+    product.name ||
+    "Product";
+
+
+  const price =
+    Number(
+      product.price ||
+      product.selling_price ||
+      0
+    );
+
+
+  const mrp =
+    Number(
+      product.mrp ||
+      product.original_price ||
+      0
+    );
+
+
+  let discount = "";
+
+  if(mrp > price && price > 0){
+
+    discount =
+      Math.round(
+        ((mrp-price)/mrp)*100
       );
 
-      return;
+  }
+
+
+  card.innerHTML = `
+
+    <div class="product-image-box">
+
+      ${
+        discount
+        ?
+        `<div class="discount">
+          ${discount}% OFF
+        </div>`
+        :
+        ""
+      }
+
+      <img
+        class="product-image"
+        src="${escapeHtml(image)}"
+        alt="${escapeHtml(title)}"
+        loading="lazy"
+        onerror="this.style.display='none';"
+      >
+
+    </div>
+
+
+    <div class="product-info">
+
+      <div class="rating">
+        ★ ${product.rating || "4.6"}
+      </div>
+
+
+      <div class="product-name">
+        ${escapeHtml(title)}
+      </div>
+
+
+      <div class="price-row">
+
+        <span class="price">
+          ₹${price.toLocaleString("en-IN")}
+        </span>
+
+        ${
+          mrp > price
+          ?
+          `<span class="mrp">
+            ₹${mrp.toLocaleString("en-IN")}
+          </span>`
+          :
+          ""
+        }
+
+      </div>
+
+
+      ${
+        discount
+        ?
+        `<div class="off">
+          ${discount}% OFF
+        </div>`
+        :
+        ""
+      }
+
+
+      <div class="delivery">
+        ✓ Delivery available
+      </div>
+
+    </div>
+
+  `;
+
+
+  card.addEventListener(
+    "click",
+    function(){
+
+      if(product.id){
+
+        window.location.href =
+          "product.html?id=" +
+          encodeURIComponent(product.id);
+
+      }
 
     }
+  );
 
 
-    const filtered =
-      allProducts.filter(
-        product => {
+  return card;
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document
+  .getElementById("searchInput")
+  .addEventListener(
+    "input",
+    function(){
+
+      const value =
+        this.value
+          .toLowerCase()
+          .trim();
+
+
+      document
+        .querySelectorAll(".product-card")
+        .forEach(card => {
 
           const title =
-            (
-              product.title ||
-              product.name ||
-              ""
-            ).toLowerCase();
+            card
+              .querySelector(".product-name")
+              ?.textContent
+              .toLowerCase() || "";
 
 
-          const category =
-            (
-              product.category ||
-              ""
-            ).toLowerCase();
+          card.style.display =
+            !value ||
+            title.includes(value)
+            ?
+            ""
+            :
+            "none";
 
-
-          return (
-            title.includes(query) ||
-            category.includes(query)
-          );
-
-        }
-      );
-
-
-    renderProducts(
-      filtered
-    );
-
-  }
-);
-
-
-/* =========================================
-   SORT
-========================================= */
-
-sortSelect.addEventListener(
-  "change",
-  function(){
-
-    let products =
-      [...allProducts];
-
-
-    if(this.value === "low"){
-
-      products.sort(
-        (a,b) =>
-        Number(a.price || 0) -
-        Number(b.price || 0)
-      );
+        });
 
     }
+  );
 
 
-    if(this.value === "high"){
-
-      products.sort(
-        (a,b) =>
-        Number(b.price || 0) -
-        Number(a.price || 0)
-      );
-
-    }
-
-
-    if(this.value === "new"){
-
-      products.sort(
-        (a,b) =>
-        new Date(
-          b.created_at || 0
-        ) -
-        new Date(
-          a.created_at || 0
-        )
-      );
-
-    }
-
-
-    renderProducts(
-      products
-    );
-
-  }
-);
-
-
-/* =========================================
+/* =========================================================
    CART COUNT
-========================================= */
+========================================================= */
 
-async function updateCartCount(){
+async function loadCartCount(){
 
   try{
 
     const {
       data:{
-        session
+        user
       }
     } =
-      await supabaseClient.auth.getSession();
+    await supabaseClient.auth.getUser();
 
 
-    if(!session){
+    if(!user){
 
-      cartCount.textContent =
+      document
+        .getElementById("cartCount")
+        .textContent =
         "0";
 
       return;
@@ -1813,32 +1590,50 @@ async function updateCartCount(){
 
 
     const {
-      count,
+      data,
       error
     } =
-      await supabaseClient
-        .from("cart_items")
-        .select(
-          "id",
-          {
-            count:"exact",
-            head:true
-          }
-        )
-        .eq(
-          "user_id",
-          session.user.id
-        );
+    await supabaseClient
+      .from("cart_items")
+      .select("id, quantity")
+      .eq("user_id",user.id);
 
 
-    if(!error){
+    if(error){
 
-      cartCount.textContent =
-        count || 0;
+      console.error(
+        "Cart count:",
+        error
+      );
+
+      return;
 
     }
 
-  }catch(error){
+
+    let total = 0;
+
+
+    (data || []).forEach(
+      item => {
+
+        total +=
+          Number(
+            item.quantity || 1
+          );
+
+      }
+    );
+
+
+    document
+      .getElementById("cartCount")
+      .textContent =
+      total;
+
+
+  }
+  catch(error){
 
     console.error(error);
 
@@ -1847,28 +1642,105 @@ async function updateCartCount(){
 }
 
 
-/* =========================================
-   START
-========================================= */
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
-checkLogin();
+function escapeHtml(value){
+
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goLogin(){
+
+  window.location.href =
+    "login.html";
+
+}
+
+function goSignup(){
+
+  window.location.href =
+    "signup.html";
+
+}
+
+function goOrders(){
+
+  window.location.href =
+    "orders.html";
+
+}
+
+function goCart(){
+
+  window.location.href =
+    "cart.html";
+
+}
+
+function goHome(){
+
+  window.location.href =
+    "index.html";
+
+}
+
+function goCategories(){
+
+  window.location.href =
+    "categories.html";
+
+}
+
+function goAccount(){
+
+  const menu =
+    document.getElementById(
+      "accountMenu"
+    );
+
+  menu.classList.toggle(
+    "show"
+  );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logoutUser(){
+
+  await supabaseClient.auth.signOut();
+
+  window.location.reload();
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+loadAccount();
+
+loadCartCount();
 
 loadProducts();
 
-updateCartCount();
-
-
-/* auth change */
-
-supabaseClient.auth.onAuthStateChange(
-  function(){
-
-    checkLogin();
-
-    updateCartCount();
-
-  }
-);
 
 </script>
 
