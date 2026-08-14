@@ -537,9 +537,8 @@ body{padding:0 !important;margin:0 !important;}
             <div class="ck-detected-address" id="ckDetectedAddressDetails">
               <div class="ck-detected-address-title">📍 Delivery location</div>
               <div class="ck-location-details-grid ck-plus-only">
-                <div class="ck-location-detail ck-plus-code-box ck-location-full"><small>Area / Plus Code</small><strong id="ckDetectedArea">—</strong></div>
+                <div class="ck-location-detail ck-plus-code-box ck-location-full"><small>Plus Code</small><strong id="ckDetectedArea">—</strong></div>
                 <div class="ck-location-detail"><small>District</small><strong id="ckDetectedDistrict">—</strong></div>
-                <div class="ck-location-detail"><small>City</small><strong id="ckDetectedCity">—</strong></div>
                 <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
                 <div class="ck-location-detail"><small>Pincode</small><strong id="ckDetectedPincode">—</strong></div>
               </div>
@@ -562,6 +561,8 @@ body{padding:0 !important;margin:0 !important;}
             <button type="button" class="ckbtn block" onclick="ckUseDetectedLocation()">Continue with Current Location</button>
             <div class="ck-back-manual" onclick="ckUseManualAddress()">← Enter address manually</div>
           </div>
+
+          <span id="ckAddressFormPlaceholder" style="display:none;"></span>
 
           <div class="ckform-grid">
             <div class="ckfield full">
@@ -1149,11 +1150,15 @@ body{padding:0 !important;margin:0 !important;}
   function hideAddressInputsAfterLocation(){
     var form=el('ckAddressFormSection'); if(!form)return;
     var grid=form.querySelector('.ckform-grid');
+    var detected=el('ckCurrentLocationDetected');
+    var success=detected ? detected.querySelector('.ck-location-success') : null;
+    var placeholder=el('ckAddressFormPlaceholder');
+
     if(grid){
       grid.style.display='grid';
       grid.classList.add('ck-location-miniform');
 
-      /* After GPS detection keep only Full Name, Mobile and Village. */
+      /* Keep only Full Name + Mobile + Village after GPS detection. */
       ['ckPincode','ckState','ckDistrict','ckHouse','ckRoad'].forEach(function(id){
         var input=el(id);
         if(input){
@@ -1169,6 +1174,11 @@ body{padding:0 !important;margin:0 !important;}
           if(field) field.style.display='';
         }
       });
+
+      /* Move the input block immediately under the Current Location Detected card. */
+      if(detected && success){
+        success.insertAdjacentElement('afterend',grid);
+      }
     }
 
     var type=form.querySelector('.cktypewrap'); if(type)type.style.display='none';
@@ -1181,9 +1191,17 @@ body{padding:0 !important;margin:0 !important;}
   function restoreAddressInputs(){
     var form=el('ckAddressFormSection'); if(!form)return;
     var grid=form.querySelector('.ckform-grid');
+    var placeholder=el('ckAddressFormPlaceholder');
+
     if(grid){
+      /* Put the form back where it was before GPS mode. */
+      if(placeholder && placeholder.parentNode){
+        placeholder.parentNode.insertBefore(grid,placeholder.nextSibling);
+      }
+
       grid.style.display='';
       grid.classList.remove('ck-location-miniform');
+
       ['ckFullName','ckPhone','ckPincode','ckState','ckDistrict','ckCity','ckHouse','ckRoad'].forEach(function(id){
         var input=el(id);
         if(input){
@@ -1192,6 +1210,7 @@ body{padding:0 !important;margin:0 !important;}
         }
       });
     }
+
     var type=form.querySelector('.cktypewrap'); if(type)type.style.display='';
     var save=form.querySelector('.ck-savecheck'); if(save)save.style.display='flex';
     var saveBtn=form.querySelector(':scope > .ckbtn.block'); if(saveBtn)saveBtn.style.display='';
@@ -1440,9 +1459,8 @@ body{padding:0 !important;margin:0 !important;}
     var placeName=nearestParts.join(' • ');
     if(!placeName) placeName='Nearest locality unavailable';
 
-    var plusDisplay=(currentLocationData.plus_code||'Not available')+' • '+placeName;
-
-    setText('ckDetectedArea',plusDisplay);
+    /* Show ONLY the exact Plus Code here. Do not append Area/City. */
+    setText('ckDetectedArea',currentLocationData.plus_code||'Not available');
     setText('ckDetectedDistrict',currentLocationData.district||'Not available');
     setText('ckDetectedCity',currentLocationData.city||'Not available');
     setText('ckDetectedState',currentLocationData.state||'Not available');
