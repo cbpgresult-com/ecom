@@ -333,6 +333,17 @@ body{padding:0 !important;margin:0 !important;}
 .ck-current-location-icon{width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--brand);background:#fff;border:1px solid #d9e9df;}
 .ck-current-location-copy{min-width:0;flex:1}.ck-current-location-copy strong{display:block;font-size:13px;font-weight:800;color:var(--ink)}.ck-current-location-copy span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}.ck-current-location-copy small{display:block;min-height:15px;margin-top:3px;font-size:10.5px;font-weight:800;color:var(--brand)}
 .ck-current-location-btn{height:40px;padding:0 13px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--brand),#2f7a55);color:#fff;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-brand)}.ck-current-location-btn:disabled{opacity:.6;cursor:wait}
+/* CURRENT LOCATION ADDRESS DETAILS */
+.ck-detected-address{margin:0 0 14px;padding:14px;border:1px solid #d9e9df;border-radius:15px;background:#fff;box-shadow:0 8px 22px rgba(24,75,50,.06)}
+.ck-detected-address-title{font-size:12px;font-weight:900;color:var(--ink);margin-bottom:10px}
+.ck-location-details-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ck-location-detail{padding:9px 10px;border:1px solid #edf1ef;border-radius:10px;background:#fafcfb;min-width:0}
+.ck-location-detail small{display:block;font-size:9.5px;color:var(--muted);font-weight:700;margin-bottom:3px}
+.ck-location-detail strong{display:block;font-size:12px;color:var(--ink);font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ck-location-map-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:10px;color:var(--muted)}
+.ck-location-map-row a{color:var(--brand);font-weight:850;text-decoration:none;white-space:nowrap}
+@media(max-width:480px){.ck-location-details-grid{grid-template-columns:1fr 1fr}.ck-location-map-row{font-size:9.5px}}
+
 .ck-location-success{display:flex;align-items:center;gap:12px;padding:14px;margin:0 0 14px;border:1.5px solid #bfe5cd;border-radius:15px;background:linear-gradient(135deg,#f3fcf6,#e9f8ef)}.ck-location-success-icon{width:43px;height:43px;flex:0 0 43px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1f8a4c;background:#fff;border:1px solid #bfe5cd}.ck-location-success strong{display:block;font-size:14px;font-weight:800;color:#1f6b3d}.ck-location-success span{display:block;margin-top:3px;font-size:11px;color:#557064}.ck-back-manual{text-align:center;margin-top:12px;color:var(--brand);font-size:13px;font-weight:800;cursor:pointer}
 @media(max-width:480px){.ck-current-location{align-items:flex-start;padding:12px}.ck-current-location-icon{width:39px;height:39px;flex-basis:39px}.ck-current-location-btn{height:38px;padding:0 10px;font-size:10.5px}}
 
@@ -497,7 +508,20 @@ body{padding:0 !important;margin:0 !important;}
                   <circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path>
                 </svg>
               </div>
-              <div><strong>Current Location Detected</strong><span>Exact GPS location captured and saved.</span></div>
+              <div><strong>Current Location Detected</strong><span id="ckDetectedLocationText">Fetching address details…</span></div>
+            </div>
+            <div class="ck-detected-address" id="ckDetectedAddressDetails">
+              <div class="ck-detected-address-title">📍 Delivery location</div>
+              <div class="ck-location-details-grid">
+                <div class="ck-location-detail"><small>Area / Locality</small><strong id="ckDetectedArea">—</strong></div>
+                <div class="ck-location-detail"><small>City / District</small><strong id="ckDetectedCity">—</strong></div>
+                <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
+                <div class="ck-location-detail"><small>Pincode</small><strong id="ckDetectedPincode">—</strong></div>
+              </div>
+              <div class="ck-location-map-row">
+                <span>GPS accuracy: <b id="ckDetectedAccuracy">—</b></span>
+                <a id="ckDetectedMapLink" href="#" target="_blank" rel="noopener">Open Map ↗</a>
+              </div>
             </div>
             <button type="button" class="ckbtn block" onclick="ckUseDetectedLocation()">Continue with Current Location</button>
             <div class="ck-back-manual" onclick="ckUseManualAddress()">← Enter address manually</div>
@@ -1102,6 +1126,30 @@ body{padding:0 !important;margin:0 !important;}
     var box=el('ckCurrentLocationBox'); if(box)box.style.display='flex';
   }
 
+  async function reverseGeocodeCurrentLocation(lat,lon){
+    var url='https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+
+      encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)+'&localityLanguage=en';
+    var response=await fetch(url,{headers:{'Accept':'application/json'}});
+    if(!response.ok) throw new Error('Address lookup failed ('+response.status+').');
+    var d=await response.json();
+    var area=d.locality||d.suburb||d.neighbourhood||d.village||d.town||'';
+    var city=d.city||d.district||d.town||d.village||d.locality||'';
+    var state=d.principalSubdivision||'';
+    var pincode=d.postcode||d.postCode||'';
+    return {area:String(area||'').trim(),city:String(city||'').trim(),state:String(state||'').trim(),pincode:String(pincode||'').trim()};
+  }
+
+  function showDetectedLocationDetails(){
+    setText('ckDetectedArea',currentLocationData.area||'Not available');
+    setText('ckDetectedCity',currentLocationData.city||'Not available');
+    setText('ckDetectedState',currentLocationData.state||'Not available');
+    setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
+    setText('ckDetectedAccuracy',currentLocationData.accuracy?Math.round(currentLocationData.accuracy)+' m':'GPS');
+    var a=el('ckDetectedMapLink');if(a)a.href=currentLocationData.map_link;
+    var summary=[currentLocationData.area,currentLocationData.city,currentLocationData.state,currentLocationData.pincode].filter(Boolean).join(', ');
+    setText('ckDetectedLocationText',summary||'Exact GPS location captured and saved.');
+  }
+
   async function saveCurrentLocationRow(){
     var p=accountPerson();
     var res=await window.__MY_STORE_SUPABASE__.from('delivery_locations').insert({
@@ -1130,12 +1178,21 @@ body{padding:0 !important;margin:0 !important;}
           captured_at:new Date().toISOString()
         };
 
-        /* Save immediately after GPS detection. */
+        /* Reverse-geocode GPS → real Area/City/District/State/Pincode. */
+        var geo=await reverseGeocodeCurrentLocation(currentLocationData.latitude,currentLocationData.longitude);
+        currentLocationData.area=geo.area;
+        currentLocationData.city=geo.city;
+        currentLocationData.state=geo.state;
+        currentLocationData.pincode=geo.pincode;
+
+        /* Save GPS immediately; existing delivery_locations columns stay unchanged. */
         await saveCurrentLocationRow();
 
+        /* Hide ALL input fields, then show detected location details. */
         hideAddressInputsAfterLocation();
+        showDetectedLocationDetails();
         var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='block';
-        setText('ckLocationStatus','✓ Current location detected and saved');
+        setText('ckLocationStatus','✓ Current location + address detected and saved');
         window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
       }catch(e){
         console.error('CURRENT LOCATION SAVE ERROR:',e);
@@ -1159,8 +1216,12 @@ body{padding:0 !important;margin:0 !important;}
     if(!currentUser||!currentLocationData){alert('Current location available nahi hai.');return;}
     var p=accountPerson();
     selectedAddress={
-      id:null,name:p.name,phone:p.phone,pincode:'',state:'',city:'Current Location',
-      house:'',road:'',type:'current location',map_link:currentLocationData.map_link,
+      id:null,name:p.name,phone:p.phone,
+      pincode:currentLocationData.pincode||'',
+      state:currentLocationData.state||'',
+      city:currentLocationData.city||'',
+      house:'',road:currentLocationData.area||'',
+      type:'current location',map_link:currentLocationData.map_link,
       latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
       isCurrentLocation:true,location_row_id:currentLocationRowId
     };
