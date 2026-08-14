@@ -6,19 +6,13 @@
 <title>Product | MyStore</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
   background:#f7f5ff;
-  color:#111827;
+  color:#111;
 }
 
 button,input{
@@ -39,7 +33,7 @@ a{
 .top{
   height:70px;
   background:#fff;
-  border-bottom:1px solid #e8e4ff;
+  border-bottom:1px solid #e5e7eb;
   display:flex;
   align-items:center;
   gap:20px;
@@ -67,7 +61,7 @@ a{
 
 .cart{
   margin-left:auto;
-  background:#17131f;
+  background:#111;
   color:#fff;
   border:0;
   border-radius:12px;
@@ -109,10 +103,10 @@ a{
 .product{
   display:none;
   background:#fff;
-  border:1px solid #e7e2fa;
+  border:1px solid #e5e7eb;
   border-radius:24px;
   overflow:hidden;
-  box-shadow:0 12px 40px rgba(60,30,120,.08);
+  box-shadow:0 12px 40px rgba(55,30,120,.08);
 }
 
 .grid{
@@ -125,35 +119,33 @@ a{
 
 .gallery{
   padding:28px;
-  background:linear-gradient(145deg,#fff,#f5f1ff);
+  background:linear-gradient(145deg,#fff,#f2efff);
   border-right:1px solid #eee8ff;
 }
 
 .main{
   height:550px;
   background:#fff;
-  border:0;
-  border-radius:0;
+  border:1px solid #eee8ff;
+  border-radius:20px;
   display:flex;
   align-items:center;
   justify-content:center;
   position:relative;
   overflow:hidden;
+  touch-action:pan-y;
 }
 
-/*
-  Desktop image:
-  no forced width/height.
-  This prevents cropping.
-*/
 .main img{
   display:block;
-  max-width:100%;
-  max-height:100%;
-  width:auto;
-  height:auto;
+  width:100%;
+  height:100%;
   object-fit:contain;
-  padding:20px;
+  padding:35px;
+  min-width:0;
+  min-height:0;
+  user-select:none;
+  -webkit-user-drag:none;
 }
 
 .pill{
@@ -169,32 +161,16 @@ a{
   font-weight:800;
 }
 
-#imageFallback{
-  color:#777;
-  font-size:13px;
-}
-
-/* ================= THUMBNAILS ================= */
-
 .thumbs{
   display:flex;
   gap:8px;
   padding-top:13px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scroll-behavior:smooth;
+  overflow:auto;
   scrollbar-width:none;
 }
 
 .thumbs::-webkit-scrollbar{
   display:none;
-}
-
-.thumbWrap{
-  flex:0 0 auto;
-  padding:0;
-  border:0;
-  background:transparent;
 }
 
 .thumb{
@@ -205,8 +181,7 @@ a{
   border:1px solid #ddd8f4;
   border-radius:10px;
   padding:5px;
-  display:block;
-  transition:.2s;
+  flex:0 0 auto;
 }
 
 .thumb.active{
@@ -379,8 +354,8 @@ a{
 
 .buy{
   background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  color:#fff;
   border:0;
+  color:#fff;
 }
 
 /* ================= DETAILS ================= */
@@ -441,15 +416,12 @@ a{
   transform:translate(-50%,0);
 }
 
+
 /* =========================================================
    MOBILE
    ========================================================= */
 
 @media(max-width:900px){
-
-  body{
-    background:#f7f5ff;
-  }
 
   .top{
     height:62px;
@@ -482,8 +454,6 @@ a{
 
   .product{
     border-radius:16px;
-    border:1px solid #e8e1ff;
-    box-shadow:0 8px 25px rgba(60,30,120,.06);
   }
 
   .grid{
@@ -491,7 +461,7 @@ a{
     min-height:auto;
   }
 
-  /* ---------- MOBILE GALLERY ---------- */
+  /* MOBILE GALLERY */
 
   .gallery{
     padding:0;
@@ -502,7 +472,8 @@ a{
 
   /*
      IMPORTANT:
-     This is now a horizontal swipe gallery.
+     Sirf ek image visible rahegi.
+     Hum original mainImage ko hi use kar rahe hain.
   */
 
   .main{
@@ -511,47 +482,15 @@ a{
     background:#fff;
     border:0;
     border-radius:0;
-    display:block;
-    overflow-x:auto;
-    overflow-y:hidden;
-    scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
+    overflow:hidden;
+    touch-action:pan-y;
   }
 
-  .main::-webkit-scrollbar{
-    display:none;
-  }
-
-  /*
-     Every image gets its own full-width slide.
-  */
-
-  .mobileSlides{
-    height:100%;
-    width:100%;
-    display:flex;
-  }
-
-  .mobileSlide{
-    flex:0 0 100%;
+  .main img{
     width:100%;
     height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    scroll-snap-align:start;
-    scroll-snap-stop:always;
-    padding:10px 18px 15px;
-  }
-
-  .mobileSlide img{
-    width:100%;
-    height:100%;
-    max-width:100%;
-    max-height:100%;
+    padding:14px 20px;
     object-fit:contain;
-    display:block;
   }
 
   .pill{
@@ -559,10 +498,9 @@ a{
     left:12px;
     font-size:9px;
     padding:6px 8px;
-    z-index:10;
   }
 
-  /* ---------- THUMBNAILS ---------- */
+  /* THUMBNAILS */
 
   .thumbs{
     padding:9px 9px 11px;
@@ -571,13 +509,13 @@ a{
   }
 
   .thumb{
-    width:57px;
-    height:57px;
+    width:58px;
+    height:58px;
     border-radius:8px;
     padding:3px;
   }
 
-  /* ---------- INFO ---------- */
+  /* INFO */
 
   .info{
     padding:15px 14px 18px;
@@ -586,13 +524,7 @@ a{
   .tag{
     font-size:8px;
     padding:5px 7px;
-    border-radius:6px;
   }
-
-  /*
-     Smaller title + maximum 2 lines.
-     This fixes the iPhone title issue.
-  */
 
   .title{
     font-size:20px;
@@ -678,9 +610,7 @@ a{
     font-size:9px;
   }
 
-  /*
-     Fixed mobile buttons
-  */
+  /* BOTTOM BUTTONS */
 
   .cta{
     position:fixed;
@@ -688,16 +618,10 @@ a{
     left:0;
     right:0;
     z-index:50;
-
     background:#fff;
-
-    padding:8px 9px
-      calc(8px + env(safe-area-inset-bottom));
-
+    padding:8px 9px calc(8px + env(safe-area-inset-bottom));
     margin:0;
-
     border-top:1px solid #ddd8f4;
-
     box-shadow:0 -5px 20px rgba(30,20,60,.08);
   }
 
@@ -708,15 +632,7 @@ a{
     font-size:12px;
   }
 
-  .add{
-    border-color:#24115f;
-  }
-
-  .buy{
-    background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  }
-
-  /* ---------- DETAILS ---------- */
+  /* DETAILS */
 
   .details{
     margin-top:10px;
@@ -744,6 +660,7 @@ a{
   }
 }
 
+
 /* VERY SMALL PHONES */
 
 @media(max-width:380px){
@@ -770,6 +687,7 @@ a{
     font-size:11px;
   }
 }
+
 </style>
 </head>
 
@@ -816,7 +734,7 @@ a{
       min-height:550px;
       display:flex;
       align-items:center;
-      justify-content:center;
+      justify-content:center
     "
   >
     <b>Loading product...</b>
@@ -834,7 +752,10 @@ a{
 
       <div class="gallery">
 
-        <div class="main" id="mainGallery">
+        <div
+          class="main"
+          id="mainGallery"
+        >
 
           <span
             id="badge"
@@ -844,21 +765,24 @@ a{
           </span>
 
           <div
-            id="mobileSlides"
-            class="mobileSlides"
-          ></div>
-
-          <div
             id="imageFallback"
-            style="display:none;color:#777;font-size:13px"
+            style="
+              display:none;
+              color:#777;
+              font-size:13px
+            "
           >
             Image unavailable
           </div>
 
+          <!-- ORIGINAL MAIN IMAGE -->
+          <img
+            id="mainImage"
+            draggable="false"
+          >
+
         </div>
 
-
-        <!-- THUMBNAILS -->
 
         <div
           id="thumbs"
@@ -868,7 +792,7 @@ a{
       </div>
 
 
-      <!-- ================= PRODUCT INFO ================= -->
+      <!-- ================= INFO ================= -->
 
       <div class="info">
 
@@ -941,17 +865,15 @@ a{
 
           <div class="qty">
 
-            <button
-              onclick="changeQty(-1)"
-            >
+            <button onclick="changeQty(-1)">
               −
             </button>
 
-            <span id="qty">1</span>
+            <span id="qty">
+              1
+            </span>
 
-            <button
-              onclick="changeQty(1)"
-            >
+            <button onclick="changeQty(1)">
               +
             </button>
 
@@ -1078,6 +1000,8 @@ let qty = 1;
 let currentImageIndex = 0;
 
 
+/* ================= HELPERS ================= */
+
 const money = n =>
 "₹" +
 Math.round(Number(n)||0)
@@ -1136,7 +1060,7 @@ function toast(x){
 }
 
 
-/* ================= LOAD ================= */
+/* ================= LOAD PRODUCT ================= */
 
 async function load(){
 
@@ -1189,7 +1113,8 @@ async function load(){
 
     gallery =
     gallery
-    .map(x =>
+    .map(
+      x =>
       typeof x === "string"
       ? x
       : (
@@ -1356,17 +1281,20 @@ function render(){
 
   document.getElementById(
     "loading"
-  ).style.display = "none";
+  ).style.display =
+  "none";
 
 
   document.getElementById(
     "product"
-  ).style.display = "block";
+  ).style.display =
+  "block";
 
 
   document.getElementById(
     "details"
-  ).style.display = "block";
+  ).style.display =
+  "block";
 
 
   document.getElementById(
@@ -1448,7 +1376,41 @@ function render(){
   : "✕ Out of Stock";
 
 
-  buildGallery();
+  /* MAIN IMAGE */
+
+  setMainImage(0);
+
+
+  /* THUMBNAILS */
+
+  const thumbs =
+  document.getElementById("thumbs");
+
+  thumbs.innerHTML =
+  product.images
+  .map(
+    (url,i) =>
+    `
+      <button
+        type="button"
+        style="
+          border:0;
+          background:transparent;
+          padding:0;
+        "
+        onclick="selectImage(${i})"
+      >
+        <img
+          class="thumb ${i===0?"active":""}"
+          src="${escapeHtml(url)}"
+          alt="${escapeHtml(product.title)}"
+          onerror="this.style.visibility='hidden'"
+          draggable="false"
+        >
+      </button>
+    `
+  )
+  .join("");
 
 
   content.innerHTML =
@@ -1464,210 +1426,13 @@ function render(){
 }
 
 
-/* =====================================================
-   RESPONSIVE IMAGE GALLERY
-   ===================================================== */
+/* ================= MAIN IMAGE ================= */
 
-function buildGallery(){
-
-  const slides =
-  document.getElementById(
-    "mobileSlides"
-  );
-
-
-  const thumbs =
-  document.getElementById(
-    "thumbs"
-  );
-
-
-  const fallback =
-  document.getElementById(
-    "imageFallback"
-  );
-
-
-  slides.innerHTML = "";
-  thumbs.innerHTML = "";
-
-
-  currentImageIndex = 0;
-
-
-  if(
-    !product.images ||
-    !product.images.length
-  ){
-
-    fallback.style.display =
-    "block";
-
-    return;
-
-  }
-
-
-  fallback.style.display =
-  "none";
-
-
-  /* ---------- SLIDES ---------- */
-
-  product.images.forEach(
-    (url,index) => {
-
-      const slide =
-      document.createElement(
-        "div"
-      );
-
-      slide.className =
-      "mobileSlide";
-
-
-      const img =
-      document.createElement(
-        "img"
-      );
-
-
-      img.src = url;
-
-      img.alt =
-      product.title;
-
-
-      img.loading =
-      index === 0
-      ? "eager"
-      : "lazy";
-
-
-      img.onerror = () => {
-
-        img.style.display =
-        "none";
-
-      };
-
-
-      slide.appendChild(img);
-
-      slides.appendChild(slide);
-
-    }
-  );
-
-
-  /* ---------- THUMBNAILS ---------- */
-
-  product.images.forEach(
-    (url,index) => {
-
-      const button =
-      document.createElement(
-        "button"
-      );
-
-
-      button.type =
-      "button";
-
-
-      button.className =
-      "thumbWrap";
-
-
-      const img =
-      document.createElement(
-        "img"
-      );
-
-
-      img.className =
-      "thumb" +
-      (index === 0
-        ? " active"
-        : ""
-      );
-
-
-      img.src = url;
-
-      img.alt =
-      product.title;
-
-
-      img.loading = "lazy";
-
-
-      img.onerror = () => {
-
-        img.style.visibility =
-        "hidden";
-
-      };
-
-
-      button.appendChild(img);
-
-
-      button.onclick = () =>
-      selectImage(index);
-
-
-      thumbs.appendChild(button);
-
-    }
-  );
-
-
-  /*
-     Reset gallery to first image.
-  */
-
-  slides.scrollLeft = 0;
-
-
-  /*
-     Keep thumbnail and main
-     image synchronized.
-  */
-
-  slides.onscroll =
-  syncGalleryFromScroll;
-
-
-  /*
-     Desktop:
-     show first image normally.
-  */
-
-  if(window.innerWidth > 900){
-
-    slides.style.display =
-    "flex";
-
-    slides.style.overflow =
-    "hidden";
-
-    slides.style.scrollSnapType =
-    "none";
-
-  }
-
-}
-
-
-/* =====================================================
-   CLICK THUMBNAIL -> JUMP IMAGE
-   ===================================================== */
-
-function selectImage(index){
+function setMainImage(index){
 
   if(
     !product ||
+    !product.images ||
     !product.images[index]
   ){
     return;
@@ -1678,25 +1443,48 @@ function selectImage(index){
   index;
 
 
-  const slides =
+  product.image =
+  product.images[index];
+
+
+  const main =
   document.getElementById(
-    "mobileSlides"
+    "mainImage"
   );
 
 
-  const slide =
-  slides.children[index];
+  const fallback =
+  document.getElementById(
+    "imageFallback"
+  );
 
 
-  if(slide){
+  fallback.style.display =
+  "none";
 
-    slide.scrollIntoView({
-      behavior:"smooth",
-      block:"nearest",
-      inline:"start"
-    });
 
-  }
+  main.style.display =
+  "block";
+
+
+  main.alt =
+  product.title;
+
+
+  main.src =
+  product.images[index];
+
+
+  main.onerror =
+  () => {
+
+    main.style.display =
+    "none";
+
+    fallback.style.display =
+    "block";
+
+  };
 
 
   updateActiveThumb(index);
@@ -1704,63 +1492,16 @@ function selectImage(index){
 }
 
 
-/* =====================================================
-   SWIPE -> THUMBNAIL AUTO UPDATE
-   ===================================================== */
+/* ================= SELECT IMAGE ================= */
 
-function syncGalleryFromScroll(){
+function selectImage(index){
 
-  const slides =
-  document.getElementById(
-    "mobileSlides"
-  );
-
-
-  if(!slides.children.length)
-    return;
-
-
-  const width =
-  slides.clientWidth;
-
-
-  if(width <= 0)
-    return;
-
-
-  const index =
-  Math.round(
-    slides.scrollLeft / width
-  );
-
-
-  if(
-    index !== currentImageIndex &&
-    index >= 0 &&
-    index < product.images.length
-  ){
-
-    currentImageIndex =
-    index;
-
-    updateActiveThumb(index);
-
-    /*
-       Also keep product.image
-       equal to visible image.
-    */
-
-    product.image =
-    product.images[index];
-
-  }
+  setMainImage(index);
 
 }
 
 
-/* =====================================================
-   ACTIVE THUMBNAIL
-   ===================================================== */
+/* ================= ACTIVE THUMB ================= */
 
 function updateActiveThumb(index){
 
@@ -1769,9 +1510,9 @@ function updateActiveThumb(index){
     "#thumbs .thumb"
   )
   .forEach(
-    (img,i) => {
+    (x,i) => {
 
-      img.classList.toggle(
+      x.classList.toggle(
         "active",
         i === index
       );
@@ -1786,7 +1527,10 @@ function updateActiveThumb(index){
   );
 
 
-  if(active){
+  if(
+    active &&
+    window.innerWidth <= 900
+  ){
 
     active.scrollIntoView({
       behavior:"smooth",
@@ -1800,57 +1544,153 @@ function updateActiveThumb(index){
 
 
 /* =====================================================
-   RESIZE
+   MOBILE FINGER SWIPE
    ===================================================== */
 
-window.addEventListener(
-  "resize",
-  () => {
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+
+const mainGallery =
+document.getElementById(
+  "mainGallery"
+);
+
+
+mainGallery.addEventListener(
+  "touchstart",
+  function(e){
 
     if(
       !product ||
-      !product.images.length
+      window.innerWidth > 900
     ){
       return;
     }
 
 
-    const slides =
-    document.getElementById(
-      "mobileSlides"
-    );
+    const touch =
+    e.changedTouches[0];
 
 
-    if(window.innerWidth <= 900){
+    touchStartX =
+    touch.clientX;
 
-      slides.style.display =
-      "flex";
 
-      slides.style.overflowX =
-      "auto";
+    touchStartY =
+    touch.clientY;
 
-      slides.style.scrollSnapType =
-      "x mandatory";
+  },
+  {
+    passive:true
+  }
+);
 
+
+mainGallery.addEventListener(
+  "touchend",
+  function(e){
+
+    if(
+      !product ||
+      window.innerWidth > 900
+    ){
+      return;
     }
 
-    else{
 
-      slides.style.display =
-      "flex";
+    const touch =
+    e.changedTouches[0];
 
-      slides.style.overflow =
-      "hidden";
 
-      slides.style.scrollSnapType =
-      "none";
+    touchEndX =
+    touch.clientX;
 
-      slides.scrollLeft = 0;
+
+    touchEndY =
+    touch.clientY;
+
+
+    handleSwipe();
+
+  },
+  {
+    passive:true
+  }
+);
+
+
+function handleSwipe(){
+
+  const diffX =
+  touchEndX - touchStartX;
+
+
+  const diffY =
+  touchEndY - touchStartY;
+
+
+  /*
+     Vertical movement zyada ho
+     to swipe ignore.
+  */
+
+  if(
+    Math.abs(diffY) >
+    Math.abs(diffX)
+  ){
+    return;
+  }
+
+
+  /*
+     Minimum 45px horizontal movement.
+  */
+
+  if(
+    Math.abs(diffX) < 45
+  ){
+    return;
+  }
+
+
+  /* LEFT = NEXT */
+
+  if(diffX < 0){
+
+    if(
+      currentImageIndex <
+      product.images.length - 1
+    ){
+
+      setMainImage(
+        currentImageIndex + 1
+      );
 
     }
 
   }
-);
+
+
+  /* RIGHT = PREVIOUS */
+
+  else{
+
+    if(
+      currentImageIndex > 0
+    ){
+
+      setMainImage(
+        currentImageIndex - 1
+      );
+
+    }
+
+  }
+
+}
 
 
 /* ================= ESCAPE ================= */
@@ -1935,7 +1775,9 @@ async function addToCart(){
 
   if(!user){
 
-    toast("Please login first");
+    toast(
+      "Please login first"
+    );
 
     setTimeout(
       () =>
@@ -1956,8 +1798,14 @@ async function addToCart(){
   await supabaseClient
   .from("cart_items")
   .select("id,qty")
-  .eq("user_id",user.id)
-  .eq("product_id",product.id)
+  .eq(
+    "user_id",
+    user.id
+  )
+  .eq(
+    "product_id",
+    product.id
+  )
   .maybeSingle();
 
 
@@ -2012,7 +1860,9 @@ async function addToCart(){
 
   if(error){
 
-    toast(error.message);
+    toast(
+      error.message
+    );
 
     return;
 
@@ -2021,7 +1871,9 @@ async function addToCart(){
 
   updateCart();
 
-  toast("✓ Added to Cart");
+  toast(
+    "✓ Added to Cart"
+  );
 
 }
 
@@ -2137,11 +1989,15 @@ function tab(type,b){
   .querySelectorAll(".tab")
   .forEach(
     x =>
-    x.classList.remove("active")
+    x.classList.remove(
+      "active"
+    )
   );
 
 
-  b.classList.add("active");
+  b.classList.add(
+    "active"
+  );
 
 
   content.innerHTML =
