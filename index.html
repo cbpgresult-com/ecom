@@ -15,68 +15,66 @@
   padding:0;
 }
 
-html{
-  scroll-behavior:smooth;
+:root{
+  --violet:#6d28d9;
+  --violet2:#7c3aed;
+  --light-violet:#f3e8ff;
+  --green:#dcfce7;
+  --green-dark:#15803d;
+  --white:#fff;
+  --text:#171717;
+  --muted:#737373;
+  --border:#e5e7eb;
+  --bg:#f7f7fb;
 }
 
 body{
   font-family:Arial,Helvetica,sans-serif;
-  background:#f7f7fb;
-  color:#171717;
-  padding-bottom:80px;
-}
-
-button,
-input,
-select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:0;
 }
 
 /* ================= HEADER ================= */
 
 .header{
+  height:72px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:22px;
+  padding:0 5%;
   position:sticky;
   top:0;
   z-index:1000;
-  height:72px;
-  background:#fff;
-  border-bottom:1px solid #eee;
-  display:flex;
-  align-items:center;
-  gap:24px;
-  padding:0 4%;
 }
 
 .logo{
-  font-size:29px;
-  font-weight:800;
-  color:#7027e8;
+  font-size:28px;
+  font-weight:900;
+  color:var(--violet);
   white-space:nowrap;
 }
 
-.search-box{
+.search{
   flex:1;
   position:relative;
 }
 
-.search-box input{
+.search input{
   width:100%;
   height:46px;
-  border:2px solid #e5d5ff;
-  background:#faf8ff;
+  border:2px solid #dfcaff;
   border-radius:13px;
-  padding:0 50px 0 18px;
+  padding:0 48px 0 18px;
   outline:none;
   font-size:15px;
+  background:#fff;
 }
 
-.search-box input:focus{
-  border-color:#7629e8;
-  background:#fff;
+.search input:focus{
+  border-color:var(--violet);
 }
 
 .search-icon{
@@ -84,124 +82,102 @@ button{
   right:16px;
   top:50%;
   transform:translateY(-50%);
-  width:21px;
-  height:21px;
-  stroke:#111;
-  fill:none;
-  stroke-width:1.8;
+  width:20px;
+  height:20px;
 }
 
-/* ================= RIGHT HEADER ================= */
+/* desktop account */
 
-.header-right{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-.account-wrap{
+.header-account{
   position:relative;
 }
 
 .account-btn{
   border:0;
   background:#fff;
+  height:44px;
+  padding:0 8px;
   display:flex;
   align-items:center;
-  gap:7px;
-  padding:10px 8px;
+  gap:8px;
   font-size:15px;
-  color:#222;
+  cursor:pointer;
   white-space:nowrap;
 }
 
 .account-btn:hover{
-  color:#7027e8;
+  color:var(--violet);
 }
 
-.user-svg{
-  width:22px;
-  height:22px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.7;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+.account-icon{
+  width:21px;
+  height:21px;
 }
 
-.arrow-svg{
-  width:15px;
-  height:15px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+.arrow{
+  width:14px;
+  height:14px;
   transition:.2s;
 }
 
-.account-wrap.open .arrow-svg{
+.account-btn.open .arrow{
   transform:rotate(180deg);
 }
 
-.cart-header{
+.cart-btn{
+  height:44px;
   border:0;
-  background:#7027e8;
+  background:var(--violet);
   color:white;
-  border-radius:12px;
-  height:46px;
   padding:0 17px;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
   display:flex;
   align-items:center;
   gap:8px;
-  font-weight:700;
+  white-space:nowrap;
 }
 
-.cart-svg{
-  width:21px;
-  height:21px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+.cart-icon{
+  width:20px;
+  height:20px;
 }
 
-.cart-badge{
+.cart-number{
+  background:#fff;
+  color:var(--violet);
   min-width:21px;
   height:21px;
   border-radius:50%;
-  background:white;
-  color:#7027e8;
   display:inline-flex;
   justify-content:center;
   align-items:center;
   font-size:12px;
-  font-weight:800;
 }
 
-/* ================= ACCOUNT MENU ================= */
+/* ================= ACCOUNT DROPDOWN ================= */
 
 .account-menu{
   position:absolute;
   right:0;
-  top:calc(100% + 8px);
+  top:53px;
   width:310px;
-  max-height:calc(100vh - 95px);
-  overflow-y:auto;
   background:#fff;
-  border:1px solid #e5e5e5;
-  border-radius:8px;
-  box-shadow:0 8px 28px rgba(0,0,0,.18);
+  border-radius:14px;
+  box-shadow:0 12px 35px rgba(0,0,0,.20);
+  border:1px solid #ddd;
+  overflow:hidden;
   display:none;
+  z-index:2000;
 }
 
-.account-wrap.open .account-menu{
+.account-menu.show{
   display:block;
-  animation:drop .15s ease;
+  animation:menuIn .16s ease;
 }
 
-@keyframes drop{
+@keyframes menuIn{
   from{
     opacity:0;
     transform:translateY(-5px);
@@ -212,186 +188,174 @@ button{
   }
 }
 
-.signup-row{
-  padding:17px 19px;
-  border-bottom:1px solid #eee;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  font-size:14px;
-}
-
-.signup-row a{
-  text-decoration:none;
-  color:#2874f0;
-  font-weight:700;
-}
-
-.account-title{
+.account-top{
   padding:18px 20px 10px;
-  font-size:17px;
+}
+
+.new-customer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:15px;
+}
+
+.signup{
+  color:#2563eb;
   font-weight:700;
+  cursor:pointer;
+}
+
+.account-divider{
+  height:1px;
+  background:#eee;
+  margin:8px 0;
 }
 
 .menu-item{
-  min-height:46px;
-  padding:11px 19px;
+  height:47px;
   display:flex;
   align-items:center;
-  gap:15px;
+  gap:14px;
+  padding:0 20px;
+  cursor:pointer;
   font-size:15px;
-  color:#333;
-  transition:.15s;
 }
 
 .menu-item:hover{
   background:#f7f7f7;
+  color:var(--violet);
 }
 
-.menu-item svg{
+.menu-svg{
   width:20px;
   height:20px;
-  flex:0 0 20px;
-  fill:none;
-  stroke:#333;
-  stroke-width:1.6;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+  flex:none;
 }
 
-.logout-item{
-  border-top:1px solid #eee;
-  margin-top:5px;
-  color:#d32f2f;
-}
-
-.logout-item svg{
-  stroke:#d32f2f;
+.logout{
+  color:#dc2626;
 }
 
 /* ================= CATEGORY ================= */
 
 .categories{
-  height:94px;
+  height:82px;
   background:#fff;
-  border-bottom:1px solid #eee;
   display:flex;
   align-items:center;
-  justify-content:center;
   gap:30px;
+  padding:0 5%;
+  border-bottom:1px solid var(--border);
   overflow-x:auto;
-  padding:8px 4%;
+  scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
 }
 
 .category{
-  min-width:65px;
+  min-width:64px;
   border:0;
-  background:none;
+  background:transparent;
+  cursor:pointer;
   display:flex;
   flex-direction:column;
   align-items:center;
   gap:7px;
   font-size:13px;
-  color:#222;
-  position:relative;
+  white-space:nowrap;
 }
 
 .category-icon{
-  width:46px;
-  height:46px;
+  width:42px;
+  height:42px;
   border-radius:50%;
-  background:#f0e5ff;
+  background:var(--light-violet);
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
 .category-icon svg{
-  width:24px;
-  height:24px;
-  fill:none;
-  stroke:#7027e8;
-  stroke-width:1.7;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+  width:23px;
+  height:23px;
 }
 
 .category.active{
-  color:#7027e8;
+  color:var(--violet);
   font-weight:700;
 }
 
 .category.active .category-icon{
-  background:#dcf7e8;
-}
-
-.category.active .category-icon svg{
-  stroke:#17834c;
+  background:var(--green);
 }
 
 /* ================= MAIN ================= */
 
 main{
-  width:min(1280px,92%);
+  width:90%;
+  max-width:1250px;
   margin:auto;
 }
 
-.hero-space{
-  display:none;
+.top-space{
+  height:20px;
 }
 
-.section-head{
-  margin:32px 0 17px;
+/* ================= PRODUCT HEADER ================= */
+
+.product-heading{
   display:flex;
-  align-items:center;
   justify-content:space-between;
+  align-items:end;
+  margin:28px 0 18px;
 }
 
-.section-head h2{
-  font-size:24px;
+.product-heading h1{
+  font-size:25px;
 }
 
-.section-head p{
-  color:#777;
-  font-size:14px;
+.product-heading p{
+  color:var(--muted);
   margin-top:5px;
+  font-size:14px;
 }
 
-.sort-select{
+#sortSelect{
+  padding:10px 30px 10px 12px;
   border:1px solid #ddd;
   border-radius:10px;
-  background:#fff;
-  padding:10px 13px;
-  outline:none;
+  background:white;
 }
 
 /* ================= PRODUCT GRID ================= */
 
 .product-grid{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:16px;
-  padding-bottom:35px;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  padding-bottom:50px;
 }
 
 .product-card{
-  background:#fff;
-  border:1px solid #e9e9e9;
+  background:white;
+  border:1px solid #e8e8e8;
   border-radius:14px;
   overflow:hidden;
-  min-width:0;
   transition:.2s;
+  cursor:pointer;
+  min-width:0;
 }
 
 .product-card:hover{
   transform:translateY(-3px);
-  box-shadow:0 8px 24px rgba(0,0,0,.09);
+  box-shadow:0 8px 25px rgba(0,0,0,.09);
 }
 
 .product-image-box{
-  width:100%;
-  height:245px;
-  background:#f7f7f7;
+  height:250px;
+  background:#fafafa;
   position:relative;
   display:flex;
   align-items:center;
@@ -399,22 +363,23 @@ main{
   overflow:hidden;
 }
 
-.product-image-box img{
+.product-image{
   width:100%;
   height:100%;
   object-fit:contain;
+  padding:10px;
   display:block;
 }
 
 .discount{
   position:absolute;
-  left:10px;
   top:10px;
-  background:#dcf7e8;
-  color:#17834c;
-  padding:5px 8px;
-  border-radius:6px;
-  font-size:12px;
+  left:10px;
+  background:var(--green);
+  color:var(--green-dark);
+  padding:6px 8px;
+  border-radius:7px;
+  font-size:11px;
   font-weight:700;
 }
 
@@ -425,32 +390,34 @@ main{
 .rating{
   display:inline-flex;
   align-items:center;
-  background:#dcf7e8;
-  color:#147d47;
-  border-radius:5px;
+  gap:4px;
+  background:var(--green);
+  color:#166534;
   padding:4px 7px;
-  font-size:12px;
-  font-weight:700;
-  margin-bottom:9px;
+  border-radius:6px;
+  font-size:11px;
+  margin-bottom:8px;
 }
 
-.product-title{
-  font-size:15px;
-  font-weight:600;
-  line-height:20px;
+.product-name{
+  font-size:14px;
+  font-weight:500;
+  line-height:1.35;
+  color:#333;
+
   display:-webkit-box;
-  -webkit-line-clamp:2;
   -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
   overflow:hidden;
-  min-height:40px;
+
+  min-height:38px;
 }
 
 .price-row{
-  margin-top:10px;
   display:flex;
   align-items:center;
   gap:8px;
-  flex-wrap:wrap;
+  margin-top:9px;
 }
 
 .price{
@@ -459,466 +426,237 @@ main{
 }
 
 .mrp{
+  font-size:11px;
   color:#999;
   text-decoration:line-through;
-  font-size:12px;
 }
 
-.offer{
-  color:#17834c;
-  font-size:12px;
+.off{
+  font-size:11px;
+  color:var(--green-dark);
   font-weight:700;
 }
 
 .delivery{
-  margin-top:8px;
-  color:#17834c;
-  font-size:12px;
-  font-weight:600;
-}
-
-/* ================= PAGE VIEWS ================= */
-
-.page-view{
-  display:none;
-  padding:30px 0 90px;
-}
-
-.page-view.active{
-  display:block;
-}
-
-.page-title{
-  font-size:28px;
-  margin-bottom:20px;
-}
-
-.back-btn{
-  border:0;
-  background:#eee7ff;
-  color:#7027e8;
-  padding:10px 15px;
-  border-radius:9px;
-  margin-bottom:20px;
-}
-
-/* ================= PROFILE ================= */
-
-.profile-card,
-.orders-card,
-.address-card{
-  background:#fff;
-  border:1px solid #e6e6e6;
-  border-radius:15px;
-  padding:22px;
-  margin-bottom:16px;
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-}
-
-.form-group{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.form-group.full{
-  grid-column:1/-1;
-}
-
-.form-group label{
-  font-size:13px;
-  font-weight:700;
-}
-
-.form-group input,
-.form-group select{
-  height:45px;
-  border:1px solid #ddd;
-  border-radius:9px;
-  padding:0 13px;
-  outline:none;
-}
-
-.form-group input:focus{
-  border-color:#7027e8;
-}
-
-.primary-btn{
-  margin-top:18px;
-  border:0;
-  background:#7027e8;
-  color:#fff;
-  border-radius:9px;
-  padding:12px 20px;
-  font-weight:700;
-}
-
-.green-btn{
-  background:#198754;
-}
-
-.danger-btn{
-  border:0;
-  background:#ffe7e7;
-  color:#d32f2f;
-  border-radius:8px;
-  padding:8px 12px;
-  font-weight:600;
-}
-
-/* ================= ORDERS ================= */
-
-.order-top{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  flex-wrap:wrap;
-}
-
-.order-number{
-  font-size:17px;
-  font-weight:800;
-}
-
-.status{
-  padding:6px 10px;
-  border-radius:20px;
-  background:#dcf7e8;
-  color:#147d47;
-  font-size:12px;
-  font-weight:700;
-}
-
-.order-date{
-  color:#777;
-  font-size:13px;
-  margin-top:7px;
-}
-
-.order-total{
-  margin-top:15px;
-  font-size:18px;
-  font-weight:800;
-}
-
-.order-address{
-  margin-top:12px;
-  padding:12px;
-  background:#f7f7f7;
-  border-radius:9px;
-  font-size:13px;
-  line-height:20px;
-}
-
-.order-items{
-  display:grid;
-  gap:10px;
-  margin-top:15px;
-}
-
-.order-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.order-item img{
-  width:58px;
-  height:58px;
-  object-fit:contain;
-  border:1px solid #eee;
-  border-radius:8px;
-  background:#fff;
-}
-
-.order-item-name{
-  font-weight:600;
-  font-size:14px;
-}
-
-/* ================= ADDRESS ================= */
-
-.address-list{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
-}
-
-.address-type{
-  display:inline-block;
-  background:#dcf7e8;
-  color:#147d47;
-  padding:4px 8px;
-  border-radius:5px;
+  color:#15803d;
   font-size:11px;
-  font-weight:800;
-  margin-bottom:8px;
+  margin-top:10px;
+  font-weight:600;
 }
 
-.address-name{
-  font-size:17px;
-  font-weight:700;
-}
+/* ================= LOADING ================= */
 
-.address-text{
-  margin-top:7px;
-  line-height:21px;
-  font-size:14px;
-  color:#444;
-}
-
-.address-actions{
-  display:flex;
-  gap:8px;
-  margin-top:14px;
-}
-
-.address-form{
-  display:none;
-  margin-top:18px;
-  padding-top:18px;
-  border-top:1px solid #eee;
-}
-
-.address-form.open{
-  display:block;
-}
-
-/* ================= EMPTY ================= */
-
-.empty{
+.loading{
+  padding:50px;
   text-align:center;
-  background:#fff;
-  border:1px dashed #ccc;
-  border-radius:15px;
-  padding:45px 20px;
   color:#777;
 }
 
-.empty h3{
-  color:#222;
-  margin-bottom:7px;
+.no-products{
+  text-align:center;
+  padding:60px;
 }
 
-/* ================= MOBILE NAV ================= */
-
-.mobile-nav{
+.hidden{
   display:none;
 }
 
-/* ================= TOAST ================= */
+/* ================= MOBILE BOTTOM NAV ================= */
 
-.toast{
-  position:fixed;
-  right:20px;
-  bottom:25px;
-  z-index:5000;
-  background:#222;
-  color:white;
-  padding:13px 18px;
-  border-radius:9px;
-  opacity:0;
-  pointer-events:none;
-  transform:translateY(10px);
-  transition:.25s;
+.bottom-nav{
+  display:none;
 }
 
-.toast.show{
-  opacity:1;
-  transform:translateY(0);
-}
+/* ================= MOBILE ================= */
 
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:1100px){
-
-  .product-grid{
-    grid-template-columns:repeat(4,1fr);
-  }
-
-}
-
-@media(max-width:800px){
+@media(max-width:700px){
 
   body{
-    padding-bottom:78px;
+    padding-bottom:72px;
   }
 
   .header{
-    height:64px;
-    padding:0 12px;
+    height:auto;
+    min-height:112px;
+    padding:10px 12px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-areas:
+      "logo cart"
+      "search search";
     gap:10px;
+    position:sticky;
+    top:0;
   }
 
   .logo{
+    grid-area:logo;
     font-size:23px;
   }
 
-  .search-box{
-    order:3;
-    position:absolute;
-    top:70px;
-    left:12px;
-    right:12px;
+  .search{
+    grid-area:search;
   }
 
-  .search-box input{
-    height:44px;
+  .search input{
+    height:42px;
+    font-size:14px;
   }
 
-  .header{
-    margin-bottom:60px;
+  /* mobile header cart only */
+  .cart-btn{
+    grid-area:cart;
+    height:38px;
+    padding:0 13px;
   }
 
-  /* Mobile header cart hidden */
-  .cart-header{
+  .header-account{
     display:none;
   }
 
-  .header-right{
-    margin-left:auto;
-  }
-
-  .account-btn{
-    padding:7px 3px;
-  }
-
-  .account-menu{
-    position:fixed;
-    top:64px;
-    right:8px;
-    left:8px;
-    width:auto;
-    max-height:calc(100vh - 145px);
-  }
-
   .categories{
-    height:88px;
-    justify-content:flex-start;
+    height:76px;
+    padding:0 10px;
     gap:20px;
-    padding-left:15px;
+  }
+
+  .category{
+    min-width:58px;
+    font-size:11px;
+  }
+
+  .category-icon{
+    width:36px;
+    height:36px;
   }
 
   main{
-    width:94%;
+    width:calc(100% - 20px);
   }
 
-  .section-head{
-    margin-top:24px;
-    align-items:flex-end;
+  .product-heading{
+    margin:20px 0 12px;
+    align-items:center;
   }
 
-  .section-head h2{
+  .product-heading h1{
     font-size:20px;
+  }
+
+  .product-heading p{
+    font-size:11px;
+  }
+
+  #sortSelect{
+    font-size:11px;
+    padding:8px;
   }
 
   .product-grid{
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:10px;
+    padding-bottom:20px;
   }
 
   .product-image-box{
-    height:210px;
+    height:175px;
+  }
+
+  .product-image{
+    padding:8px;
   }
 
   .product-info{
-    padding:10px;
+    padding:9px;
   }
 
-  .product-title{
-    font-size:14px;
-    line-height:18px;
-    min-height:36px;
+  .product-name{
+    font-size:12px;
+    line-height:1.3;
+    min-height:31px;
   }
 
   .price{
-    font-size:18px;
+    font-size:16px;
   }
 
-  .form-grid{
-    grid-template-columns:1fr;
+  .mrp,
+  .off{
+    font-size:9px;
   }
 
-  .form-group.full{
-    grid-column:auto;
+  .delivery{
+    font-size:9px;
   }
 
-  .address-list{
-    grid-template-columns:1fr;
+  .rating{
+    font-size:9px;
+    padding:3px 5px;
   }
 
-  .page-title{
-    font-size:23px;
+  .discount{
+    top:7px;
+    left:7px;
+    font-size:9px;
+    padding:5px 6px;
   }
 
-  .mobile-nav{
+  /* fixed bottom nav */
+  .bottom-nav{
     position:fixed;
+    display:flex;
     left:0;
     right:0;
     bottom:0;
-    height:70px;
+    height:68px;
     background:#fff;
     border-top:1px solid #ddd;
-    z-index:4000;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    box-shadow:0 -3px 14px rgba(0,0,0,.08);
+    z-index:99999;
+    box-shadow:0 -5px 20px rgba(0,0,0,.08);
+    justify-content:space-around;
+    align-items:center;
   }
 
-  .mobile-nav button{
+  .bottom-item{
+    flex:1;
+    height:100%;
     border:0;
     background:#fff;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:4px;
+    gap:3px;
+    color:#666;
     font-size:10px;
-    color:#555;
+    cursor:pointer;
   }
 
-  .mobile-nav button.active{
-    color:#7027e8;
+  .bottom-item svg{
+    width:23px;
+    height:23px;
+  }
+
+  .bottom-item.active{
+    color:var(--violet);
     font-weight:700;
   }
 
-  .mobile-nav svg{
-    width:22px;
-    height:22px;
-    fill:none;
-    stroke:currentColor;
-    stroke-width:1.7;
-    stroke-linecap:round;
-    stroke-linejoin:round;
+  .bottom-item.active svg{
+    stroke:var(--violet);
   }
-
 }
 
-@media(max-width:420px){
-
-  .product-image-box{
-    height:185px;
+@media(min-width:701px){
+  .mobile-only{
+    display:none;
   }
+}
 
-  .categories{
-    gap:14px;
+@media(min-width:701px) and (max-width:1000px){
+  .product-grid{
+    grid-template-columns:repeat(3,1fr);
   }
-
-  .category-icon{
-    width:40px;
-    height:40px;
-  }
-
-  .category-icon svg{
-    width:21px;
-    height:21px;
-  }
-
 }
 </style>
 </head>
@@ -931,277 +669,316 @@ main{
 
   <div class="logo">MyStore</div>
 
-  <div class="search-box">
+  <div class="search">
     <input
       id="searchInput"
       type="text"
       placeholder="Search for Products, Brands and More"
     >
 
-    <svg class="search-icon" viewBox="0 0 24 24">
+    <svg class="search-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2">
       <circle cx="11" cy="11" r="7"></circle>
-      <path d="M16.5 16.5L21 21"></path>
+      <path d="m20 20-4-4"></path>
     </svg>
   </div>
 
-  <div class="header-right">
+  <!-- DESKTOP ACCOUNT -->
+  <div class="header-account" id="accountArea">
 
-    <!-- ACCOUNT -->
-    <div class="account-wrap" id="accountWrap">
+    <button class="account-btn" id="accountBtn">
 
-      <button class="account-btn" id="accountBtn">
-
-        <svg class="user-svg" viewBox="0 0 24 24">
-          <circle cx="12" cy="8" r="3.5"></circle>
-          <path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"></path>
-        </svg>
-
-        <span id="accountName">Login</span>
-
-        <svg class="arrow-svg" viewBox="0 0 24 24">
-          <path d="M7 10l5 5 5-5"></path>
-        </svg>
-
-      </button>
-
-
-      <div class="account-menu" id="accountMenu">
-
-        <!-- LOGGED OUT -->
-
-        <div id="loggedOutMenu">
-
-          <div class="signup-row">
-            <span>New customer?</span>
-            <a href="signup.html">Sign Up</a>
-          </div>
-
-          <div class="menu-item" onclick="requireLogin('profile')">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="3.5"/>
-              <path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/>
-            </svg>
-            <span>My Profile</span>
-          </div>
-
-          <div class="menu-item" onclick="requireLogin('orders')">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/>
-              <path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>
-            </svg>
-            <span>Orders</span>
-          </div>
-
-          <div class="menu-item" onclick="requireLogin('addresses')">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"/>
-              <circle cx="12" cy="10" r="2.5"/>
-            </svg>
-            <span>Saved Addresses</span>
-          </div>
-
-        </div>
-
-
-        <!-- LOGGED IN -->
-
-        <div id="loggedInMenu" style="display:none;">
-
-          <div class="account-title">
-            Your Account
-          </div>
-
-          <div class="menu-item" onclick="showPage('profile')">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="3.5"/>
-              <path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/>
-            </svg>
-            <span>My Profile</span>
-          </div>
-
-          <div class="menu-item" onclick="showPage('orders')">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/>
-              <path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>
-            </svg>
-            <span>Orders</span>
-          </div>
-
-          <div class="menu-item" onclick="showPage('addresses')">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"/>
-              <circle cx="12" cy="10" r="2.5"/>
-            </svg>
-            <span>Saved Addresses</span>
-          </div>
-
-          <div class="menu-item" onclick="goCart()">
-            <svg viewBox="0 0 24 24">
-              <path d="M3 4h2l2 12h11l2-8H6"/>
-              <circle cx="9" cy="20" r="1.5"/>
-              <circle cx="17" cy="20" r="1.5"/>
-            </svg>
-            <span>Cart</span>
-          </div>
-
-          <div class="menu-item logout-item" id="logoutBtn">
-            <svg viewBox="0 0 24 24">
-              <path d="M10 5H5v14h5"/>
-              <path d="M14 8l4 4-4 4M8 12h10"/>
-            </svg>
-            <span>Logout</span>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
-
-    <!-- DESKTOP CART -->
-
-    <button class="cart-header" onclick="goCart()">
-
-      <svg class="cart-svg" viewBox="0 0 24 24">
-        <path d="M3 4h2l2 12h11l2-8H6"/>
-        <circle cx="9" cy="20" r="1.5"/>
-        <circle cx="17" cy="20" r="1.5"/>
+      <svg class="account-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8">
+        <circle cx="12" cy="8" r="3.5"></circle>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"></path>
+        <circle cx="12" cy="12" r="10"></circle>
       </svg>
 
-      <span>Cart</span>
+      <span id="accountName">Login</span>
 
-      <span class="cart-badge" id="cartCount">0</span>
+      <svg class="arrow"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2">
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
 
     </button>
 
+
+    <!-- ACCOUNT DROPDOWN -->
+
+    <div class="account-menu" id="accountMenu">
+
+      <div id="loggedOutMenu">
+
+        <div class="account-top">
+
+          <div class="new-customer">
+            <span>New customer?</span>
+            <span class="signup" onclick="goSignup()">Sign Up</span>
+          </div>
+
+        </div>
+
+        <div class="account-divider"></div>
+
+        <div class="menu-item" onclick="goLogin()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+          </svg>
+          My Profile
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/>
+            <path d="m8 12 2.5 2.5L16 9"/>
+          </svg>
+          MyStore Plus Zone
+        </div>
+
+        <div class="menu-item" onclick="goOrders()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m4 7 8-4 8 4-8 4z"/>
+            <path d="M4 7v10l8 4 8-4V7"/>
+            <path d="M12 11v10"/>
+          </svg>
+          Orders
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m20 12-8 8-8-8 8-8z"/>
+            <path d="M9 12h6"/>
+          </svg>
+          Wishlist
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <rect x="3" y="4" width="18" height="16" rx="2"/>
+            <path d="M7 8h10M7 12h10M7 16h6"/>
+          </svg>
+          Become a Seller
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M12 3v18M3 8h18M3 16h18"/>
+          </svg>
+          Rewards
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M20 12a8 8 0 0 1-16 0"/>
+            <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
+            <path d="M4 12h3M17 12h3"/>
+          </svg>
+          Gift Cards
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          Notification Preferences
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M8 10a4 4 0 0 1 8 0v2a4 4 0 0 1-8 0z"/>
+            <path d="M8 12H5M19 12h-3"/>
+          </svg>
+          24×7 Customer Care
+        </div>
+
+      </div>
+
+
+      <!-- LOGGED IN -->
+
+      <div id="loggedInMenu" style="display:none">
+
+        <div class="account-top">
+          <strong id="welcomeName">Welcome</strong>
+        </div>
+
+        <div class="account-divider"></div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+          </svg>
+          My Profile
+        </div>
+
+        <div class="menu-item" onclick="goOrders()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m4 7 8-4 8 4-8 4z"/>
+            <path d="M4 7v10l8 4 8-4V7"/>
+            <path d="M12 11v10"/>
+          </svg>
+          Orders
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M20 12a8 8 0 0 1-16 0"/>
+            <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
+            <path d="M4 12h3M17 12h3"/>
+          </svg>
+          Saved Addresses
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M20 8a5 5 0 0 0-8-4 5 5 0 0 0-8 4c0 5 8 11 8 11s8-6 8-11z"/>
+          </svg>
+          Wishlist
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          Notifications
+        </div>
+
+        <div class="account-divider"></div>
+
+        <div class="menu-item logout" onclick="logoutUser()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M10 17l5-5-5-5"/>
+            <path d="M15 12H3"/>
+            <path d="M21 3v18"/>
+          </svg>
+          Logout
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
+
+
+  <button class="cart-btn" onclick="goCart()">
+
+    <svg class="cart-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8">
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="18" cy="20" r="1"/>
+      <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+    </svg>
+
+    Cart
+
+    <span class="cart-number" id="cartCount">0</span>
+
+  </button>
 
 </header>
 
 
 <!-- ================= CATEGORIES ================= -->
 
-<nav class="categories">
+<div class="categories">
 
-  <button class="category active" onclick="goHome()">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M3 11l9-8 9 8"/>
-        <path d="M5 10v10h14V10"/>
-        <path d="M9 20v-6h6v6"/>
-      </svg>
-    </span>
-    <span>For You</span>
+  <button class="category active">
+    <span class="category-icon">🏠</span>
+    For You
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M7 5l2-2h6l2 2 3 3-3 4-2-2v11H9V10l-2 2-3-4 3-3z"/>
-      </svg>
-    </span>
-    <span>Fashion</span>
+    <span class="category-icon">👕</span>
+    Fashion
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <rect x="7" y="2.5" width="10" height="19" rx="2"/>
-        <path d="M10 5h4M11 18h2"/>
-      </svg>
-    </span>
-    <span>Mobiles</span>
+    <span class="category-icon">📱</span>
+    Mobiles
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <rect x="3" y="4" width="18" height="13" rx="1"/>
-        <path d="M8 21h8M12 17v4"/>
-      </svg>
-    </span>
-    <span>Electronics</span>
+    <span class="category-icon">💻</span>
+    Electronics
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M9 3h6l1 5H8l1-5z"/>
-        <path d="M8 8h8l1 13H7L8 8z"/>
-        <path d="M10 12h4"/>
-      </svg>
-    </span>
-    <span>Beauty</span>
+    <span class="category-icon">💄</span>
+    Beauty
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M4 11l8-7 8 7"/>
-        <path d="M6 10v10h12V10"/>
-        <path d="M9 20v-5h6v5"/>
-      </svg>
-    </span>
-    <span>Home</span>
+    <span class="category-icon">🏠</span>
+    Home
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <rect x="3" y="5" width="18" height="13" rx="1"/>
-        <path d="M8 21h8M12 18v3"/>
-      </svg>
-    </span>
-    <span>Appliances</span>
+    <span class="category-icon">📺</span>
+    Appliances
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="8"/>
-        <circle cx="9" cy="10" r="1"/>
-        <circle cx="15" cy="10" r="1"/>
-        <path d="M8 15c2.5 2 5.5 2 8 0"/>
-      </svg>
-    </span>
-    <span>Toys</span>
+    <span class="category-icon">🎮</span>
+    Toys
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M5 12h14"/>
-        <path d="M7 8h10l2 4-2 4H7l-2-4 2-4z"/>
-      </svg>
-    </span>
-    <span>Food</span>
+    <span class="category-icon">🍔</span>
+    Food
   </button>
 
   <button class="category">
-    <span class="category-icon">
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="8"/>
-        <path d="M8 16l3-5 2 2 3-5"/>
-      </svg>
-    </span>
-    <span>Sports</span>
+    <span class="category-icon">⚽</span>
+    Sports
   </button>
 
-</nav>
+  <button class="category">
+    <span class="category-icon">🛋️</span>
+    Furniture
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📚</span>
+    Books
+  </button>
+
+</div>
 
 
-<!-- ================= HOME ================= -->
+<!-- ================= MAIN ================= -->
 
-<main id="homePage">
+<main>
 
-  <div class="section-head">
+  <div class="top-space"></div>
+
+  <div class="product-heading">
 
     <div>
-      <h2>Suggested For You</h2>
+      <h1>Suggested For You</h1>
       <p>Discover products you'll love.</p>
     </div>
 
-    <select id="sortSelect" class="sort-select">
+    <select id="sortSelect">
       <option value="popular">Popular</option>
       <option value="low">Price: Low to High</option>
       <option value="high">Price: High to Low</option>
@@ -1210,230 +987,73 @@ main{
 
   </div>
 
+  <div id="loading" class="loading">
+    Loading products...
+  </div>
+
   <section id="productGrid" class="product-grid"></section>
 
-  <div id="productLoading" class="empty">
-    Loading products...
+  <div id="noProducts" class="no-products hidden">
+    <h2>No products found</h2>
+    <p>Try another search.</p>
   </div>
 
 </main>
 
 
-<!-- ================= PROFILE PAGE ================= -->
-
-<section id="profilePage" class="page-view">
-
-  <button class="back-btn" onclick="goHome()">
-    ← Back to Shopping
-  </button>
-
-  <h1 class="page-title">My Profile</h1>
-
-  <div class="profile-card">
-
-    <div class="form-grid">
-
-      <div class="form-group">
-        <label>Full Name</label>
-        <input id="profileName" type="text">
-      </div>
-
-      <div class="form-group">
-        <label>Mobile Number</label>
-        <input id="profileMobile" type="tel">
-      </div>
-
-      <div class="form-group full">
-        <label>Email</label>
-        <input id="profileEmail" type="email" disabled>
-      </div>
-
-    </div>
-
-    <button class="primary-btn" onclick="saveProfile()">
-      Save Changes
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- ================= ORDERS PAGE ================= -->
-
-<section id="ordersPage" class="page-view">
-
-  <button class="back-btn" onclick="goHome()">
-    ← Back to Shopping
-  </button>
-
-  <h1 class="page-title">My Orders</h1>
-
-  <div id="ordersContainer"></div>
-
-</section>
-
-
-<!-- ================= ADDRESSES PAGE ================= -->
-
-<section id="addressesPage" class="page-view">
-
-  <button class="back-btn" onclick="goHome()">
-    ← Back to Shopping
-  </button>
-
-  <div class="section-head">
-    <div>
-      <h1 class="page-title" style="margin:0">
-        Saved Addresses
-      </h1>
-    </div>
-
-    <button class="primary-btn" onclick="toggleAddressForm()">
-      + Add Address
-    </button>
-  </div>
-
-
-  <div class="address-card address-form" id="addressForm">
-
-    <div class="form-grid">
-
-      <div class="form-group">
-        <label>Name</label>
-        <input id="addrName" type="text">
-      </div>
-
-      <div class="form-group">
-        <label>Phone</label>
-        <input id="addrPhone" type="tel">
-      </div>
-
-      <div class="form-group">
-        <label>Pincode</label>
-        <input id="addrPincode" type="text">
-      </div>
-
-      <div class="form-group">
-        <label>State</label>
-        <input id="addrState" type="text">
-      </div>
-
-      <div class="form-group">
-        <label>City / District</label>
-        <input id="addrCity" type="text">
-      </div>
-
-      <div class="form-group">
-        <label>Address Type</label>
-        <select id="addrType">
-          <option value="Home">Home</option>
-          <option value="Office">Office</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-
-      <div class="form-group full">
-        <label>House No., Building Name</label>
-        <input id="addrHouse" type="text">
-      </div>
-
-      <div class="form-group full">
-        <label>Road Name, Area, Colony</label>
-        <input id="addrRoad" type="text">
-      </div>
-
-    </div>
-
-    <button class="primary-btn green-btn" onclick="saveAddress()">
-      Save Address
-    </button>
-
-    <button class="danger-btn" onclick="toggleAddressForm()">
-      Cancel
-    </button>
-
-  </div>
-
-
-  <div id="addressList" class="address-list"></div>
-
-</section>
-
-
 <!-- ================= MOBILE BOTTOM NAV ================= -->
 
-<nav class="mobile-nav">
+<nav class="bottom-nav">
 
-  <button id="navHome" class="active" onclick="goHome()">
-
-    <svg viewBox="0 0 24 24">
-      <path d="M3 11l9-8 9 8"/>
+  <button class="bottom-item active" onclick="goHome()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m3 11 9-8 9 8"/>
       <path d="M5 10v10h14V10"/>
       <path d="M9 20v-6h6v6"/>
     </svg>
-
-    <span>Home</span>
-
+    Home
   </button>
 
-
-  <button onclick="window.scrollTo({top:0,behavior:'smooth'})">
-
-    <svg viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="9"/>
-      <path d="M5 12h14M12 5v14"/>
+  <button class="bottom-item" onclick="goCategories()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="4" y="4" width="6" height="6" rx="1"/>
+      <rect x="14" y="4" width="6" height="6" rx="1"/>
+      <rect x="4" y="14" width="6" height="6" rx="1"/>
+      <rect x="14" y="14" width="6" height="6" rx="1"/>
     </svg>
-
-    <span>Categories</span>
-
+    Categories
   </button>
 
-
-  <button onclick="showPage('profile')">
-
-    <svg viewBox="0 0 24 24">
+  <button class="bottom-item" onclick="goAccount()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <circle cx="12" cy="8" r="3.5"/>
-      <path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/>
+      <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
     </svg>
-
-    <span>Account</span>
-
+    Account
   </button>
 
-
-  <button onclick="showPage('orders')">
-
-    <svg viewBox="0 0 24 24">
-      <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/>
-      <path d="M4 7.5l8 4.5 8-4.5"/>
+  <button class="bottom-item" onclick="goOrders()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m4 7 8-4 8 4-8 4z"/>
+      <path d="M4 7v10l8 4 8-4V7"/>
+      <path d="M12 11v10"/>
     </svg>
-
-    <span>Orders</span>
-
+    Orders
   </button>
 
-
-  <button onclick="goCart()">
-
-    <svg viewBox="0 0 24 24">
-      <path d="M3 4h2l2 12h11l2-8H6"/>
-      <circle cx="9" cy="20" r="1.5"/>
-      <circle cx="17" cy="20" r="1.5"/>
+  <button class="bottom-item" onclick="goCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="18" cy="20" r="1"/>
+      <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
     </svg>
-
-    <span>Cart</span>
-
+    Cart
   </button>
 
 </nav>
 
 
-<div class="toast" id="toast"></div>
-
-
 <script>
-
 
 /* =========================================
    SUPABASE CONFIG
@@ -1453,236 +1073,49 @@ const supabaseClient =
 
 
 /* =========================================================
-   GLOBAL
-   ========================================================= */
-
-let currentUser = null;
-let products = [];
-let editingAddressId = null;
-
-
-/* =========================================================
-   HELPERS
-   ========================================================= */
-
-function toast(message){
-
-  const el = document.getElementById("toast");
-
-  el.textContent = message;
-  el.classList.add("show");
-
-  setTimeout(()=>{
-    el.classList.remove("show");
-  },2500);
-}
-
-
-function escapeHtml(value){
-
-  if(value === null || value === undefined){
-    return "";
-  }
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-
-/* =========================================================
-   MAIN IMAGE
-   ========================================================= */
-
-function getMainImage(product){
-
-  /*
-    MAIN IMAGE KO HAMESHA PRIORITY
-  */
-
-  const direct =
-    product.main_image ||
-    product.mainImage ||
-    product.image ||
-    product.image_url ||
-    product.imageUrl ||
-    product.thumbnail;
-
-  if(typeof direct === "string" && direct.trim()){
-    return direct;
-  }
-
-  /*
-    Agar images JSON array hai
-  */
-
-  let imgs = product.images;
-
-  if(typeof imgs === "string"){
-
-    try{
-      imgs = JSON.parse(imgs);
-    }catch{
-      imgs = [imgs];
-    }
-
-  }
-
-  if(Array.isArray(imgs) && imgs.length){
-
-    return imgs[0];
-  }
-
-  return "https://via.placeholder.com/500x500?text=Product";
-}
-
-
-/* =========================================================
-   AUTH
-   ========================================================= */
-
-async function loadUser(){
-
-  const {data,error} = await sb.auth.getUser();
-
-  if(error || !data || !data.user){
-
-    currentUser = null;
-
-    updateAccountUI();
-
-    return null;
-  }
-
-  currentUser = data.user;
-
-  updateAccountUI();
-
-  return currentUser;
-}
-
-
-/* =========================================================
-   ACCOUNT UI
-   ========================================================= */
-
-async function updateAccountUI(){
-
-  const nameEl =
-    document.getElementById("accountName");
-
-  const loggedOut =
-    document.getElementById("loggedOutMenu");
-
-  const loggedIn =
-    document.getElementById("loggedInMenu");
-
-
-  if(!currentUser){
-
-    nameEl.textContent = "Login";
-
-    loggedOut.style.display = "block";
-    loggedIn.style.display = "none";
-
-    return;
-  }
-
-
-  let name = "";
-
-
-  /*
-    AUTH METADATA
-  */
-
-  if(currentUser.user_metadata){
-
-    name =
-      currentUser.user_metadata.full_name ||
-      currentUser.user_metadata.name ||
-      "";
-  }
-
-
-  /*
-    ACCOUNTS TABLE
-  */
-
-  try{
-
-    const {data} = await sb
-      .from("accounts")
-      .select("full_name")
-      .eq("id",currentUser.id)
-      .maybeSingle();
-
-    if(data && data.full_name){
-      name = data.full_name;
-    }
-
-  }catch(err){
-
-    console.log(err);
-
-  }
-
-
-  if(!name && currentUser.email){
-
-    name =
-      currentUser.email
-        .split("@")[0]
-        .replace(/[._-]/g," ");
-
-  }
-
-
-  name =
-    name
-      .trim()
-      .split(" ")
-      .map(x =>
-        x.charAt(0).toUpperCase()+x.slice(1)
-      )
-      .join(" ");
-
-
-  nameEl.textContent = name || "Account";
-
-  loggedOut.style.display = "none";
-  loggedIn.style.display = "block";
-}
-
-
-/* =========================================================
-   ACCOUNT DROPDOWN
-   ========================================================= */
-
-const accountWrap =
-  document.getElementById("accountWrap");
+   ACCOUNT
+========================================================= */
 
 const accountBtn =
   document.getElementById("accountBtn");
 
+const accountMenu =
+  document.getElementById("accountMenu");
 
-accountBtn.addEventListener("click",(e)=>{
+const accountName =
+  document.getElementById("accountName");
+
+const loggedOutMenu =
+  document.getElementById("loggedOutMenu");
+
+const loggedInMenu =
+  document.getElementById("loggedInMenu");
+
+const welcomeName =
+  document.getElementById("welcomeName");
+
+
+accountBtn.addEventListener("click", function(e){
 
   e.stopPropagation();
 
-  accountWrap.classList.toggle("open");
+  accountMenu.classList.toggle("show");
+
+  accountBtn.classList.toggle(
+    "open",
+    accountMenu.classList.contains("show")
+  );
 
 });
 
 
-document.addEventListener("click",(e)=>{
+document.addEventListener("click",function(e){
 
-  if(!accountWrap.contains(e.target)){
+  if(!document.getElementById("accountArea").contains(e.target)){
 
-    accountWrap.classList.remove("open");
+    accountMenu.classList.remove("show");
+
+    accountBtn.classList.remove("open");
 
   }
 
@@ -1690,1271 +1123,623 @@ document.addEventListener("click",(e)=>{
 
 
 /* =========================================================
-   LOGIN REQUIRED
-   ========================================================= */
+   GET FIRST NAME
+========================================================= */
 
-function requireLogin(page){
+function getFirstName(fullName){
 
-  accountWrap.classList.remove("open");
+  if(!fullName) return "User";
 
-  if(!currentUser){
+  fullName =
+    String(fullName).trim();
 
-    window.location.href =
-      "login.html?redirect=index.html";
-
-    return;
-  }
-
-  showPage(page);
-}
-
-
-/* =========================================================
-   PAGE SWITCH
-   ========================================================= */
-
-async function showPage(page){
-
-  accountWrap.classList.remove("open");
-
-  if(!currentUser){
-
-    window.location.href =
-      "login.html?redirect=index.html";
-
-    return;
-  }
-
-
-  document.getElementById("homePage")
-    .style.display = "none";
-
-  document.querySelectorAll(".page-view")
-    .forEach(x=>x.classList.remove("active"));
-
-
-  if(page === "profile"){
-
-    document
-      .getElementById("profilePage")
-      .classList.add("active");
-
-    await loadProfile();
-
-  }
-
-
-  if(page === "orders"){
-
-    document
-      .getElementById("ordersPage")
-      .classList.add("active");
-
-    await loadOrders();
-
-  }
-
-
-  if(page === "addresses"){
-
-    document
-      .getElementById("addressesPage")
-      .classList.add("active");
-
-    await loadAddresses();
-
-  }
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  return fullName
+    .split(/\s+/)[0];
 
 }
 
 
 /* =========================================================
-   HOME
-   ========================================================= */
+   LOAD LOGIN STATE
+========================================================= */
 
-function goHome(){
+async function loadAccount(){
 
-  document.getElementById("homePage")
-    .style.display = "block";
+  try{
 
-  document.querySelectorAll(".page-view")
-    .forEach(x=>x.classList.remove("active"));
-
-  document
-    .getElementById("navHome")
-    .classList.add("active");
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-
-/* =========================================================
-   CART
-   ========================================================= */
-
-function goCart(){
-
-  window.location.href = "cart.html";
-
-}
-
-
-/* =========================================================
-   PRODUCTS
-   ========================================================= */
-
-async function loadProducts(){
-
-  const loading =
-    document.getElementById("productLoading");
-
-  const grid =
-    document.getElementById("productGrid");
-
-
-  const {data,error} =
-    await sb
-      .from("products")
-      .select("*");
-
-
-  if(error){
-
-    console.error(error);
-
-    loading.innerHTML =
-      "<h3>Products load nahi ho rahe</h3><p>Supabase products table check karein.</p>";
-
-    return;
-  }
-
-
-  products = data || [];
-
-  renderProducts(products);
-
-}
-
-
-function renderProducts(list){
-
-  const grid =
-    document.getElementById("productGrid");
-
-  const loading =
-    document.getElementById("productLoading");
-
-
-  loading.style.display = "none";
-
-
-  if(!list.length){
-
-    grid.innerHTML = `
-      <div class="empty" style="grid-column:1/-1">
-        <h3>No products found</h3>
-        <p>Try another search.</p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  grid.innerHTML =
-    list.map(product=>{
-
-      const image =
-        getMainImage(product);
-
-      const title =
-        product.title ||
-        product.name ||
-        product.product_name ||
-        "Product";
-
-
-      const price =
-        Number(
-          product.price ||
-          product.sale_price ||
-          0
-        );
-
-
-      const mrp =
-        Number(
-          product.mrp ||
-          product.original_price ||
-          price
-        );
-
-
-      let discount = 0;
-
-      if(mrp > price && price > 0){
-
-        discount =
-          Math.round(
-            ((mrp-price)/mrp)*100
-          );
-
+    const {
+      data:{
+        user
       }
+    } =
+    await supabaseClient.auth.getUser();
 
 
-      const rating =
-        product.rating ||
-        product.average_rating ||
-        "4.6";
+    if(!user){
 
+      /* NOT LOGGED IN */
 
-      return `
+      accountName.textContent =
+        "Login";
 
-        <article
-          class="product-card"
-          onclick="openProduct('${escapeHtml(product.id || product.product_id || "")}')"
-        >
+      loggedOutMenu.style.display =
+        "block";
 
-          <div class="product-image-box">
-
-            ${
-              discount > 0
-              ? `<span class="discount">${discount}% OFF</span>`
-              : ""
-            }
-
-            <img
-              src="${escapeHtml(image)}"
-              alt="${escapeHtml(title)}"
-              loading="lazy"
-              onerror="this.src='https://via.placeholder.com/500x500?text=Product'"
-            >
-
-          </div>
-
-
-          <div class="product-info">
-
-            <span class="rating">
-              ★ ${escapeHtml(rating)}
-            </span>
-
-
-            <div class="product-title">
-              ${escapeHtml(title)}
-            </div>
-
-
-            <div class="price-row">
-
-              <span class="price">
-                ₹${price.toLocaleString("en-IN")}
-              </span>
-
-              ${
-                mrp > price
-                ? `
-                  <span class="mrp">
-                    ₹${mrp.toLocaleString("en-IN")}
-                  </span>
-                `
-                : ""
-              }
-
-              ${
-                discount > 0
-                ? `
-                  <span class="offer">
-                    ${discount}% OFF
-                  </span>
-                `
-                : ""
-              }
-
-            </div>
-
-
-            <div class="delivery">
-              ✓ Delivery available
-            </div>
-
-          </div>
-
-        </article>
-
-      `;
-
-    }).join("");
-
-}
-
-
-/* =========================================================
-   PRODUCT SEARCH
-   ========================================================= */
-
-document
-  .getElementById("searchInput")
-  .addEventListener("input",function(){
-
-    const query =
-      this.value
-        .trim()
-        .toLowerCase();
-
-
-    if(!query){
-
-      renderProducts(products);
+      loggedInMenu.style.display =
+        "none";
 
       return;
-    }
-
-
-    const filtered =
-      products.filter(p=>{
-
-        const text = [
-
-          p.title,
-          p.name,
-          p.product_name,
-          p.category,
-          p.brand
-
-        ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-
-        return text.includes(query);
-
-      });
-
-
-    renderProducts(filtered);
-
-});
-
-
-/* =========================================================
-   SORT
-   ========================================================= */
-
-document
-  .getElementById("sortSelect")
-  .addEventListener("change",function(){
-
-    let list =
-      [...products];
-
-
-    if(this.value === "low"){
-
-      list.sort(
-        (a,b)=>
-          Number(a.price||a.sale_price||0)
-          -
-          Number(b.price||b.sale_price||0)
-      );
 
     }
 
 
-    if(this.value === "high"){
+    /* LOGGED IN */
 
-      list.sort(
-        (a,b)=>
-          Number(b.price||b.sale_price||0)
-          -
-          Number(a.price||a.sale_price||0)
-      );
-
-    }
+    let firstName = "";
 
 
-    if(this.value === "new"){
+    /*
+      accounts table:
+      id
+      email
+      full_name
+      mobile
+    */
 
-      list.sort(
-        (a,b)=>
-          new Date(b.created_at||0)
-          -
-          new Date(a.created_at||0)
-      );
-
-    }
-
-
-    renderProducts(list);
-
-});
-
-
-function openProduct(id){
-
-  if(id){
-
-    window.location.href =
-      "product.html?id="+
-      encodeURIComponent(id);
-
-  }
-
-}
-
-
-/* =========================================================
-   PROFILE
-   ========================================================= */
-
-async function loadProfile(){
-
-  if(!currentUser) return;
-
-
-  document.getElementById("profileEmail")
-    .value =
-      currentUser.email || "";
-
-
-  const {data,error} =
-    await sb
+    const {
+      data:account
+    } =
+    await supabaseClient
       .from("accounts")
-      .select("*")
-      .eq("id",currentUser.id)
+      .select("full_name")
+      .eq("id",user.id)
       .maybeSingle();
 
 
-  if(error){
+    if(account && account.full_name){
 
-    console.error(error);
+      firstName =
+        getFirstName(account.full_name);
 
-    return;
-  }
-
-
-  if(data){
-
-    document.getElementById("profileName")
-      .value =
-        data.full_name || "";
-
-    document.getElementById("profileMobile")
-      .value =
-        data.mobile || "";
-
-  }
-
-}
-
-
-async function saveProfile(){
-
-  if(!currentUser){
-
-    requireLogin("profile");
-
-    return;
-  }
-
-
-  const full_name =
-    document
-      .getElementById("profileName")
-      .value
-      .trim();
-
-
-  const mobile =
-    document
-      .getElementById("profileMobile")
-      .value
-      .trim();
-
-
-  if(!full_name){
-
-    toast("Name enter karein");
-
-    return;
-  }
-
-
-  const {error} =
-    await sb
-      .from("accounts")
-      .upsert({
-
-        id:currentUser.id,
-
-        email:
-          currentUser.email,
-
-        full_name,
-
-        mobile
-
-      },{
-        onConflict:"id"
-      });
-
-
-  if(error){
-
-    console.error(error);
-
-    toast(error.message);
-
-    return;
-  }
-
-
-  /*
-    Auth metadata bhi update
-  */
-
-  await sb.auth.updateUser({
-
-    data:{
-      full_name:full_name
-    }
-
-  });
-
-
-  toast("Profile successfully updated");
-
-  await loadUser();
-
-}
-
-
-/* =========================================================
-   ORDERS
-   ========================================================= */
-
-async function loadOrders(){
-
-  const container =
-    document.getElementById("ordersContainer");
-
-
-  container.innerHTML = `
-    <div class="empty">
-      Loading orders...
-    </div>
-  `;
-
-
-  const {data,error} =
-    await sb
-      .from("orders")
-      .select("*")
-      .eq("user_id",currentUser.id)
-      .order("created_at",{ascending:false});
-
-
-  if(error){
-
-    console.error(error);
-
-    container.innerHTML = `
-      <div class="empty">
-        <h3>Orders load nahi ho rahe</h3>
-        <p>${escapeHtml(error.message)}</p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  if(!data || !data.length){
-
-    container.innerHTML = `
-      <div class="empty">
-        <h3>No orders yet</h3>
-        <p>Aapke orders yahan dikhai denge.</p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  container.innerHTML =
-    data.map(order=>{
-
-      const items =
-        Array.isArray(order.items)
-        ? order.items
-        : [];
-
-
-      let address = order.address;
-
-      if(typeof address === "string"){
-
-        try{
-          address =
-            JSON.parse(address);
-        }catch{
-          address = {};
-        }
-
-      }
-
-
-      return `
-
-        <div class="orders-card">
-
-          <div class="order-top">
-
-            <div>
-
-              <div class="order-number">
-                Order #${
-                  escapeHtml(
-                    order.order_number ||
-                    order.id?.slice(0,8)
-                  )
-                }
-              </div>
-
-              <div class="order-date">
-                ${
-                  order.created_at
-                  ? new Date(order.created_at)
-                    .toLocaleString("en-IN")
-                  : ""
-                }
-              </div>
-
-            </div>
-
-            <span class="status">
-              ${escapeHtml(
-                order.status || "placed"
-              )}
-            </span>
-
-          </div>
-
-
-          <div class="order-items">
-
-            ${
-              items.length
-              ?
-              items.map(item=>{
-
-                const itemImage =
-                  item.main_image ||
-                  item.image ||
-                  item.image_url ||
-                  item.url ||
-                  (
-                    Array.isArray(item.images)
-                    ? item.images[0]
-                    : ""
-                  ) ||
-                  "https://via.placeholder.com/100";
-
-                const itemTitle =
-                  item.title ||
-                  item.name ||
-                  item.product_name ||
-                  "Product";
-
-                const qty =
-                  item.qty ||
-                  item.quantity ||
-                  1;
-
-
-                return `
-
-                  <div class="order-item">
-
-                    <img
-                      src="${escapeHtml(itemImage)}"
-                      alt=""
-                      onerror="this.src='https://via.placeholder.com/100'"
-                    >
-
-                    <div>
-
-                      <div class="order-item-name">
-                        ${escapeHtml(itemTitle)}
-                      </div>
-
-                      <div style="color:#777;font-size:12px;margin-top:4px">
-                        Qty: ${escapeHtml(qty)}
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                `;
-
-              }).join("")
-              :
-              `
-                <div style="color:#777">
-                  Order items available nahi hain.
-                </div>
-              `
-            }
-
-          </div>
-
-
-          <div class="order-total">
-            Total:
-            ₹${Number(order.total_amount||0)
-              .toLocaleString("en-IN")}
-          </div>
-
-
-          ${
-            address
-            ?
-            `
-              <div class="order-address">
-
-                <strong>
-                  Delivery Address
-                </strong>
-
-                <br>
-
-                ${
-                  escapeHtml(
-                    address.name ||
-                    ""
-                  )
-                }
-
-                ${
-                  address.phone
-                  ? " • "+escapeHtml(address.phone)
-                  : ""
-                }
-
-                <br>
-
-                ${
-                  escapeHtml(
-                    [
-                      address.house,
-                      address.road,
-                      address.city,
-                      address.state,
-                      address.pincode
-                    ]
-                    .filter(Boolean)
-                    .join(", ")
-                  )
-                }
-
-              </div>
-            `
-            : ""
-          }
-
-        </div>
-
-      `;
-
-    }).join("");
-
-}
-
-
-/* =========================================================
-   SAVED ADDRESSES
-   ========================================================= */
-
-async function loadAddresses(){
-
-  const list =
-    document.getElementById("addressList");
-
-
-  list.innerHTML = `
-    <div class="empty" style="grid-column:1/-1">
-      Loading addresses...
-    </div>
-  `;
-
-
-  const {data,error} =
-    await sb
-      .from("saved_addresses")
-      .select("*")
-      .eq("user_id",currentUser.id)
-      .order("created_at",{ascending:false});
-
-
-  if(error){
-
-    console.error(error);
-
-    list.innerHTML = `
-      <div class="empty" style="grid-column:1/-1">
-        <h3>Address load nahi ho raha</h3>
-        <p>${escapeHtml(error.message)}</p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  if(!data || !data.length){
-
-    list.innerHTML = `
-      <div class="empty" style="grid-column:1/-1">
-        <h3>No saved address</h3>
-        <p>Apna delivery address save karein.</p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  list.innerHTML =
-    data.map(address=>`
-
-      <div class="address-card">
-
-        <span class="address-type">
-          ${escapeHtml(address.type || "Home")}
-        </span>
-
-        <div class="address-name">
-          ${escapeHtml(address.name || "")}
-        </div>
-
-        <div style="margin-top:5px;font-size:13px">
-          ${escapeHtml(address.phone || "")}
-        </div>
-
-        <div class="address-text">
-
-          ${escapeHtml(address.house || "")}
-          ${address.road ? ", "+escapeHtml(address.road) : ""}
-
-          <br>
-
-          ${escapeHtml(address.city || "")},
-          ${escapeHtml(address.state || "")}
-          - ${escapeHtml(address.pincode || "")}
-
-        </div>
-
-
-        <div class="address-actions">
-
-          <button
-            class="primary-btn"
-            style="margin:0;padding:8px 13px"
-            onclick='editAddress(${JSON.stringify(address)})'
-          >
-            Edit
-          </button>
-
-          <button
-            class="danger-btn"
-            onclick="deleteAddress('${address.id}')"
-          >
-            Delete
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-/* =========================================================
-   ADDRESS FORM
-   ========================================================= */
-
-function toggleAddressForm(){
-
-  const form =
-    document.getElementById("addressForm");
-
-  form.classList.toggle("open");
-
-}
-
-
-function clearAddressForm(){
-
-  [
-    "addrName",
-    "addrPhone",
-    "addrPincode",
-    "addrState",
-    "addrCity",
-    "addrHouse",
-    "addrRoad"
-
-  ].forEach(id=>{
-
-    document.getElementById(id).value = "";
-
-  });
-
-
-  document.getElementById("addrType")
-    .value = "Home";
-
-
-  editingAddressId = null;
-
-}
-
-
-function editAddress(address){
-
-  editingAddressId =
-    address.id;
-
-
-  document.getElementById("addrName")
-    .value =
-      address.name || "";
-
-  document.getElementById("addrPhone")
-    .value =
-      address.phone || "";
-
-  document.getElementById("addrPincode")
-    .value =
-      address.pincode || "";
-
-  document.getElementById("addrState")
-    .value =
-      address.state || "";
-
-  document.getElementById("addrCity")
-    .value =
-      address.city || "";
-
-  document.getElementById("addrHouse")
-    .value =
-      address.house || "";
-
-  document.getElementById("addrRoad")
-    .value =
-      address.road || "";
-
-  document.getElementById("addrType")
-    .value =
-      address.type || "Home";
-
-
-  document.getElementById("addressForm")
-    .classList.add("open");
-
-
-  document
-    .getElementById("addressForm")
-    .scrollIntoView({
-      behavior:"smooth",
-      block:"center"
-    });
-
-}
-
-
-async function saveAddress(){
-
-  if(!currentUser){
-
-    requireLogin("addresses");
-
-    return;
-  }
-
-
-  const address = {
-
-    user_id:
-      currentUser.id,
-
-    name:
-      document.getElementById("addrName")
-        .value.trim(),
-
-    phone:
-      document.getElementById("addrPhone")
-        .value.trim(),
-
-    pincode:
-      document.getElementById("addrPincode")
-        .value.trim(),
-
-    state:
-      document.getElementById("addrState")
-        .value.trim(),
-
-    city:
-      document.getElementById("addrCity")
-        .value.trim(),
-
-    house:
-      document.getElementById("addrHouse")
-        .value.trim(),
-
-    road:
-      document.getElementById("addrRoad")
-        .value.trim(),
-
-    type:
-      document.getElementById("addrType")
-        .value
-
-  };
-
-
-  if(
-    !address.name ||
-    !address.phone ||
-    !address.pincode ||
-    !address.state ||
-    !address.city ||
-    !address.house ||
-    !address.road
-  ){
-
-    toast("Saare address fields bharein");
-
-    return;
-  }
-
-
-  let result;
-
-
-  if(editingAddressId){
-
-    result =
-      await sb
-        .from("saved_addresses")
-        .update(address)
-        .eq("id",editingAddressId)
-        .eq("user_id",currentUser.id);
-
-  }else{
-
-    result =
-      await sb
-        .from("saved_addresses")
-        .insert(address);
-
-  }
-
-
-  if(result.error){
-
-    console.error(result.error);
-
-    toast(result.error.message);
-
-    return;
-  }
-
-
-  toast(
-    editingAddressId
-    ? "Address updated"
-    : "Address saved"
-  );
-
-
-  clearAddressForm();
-
-  document
-    .getElementById("addressForm")
-    .classList.remove("open");
-
-
-  await loadAddresses();
-
-}
-
-
-async function deleteAddress(id){
-
-  if(!confirm("Is address ko delete karna hai?")){
-
-    return;
-  }
-
-
-  const {error} =
-    await sb
-      .from("saved_addresses")
-      .delete()
-      .eq("id",id)
-      .eq("user_id",currentUser.id);
-
-
-  if(error){
-
-    console.error(error);
-
-    toast(error.message);
-
-    return;
-  }
-
-
-  toast("Address deleted");
-
-  await loadAddresses();
-
-}
-
-
-/* =========================================================
-   LOGOUT
-   ========================================================= */
-
-document
-  .getElementById("logoutBtn")
-  .addEventListener("click",async()=>{
-
-    const {error} =
-      await sb.auth.signOut();
-
-
-    if(error){
-
-      toast(error.message);
-
-      return;
     }
 
 
-    currentUser = null;
+    /* fallback */
 
-    updateAccountUI();
+    if(!firstName && user.user_metadata){
 
-    accountWrap.classList.remove("open");
+      firstName =
+        getFirstName(
+          user.user_metadata.full_name ||
+          user.user_metadata.name ||
+          user.email
+        );
 
-    goHome();
+    }
 
-    toast("Logged out successfully");
 
-});
+    if(!firstName){
+
+      firstName = "User";
+
+    }
+
+
+    accountName.textContent =
+      firstName;
+
+    welcomeName.textContent =
+      "Welcome, " + firstName + "!";
+
+
+    loggedOutMenu.style.display =
+      "none";
+
+    loggedInMenu.style.display =
+      "block";
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Account error:",
+      error
+    );
+
+  }
+
+}
 
 
 /* =========================================================
    AUTH STATE
-   ========================================================= */
+========================================================= */
 
-sb.auth.onAuthStateChange(
-  async(event,session)=>{
+supabaseClient.auth.onAuthStateChange(
+  function(){
 
-    currentUser =
-      session?.user || null;
-
-    updateAccountUI();
+    setTimeout(
+      loadAccount,
+      100
+    );
 
   }
 );
 
 
 /* =========================================================
-   CART COUNT
-   ========================================================= */
+   PRODUCTS
+========================================================= */
 
-async function loadCartCount(){
+async function loadProducts(){
 
-  if(!currentUser){
+  const loading =
+    document.getElementById("loading");
 
-    document.getElementById("cartCount")
-      .textContent = "0";
+  const grid =
+    document.getElementById("productGrid");
 
-    return;
-  }
+  const noProducts =
+    document.getElementById("noProducts");
 
 
-  /*
-    cart_items me quantity/qty dono
-    handle kiya gaya hai.
-  */
+  loading.style.display =
+    "block";
 
-  const {data,error} =
-    await sb
-      .from("cart_items")
-      .select("*")
-      .eq("user_id",currentUser.id);
+  grid.innerHTML =
+    "";
+
+  noProducts.classList.add(
+    "hidden"
+  );
+
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("products")
+    .select("*");
+
+
+  loading.style.display =
+    "none";
 
 
   if(error){
 
-    console.log("Cart count:",error.message);
+    console.error(error);
+
+    noProducts.classList.remove(
+      "hidden"
+    );
+
+    noProducts.innerHTML =
+      "<h2>Products load nahi ho paaye</h2>";
 
     return;
+
   }
 
 
-  let count = 0;
+  if(!data || data.length===0){
 
-
-  (data||[]).forEach(item=>{
-
-    count += Number(
-      item.quantity ||
-      item.qty ||
-      1
+    noProducts.classList.remove(
+      "hidden"
     );
 
-  });
+    return;
+
+  }
 
 
-  document.getElementById("cartCount")
-    .textContent = count;
+  data.forEach(
+    product => {
+
+      grid.appendChild(
+        createProductCard(product)
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   MAIN IMAGE
+========================================================= */
+
+function getMainImage(product){
+
+  /*
+    IMPORTANT:
+    Main image first priority.
+  */
+
+  return (
+    product.image ||
+    product.image_url ||
+    product.main_image ||
+    product.thumbnail ||
+    product.images?.[0] ||
+    ""
+  );
+
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
+
+function createProductCard(product){
+
+  const card =
+    document.createElement("article");
+
+  card.className =
+    "product-card";
+
+
+  const image =
+    getMainImage(product);
+
+
+  const title =
+    product.title ||
+    product.name ||
+    "Product";
+
+
+  const price =
+    Number(
+      product.price ||
+      product.selling_price ||
+      0
+    );
+
+
+  const mrp =
+    Number(
+      product.mrp ||
+      product.original_price ||
+      0
+    );
+
+
+  let discount = "";
+
+  if(mrp > price && price > 0){
+
+    discount =
+      Math.round(
+        ((mrp-price)/mrp)*100
+      );
+
+  }
+
+
+  card.innerHTML = `
+
+    <div class="product-image-box">
+
+      ${
+        discount
+        ?
+        `<div class="discount">
+          ${discount}% OFF
+        </div>`
+        :
+        ""
+      }
+
+      <img
+        class="product-image"
+        src="${escapeHtml(image)}"
+        alt="${escapeHtml(title)}"
+        loading="lazy"
+        onerror="this.style.display='none';"
+      >
+
+    </div>
+
+
+    <div class="product-info">
+
+      <div class="rating">
+        ★ ${product.rating || "4.6"}
+      </div>
+
+
+      <div class="product-name">
+        ${escapeHtml(title)}
+      </div>
+
+
+      <div class="price-row">
+
+        <span class="price">
+          ₹${price.toLocaleString("en-IN")}
+        </span>
+
+        ${
+          mrp > price
+          ?
+          `<span class="mrp">
+            ₹${mrp.toLocaleString("en-IN")}
+          </span>`
+          :
+          ""
+        }
+
+      </div>
+
+
+      ${
+        discount
+        ?
+        `<div class="off">
+          ${discount}% OFF
+        </div>`
+        :
+        ""
+      }
+
+
+      <div class="delivery">
+        ✓ Delivery available
+      </div>
+
+    </div>
+
+  `;
+
+
+  card.addEventListener(
+    "click",
+    function(){
+
+      if(product.id){
+
+        window.location.href =
+          "product.html?id=" +
+          encodeURIComponent(product.id);
+
+      }
+
+    }
+  );
+
+
+  return card;
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document
+  .getElementById("searchInput")
+  .addEventListener(
+    "input",
+    function(){
+
+      const value =
+        this.value
+          .toLowerCase()
+          .trim();
+
+
+      document
+        .querySelectorAll(".product-card")
+        .forEach(card => {
+
+          const title =
+            card
+              .querySelector(".product-name")
+              ?.textContent
+              .toLowerCase() || "";
+
+
+          card.style.display =
+            !value ||
+            title.includes(value)
+            ?
+            ""
+            :
+            "none";
+
+        });
+
+    }
+  );
+
+
+/* =========================================================
+   CART COUNT
+========================================================= */
+
+async function loadCartCount(){
+
+  try{
+
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
+
+
+    if(!user){
+
+      document
+        .getElementById("cartCount")
+        .textContent =
+        "0";
+
+      return;
+
+    }
+
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
+      .from("cart_items")
+      .select("id, quantity")
+      .eq("user_id",user.id);
+
+
+    if(error){
+
+      console.error(
+        "Cart count:",
+        error
+      );
+
+      return;
+
+    }
+
+
+    let total = 0;
+
+
+    (data || []).forEach(
+      item => {
+
+        total +=
+          Number(
+            item.quantity || 1
+          );
+
+      }
+    );
+
+
+    document
+      .getElementById("cartCount")
+      .textContent =
+      total;
+
+
+  }
+  catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goLogin(){
+
+  window.location.href =
+    "login.html";
+
+}
+
+function goSignup(){
+
+  window.location.href =
+    "signup.html";
+
+}
+
+function goOrders(){
+
+  window.location.href =
+    "orders.html";
+
+}
+
+function goCart(){
+
+  window.location.href =
+    "cart.html";
+
+}
+
+function goHome(){
+
+  window.location.href =
+    "index.html";
+
+}
+
+function goCategories(){
+
+  window.location.href =
+    "categories.html";
+
+}
+
+function goAccount(){
+
+  const menu =
+    document.getElementById(
+      "accountMenu"
+    );
+
+  menu.classList.toggle(
+    "show"
+  );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logoutUser(){
+
+  await supabaseClient.auth.signOut();
+
+  window.location.reload();
 
 }
 
 
 /* =========================================================
    START
-   ========================================================= */
+========================================================= */
 
-(async function(){
+loadAccount();
 
-  await loadUser();
+loadCartCount();
 
-  await loadProducts();
+loadProducts();
 
-  await loadCartCount();
-
-})();
 
 </script>
 
