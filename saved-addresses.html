@@ -25,13 +25,54 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2800)}
 async function init(){
   try{
+    if(!window.supabase || !window.supabase.createClient){
+      throw new Error('Supabase library load nahi hui. Internet connection check karke page refresh karein.');
+    }
+
     const {data,error}=await sb.auth.getSession();
-    if(error)throw error;
-    user=data.session?.user||null;
-    if(!user){location.href='login.html';return}
+    if(error) throw error;
+
+    user=data?.session?.user || null;
+
+    if(!user){
+      showLoginRequired();
+      return;
+    }
+
     await loadAddresses();
-  }catch(e){console.error(e);$('loading').innerHTML='<b style="color:#dc2626">Addresses load nahi hue.</b><br><small>'+esc(e.message)+'</small>'}
+  }catch(e){
+    console.error('INIT ERROR:',e);
+    showPageError(e?.message || 'Page load nahi ho paya.');
+  }
 }
+
+function showLoginRequired(){
+  $('loading').style.display='none';
+  $('grid').style.display='grid';
+  $('grid').innerHTML=`<div class="empty">
+    <div class="empty-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="12" cy="8" r="3.2"/>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+      </svg>
+    </div>
+    <h2>Please Login</h2>
+    <p>Saved addresses dekhne aur add karne ke liye pehle MyStore account me login karein.</p>
+    <button class="add-btn" style="margin:auto" onclick="location.href='login.html?redirect=saved-addresses.html'">Login</button>
+  </div>`;
+}
+
+function showPageError(message){
+  $('loading').style.display='none';
+  $('grid').style.display='grid';
+  $('grid').innerHTML=`<div class="empty">
+    <div class="empty-icon">⚠️</div>
+    <h2>Something went wrong</h2>
+    <p>${esc(message)}</p>
+    <button class="add-btn" style="margin:auto" onclick="location.reload()">Try Again</button>
+  </div>`;
+}
+
 async function loadAddresses(){
   $('loading').style.display='flex';$('grid').style.display='none';
   const {data,error}=await sb.from('saved_addresses').select('id,user_id,name,phone,pincode,state,city,house,road,type,created_at').eq('user_id',user.id).order('created_at',{ascending:false});
@@ -69,6 +110,17 @@ async function deleteAddress(id){
 function clearForm(){['name','phone','pincode','state','city','house','road'].forEach(k=>$(k).value='');$('type').value='home'}
 function closeModal(){$('modal').classList.remove('show');editingId=null;clearForm()}
 $('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+sb.auth.onAuthStateChange((event, session)=>{
+  if(event==='SIGNED_IN' && session?.user && !user){
+    user=session.user;
+    loadAddresses().catch(e=>showPageError(e?.message || 'Addresses load nahi hue.'));
+  }
+  if(event==='SIGNED_OUT'){
+    user=null;
+    showLoginRequired();
+  }
+});
+
 init();
 </script>
 </body>
