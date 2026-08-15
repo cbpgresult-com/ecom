@@ -701,7 +701,6 @@ main{
 <div id="mobileProductLoader" class="mobile-product-loader" aria-hidden="true">
   <div class="mobile-product-loader-header">
     <button class="mobile-product-loader-back" type="button" aria-label="Back" onclick="hideMobileProductLoader()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-    <div class="mobile-product-loader-logo">MyStore</div>
     <div class="mobile-product-loader-spacer"></div>
     <button class="mobile-product-loader-action" type="button" aria-label="Search" onclick="goHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
     <button class="mobile-product-loader-action" type="button" aria-label="Cart" onclick="goCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 11.5h10.8L21 8H6"/></svg><span id="mobileProductLoaderCartBadge" class="mobile-product-loader-cart-badge"></span></button>
@@ -1702,12 +1701,9 @@ function showMobileProductLoader(productId){
   loader.setAttribute("aria-hidden","false");
   document.body.style.overflow="hidden";
 
-  /* Navigate immediately after the loader gets a chance to paint.
-     No artificial 120ms delay. The product page owns the real loading
-     screen and keeps it visible until the product data is actually ready. */
-  requestAnimationFrame(()=>{
-    window.location.href="product.html?id="+encodeURIComponent(productId);
-  });
+  /* No artificial delay. Navigate directly.
+     The product page immediately owns the real loading screen. */
+  window.location.href="product.html?id="+encodeURIComponent(productId);
 }
 function hideMobileProductLoader(){
   const loader=document.getElementById("mobileProductLoader");
