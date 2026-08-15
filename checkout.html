@@ -979,13 +979,39 @@ body{padding:0 !important;margin:0 !important;}
   function navigateOrigin(){
     var target=null;
     try{ target=sessionStorage.getItem('ckOriginPage'); }catch(e){}
-    location.href=target || document.referrer || '/';
+
+    /*
+      IMPORTANT: Do NOT use location.href here.
+      location.href creates a NEW history entry for the Product page.
+      Then Product -> Back -> Checkout happens again, which was the
+      3-4 times Back problem.
+
+      replace() removes the current Checkout document from this history
+      position, so after returning to Product, Back will NOT reopen Checkout.
+    */
+    var destination=target || document.referrer || '/';
+    try{
+      location.replace(destination);
+    }catch(e){
+      location.href=destination;
+    }
   }
 
   window.ckGoBack=function(){
     var step=window._ckCurrentStep||1;
-    if(step>1 && step<4){ history.back(); }
-    else navigateOrigin();
+
+    /*
+      Flipkart-style behaviour:
+      Step 3 -> Step 2 -> Step 1 -> Product/previous page.
+      Internal checkout steps use browser history, while leaving Checkout
+      uses replace() so Checkout cannot remain behind Product in history.
+    */
+    if(step>1 && step<4){
+      history.back();
+      return;
+    }
+
+    navigateOrigin();
   };
 
   /* =========================================================
