@@ -3781,44 +3781,360 @@ function updateMobileProductHeader(){const input=document.getElementById("mobile
 function showMobileProductLoadedHeader(){const loading=document.getElementById("mobileProductLoading");const header=document.getElementById("mobileProductHeader");if(window.innerWidth<=900){if(loading)loading.classList.add("hide");if(header)header.classList.add("show");document.body.style.overflow="";updateMobileProductHeader()}}
 
 /* =========================================================
-   REAL LOADER FOR NAVIGATION FROM PRODUCT PAGE
-   Any normal internal link clicked on this page first shows
-   the same full-screen loading UI, then navigates immediately.
+   REAL NAVIGATION LOADER — PRODUCT PAGE
+   Same loader for every internal page navigation on mobile.
+   No artificial delay.
 ========================================================= */
+
 function showProductNavigationLoader(){
-  const loading=document.getElementById("mobileProductLoading");
-  if(window.innerWidth<=900 && loading){
-    loading.classList.remove("hide");
-    loading.setAttribute("aria-hidden","false");
-    document.body.style.overflow="hidden";
-    const badge=document.getElementById("mobileProductCartBadge");
-    const loadBadge=document.getElementById("mobileProductLoadingBadge");
-    if(badge && loadBadge && badge.textContent.trim()){
-      loadBadge.textContent=badge.textContent.trim();
-      loadBadge.classList.add("show");
+
+  const loading =
+    document.getElementById(
+      "mobileProductLoading"
+    );
+
+  if(
+    window.innerWidth <= 900 &&
+    loading
+  ){
+
+    const badge =
+      document.getElementById(
+        "mobileProductCartBadge"
+      );
+
+    const loadBadge =
+      document.getElementById(
+        "mobileProductLoadingBadge"
+      );
+
+    if(
+      badge &&
+      loadBadge &&
+      badge.textContent.trim()
+    ){
+
+      loadBadge.textContent =
+        badge.textContent.trim();
+
+      loadBadge.classList.add(
+        "show"
+      );
     }
+
+    loading.classList.remove(
+      "hide"
+    );
+
+    loading.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    document.body.style.overflow =
+      "hidden";
   }
 }
 
-function navigateWithProductLoader(url){
+
+function navigateWithProductLoader(
+  url
+){
+
   showProductNavigationLoader();
-  window.location.href=url;
+
+  /*
+    Direct navigation.
+    No timeout.
+    No requestAnimationFrame.
+    No artificial wait.
+  */
+  window.location.assign(url);
 }
 
-document.addEventListener("click",function(event){
-  if(window.innerWidth>900) return;
-  const link=event.target.closest("a[href]");
-  if(!link) return;
-  if(link.target==="_blank" || link.hasAttribute("download")) return;
-  const raw=link.getAttribute("href");
-  if(!raw || raw==="#" || raw.startsWith("javascript:") || raw.startsWith("mailto:") || raw.startsWith("tel:")) return;
-  let url;
-  try{ url=new URL(raw,location.href); }catch(e){ return; }
-  if(url.origin!==location.origin) return;
-  event.preventDefault();
+
+/* ---------- Back ---------- */
+
+function productGoBack(){
+
   showProductNavigationLoader();
-  window.location.href=url.href;
-},true);
+
+  if(
+    window.history.length > 1
+  ){
+
+    window.history.back();
+
+  }else{
+
+    window.location.assign(
+      "index.html"
+    );
+  }
+}
+
+
+/* ---------- Search ---------- */
+
+function productGoSearch(){
+
+  navigateWithProductLoader(
+    "index.html"
+  );
+}
+
+
+/* ---------- Cart ---------- */
+
+function productGoCart(){
+
+  navigateWithProductLoader(
+    "cart.html"
+  );
+}
+
+
+/* ---------- Cart badge ---------- */
+
+function setMobileProductCartBadge(
+  value
+){
+
+  const text =
+    String(value || "").trim();
+
+  const badges = [
+    document.getElementById(
+      "mobileProductLoadingBadge"
+    ),
+    document.getElementById(
+      "mobileProductCartBadge"
+    )
+  ];
+
+  badges.forEach(
+    badge => {
+
+      if(!badge) return;
+
+      if(
+        text &&
+        text !== "0"
+      ){
+
+        badge.textContent =
+          Number(text) > 99
+            ? "99+"
+            : text;
+
+        badge.classList.add(
+          "show"
+        );
+
+      }else{
+
+        badge.textContent =
+          "";
+
+        badge.classList.remove(
+          "show"
+        );
+      }
+    }
+  );
+}
+
+
+/* ---------- Loaded header ---------- */
+
+function updateMobileProductHeader(){
+
+  const input =
+    document.getElementById(
+      "mobileProductSearchInput"
+    );
+
+  if(
+    input &&
+    product
+  ){
+
+    input.value =
+      product.title || "";
+  }
+
+  const source =
+    document.getElementById(
+      "mobileProductLoadingBadge"
+    );
+
+  if(
+    source &&
+    source.textContent.trim()
+  ){
+
+    setMobileProductCartBadge(
+      source.textContent.trim()
+    );
+  }
+}
+
+
+function showMobileProductLoadedHeader(){
+
+  const loading =
+    document.getElementById(
+      "mobileProductLoading"
+    );
+
+  const header =
+    document.getElementById(
+      "mobileProductHeader"
+    );
+
+  if(
+    window.innerWidth <= 900
+  ){
+
+    if(loading){
+
+      loading.classList.add(
+        "hide"
+      );
+
+      loading.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+    }
+
+    if(header){
+
+      header.classList.add(
+        "show"
+      );
+    }
+
+    document.body.style.overflow =
+      "";
+
+    updateMobileProductHeader();
+  }
+}
+
+
+/* =========================================================
+   CATCH ALL NORMAL INTERNAL LINKS
+   Product page → any same-site page
+   ========================================================= */
+
+document.addEventListener(
+  "click",
+  function(event){
+
+    if(
+      window.innerWidth > 900
+    ){
+      return;
+    }
+
+    const link =
+      event.target.closest(
+        "a[href]"
+      );
+
+    if(!link) return;
+
+    if(
+      link.target === "_blank" ||
+      link.hasAttribute("download")
+    ){
+      return;
+    }
+
+    const raw =
+      link.getAttribute(
+        "href"
+      );
+
+    if(
+      !raw ||
+      raw === "#" ||
+      raw.startsWith(
+        "javascript:"
+      ) ||
+      raw.startsWith(
+        "mailto:"
+      ) ||
+      raw.startsWith(
+        "tel:"
+      )
+    ){
+      return;
+    }
+
+    let url;
+
+    try{
+
+      url =
+        new URL(
+          raw,
+          window.location.href
+        );
+
+    }catch(e){
+
+      return;
+    }
+
+    /*
+      Only same-site links get the loader.
+      External links behave normally.
+    */
+    if(
+      url.origin !==
+      window.location.origin
+    ){
+      return;
+    }
+
+    event.preventDefault();
+
+    showProductNavigationLoader();
+
+    window.location.assign(
+      url.href
+    );
+
+  },
+  true
+);
+
+
+/* =========================================================
+   BFCache SAFETY
+   If the browser restores this page from history,
+   never leave the old navigation spinner visible.
+========================================================= */
+
+window.addEventListener(
+  "pageshow",
+  function(){
+
+    if(
+      window.innerWidth <= 900 &&
+      product
+    ){
+
+      showMobileProductLoadedHeader();
+
+    }
+
+  }
+);
+
+
 
 /* =========================================================
    START
