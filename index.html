@@ -1607,7 +1607,25 @@ await supabaseClient
     { ascending: false }
   );
 
+/* =========================================================
+   LATEST PRODUCT ORDER
+   Updated time change hoga to Index par bhi position change hogi.
+   New product ke liye created_at use hoga.
+========================================================= */
 
+(data || []).sort((a, b) => {
+
+  const timeA = new Date(
+    a.updated_at || a.created_at || 0
+  ).getTime();
+
+  const timeB = new Date(
+    b.updated_at || b.created_at || 0
+  ).getTime();
+
+  return timeB - timeA;
+
+});
   loading.style.display =
     "none";
 
