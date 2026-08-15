@@ -233,14 +233,13 @@ a{text-decoration:none;color:inherit}
 .pricebox{
   margin-top:24px;
   padding-bottom:20px;
-  border-bottom:1px solid #eee;
 }
 
 .priceRow{
   display:flex;
   align-items:baseline;
-  gap:10px;
   flex-wrap:wrap;
+  gap:9px;
 }
 
 .price{
@@ -252,45 +251,26 @@ a{text-decoration:none;color:inherit}
 .mrp{
   text-decoration:line-through;
   color:#888;
-  font-size:18px;
+  font-size:17px;
   font-weight:500;
 }
 
-.off{
-  display:none!important;
-}
-
-.appliedDiscount{
-  margin-top:10px;
-  width:100%;
-  min-height:32px;
-  padding:7px 10px;
-  background:#e9fbf1;
-  color:#333;
-  font-size:14px;
-  line-height:18px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  border-radius:0;
-}
-
-.appliedDiscount .discountIcon{
-  width:18px;
-  height:18px;
-  flex:0 0 18px;
-  border-radius:50%;
-  background:#079447;
-  color:#fff;
+.offBadge{
   display:inline-flex;
   align-items:center;
-  justify-content:center;
-  font-size:11px;
-  font-weight:900;
+  width:max-content;
+  margin-top:10px;
+  padding:5px 9px;
+  border-radius:5px;
+  background:#e8f8ee;
+  color:#15803d;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.2;
 }
 
-.appliedDiscount b{
-  font-weight:800;
+.off{
+  display:none;
 }
 
 .desc{
@@ -1095,23 +1075,18 @@ a{text-decoration:none;color:inherit}
     margin-top:10px;
   }
 
-  .priceRow{
-    gap:8px;
-  }
-
   .price{
     font-size:26px;
   }
 
   .mrp{
-    font-size:16px;
+    font-size:15px;
   }
 
-  .appliedDiscount{
+  .offBadge{
+    font-size:11px;
     margin-top:9px;
-    min-height:32px;
-    padding:7px 10px;
-    font-size:14px;
+    padding:5px 8px;
   }
 
   .rate{
@@ -1446,6 +1421,7 @@ class="detailsPanel">
 
 <div class="info">
 
+<span id="tag" class="tag">BESTSELLER</span>
 
 <h1 id="title" class="title"></h1>
 
@@ -1455,17 +1431,11 @@ class="detailsPanel">
 </div>
 
 <div class="pricebox">
-
-<div class="priceRow">
-<span id="price" class="price"></span>
-<span id="mrp" class="mrp"></span>
-</div>
-
-<div class="appliedDiscount">
-<span class="discountIcon">%</span>
-<span><b>₹35 off</b> applied for you</span>
-</div>
-
+  <div class="priceRow">
+    <span id="price" class="price"></span>
+    <span id="mrp" class="mrp"></span>
+  </div>
+  <div id="offBadge" class="offBadge">35% OFF this order</div>
 </div>
 
 <div id="deliveryDetails" class="deliveryDetails">
@@ -3043,6 +3013,21 @@ function render(){
       ? money(product.mrp)
       : "";
 
+  /*
+    Order discount badge:
+    Keep this separate from MRP discount calculation.
+    The old 77% calculated discount is intentionally not shown.
+  */
+  const orderDiscount = 35;
+
+  const offBadge =
+    document.getElementById("offBadge");
+
+  if(offBadge){
+    offBadge.textContent =
+      orderDiscount + "% OFF this order";
+  }
+
   document.getElementById(
     "description"
   ).textContent=
@@ -3058,6 +3043,10 @@ function render(){
   ).textContent=
     product.reviews+" reviews";
 
+  document.getElementById(
+    "tag"
+  ).textContent=
+    product.badge;
 
   document.getElementById(
     "badge"
