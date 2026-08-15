@@ -982,12 +982,28 @@ a{text-decoration:none;color:inherit}
     font-size:8.5px;
   }
 
+  /* Full-width mobile product — no side gap */
   .page{
-    padding:12px 9px 90px;
+    width:100%;
+    max-width:100%;
+    padding:0 0 90px;
+    margin:0;
   }
 
   .product{
-    border-radius:17px;
+    width:100%;
+    max-width:100%;
+    margin:0;
+    border-radius:0;
+    border-left:0;
+    border-right:0;
+  }
+
+  body{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    overflow-x:hidden;
   }
 
   .grid{
