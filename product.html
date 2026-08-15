@@ -7,12 +7,14 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
   background:#f5f6f8;
-  color:#111
+  color:#111;
 }
+
 button,input{font:inherit}
 button{cursor:pointer}
 a{text-decoration:none;color:inherit}
@@ -20,7 +22,7 @@ a{text-decoration:none;color:inherit}
 .page{
   width:min(1450px,100%);
   margin:auto;
-  padding:22px 4%
+  padding:22px 4%;
 }
 
 .product{
@@ -29,29 +31,30 @@ a{text-decoration:none;color:inherit}
   border:1px solid #e5e7eb;
   border-radius:24px;
   overflow:hidden;
-  box-shadow:0 12px 40px #0000000d
+  box-shadow:0 12px 40px #0000000d;
 }
 
 .grid{
   display:grid;
   grid-template-columns:1.05fr .95fr;
-  min-height:650px
+  min-height:650px;
 }
 
 .gallery{
   padding:28px;
   background:linear-gradient(145deg,#fff,#f1f3f5);
-  border-right:1px solid #eee
+  border-right:1px solid #eee;
 }
 
 /* IMAGE SLIDER */
+
 .main{
   height:550px;
   background:#fff;
   border:1px solid #eee;
   border-radius:20px;
   position:relative;
-  overflow:hidden
+  overflow:hidden;
 }
 
 .pill{
@@ -65,7 +68,7 @@ a{text-decoration:none;color:inherit}
   font-size:10px;
   font-weight:800;
   z-index:6;
-  letter-spacing:.3px
+  letter-spacing:.3px;
 }
 
 .slider{
@@ -76,7 +79,7 @@ a{text-decoration:none;color:inherit}
   overflow-y:hidden;
   scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;
-  scrollbar-width:none
+  scrollbar-width:none;
 }
 
 .slider::-webkit-scrollbar{display:none}
@@ -90,7 +93,7 @@ a{text-decoration:none;color:inherit}
   display:flex;
   align-items:center;
   justify-content:center;
-  position:relative
+  position:relative;
 }
 
 .slide img{
@@ -100,7 +103,7 @@ a{text-decoration:none;color:inherit}
   object-fit:contain;
   padding:35px;
   min-width:0;
-  min-height:0
+  min-height:0;
 }
 
 .imgFallback{
@@ -112,7 +115,7 @@ a{text-decoration:none;color:inherit}
   color:#777;
   font-size:13px;
   position:absolute;
-  inset:0
+  inset:0;
 }
 
 .navBtn{
@@ -132,17 +135,17 @@ a{text-decoration:none;color:inherit}
   box-shadow:0 4px 14px #0000001f;
   z-index:6;
   color:#111;
-  transition:box-shadow .15s,transform .15s
+  transition:box-shadow .15s,transform .15s;
 }
 
 .navBtn:hover:not(:disabled){
   box-shadow:0 6px 18px #00000029;
-  transform:translateY(-50%) scale(1.05)
+  transform:translateY(-50%) scale(1.05);
 }
 
 .navBtn:disabled{
   opacity:.35;
-  cursor:default
+  cursor:default;
 }
 
 .prevBtn{left:14px}
@@ -153,7 +156,7 @@ a{text-decoration:none;color:inherit}
   justify-content:center;
   align-items:center;
   gap:7px;
-  padding:14px 0 2px
+  padding:14px 0 2px;
 }
 
 .dot{
@@ -163,21 +166,22 @@ a{text-decoration:none;color:inherit}
   background:#d9d9d9;
   border:0;
   padding:0;
-  cursor:pointer
+  cursor:pointer;
 }
 
 .dot.active{
   background:#111;
   width:20px;
   border-radius:5px;
-  transition:width .2s,background .2s
+  transition:width .2s,background .2s;
 }
 
 /* INFO */
+
 .info{
   padding:38px 42px;
   display:flex;
-  flex-direction:column
+  flex-direction:column;
 }
 
 .tag{
@@ -188,7 +192,7 @@ a{text-decoration:none;color:inherit}
   padding:6px 9px;
   font-size:10px;
   font-weight:800;
-  letter-spacing:.3px
+  letter-spacing:.3px;
 }
 
 .title{
@@ -196,14 +200,14 @@ a{text-decoration:none;color:inherit}
   line-height:1.3;
   margin:14px 0 0;
   font-weight:700;
-  color:#1a1a1a
+  color:#1a1a1a;
 }
 
 .rating{
   display:flex;
   gap:9px;
   align-items:center;
-  margin-top:15px
+  margin-top:15px;
 }
 
 .rate{
@@ -215,44 +219,44 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
   display:inline-flex;
   align-items:center;
-  gap:3px
+  gap:3px;
 }
 
 .reviews{
   color:#6b7280;
-  font-size:12px
+  font-size:12px;
 }
 
 .pricebox{
   margin-top:24px;
   padding-bottom:20px;
-  border-bottom:1px solid #eee
+  border-bottom:1px solid #eee;
 }
 
 .price{
   font-size:33px;
   font-weight:800;
-  letter-spacing:-.5px
+  letter-spacing:-.5px;
 }
 
 .mrp{
   text-decoration:line-through;
   color:#888;
-  font-size:14px
+  font-size:14px;
 }
 
 .off{
   color:#15803d;
   font-weight:800;
   font-size:13px;
-  margin-left:8px
+  margin-left:8px;
 }
 
 .desc{
   color:#4b5563;
   font-size:14px;
   line-height:1.75;
-  margin-top:20px
+  margin-top:20px;
 }
 
 .stock{
@@ -262,12 +266,68 @@ a{text-decoration:none;color:inherit}
   margin-top:16px;
   display:flex;
   align-items:center;
-  gap:6px
+  gap:6px;
+}
+
+/* QUANTITY */
+
+.qtyrow{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:8px;
+  margin-top:14px;
+  font-size:12px;
+  font-weight:800;
+  min-height:34px;
+}
+
+.qty{
+  display:flex;
+  border:1px solid #ddd;
+  border-radius:8px;
+  overflow:hidden;
+  height:34px;
+}
+
+.qty button{
+  width:32px;
+  border:0;
+  background:#f7f7f7;
+  font-size:13px;
+}
+
+.qty span{
+  width:34px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+}
+
+/* CUSTOMIZE */
+
+#customizeWrap{
+  display:none;
+  align-items:center;
+  gap:7px;
+  margin-left:4px;
+}
+
+#customizeInput{
+  width:125px;
+  height:40px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:0 10px;
+  outline:none;
+  background:#fff;
 }
 
 /* DELIVERY */
+
 .deliveryDetails{
-  margin-top:24px
+  margin-top:24px;
 }
 
 .deliveryTitle{
@@ -275,7 +335,7 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
   margin-bottom:11px;
   color:#111;
-  letter-spacing:-.2px
+  letter-spacing:-.2px;
 }
 
 .deliveryCard{
@@ -283,7 +343,7 @@ a{text-decoration:none;color:inherit}
   overflow:hidden;
   border:1px solid #e3e7ed;
   background:#fff;
-  box-shadow:0 8px 24px rgba(20,30,45,.07)
+  box-shadow:0 8px 24px rgba(20,30,45,.07);
 }
 
 .deliveryAddress{
@@ -293,7 +353,8 @@ a{text-decoration:none;color:inherit}
   gap:11px;
   background:linear-gradient(180deg,#f4f8ff,#eef5ff);
   padding:13px 14px;
-  min-height:50px
+  min-height:50px;
+  min-width:0;
 }
 
 .deliveryIcon{
@@ -303,14 +364,14 @@ a{text-decoration:none;color:inherit}
   align-items:center;
   justify-content:center;
   flex:0 0 26px;
-  color:#111
+  color:#111;
 }
 
 .deliveryIcon svg{
   width:22px;
   height:22px;
   display:block;
-  stroke:currentColor
+  stroke:currentColor;
 }
 
 .deliveryAddressText{
@@ -324,7 +385,7 @@ a{text-decoration:none;color:inherit}
   line-height:1.2;
   font-size:12px;
   font-weight:700;
-  display:block
+  display:block;
 }
 
 .deliveryArrow{
@@ -334,13 +395,13 @@ a{text-decoration:none;color:inherit}
   align-items:center;
   justify-content:center;
   color:#6b7280;
-  flex:0 0 24px
+  flex:0 0 24px;
 }
 
 .deliveryArrow svg{
   width:18px;
   height:18px;
-  stroke:currentColor
+  stroke:currentColor;
 }
 
 .deliveryDate{
@@ -352,13 +413,13 @@ a{text-decoration:none;color:inherit}
   border-top:1px solid #edf0f3;
   font-size:12px;
   font-weight:800;
-  color:#20242b
+  color:#20242b;
 }
 
 .deliverySeller{
   padding:12px 14px 13px;
   background:#fafafa;
-  border-top:1px solid #edf0f3
+  border-top:1px solid #edf0f3;
 }
 
 .sellerMain{
@@ -367,20 +428,20 @@ a{text-decoration:none;color:inherit}
   gap:8px;
   font-size:12px;
   font-weight:800;
-  color:#20242b
+  color:#20242b;
 }
 
 .sellerMain svg{
   width:20px;
   height:20px;
   stroke:currentColor;
-  flex:0 0 20px
+  flex:0 0 20px;
 }
 
 .sellerSub{
   font-size:10px;
   color:#747b85;
-  margin:4px 0 0 28px
+  margin:4px 0 0 28px;
 }
 
 .sellerLink{
@@ -390,58 +451,16 @@ a{text-decoration:none;color:inherit}
   margin:6px 0 0 28px;
   color:#1769d5;
   font-size:11px;
-  font-weight:800
-}
-
-/* QTY */
-.qtyrow{
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  gap:8px;
-  margin-top:14px;
-  font-size:12px;
   font-weight:800;
-  min-height:34px
-}
-
-.qty{
-  display:flex;
-  border:1px solid #ddd;
-  border-radius:8px;
-  overflow:hidden;
-  height:34px
-}
-
-.qty button{
-  width:32px;
-  border:0;
-  background:#f7f7f7;
-  font-size:13px
-}
-
-.qty span{
-  width:34px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px
-}
-
-/* CUSTOMIZE */
-#customizeWrap{
-  display:none;
-  align-items:center;
-  gap:7px;
-  margin-left:4px
 }
 
 /* FEATURES */
+
 .features{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:9px;
-  margin-top:22px
+  margin-top:22px;
 }
 
 .feature{
@@ -457,7 +476,7 @@ a{text-decoration:none;color:inherit}
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  box-shadow:0 5px 16px rgba(20,30,45,.045)
+  box-shadow:0 5px 16px rgba(20,30,45,.045);
 }
 
 .featureIcon{
@@ -469,13 +488,13 @@ a{text-decoration:none;color:inherit}
   align-items:center;
   justify-content:center;
   margin-bottom:7px;
-  color:#1d4ed8
+  color:#1d4ed8;
 }
 
 .featureIcon svg{
   width:19px;
   height:19px;
-  stroke:currentColor
+  stroke:currentColor;
 }
 
 .feature b{
@@ -483,308 +502,185 @@ a{text-decoration:none;color:inherit}
   color:#20242b;
   font-size:9px;
   line-height:1.2;
-  margin:0
+  margin:0;
 }
 
-/* =========================================================
-   PRODUCT HIGHLIGHTS + ALL DETAILS
-   Flipkart-style clean accordion — no cards
-========================================================= */
+/* =========================================
+   PRODUCT HIGHLIGHTS
+   SIMPLE FLIPKART STYLE
+========================================= */
 
-.productExtra,
-.allDetails{
-  margin-top:18px;
-  background:#fff;
-  border:0;
-  border-top:1px solid #e6e6e6;
-  border-bottom:1px solid #e6e6e6;
-  border-radius:0;
-  overflow:hidden;
-  box-shadow:none
+.productInfoSections{
+  margin-top:28px;
+  width:100%;
 }
 
-.extraAccordionHeader{
+.simpleSection{
+  border-top:1px solid #e5e5e5;
+}
+
+.simpleSection:last-child{
+  border-bottom:1px solid #e5e5e5;
+}
+
+.simpleSectionHeader{
   width:100%;
   min-height:76px;
-  padding:14px 0;
-  border:0;
-  background:#fff;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:18px;
+  gap:15px;
+  background:#fff;
+  border:0;
+  padding:13px 0;
   text-align:left;
-  color:#111;
-  -webkit-tap-highlight-color:transparent
 }
 
-.extraAccordionHeader:hover{
-  background:#fff
-}
-
-.extraHeaderText{
+.simpleSectionHeaderText{
   min-width:0;
-  display:flex;
-  flex-direction:column;
-  gap:5px
 }
 
-.extraHeaderText strong{
-  font-size:19px;
-  line-height:1.2;
+.simpleSectionTitle{
+  font-size:20px;
   font-weight:800;
-  color:#2b2b2b
-}
-
-.extraHeaderText small{
-  font-size:13px;
+  color:#171717;
   line-height:1.25;
-  color:#777;
-  font-weight:400
 }
 
-.extraChevron{
+.simpleSectionSubtitle{
+  margin-top:5px;
+  color:#737373;
+  font-size:13px;
+  line-height:1.35;
+}
+
+.simpleSectionArrow{
   width:34px;
   height:34px;
   flex:0 0 34px;
-  border-radius:10px;
-  background:#f5f6f7;
+  border-radius:9px;
+  background:#f4f5f6;
   display:flex;
   align-items:center;
   justify-content:center;
   color:#222;
-  transition:transform .2s ease,background .2s ease
 }
 
-.extraChevron svg{
-  width:18px;
-  height:18px;
-  stroke:currentColor
+.simpleSectionArrow svg{
+  width:17px;
+  height:17px;
+  stroke:currentColor;
+  transition:transform .2s ease;
 }
 
-.extraAccordionHeader[aria-expanded="true"] .extraChevron{
+.simpleSection.open .simpleSectionArrow svg{
   transform:rotate(180deg);
-  background:#f0f1f2
 }
 
-/* Open highlight content: plain rows, no cards */
+/* highlight rows */
+
 .highlightContent{
-  padding:0 0 12px;
-  border-top:1px solid #eeeeee
+  display:none;
+  padding:0 0 10px;
 }
 
-.highlightItem{
-  min-height:58px;
-  padding:12px 0;
+.simpleSection.open .highlightContent{
+  display:block;
+}
+
+.highlightRow{
   display:flex;
   align-items:center;
   gap:12px;
-  border-bottom:1px solid #eeeeee
-}
-
-.highlightItem:last-child{
-  border-bottom:0
+  min-height:61px;
+  border-top:1px solid #e5e5e5;
 }
 
 .highlightIcon{
-  width:36px;
-  height:36px;
-  flex:0 0 36px;
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
   border-radius:50%;
+  background:#f0f1f2;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:#f5f6f7;
-  color:var(--highlight-color,#111)
+  color:#222;
 }
 
 .highlightIcon svg{
   width:18px;
   height:18px;
-  stroke:currentColor
+  stroke:currentColor;
 }
 
 .highlightText{
   min-width:0;
-  display:flex;
-  flex-direction:column;
-  gap:3px
+  flex:1;
 }
 
 .highlightLabel{
-  font-size:12px;
   color:#777;
-  font-weight:500;
-  line-height:1.25
+  font-size:12px;
+  line-height:1.2;
 }
 
 .highlightValue{
-  font-size:14px;
-  color:#333;
-  font-weight:700;
-  line-height:1.35;
-  word-break:break-word
-}
-
-/* All details: clean Flipkart-style specification rows */
-.detailSections{
-  padding:0 0 10px;
-  border-top:1px solid #eeeeee
-}
-
-.detailSection{
-  border-bottom:1px solid #e8e8e8
-}
-
-.detailSection:last-child{
-  border-bottom:0
-}
-
-.detailSectionTitle{
-  padding:17px 0 11px;
-  font-size:15px;
+  margin-top:4px;
+  color:#171717;
+  font-size:13px;
   font-weight:800;
-  color:#333;
-  display:flex;
-  align-items:center;
-  gap:0
+  line-height:1.3;
 }
 
-.detailSectionTitle:before{
-  display:none
+/* ALL DETAILS */
+
+.detailsContent{
+  display:none;
+  padding:0 0 15px;
 }
 
-.detailRows{
-  border:0;
-  border-radius:0;
-  overflow:hidden;
-  margin:0
+.simpleSection.open .detailsContent{
+  display:block;
+}
+
+.detailsHeading{
+  padding:18px 0 10px;
+  font-size:16px;
+  font-weight:800;
+  color:#171717;
 }
 
 .detailRow{
   display:grid;
   grid-template-columns:1fr 1fr;
-  min-height:57px;
-  border-bottom:1px solid #e7e7e7
-}
-
-.detailRow:last-child{
-  border-bottom:0
-}
-
-.detailKey,
-.detailValue{
-  padding:10px 14px 10px 0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  min-width:0
+  min-height:58px;
+  border-top:1px solid #e5e5e5;
+  align-items:center;
+  column-gap:25px;
 }
 
 .detailKey{
   color:#777;
   font-size:13px;
-  line-height:1.25
+  line-height:1.35;
 }
 
 .detailValue{
-  color:#333;
-  font-size:14px;
-  line-height:1.3;
-  font-weight:500;
-  border-left:0
-}
-
-@media(max-width:900px){
-  .productExtra,
-  .allDetails{
-    margin-top:14px;
-    border-top:1px solid #e5e5e5;
-    border-bottom:1px solid #e5e5e5;
-    border-radius:0
-  }
-
-  .extraAccordionHeader{
-    min-height:70px;
-    padding:13px 0
-  }
-
-  .extraHeaderText strong{
-    font-size:17px
-  }
-
-  .extraHeaderText small{
-    font-size:12px
-  }
-
-  .extraChevron{
-    width:32px;
-    height:32px;
-    flex-basis:32px;
-    border-radius:9px
-  }
-
-  .highlightContent{
-    padding-bottom:8px
-  }
-
-  .highlightItem{
-    min-height:54px;
-    padding:11px 0;
-    gap:10px
-  }
-
-  .highlightIcon{
-    width:32px;
-    height:32px;
-    flex-basis:32px
-  }
-
-  .highlightIcon svg{
-    width:16px;
-    height:16px
-  }
-
-  .highlightLabel{
-    font-size:11px
-  }
-
-  .highlightValue{
-    font-size:13px
-  }
-
-  .detailSections{
-    padding-bottom:8px
-  }
-
-  .detailSectionTitle{
-    padding:15px 0 9px;
-    font-size:14px
-  }
-
-  .detailRow{
-    grid-template-columns:1fr 1fr;
-    min-height:54px
-  }
-
-  .detailKey,
-  .detailValue{
-    padding:9px 9px 9px 0;
-    font-size:11px
-  }
-
-  .detailValue{
-    font-size:12px
-  }
+  color:#171717;
+  font-size:13px;
+  line-height:1.35;
+  word-break:break-word;
 }
 
 /* CTA */
+
 .cta{
   display:grid;
   grid-template-columns:1fr 1.2fr;
   gap:10px;
   margin-top:auto;
-  padding-top:24px
+  padding-top:24px;
 }
 
 .add,.buy{
@@ -792,29 +688,29 @@ a{text-decoration:none;color:inherit}
   border-radius:14px;
   font-weight:800;
   font-size:14px;
-  transition:transform .12s,box-shadow .12s,background .15s
+  transition:transform .12s,box-shadow .12s,background .15s;
 }
 
 .add{
   background:#fff;
   border:1px solid #d9dde3;
-  box-shadow:0 5px 16px rgba(20,30,45,.05)
+  box-shadow:0 5px 16px rgba(20,30,45,.05);
 }
 
 .add:hover{
   background:#f8fafc;
-  box-shadow:0 8px 22px rgba(20,30,45,.08)
+  box-shadow:0 8px 22px rgba(20,30,45,.08);
 }
 
 .add:active,.buy:active{
-  transform:scale(.98)
+  transform:scale(.98);
 }
 
 .buy{
   background:linear-gradient(135deg,#ffbd19,#ff9800);
   border:0;
   box-shadow:0 8px 22px rgba(255,152,0,.28);
-  color:#1a1a1a
+  color:#1a1a1a;
 }
 
 .cta svg{
@@ -822,21 +718,22 @@ a{text-decoration:none;color:inherit}
   height:18px;
   vertical-align:-4px;
   margin-right:5px;
-  stroke:currentColor
+  stroke:currentColor;
 }
 
-/* OLD DETAILS */
+/* OLD DETAILS SECTION - KEPT FOR EXISTING SYSTEM */
+
 .details{
   margin-top:18px;
   background:#fff;
   border:1px solid #e5e7eb;
   border-radius:18px;
-  overflow:hidden
+  overflow:hidden;
 }
 
 .tabs{
   display:flex;
-  border-bottom:1px solid #eee
+  border-bottom:1px solid #eee;
 }
 
 .tab{
@@ -844,20 +741,22 @@ a{text-decoration:none;color:inherit}
   background:#fff;
   padding:17px 21px;
   font-weight:800;
-  color:#777
+  color:#777;
 }
 
 .tab.active{
   color:#111;
-  border-bottom:2px solid #111
+  border-bottom:2px solid #111;
 }
 
 .content{
   padding:22px;
   color:#4b5563;
   font-size:13px;
-  line-height:1.8
+  line-height:1.8;
 }
+
+/* TOAST */
 
 .toast{
   position:fixed;
@@ -872,102 +771,103 @@ a{text-decoration:none;color:inherit}
   font-size:12px;
   font-weight:800;
   transition:.25s;
-  z-index:100
+  z-index:100;
 }
 
 .toast.show{
   opacity:1;
-  transform:translate(-50%,0)
+  transform:translate(-50%,0);
 }
 
 /* MOBILE */
+
 @media(max-width:900px){
 
   #customizeWrap{
     margin-left:0!important;
     flex:1;
-    min-width:0
+    min-width:0;
   }
 
   #customizeWrap input{
     width:100%!important;
     max-width:135px;
-    height:34px!important
+    height:34px!important;
   }
 
   #customizeWrap label{
-    font-size:10px!important
+    font-size:10px!important;
   }
 
   .qtyrow{
     gap:6px;
     margin-top:12px;
     font-size:11px;
-    min-height:32px
+    min-height:32px;
   }
 
   .qty{
     height:32px;
-    border-radius:8px
+    border-radius:8px;
   }
 
   .qty button{
     width:29px;
-    font-size:12px
+    font-size:12px;
   }
 
   .qty span{
     width:30px;
-    font-size:11px
+    font-size:11px;
   }
 
   .deliveryDetails{
-    margin-top:18px
+    margin-top:18px;
   }
 
   .deliveryTitle{
     font-size:15px;
-    margin-bottom:8px
+    margin-bottom:8px;
   }
 
   .deliveryAddress{
     padding:10px 10px;
     font-size:10px;
-    min-height:43px
+    min-height:43px;
   }
 
   .deliveryDate{
     padding:10px;
-    font-size:10px
+    font-size:10px;
   }
 
   .deliverySeller{
-    padding:10px
+    padding:10px;
   }
 
   .sellerMain{
-    font-size:10px
+    font-size:10px;
   }
 
   .sellerSub{
     font-size:8.5px;
-    margin-left:27px
+    margin-left:27px;
   }
 
   .sellerLink{
     font-size:9px;
-    margin:5px 0 0 27px
+    margin:5px 0 0 27px;
   }
 
   .deliveryIcon{
     width:23px;
     height:23px;
-    flex-basis:23px
+    flex-basis:23px;
   }
 
   .deliveryIcon svg{
     width:19px;
-    height:19px
+    height:19px;
   }
 
   .deliveryAddressText{
@@ -977,61 +877,61 @@ a{text-decoration:none;color:inherit}
     text-overflow:ellipsis;
     min-width:0;
     max-width:100%;
-    display:block
+    display:block;
   }
 
   .deliveryArrow{
     width:21px;
-    flex-basis:21px
+    flex-basis:21px;
   }
 
   .deliveryArrow svg{
     width:16px;
-    height:16px
+    height:16px;
   }
 
   .features{
     gap:7px;
-    margin-top:16px
+    margin-top:16px;
   }
 
   .feature{
     min-height:68px;
-    padding:8px 3px
+    padding:8px 3px;
   }
 
   .featureIcon{
     width:27px;
     height:27px;
     border-radius:9px;
-    margin-bottom:5px
+    margin-bottom:5px;
   }
 
   .featureIcon svg{
     width:17px;
-    height:17px
+    height:17px;
   }
 
   .feature b{
-    font-size:8.5px
+    font-size:8.5px;
   }
 
   .page{
-    padding:12px 9px 90px
+    padding:12px 9px 90px;
   }
 
   .product{
-    border-radius:17px
+    border-radius:17px;
   }
 
   .grid{
-    grid-template-columns:1fr
+    grid-template-columns:1fr;
   }
 
   .gallery{
     padding:9px 0;
     border-right:0;
-    border-bottom:1px solid #eee
+    border-bottom:1px solid #eee;
   }
 
   .main{
@@ -1039,137 +939,108 @@ a{text-decoration:none;color:inherit}
     border:0;
     background:transparent;
     border-radius:0;
-    box-shadow:none
+    box-shadow:none;
   }
 
   .slide img{
-    padding:10px
+    padding:10px;
   }
 
   .navBtn{
-    display:none!important
+    display:none!important;
   }
 
   .info{
-    padding:20px 16px
+    padding:20px 16px;
   }
 
   .title{
     font-size:19px;
     line-height:1.35;
-    margin-top:10px
+    margin-top:10px;
   }
 
   .price{
-    font-size:26px
+    font-size:26px;
   }
 
   .mrp{
-    font-size:12px
+    font-size:12px;
   }
 
   .off{
-    font-size:12px
+    font-size:12px;
   }
 
   .rate{
-    font-size:11px
+    font-size:11px;
   }
 
   .reviews{
-    font-size:11px
+    font-size:11px;
   }
 
-  /* HIGHLIGHTS MOBILE */
-  .productExtra,
-  .allDetails{
-    border-radius:16px;
-    margin-top:14px
+  /* screenshot-style sections mobile */
+
+  .productInfoSections{
+    margin-top:22px;
   }
 
-  .extraHeader,
-  .detailsTop{
-    padding:15px 14px 12px
+  .simpleSectionHeader{
+    min-height:70px;
+    padding:11px 0;
   }
 
-  .extraHeaderIcon,
-  .detailsTopIcon{
-    width:34px;
-    height:34px;
-    flex-basis:34px;
-    border-radius:10px
+  .simpleSectionTitle{
+    font-size:18px;
   }
 
-  .extraHeaderIcon svg,
-  .detailsTopIcon svg{
-    width:18px;
-    height:18px
+  .simpleSectionSubtitle{
+    font-size:12px;
+    margin-top:4px;
   }
 
-  .extraHeader h2,
-  .detailsTop h2{
-    font-size:15px
+  .simpleSectionArrow{
+    width:32px;
+    height:32px;
+    flex-basis:32px;
+    border-radius:9px;
   }
 
-  .extraHeader p,
-  .detailsTop p{
-    font-size:9px
-  }
-
-  .highlightGrid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
-    padding:12px
-  }
-
-  .highlightCard{
-    min-height:102px;
-    padding:12px 10px
+  .highlightRow{
+    min-height:62px;
+    gap:11px;
   }
 
   .highlightIcon{
-    width:30px;
-    height:30px;
-    border-radius:9px;
-    margin-bottom:8px
-  }
-
-  .highlightIcon svg{
-    width:16px;
-    height:16px
+    width:37px;
+    height:37px;
+    flex-basis:37px;
   }
 
   .highlightLabel{
-    font-size:9px
+    font-size:11px;
   }
 
   .highlightValue{
-    font-size:11px
-  }
-
-  /* DETAILS MOBILE */
-  .detailSections{
-    padding:6px 12px 12px
-  }
-
-  .detailSectionTitle{
-    padding:13px 3px 9px;
-    font-size:11px
-  }
-
-  .detailRows{
-    border-radius:10px;
-    margin-bottom:9px
+    font-size:12px;
+    margin-top:3px;
   }
 
   .detailRow{
-    grid-template-columns:42% 58%
+    min-height:55px;
+    grid-template-columns:1fr 1fr;
+    column-gap:18px;
   }
 
   .detailKey,
   .detailValue{
-    padding:9px 9px;
-    font-size:10px
+    font-size:12px;
+  }
+
+  .detailsHeading{
+    font-size:15px;
+    padding:16px 0 9px;
   }
 
   .cta{
@@ -1182,11 +1053,11 @@ a{text-decoration:none;color:inherit}
     padding:9px 10px calc(9px + env(safe-area-inset-bottom));
     margin:0;
     border-top:1px solid #ddd;
-    box-shadow:0 -6px 20px #0000000f
+    box-shadow:0 -6px 20px #0000000f;
   }
 
   .add,.buy{
-    height:51px
+    height:51px;
   }
 }
 </style>
@@ -1204,6 +1075,8 @@ style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-it
 <section id="product" class="product">
 
 <div class="grid">
+
+<!-- GALLERY -->
 
 <div class="gallery">
 
@@ -1229,6 +1102,8 @@ aria-label="Next image">›</button>
 
 </div>
 
+<!-- INFO -->
+
 <div class="info">
 
 <span id="tag" class="tag">BESTSELLER</span>
@@ -1241,13 +1116,14 @@ aria-label="Next image">›</button>
 </div>
 
 <div class="pricebox">
-<span id="price" class="price"></span><br>
+<span id="price" class="price"></span>
+<br>
 <span id="mrp" class="mrp"></span>
 <span id="off" class="off"></span>
 </div>
 
-
 <!-- DELIVERY -->
+
 <div id="deliveryDetails" class="deliveryDetails">
 
 <div class="deliveryTitle">Delivery details</div>
@@ -1261,19 +1137,18 @@ tabindex="0"
 onclick="openAddressSelector()"
 onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
 
-<div class="deliveryIcon">
+<div class="deliveryIcon" aria-hidden="true">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
 <path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z"/>
 <circle cx="12" cy="9" r="2.4"/>
 </svg>
 </div>
 
-<div id="deliveryAddressText"
-class="deliveryAddressText">
+<div id="deliveryAddressText" class="deliveryAddressText">
 Add delivery address
 </div>
 
-<div class="deliveryArrow">
+<div class="deliveryArrow" aria-hidden="true">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
 <path d="m9 18 6-6-6-6"/>
 </svg>
@@ -1300,12 +1175,15 @@ Add delivery address
 <div class="deliverySeller">
 
 <div class="sellerMain">
+
 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
 <path d="M4 10h16v10H4z"/>
 <path d="m3 10 2-5h14l2 5"/>
 <path d="M8 10v2a2 2 0 0 0 4 0v-2a2 2 0 0 0 4 0v-2"/>
 </svg>
+
 <span>Fulfilled by MyStore</span>
+
 </div>
 
 <div class="sellerSub">
@@ -1321,13 +1199,12 @@ See other sellers <span>›</span>
 </div>
 </div>
 
-
 <div id="description" class="desc"></div>
 
 <div id="stock" class="stock"></div>
 
-
 <!-- QTY -->
+
 <div class="qtyrow">
 
 Qty.
@@ -1346,52 +1223,97 @@ Qty.
 id="customizeInput"
 type="text"
 maxlength="100"
-placeholder="Name / Text"
-style="width:125px;height:40px;border:1px solid #ddd;border-radius:10px;padding:0 10px;outline:none;background:#fff;">
+placeholder="Name / Text">
 
 </div>
 
 </div>
-
 
 <!-- FEATURES -->
+
 <div id="features" class="features"></div>
 
 
-<!-- =====================================================
-     PRODUCT HIGHLIGHTS
-===================================================== -->
-<section id="productHighlights" class="productExtra" style="display:none">
-  <button type="button" class="extraAccordionHeader" onclick="toggleExtraSection('productHighlights')" aria-expanded="false">
-    <span class="extraHeaderText">
-      <strong>Product Highlights</strong>
-      <small>Key features, expiry, usage, and more</small>
-    </span>
-    <span class="extraChevron" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg>
-    </span>
-  </button>
-  <div id="highlightGrid" class="highlightContent" hidden></div>
+<!-- =================================================
+     PRODUCT HIGHLIGHTS + ALL DETAILS
+================================================= -->
+
+<div class="productInfoSections">
+
+<!-- PRODUCT HIGHLIGHTS -->
+
+<section class="simpleSection" id="highlightsSection">
+
+<button class="simpleSectionHeader"
+type="button"
+onclick="toggleSimpleSection('highlightsSection')">
+
+<div class="simpleSectionHeaderText">
+
+<div class="simpleSectionTitle">
+Product Highlights
+</div>
+
+<div class="simpleSectionSubtitle">
+Key features, expiry, usage, and more
+</div>
+
+</div>
+
+<div class="simpleSectionArrow">
+
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="m6 9 6 6 6-6"/>
+</svg>
+
+</div>
+
+</button>
+
+<div id="highlightsContent" class="highlightContent"></div>
+
 </section>
 
-<!-- =====================================================
-     ALL DETAILS
-===================================================== -->
-<section id="allDetailsBox" class="allDetails" style="display:none">
-  <button type="button" class="extraAccordionHeader" onclick="toggleExtraSection('allDetailsBox')" aria-expanded="false">
-    <span class="extraHeaderText">
-      <strong>All details</strong>
-      <small>Features, description and more</small>
-    </span>
-    <span class="extraChevron" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg>
-    </span>
-  </button>
-  <div id="detailSections" class="detailSections" hidden></div>
+
+<!-- ALL DETAILS -->
+
+<section class="simpleSection" id="allDetailsSection">
+
+<button class="simpleSectionHeader"
+type="button"
+onclick="toggleSimpleSection('allDetailsSection')">
+
+<div class="simpleSectionHeaderText">
+
+<div class="simpleSectionTitle">
+All details
+</div>
+
+<div class="simpleSectionSubtitle">
+Features, description and more
+</div>
+
+</div>
+
+<div class="simpleSectionArrow">
+
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="m6 9 6 6 6-6"/>
+</svg>
+
+</div>
+
+</button>
+
+<div id="allDetailsContent" class="detailsContent"></div>
+
 </section>
+
+</div>
 
 
 <!-- CTA -->
+
 <div class="cta">
 
 <button class="add" onclick="addToCart()">
@@ -1419,14 +1341,16 @@ Buy at <span id="buyPrice"></span>
 </div>
 
 </div>
-
 </div>
 
 </section>
 
 
-<!-- OLD DETAILS - KEPT -->
-<section id="details" class="details" style="display:none">
+<!-- EXISTING DETAILS SYSTEM KEPT -->
+
+<section id="details"
+class="details"
+style="display:none">
 
 <div class="tabs">
 
@@ -1460,864 +1384,864 @@ Delivery & Returns
 
 <script>
 
+/* =====================================================
+   SUPABASE
+===================================================== */
+
 const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
 
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmUiLCJyZWYiOiJic3pvanZoaXRzb2Fta3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
 
-const supabaseClient=window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
+const supabaseClient=
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
 let product=null;
 let qty=1;
 let currentIndex=0;
 
-const money=n=>"₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
+const money=n=>
+"₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
 
-const id=()=>new URLSearchParams(location.search).get("id");
+const id=()=>
+new URLSearchParams(location.search).get("id");
 
 function v(o,ks,d=""){
-  for(const k of ks)
-    if(o[k]!=null&&o[k]!=="")return o[k];
-  return d;
+for(const k of ks){
+if(o[k]!=null&&o[k]!=="")return o[k];
+}
+return d;
 }
 
 function num(v){
-  const m=String(v??"").match(/[0-9,]+(?:\.[0-9]+)?/);
-  return m?Number(m[0].replace(/,/g,"")):0;
+const m=String(v??"").match(/[0-9,]+(?:\.[0-9]+)?/);
+return m?Number(m[0].replace(/,/g,"")):0;
 }
 
 function toast(x){
-  const t=document.getElementById("toast");
-  t.textContent=x;
-  t.classList.add("show");
-  clearTimeout(window.tt);
-  window.tt=setTimeout(()=>{
-    t.classList.remove("show")
-  },2200);
+const t=document.getElementById("toast");
+t.textContent=x;
+t.classList.add("show");
+clearTimeout(window.tt);
+window.tt=setTimeout(
+()=>t.classList.remove("show"),
+2200
+);
 }
 
 function escapeHtml(value){
-  const s=String(value??"");
-  return s.replace(/[&<>"']/g,c=>({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
-  }[c]));
+const s=String(value??"");
+
+return s.replace(
+/[&<>"']/g,
+c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[c])
+);
 }
 
 
 /* =====================================================
-   ADDRESS SYSTEM - SAME
+   ADDRESS
 ===================================================== */
 
 function cleanPart(v){
-  return v==null ? "" : String(v).trim();
+return v==null?"":String(v).trim();
 }
 
 function uniqueParts(arr){
-  const out=[];
-  for(const x of arr){
-    const s=cleanPart(x);
-    if(s && !out.some(y=>y.toLowerCase()===s.toLowerCase()))
-      out.push(s);
-  }
-  return out;
+
+const out=[];
+
+for(const x of arr){
+
+const s=cleanPart(x);
+
+if(
+s &&
+!out.some(
+y=>y.toLowerCase()===s.toLowerCase()
+)
+){
+out.push(s);
+}
+
+}
+
+return out;
 }
 
 function formatSavedAddress(a){
 
-  if(!a)return "";
+if(!a)return "";
 
-  if(typeof a==="string")
-    return a.trim();
+if(typeof a==="string")
+return a.trim();
 
-  const village=cleanPart(
-    a.village ||
-    a.locality ||
-    a.area ||
-    a.town ||
-    a.place ||
-    ""
-  );
+const village=cleanPart(
+a.village ||
+a.locality ||
+a.area ||
+a.town ||
+a.place ||
+""
+);
 
-  const district=cleanPart(
-    a.district ||
-    a.district_name ||
-    ""
-  );
+const district=cleanPart(
+a.district ||
+a.district_name ||
+""
+);
 
-  const city=cleanPart(
-    a.city ||
-    a.city_name ||
-    ""
-  );
+const city=cleanPart(
+a.city ||
+a.city_name ||
+""
+);
 
-  const state=cleanPart(
-    a.state ||
-    a.state_name ||
-    ""
-  );
+const state=cleanPart(
+a.state ||
+a.state_name ||
+""
+);
 
-  const pincode=cleanPart(
-    a.pincode ||
-    a.pin ||
-    a.postal_code ||
-    a.postcode ||
-    ""
-  );
+const pincode=cleanPart(
+a.pincode ||
+a.pin ||
+a.postal_code ||
+a.postcode ||
+""
+);
 
-  const plus=cleanPart(
-    a.plus_code ||
-    a.plusCode ||
-    a.pluscode ||
-    a.plus_code_address ||
-    ""
-  );
+const plus=cleanPart(
+a.plus_code ||
+a.plusCode ||
+a.pluscode ||
+a.plus_code_address ||
+""
+);
 
-  const direct=cleanPart(
-    a.full_address ||
-    a.fullAddress ||
-    a.formatted_address ||
-    a.formattedAddress
-  );
+const direct=cleanPart(
+a.full_address ||
+a.fullAddress ||
+a.formatted_address ||
+a.formattedAddress
+);
 
-  const first=uniqueParts([
-    village,
-    district
-  ]).join(", ");
+const first=
+uniqueParts([
+village,
+district
+]).join(", ");
 
-  const second=uniqueParts([
-    state,
-    pincode
-  ]).join(", ");
+const second=
+uniqueParts([
+state,
+pincode
+]).join(", ");
 
-  const lines=[
-    first,
-    second,
-    plus
-  ].filter(Boolean);
+const lines=[
+first,
+second,
+plus
+].filter(Boolean);
 
-  if(lines.length)
-    return lines.join("\n");
+if(lines.length)
+return lines.join("\n");
 
-  const fallback=uniqueParts([
-    city,
-    state,
-    pincode
-  ]).join(", ");
+const fallback=
+uniqueParts([
+city,
+state,
+pincode
+]).join(", ");
 
-  return fallback || direct;
+return fallback||direct;
 }
 
 function addressCacheKey(userId){
-  return "mystore_delivery_address_cache_v3_"+String(userId||"guest");
+
+return "mystore_delivery_address_cache_v3_"+
+String(userId||"guest");
+
 }
 
-function cacheAddress(userId,addressObject,formatted){
+function cacheAddress(
+userId,
+addressObject,
+formatted
+){
 
-  try{
+try{
 
-    const payload={
-      savedAt:Date.now(),
-      text:formatted || formatSavedAddress(addressObject),
-      data:addressObject || null
-    };
+const payload={
+savedAt:Date.now(),
+text:
+formatted ||
+formatSavedAddress(addressObject),
+data:addressObject||null
+};
 
-    localStorage.setItem(
-      addressCacheKey(userId),
-      JSON.stringify(payload)
-    );
+localStorage.setItem(
+addressCacheKey(userId),
+JSON.stringify(payload)
+);
 
-  }catch(e){
-    console.warn("Address cache error",e);
-  }
+}catch(e){
+console.warn("Address cache error",e);
+}
+
 }
 
 function readCachedAddress(userId){
 
-  try{
+try{
 
-    const raw=localStorage.getItem(
-      addressCacheKey(userId)
-    );
+const raw=
+localStorage.getItem(
+addressCacheKey(userId)
+);
 
-    if(!raw)return "";
+if(!raw)return "";
 
-    const x=JSON.parse(raw);
+const x=JSON.parse(raw);
 
-    return cleanPart(x?.text) ||
-           formatSavedAddress(x?.data);
+return cleanPart(x?.text) ||
+formatSavedAddress(x?.data);
 
-  }catch(e){
-    return "";
-  }
+}catch(e){
+
+return "";
+
+}
+
 }
 
 function paintAddress(text){
 
-  const el=document.getElementById(
-    "deliveryAddressText"
-  );
+const el=
+document.getElementById(
+"deliveryAddressText"
+);
 
-  if(!el)return;
+if(!el)return;
 
-  const value=cleanPart(text);
+const value=cleanPart(text);
 
-  if(!value){
-    el.textContent="Add delivery address";
-    return;
-  }
+if(!value){
 
-  el.textContent=value
-    .replace(/\s*\n\s*/g," ")
-    .replace(/\s+/g," ")
-    .trim();
+el.textContent=
+"Add delivery address";
+
+return;
+}
+
+el.textContent=
+value
+.replace(/\s*\n\s*/g," ")
+.replace(/\s+/g," ")
+.trim();
 }
 
 function looksLikeAddressObject(x){
 
-  if(!x ||
-     typeof x!=="object" ||
-     Array.isArray(x))
-    return false;
+if(
+!x ||
+typeof x!=="object" ||
+Array.isArray(x)
+)return false;
 
-  const keys=Object.keys(x)
-    .map(k=>k.toLowerCase());
+const keys=
+Object.keys(x)
+.map(k=>k.toLowerCase());
 
-  return keys.some(k=>[
-    "village",
-    "district",
-    "state",
-    "pincode",
-    "pin",
-    "postal_code",
-    "plus_code",
-    "full_address",
-    "fulladdress",
-    "formatted_address",
-    "address",
-    "locality"
-  ].includes(k));
+return keys.some(k=>[
+"village",
+"district",
+"state",
+"pincode",
+"pin",
+"postal_code",
+"plus_code",
+"full_address",
+"fulladdress",
+"formatted_address",
+"address",
+"locality"
+].includes(k));
+
 }
 
 function scanLocalStorageForAddress(){
 
-  const preferred=[
-    "selectedAddress",
-    "selected_address",
-    "savedAddress",
-    "saved_address",
-    "savedAddresses",
-    "saved_addresses",
-    "deliveryAddress",
-    "delivery_address",
-    "currentAddress",
-    "current_address",
-    "userAddress",
-    "user_address",
-    "address",
-    "addresses"
-  ];
+const preferred=[
+"selectedAddress",
+"selected_address",
+"savedAddress",
+"saved_address",
+"savedAddresses",
+"saved_addresses",
+"deliveryAddress",
+"delivery_address",
+"currentAddress",
+"current_address",
+"userAddress",
+"user_address",
+"address",
+"addresses"
+];
 
-  const keys=[];
+const keys=[];
 
-  for(const k of preferred)
-    if(!keys.includes(k))
-      keys.push(k);
+for(const k of preferred)
+if(!keys.includes(k))
+keys.push(k);
 
-  try{
+try{
 
-    for(let i=0;i<localStorage.length;i++){
+for(
+let i=0;
+i<localStorage.length;
+i++
+){
 
-      const k=localStorage.key(i);
+const k=localStorage.key(i);
 
-      if(k && !keys.includes(k))
-        keys.push(k);
-    }
+if(k&&!keys.includes(k))
+keys.push(k);
 
-  }catch(e){}
+}
 
-  for(const key of keys){
+}catch(e){}
 
-    try{
+for(const key of keys){
 
-      const raw=localStorage.getItem(key);
+try{
 
-      if(!raw)continue;
+const raw=
+localStorage.getItem(key);
 
-      let value;
+if(!raw)continue;
 
-      try{
-        value=JSON.parse(raw);
-      }catch{
-        value=raw;
-      }
+let value;
 
-      const candidates=[];
+try{
+value=JSON.parse(raw);
+}catch{
+value=raw;
+}
 
-      if(Array.isArray(value))
-        candidates.push(...value);
-      else
-        candidates.push(value);
+const candidates=[];
 
-      for(const item of candidates){
+if(Array.isArray(value))
+candidates.push(...value);
+else
+candidates.push(value);
 
-        if(typeof item==="string"){
+for(const item of candidates){
 
-          const t=item.trim();
+if(typeof item==="string"){
 
-          if(
-            t &&
-            /(\d{5,6}|uttar|pradesh|district|village|plus)/i.test(t)
-          )
-            return t;
+const t=item.trim();
 
-        }else if(
-          looksLikeAddressObject(item)
-        ){
+if(
+t &&
+/(\d{5,6}|uttar|pradesh|district|village|plus)/i.test(t)
+)
+return t;
 
-          const t=formatSavedAddress(item);
+}else if(
+looksLikeAddressObject(item)
+){
 
-          if(t)return t;
-        }
-      }
+const t=
+formatSavedAddress(item);
 
-    }catch(e){}
-  }
+if(t)return t;
 
-  return "";
+}
+
+}
+
+}catch(e){}
+
+}
+
+return "";
+
 }
 
 async function getCurrentUser(){
 
-  try{
+try{
 
-    const {
-      data,
-      error
-    }=await supabaseClient.auth.getSession();
+const {data,error}=
+await supabaseClient.auth.getSession();
 
-    if(error)return null;
+if(error)return null;
 
-    return data?.session?.user || null;
+return data?.session?.user||null;
 
-  }catch(e){
-    return null;
-  }
+}catch(e){
+
+return null;
+
 }
 
-async function readAddressTable(table,userId){
+}
 
-  try{
+async function readAddressTable(
+table,
+userId
+){
 
-    const {
-      data,
-      error
-    }=await supabaseClient
-      .from(table)
-      .select("*")
-      .eq("user_id",userId)
-      .order("created_at",{ascending:false})
-      .limit(20);
+try{
 
-    if(
-      error ||
-      !Array.isArray(data) ||
-      !data.length
-    )
-      return null;
+const {data,error}=
+await supabaseClient
+.from(table)
+.select("*")
+.eq("user_id",userId)
+.order("created_at",{ascending:false})
+.limit(20);
 
-    const preferred=data.find(a=>
-      a?.is_current_location===true ||
-      a?.isCurrentLocation===true ||
-      a?.is_current===true ||
-      a?.selected===true ||
-      a?.is_selected===true ||
-      String(a?.type||"")
-        .toLowerCase()
-        .includes("current")
-    ) || data[0];
+if(
+error ||
+!Array.isArray(data) ||
+!data.length
+)
+return null;
 
-    const text=formatSavedAddress(preferred);
+const preferred=
+data.find(a=>
+a?.is_current_location===true ||
+a?.isCurrentLocation===true ||
+a?.is_current===true ||
+a?.selected===true ||
+a?.is_selected===true ||
+String(a?.type||"")
+.toLowerCase()
+.includes("current")
+)||data[0];
 
-    if(text)
-      return {
-        data:preferred,
-        text
-      };
+const text=
+formatSavedAddress(preferred);
 
-  }catch(e){}
+if(text)
+return {
+data:preferred,
+text
+};
 
-  return null;
+}catch(e){}
+
+return null;
 }
 
 async function loadDeliveryAddress(){
 
-  const user=await getCurrentUser();
+const user=
+await getCurrentUser();
 
-  if(user){
+if(user){
 
-    const cached=readCachedAddress(user.id);
+const cached=
+readCachedAddress(user.id);
 
-    if(cached)
-      paintAddress(cached);
-  }
+if(cached)
+paintAddress(cached);
 
-  const local=scanLocalStorageForAddress();
+}
 
-  if(
-    local &&
-    (!user || !readCachedAddress(user.id))
-  )
-    paintAddress(local);
+const local=
+scanLocalStorageForAddress();
 
-  if(user){
+if(
+local &&
+(
+!user ||
+!readCachedAddress(user.id)
+)
+)
+paintAddress(local);
 
-    const tables=[
-      "saved_addresses",
-      "addresses",
-      "user_addresses",
-      "delivery_addresses"
-    ];
+if(user){
 
-    for(const table of tables){
+const tables=[
+"saved_addresses",
+"addresses",
+"user_addresses",
+"delivery_addresses"
+];
 
-      const result=
-        await readAddressTable(
-          table,
-          user.id
-        );
+for(const table of tables){
 
-      if(result){
+const result=
+await readAddressTable(
+table,
+user.id
+);
 
-        cacheAddress(
-          user.id,
-          result.data,
-          result.text
-        );
+if(result){
 
-        paintAddress(result.text);
+cacheAddress(
+user.id,
+result.data,
+result.text
+);
 
-        return;
-      }
-    }
-  }
+paintAddress(result.text);
 
-  const current=
-    document.getElementById(
-      "deliveryAddressText"
-    );
+return;
 
-  if(
-    current &&
-    !current.textContent.trim()
-  )
-    current.textContent=
-      "Add delivery address";
+}
+
+}
+
+}
+
 }
 
 function openAddressSelector(){
 
-  try{
+try{
 
-    const target=
-      localStorage.getItem(
-        "addressSelectorUrl"
-      );
+const target=
+localStorage.getItem(
+"addressSelectorUrl"
+);
 
-    if(target){
-      location.href=target;
-      return;
-    }
+if(target){
 
-  }catch{}
+location.href=target;
 
-  location.href="/ecom/checkout.html";
+return;
+
+}
+
+}catch{}
+
+location.href=
+"/ecom/checkout.html";
+
 }
 
 function getDeliveryDate(){
 
-  const d=new Date();
+const d=new Date();
 
-  d.setHours(0,0,0,0);
+d.setHours(0,0,0,0);
 
-  d.setDate(d.getDate()+5);
+d.setDate(d.getDate()+5);
 
-  return d.toLocaleDateString(
-    "en-IN",
-    {
-      day:"numeric",
-      month:"short",
-      weekday:"short"
-    }
-  );
+return d.toLocaleDateString(
+"en-IN",
+{
+day:"numeric",
+month:"short",
+weekday:"short"
+}
+);
+
 }
 
 async function renderDeliveryDetails(){
 
-  const date=
-    document.getElementById(
-      "deliveryDateText"
-    );
+const date=
+document.getElementById(
+"deliveryDateText"
+);
 
-  if(date)
-    date.textContent=
-      "Delivery by "+getDeliveryDate();
+if(date)
+date.textContent=
+"Delivery by "+
+getDeliveryDate();
 
-  await loadDeliveryAddress();
+await loadDeliveryAddress();
+
 }
 
 
 /* =====================================================
-   HIGHLIGHT + DETAILS PARSERS
+   HIGHLIGHTS / ALL DETAILS DATA
 ===================================================== */
 
-function parseJSONField(value){
+function parseFlexibleData(value){
 
-  if(value==null)return null;
+if(value==null||value==="")
+return [];
 
-  if(
-    Array.isArray(value) ||
-    typeof value==="object"
-  )
-    return value;
+if(Array.isArray(value))
+return value;
 
-  if(typeof value!=="string")
-    return value;
+if(typeof value==="object")
+return value;
 
-  const text=value.trim();
+if(typeof value==="string"){
 
-  if(!text)return null;
+try{
 
-  try{
-    return JSON.parse(text);
-  }catch{
-    return null;
-  }
+const parsed=
+JSON.parse(value);
+
+return parsed;
+
+}catch{
+
+return value;
+
 }
 
-
-/*
-  Admin se different formats aa sakte hain.
-  Ye parser unhe normalize karta hai,
-  lekin apni taraf se data create nahi karta.
-*/
-
-function normalizeHighlights(raw){
-
-  const parsed=parseJSONField(raw);
-
-  if(!parsed)return [];
-
-  let list=[];
-
-  if(Array.isArray(parsed)){
-    list=parsed;
-  }else if(
-    Array.isArray(parsed.items)
-  ){
-    list=parsed.items;
-  }else if(
-    Array.isArray(parsed.highlights)
-  ){
-    list=parsed.highlights;
-  }else{
-    return [];
-  }
-
-  return list
-    .map(item=>{
-
-      if(typeof item==="string"){
-
-        return {
-          label:"",
-          value:item,
-          icon:"star",
-          color:"#111"
-        };
-
-      }
-
-      if(!item || typeof item!=="object")
-        return null;
-
-      const label=
-        item.label ??
-        item.title ??
-        item.name ??
-        item.key ??
-        "";
-
-      const value=
-        item.value ??
-        item.text ??
-        item.description ??
-        "";
-
-      const icon=
-        item.icon ??
-        item.icon_name ??
-        "star";
-
-      const color=
-        item.color ??
-        item.icon_color ??
-        "#111";
-
-      if(
-        String(label).trim()==="" &&
-        String(value).trim()===""
-      )
-        return null;
-
-      return {
-        label:String(label),
-        value:String(value),
-        icon:String(icon),
-        color:String(color)
-      };
-
-    })
-    .filter(Boolean);
 }
 
-function normalizeDetails(raw){
+return [];
 
-  const parsed=parseJSONField(raw);
+}
 
-  if(!parsed)return [];
+function getHighlightsFromProduct(){
 
-  let sections=[];
+const raw=
+v(
+product.raw,
+[
+"highlights",
+"product_highlights",
+"productHighlights",
+"highlight",
+"key_features",
+"keyFeatures"
+],
+null
+);
 
-  if(Array.isArray(parsed)){
-    sections=parsed;
-  }else if(
-    Array.isArray(parsed.sections)
-  ){
-    sections=parsed.sections;
-  }else if(
-    Array.isArray(parsed.details)
-  ){
-    sections=parsed.details;
-  }else if(
-    typeof parsed==="object"
-  ){
+if(raw==null)
+return [];
 
-    /*
-      Support object style:
-      {
-        "General":[
-          {"key":"Brand","value":"ABC"}
-        ]
-      }
-    */
+const parsed=
+parseFlexibleData(raw);
 
-    sections=Object.entries(parsed)
-      .map(([section,value])=>({
+if(Array.isArray(parsed))
+return parsed;
 
-        section,
+if(typeof parsed==="object"){
 
-        rows:Array.isArray(value)
-          ? value
-          : []
+return Object.entries(parsed)
+.map(([key,value])=>({
+label:key,
+value:value
+}));
 
-      }));
-  }
+}
 
-  const result=[];
+if(typeof parsed==="string"){
 
-  for(const sectionItem of sections){
+return parsed
+.split(/\r?\n|•|;/)
+.map(x=>x.trim())
+.filter(Boolean)
+.map(x=>{
 
-    if(!sectionItem)
-      continue;
+const parts=x.split(/[:|-]/);
 
-    let sectionName="";
-    let rows=[];
+if(parts.length>=2){
 
-    if(
-      typeof sectionItem==="object" &&
-      !Array.isArray(sectionItem)
-    ){
+return {
+label:parts.shift().trim(),
+value:parts.join(":").trim()
+};
 
-      sectionName=
-        sectionItem.section ??
-        sectionItem.title ??
-        sectionItem.name ??
-        "";
+}
 
-      rows=
-        sectionItem.rows ??
-        sectionItem.details ??
-        sectionItem.items ??
-        [];
+return {
+label:"Highlight",
+value:x
+};
 
-      /*
-        Single-row format:
-        {section:"General",key:"Brand",value:"XYZ"}
-      */
+});
 
-      if(
-        !Array.isArray(rows) &&
-        (
-          sectionItem.key!=null ||
-          sectionItem.label!=null
-        )
-      ){
+}
 
-        rows=[{
-          key:
-            sectionItem.key ??
-            sectionItem.label ??
-            "",
-          value:
-            sectionItem.value ??
-            sectionItem.text ??
-            ""
-        }];
-      }
+return [];
 
-    }
+}
 
-    if(!Array.isArray(rows))
-      continue;
+function normalizeHighlight(item,index){
 
-    const normalizedRows=rows
-      .map(row=>{
+if(typeof item==="string"){
 
-        if(typeof row==="string"){
+const parts=
+item.split(/[:|-]/);
 
-          return {
-            key:"",
-            value:row
-          };
-        }
+if(parts.length>=2){
 
-        if(!row || typeof row!=="object")
-          return null;
+return {
+label:parts.shift().trim(),
+value:parts.join(":").trim(),
+icon:"star"
+};
 
-        const key=
-          row.key ??
-          row.label ??
-          row.name ??
-          row.title ??
-          "";
+}
 
-        const value=
-          row.value ??
-          row.text ??
-          row.description ??
-          "";
+return {
+label:"Highlight",
+value:item.trim(),
+icon:"star"
+};
 
-        if(
-          String(key).trim()==="" &&
-          String(value).trim()===""
-        )
-          return null;
+}
 
-        return {
-          key:String(key),
-          value:String(value)
-        };
+if(item&&typeof item==="object"){
 
-      })
-      .filter(Boolean);
+return {
 
-    if(normalizedRows.length){
+label:
+item.label ||
+item.name ||
+item.key ||
+item.title ||
+item.field ||
+"Highlight",
 
-      result.push({
-        section:
-          String(sectionName || "Product Details"),
-        rows:normalizedRows
-      });
+value:
+item.value ??
+item.text ??
+item.description ??
+item.answer ??
+"",
 
-    }
-  }
+icon:
+item.icon ||
+"star"
 
-  return result;
+};
+
+}
+
+return {
+label:"Highlight",
+value:"",
+icon:"star"
+};
+
+}
+
+function getAllDetailsFromProduct(){
+
+const raw=
+v(
+product.raw,
+[
+"all_details",
+"allDetails",
+"product_details",
+"productDetails",
+"details",
+"specifications",
+"specs"
+],
+null
+);
+
+if(raw==null)
+return [];
+
+const parsed=
+parseFlexibleData(raw);
+
+if(Array.isArray(parsed))
+return parsed;
+
+if(typeof parsed==="object"){
+
+return Object.entries(parsed)
+.map(([key,value])=>({
+key:key,
+value:value
+}));
+
+}
+
+return [];
+
+}
+
+function normalizeDetail(item){
+
+if(typeof item==="string"){
+
+const parts=
+item.split(/[:|]/);
+
+if(parts.length>=2){
+
+return {
+key:parts.shift().trim(),
+value:parts.join(":").trim()
+};
+
+}
+
+return {
+key:"Details",
+value:item.trim()
+};
+
+}
+
+if(item&&typeof item==="object"){
+
+return {
+
+key:
+item.key ||
+item.label ||
+item.name ||
+item.title ||
+item.field ||
+"Details",
+
+value:
+item.value ??
+item.text ??
+item.description ??
+""
+
+};
+
+}
+
+return {
+key:"Details",
+value:""
+};
+
 }
 
 
 /* =====================================================
-   PREMIUM SVG ICONS
+   ICON
 ===================================================== */
 
-function highlightIcon(type){
+function highlightIcon(){
 
-  const icons={
+return `
+<svg viewBox="0 0 24 24"
+fill="none"
+stroke-width="1.8"
+stroke-linecap="round"
+stroke-linejoin="round">
 
-    star:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-      <path d="m12 3 2.5 5.1 5.5.8-4 4 1 5.6-5-2.7-5 2.7 1-5.6-4-4 5.5-.8L12 3Z"/>
-    </svg>`,
+<path d="m12 3 2.8 5.7L21 9.6l-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>
 
-    check:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-      <path d="m5 12 4 4L19 6"/>
-    </svg>`,
+</svg>
+`;
 
-    shield:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-      <path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/>
-      <path d="m8.5 12 2.2 2.2 4.8-5"/>
-    </svg>`,
-
-    bolt:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-      <path d="m13 2-8 12h6l-1 8 8-12h-6l1-8Z"/>
-    </svg>`,
-
-    leaf:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-      <path d="M20 4C10 4 4 8 4 15c0 3 2 5 5 5 7 0 11-6 11-16Z"/>
-      <path d="M4 20c3-5 7-8 12-10"/>
-    </svg>`,
-
-    heart:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-      <path d="M20.8 8.7c0 5.5-8.8 11.3-8.8 11.3S3.2 14.2 3.2 8.7A5 5 0 0 1 12 6a5 5 0 0 1 8.8 2.7Z"/>
-    </svg>`,
-
-    truck:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-      <path d="M3 6h11v11H3z"/>
-      <path d="M14 10h4l3 3v4h-7z"/>
-      <circle cx="7" cy="18" r="2"/>
-      <circle cx="18" cy="18" r="2"/>
-    </svg>`,
-
-    box:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-      <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/>
-      <path d="m4 7.5 8 4.5 8-4.5"/>
-      <path d="M12 12v9"/>
-    </svg>`,
-
-    tag:
-    `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-      <path d="M20 13 13 20 4 11V4h7l9 9Z"/>
-      <circle cx="8" cy="8" r="1.4"/>
-    </svg>`
-
-  };
-
-  return icons[type] || icons.star;
-}
-
-function colorToSoft(color){
-
-  const c=String(color||"#111").trim();
-
-  /*
-    CSS color-mix is used when supported.
-    Fallback is a neutral light background.
-  */
-
-  return `color-mix(in srgb, ${c} 10%, white)`;
 }
 
 
@@ -2325,60 +2249,63 @@ function colorToSoft(color){
    RENDER HIGHLIGHTS
 ===================================================== */
 
-function toggleExtraSection(id){
-  const box=document.getElementById(id);
-  if(!box)return;
+function renderHighlights(){
 
-  const header=box.querySelector(".extraAccordionHeader");
-  const content=box.querySelector(".highlightContent, .detailSections");
-  if(!header || !content)return;
+const box=
+document.getElementById(
+"highlightsContent"
+);
 
-  const isOpen=header.getAttribute("aria-expanded")==="true";
-  header.setAttribute("aria-expanded",String(!isOpen));
-  content.hidden=isOpen;
+if(!box)return;
+
+const list=
+getHighlightsFromProduct()
+.map(normalizeHighlight)
+.filter(x=>
+String(x.value??"").trim()
+);
+
+if(!list.length){
+
+box.innerHTML="";
+
+document.getElementById(
+"highlightsSection"
+).style.display="none";
+
+return;
+
 }
 
-function renderHighlights(raw){
-  const box=document.getElementById("productHighlights");
-  const grid=document.getElementById("highlightGrid");
-  if(!box || !grid)return;
+document.getElementById(
+"highlightsSection"
+).style.display="block";
 
-  const list=normalizeHighlights(raw);
+box.innerHTML=
+list.map(item=>`
 
-  if(!list.length){
-    box.style.display="none";
-    grid.innerHTML="";
-    return;
-  }
+<div class="highlightRow">
 
-  box.style.display="block";
+<div class="highlightIcon">
+${highlightIcon()}
+</div>
 
-  // Keep it collapsed initially, like the requested screenshot.
-  const header=box.querySelector(".extraAccordionHeader");
-  if(header)header.setAttribute("aria-expanded","false");
-  grid.hidden=true;
+<div class="highlightText">
 
-  grid.innerHTML=list.map(item=>{
-    const color=escapeHtml(item.color || "#111");
-    const bg=colorToSoft(item.color || "#111");
+<div class="highlightLabel">
+${escapeHtml(item.label)}
+</div>
 
-    return `
-      <div class="highlightItem">
-        <div class="highlightIcon"
-             style="--highlight-color:${color};background:${bg}">
-          ${highlightIcon(String(item.icon||"star").toLowerCase())}
-        </div>
+<div class="highlightValue">
+${escapeHtml(item.value)}
+</div>
 
-        <div class="highlightText">
-          ${item.label
-            ? `<div class="highlightLabel">${escapeHtml(item.label)}</div>`
-            : ""
-          }
-          <div class="highlightValue">${escapeHtml(item.value)}</div>
-        </div>
-      </div>
-    `;
-  }).join("");
+</div>
+
+</div>
+
+`).join("");
+
 }
 
 
@@ -2386,74 +2313,80 @@ function renderHighlights(raw){
    RENDER ALL DETAILS
 ===================================================== */
 
-function renderAllDetails(raw){
+function renderAllDetails(){
 
-  const box=
-    document.getElementById(
-      "allDetailsBox"
-    );
+const box=
+document.getElementById(
+"allDetailsContent"
+);
 
-  const container=
-    document.getElementById(
-      "detailSections"
-    );
+if(!box)return;
 
-  if(!box || !container)return;
+const list=
+getAllDetailsFromProduct()
+.map(normalizeDetail)
+.filter(x=>
+String(x.value??"").trim()
+);
 
-  const sections=
-    normalizeDetails(raw);
+if(!list.length){
 
-  /*
-    IMPORTANT:
-    No saved details = don't show anything.
-  */
+box.innerHTML="";
 
-  if(!sections.length){
+document.getElementById(
+"allDetailsSection"
+).style.display="none";
 
-    box.style.display="none";
-    container.innerHTML="";
-    return;
-  }
+return;
 
-  box.style.display="block";
+}
 
-  // Keep All details collapsed until the user taps the arrow.
-  const header=box.querySelector(".extraAccordionHeader");
-  if(header)header.setAttribute("aria-expanded","false");
-  container.hidden=true;
+document.getElementById(
+"allDetailsSection"
+).style.display="block";
 
-  container.innerHTML=
-    sections.map(section=>`
+box.innerHTML=`
 
-      <section class="detailSection">
+<div class="detailsHeading">
+All details
+</div>
 
-        <div class="detailSectionTitle">
-          ${escapeHtml(section.section)}
-        </div>
+${
+list.map(item=>`
 
-        <div class="detailRows">
+<div class="detailRow">
 
-          ${section.rows.map(row=>`
+<div class="detailKey">
+${escapeHtml(item.key)}
+</div>
 
-            <div class="detailRow">
+<div class="detailValue">
+${escapeHtml(item.value)}
+</div>
 
-              <div class="detailKey">
-                ${escapeHtml(row.key)}
-              </div>
+</div>
 
-              <div class="detailValue">
-                ${escapeHtml(row.value)}
-              </div>
+`).join("")
+}
 
-            </div>
+`;
 
-          `).join("")}
+}
 
-        </div>
 
-      </section>
+/* =====================================================
+   OPEN/CLOSE SECTIONS
+===================================================== */
 
-    `).join("");
+function toggleSimpleSection(sectionId){
+
+const section=
+document.getElementById(sectionId);
+
+if(!section)return;
+
+section.classList.toggle("open");
+
 }
 
 
@@ -2463,222 +2396,229 @@ function renderAllDetails(raw){
 
 async function load(){
 
-  try{
+try{
 
-    if(!id())
-      throw Error("Product ID missing");
+if(!id())
+throw Error("Product ID missing");
 
-    const {
-      data,
-      error
-    }=await supabaseClient
-      .from("products")
-      .select("*")
-      .eq("id",id())
-      .single();
+const {
+data,
+error
+}=
+await supabaseClient
+.from("products")
+.select("*")
+.eq("id",id())
+.single();
 
-    if(error)
-      throw error;
+if(error)
+throw error;
 
-    let gallery=[];
+let gallery=[];
 
-    if(Array.isArray(data.images))
-      gallery=data.images;
+if(Array.isArray(data.images))
+gallery=data.images;
 
-    else if(
-      typeof data.images==="string"
-    ){
+else if(typeof data.images==="string"){
 
-      try{
+try{
 
-        const parsed=
-          JSON.parse(data.images);
+const parsed=
+JSON.parse(data.images);
 
-        if(Array.isArray(parsed))
-          gallery=parsed;
+if(Array.isArray(parsed))
+gallery=parsed;
 
-      }catch{}
+}catch{}
 
-    }
+}
 
-    gallery=
-      gallery
-      .map(x=>
-        typeof x==="string"
-        ? x
-        : (
-          x?.url ||
-          x?.src ||
-          x?.image ||
-          ""
-        )
-      )
-      .filter(Boolean);
+gallery=
+gallery
+.map(x=>
+typeof x==="string"
+?x
+:(x?.url||x?.src||x?.image||"")
+)
+.filter(Boolean);
 
-    const primary=
-      data.main_image ||
-      gallery[0] ||
-      v(
-        data,
-        [
-          "image",
-          "image_url",
-          "thumbnail",
-          "product_image"
-        ],
-        ""
-      );
+const primary=
+data.main_image ||
+gallery[0] ||
+v(
+data,
+[
+"image",
+"image_url",
+"thumbnail",
+"product_image"
+],
+""
+);
 
-    const images=[
-      primary,
-      ...gallery.filter(
-        x=>x!==primary
-      )
-    ].filter(Boolean);
+const images=[
+primary,
+...gallery.filter(
+x=>x!==primary
+)
+].filter(Boolean);
 
+product={
 
-    /*
-      IMPORTANT:
-      highlights + all_details are taken
-      directly from the product row.
-    */
+id:data.id,
 
-    product={
+title:v(
+data,
+[
+"name",
+"title",
+"product_name"
+],
+"Product"
+),
 
-      id:data.id,
+image:primary,
 
-      title:v(
-        data,
-        ["name","title","product_name"],
-        "Product"
-      ),
+images:
+images.length
+?images
+:[""],
 
-      image:primary,
+price:
+num(
+v(
+data,
+[
+"price",
+"selling_price",
+"sale_price"
+],
+149
+)
+)||149,
 
-      images:
-        images.length
-        ? images
-        : [""],
+mrp:
+num(
+v(
+data,
+[
+"mrp",
+"original_price",
+"old_price"
+],
+999
+)
+)||999,
 
-      price:
-        num(
-          v(
-            data,
-            [
-              "price",
-              "selling_price",
-              "sale_price"
-            ],
-            149
-          )
-        ) || 149,
+description:
+v(
+data,
+[
+"description",
+"short_description",
+"details"
+],
+"Premium quality product."
+),
 
-      mrp:
-        num(
-          v(
-            data,
-            [
-              "mrp",
-              "original_price",
-              "old_price"
-            ],
-            999
-          )
-        ) || 999,
+rating:
+v(
+data,
+[
+"rating",
+"avg_rating"
+],
+4.5
+),
 
-      description:v(
-        data,
-        [
-          "description",
-          "short_description",
-          "details"
-        ],
-        "Premium quality product."
-      ),
+reviews:
+v(
+data,
+[
+"review_count",
+"reviews"
+],
+128
+),
 
-      rating:v(
-        data,
-        ["rating","avg_rating"],
-        4.5
-      ),
+stock:
+Number(
+v(
+data,
+[
+"stock",
+"inventory",
+"available_stock"
+],
+50
+)
+),
 
-      reviews:v(
-        data,
-        ["review_count","reviews"],
-        128
-      ),
+badge:
+v(
+data,
+[
+"badge",
+"label"
+],
+"BESTSELLER"
+),
 
-      stock:Number(
-        v(
-          data,
-          [
-            "stock",
-            "inventory",
-            "available_stock"
-          ],
-          50
-        )
-      ),
+category:
+v(
+data,
+[
+"category",
+"category_name"
+],
+""
+),
 
-      badge:v(
-        data,
-        ["badge","label"],
-        "BESTSELLER"
-      ),
+customize_enabled:
+Boolean(
+data.customize_enabled
+),
 
-      category:v(
-        data,
-        ["category","category_name"],
-        ""
-      ),
+return_enabled:
+data.return_enabled===undefined
+?true
+:Boolean(data.return_enabled),
 
-      customize_enabled:
-        Boolean(data.customize_enabled),
+return_days:
+Number(data.return_days)||10,
 
-      return_enabled:
-        data.return_enabled===undefined
-        ? true
-        : Boolean(data.return_enabled),
+cod_enabled:
+data.cod_enabled===undefined
+?true
+:Boolean(data.cod_enabled),
 
-      return_days:
-        Number(data.return_days)||10,
+assured_enabled:
+data.assured_enabled===undefined
+?true
+:Boolean(data.assured_enabled),
 
-      cod_enabled:
-        data.cod_enabled===undefined
-        ? true
-        : Boolean(data.cod_enabled),
+raw:data
 
-      assured_enabled:
-        data.assured_enabled===undefined
-        ? true
-        : Boolean(data.assured_enabled),
+};
 
-      /*
-        EXACT ADMIN DATA
-      */
-      highlights:
-        data.highlights ?? null,
+render();
 
-      all_details:
-        data.all_details ?? null
+}catch(e){
 
-    };
+console.error(e);
 
-    render();
+document.getElementById(
+"loading"
+).innerHTML=
+`
+<div style="text-align:center">
+<h2>Product not found</h2>
+<p>${escapeHtml(e.message)}</p>
+</div>
+`;
 
-  }catch(e){
+}
 
-    console.error(e);
-
-    document.getElementById(
-      "loading"
-    ).innerHTML=`
-      <div style="text-align:center">
-        <h2>Product not found</h2>
-        <p>${escapeHtml(e.message)}</p>
-      </div>
-    `;
-  }
 }
 
 
@@ -2688,332 +2628,315 @@ async function load(){
 
 function render(){
 
-  renderDeliveryDetails();
-
-  document.getElementById(
-    "loading"
-  ).style.display="none";
-
-  document.getElementById(
-    "product"
-  ).style.display="block";
-
-  document.getElementById(
-    "details"
-  ).style.display="block";
-
-
-  document.getElementById(
-    "title"
-  ).textContent=product.title;
-
-  document.getElementById(
-    "price"
-  ).textContent=money(product.price);
-
-  document.getElementById(
-    "buyPrice"
-  ).textContent=money(product.price);
+renderDeliveryDetails();
+
+document.getElementById(
+"loading"
+).style.display="none";
+
+document.getElementById(
+"product"
+).style.display="block";
+
+document.getElementById(
+"details"
+).style.display="none";
+
+
+document.getElementById(
+"title"
+).textContent=
+product.title;
+
+document.getElementById(
+"price"
+).textContent=
+money(product.price);
+
+document.getElementById(
+"buyPrice"
+).textContent=
+money(product.price);
+
+document.getElementById(
+"mrp"
+).textContent=
+product.mrp
+?money(product.mrp)
+:"";
 
-  document.getElementById(
-    "mrp"
-  ).textContent=
-    product.mrp
-    ? money(product.mrp)
-    : "";
-
-  document.getElementById(
-    "off"
-  ).textContent=
-    product.mrp>product.price
-    ? Math.max(
-        0,
-        Math.round(
-          (1-product.price/product.mrp)*100
-        )
-      )+"% OFF"
-    : "";
+document.getElementById(
+"off"
+).textContent=
+product.mrp>product.price
+?Math.max(
+0,
+Math.round(
+(1-product.price/product.mrp)*100
+)
+)+"% OFF"
+:"";
 
-  document.getElementById(
-    "description"
-  ).textContent=
-    product.description;
+document.getElementById(
+"description"
+).textContent=
+product.description;
 
-  document.getElementById(
-    "rating"
-  ).textContent=
-    "★ "+product.rating;
+document.getElementById(
+"rating"
+).textContent=
+"★ "+product.rating;
 
-  document.getElementById(
-    "reviews"
-  ).textContent=
-    product.reviews+" reviews";
+document.getElementById(
+"reviews"
+).textContent=
+product.reviews+" reviews";
 
-  document.getElementById(
-    "tag"
-  ).textContent=
-    product.badge;
-
-  document.getElementById(
-    "badge"
-  ).textContent=
-    product.badge;
+document.getElementById(
+"tag"
+).textContent=
+product.badge;
 
-  document.getElementById(
-    "stock"
-  ).textContent=
-    product.stock>0
-    ? "✓ In Stock ("+
-      product.stock+
-      " available)"
-    : "✕ Out of Stock";
+document.getElementById(
+"badge"
+).textContent=
+product.badge;
 
+document.getElementById(
+"stock"
+).textContent=
+product.stock>0
+?"✓ In Stock ("+
+product.stock+
+" available)"
+:"✕ Out of Stock";
 
-  /* CUSTOMIZE */
 
-  const customizeWrap=
-    document.getElementById(
-      "customizeWrap"
-    );
+const customizeWrap=
+document.getElementById(
+"customizeWrap"
+);
 
-  if(customizeWrap){
+if(customizeWrap){
 
-    customizeWrap.style.display=
-      product.customize_enabled
-      ? "flex"
-      : "none";
+customizeWrap.style.display=
+product.customize_enabled
+?"flex"
+:"none";
 
-    if(!product.customize_enabled){
+if(!product.customize_enabled)
+document.getElementById(
+"customizeInput"
+).value="";
 
-      document.getElementById(
-        "customizeInput"
-      ).value="";
+}
 
-    }
-  }
 
+/* FEATURES */
 
-  /* FEATURES */
+const features=
+document.getElementById(
+"features"
+);
 
-  const features=
-    document.getElementById(
-      "features"
-    );
+if(features){
 
-  if(features){
+const returnText=
+product.return_enabled
+?product.return_days+"-Day Return"
+:"No Return";
 
-    const returnText=
-      product.return_enabled
-      ? product.return_days+"-Day Return"
-      : "No Return";
+features.innerHTML=
 
-    features.innerHTML=
+`
+<div class="feature">
 
-      `<div class="feature">
+<div class="featureIcon">
 
-        <div class="featureIcon">
+<svg viewBox="0 0 24 24"
+fill="none"
+stroke-width="1.8">
 
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke-width="1.8"
-          >
-            <path d="M3 12a9 9 0 1 0 3-6.7"/>
-            <path d="M3 4v6h6"/>
-            <path d="M12 7v5l3 2"/>
-          </svg>
+<path d="M3 12a9 9 0 1 0 3-6.7"/>
+<path d="M3 4v6h6"/>
 
-        </div>
+<path d="M12 7v5l3 2"/>
 
-        <b>${returnText}</b>
+</svg>
 
-      </div>`
+</div>
 
-      +
+<b>${returnText}</b>
 
-      (
-        product.cod_enabled
-        ?
+</div>
+`
 
-        `<div class="feature">
++
 
-          <div class="featureIcon">
+(
+product.cod_enabled
+?
 
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke-width="1.8"
-            >
-              <rect
-                x="3"
-                y="6"
-                width="18"
-                height="12"
-                rx="2"
-              />
-              <path d="M7 12h5M16 10v4"/>
-            </svg>
+`
+<div class="feature">
 
-          </div>
+<div class="featureIcon">
 
-          <b>Cash on Delivery</b>
+<svg viewBox="0 0 24 24"
+fill="none"
+stroke-width="1.8">
 
-        </div>`
+<rect x="3" y="6"
+width="18"
+height="12"
+rx="2"/>
 
-        : ""
-      )
+<path d="M7 12h5M16 10v4"/>
 
-      +
+</svg>
 
-      (
-        product.assured_enabled
-        ?
+</div>
 
-        `<div class="feature">
+<b>Cash on Delivery</b>
 
-          <div class="featureIcon">
+</div>
+`
 
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke-width="1.8"
-            >
-              <path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/>
-              <path d="m8.5 12 2.2 2.2 4.8-5"/>
-            </svg>
+:""
+)
 
-          </div>
++
 
-          <b>Trikunt Assured</b>
+(
+product.assured_enabled
+?
 
-        </div>`
+`
+<div class="feature">
 
-        : ""
-      );
+<div class="featureIcon">
 
-    const count=
-      1+
-      (product.cod_enabled?1:0)+
-      (product.assured_enabled?1:0);
+<svg viewBox="0 0 24 24"
+fill="none"
+stroke-width="1.8">
 
-    features.style.gridTemplateColumns=
-      "repeat("+count+",1fr)";
-  }
+<path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/>
 
+<path d="m8.5 12 2.2 2.2 4.8-5"/>
 
-  /*
-    ============================================
-    ONLY ADMIN-SAVED HIGHLIGHTS/DETAILS
-    ============================================
-  */
+</svg>
 
-  renderHighlights(
-    product.highlights
-  );
+</div>
 
-  renderAllDetails(
-    product.all_details
-  );
+<b>Trikunt Assured</b>
 
+</div>
+`
 
-  /* IMAGES */
+:"");
 
-  currentIndex=0;
+const count=
+1+
+(product.cod_enabled?1:0)+
+(product.assured_enabled?1:0);
 
-  const slider=
-    document.getElementById(
-      "slider"
-    );
+features.style.gridTemplateColumns=
+"repeat("+count+",1fr)";
 
-  slider.innerHTML=
-    product.images.map(
-      (url,i)=>`
+}
 
-      <div class="slide">
 
-        <img
-          src="${escapeHtml(url)}"
-          alt="${escapeHtml(product.title)}"
-          loading="${i===0?'eager':'lazy'}"
-          onerror="this.style.display='none';
-          this.nextElementSibling.style.display='flex'"
-        >
+/* NEW SECTIONS */
 
-        <div class="imgFallback">
-          Image unavailable
-        </div>
+renderHighlights();
 
-      </div>
+renderAllDetails();
 
-    `
-    ).join("");
 
-  slider.scrollLeft=0;
+/* IMAGE SLIDER */
 
-  slider.removeEventListener(
-    "scroll",
-    onSliderScroll
-  );
+currentIndex=0;
 
-  slider.addEventListener(
-    "scroll",
-    onSliderScroll,
-    {passive:true}
-  );
+const slider=
+document.getElementById("slider");
 
+slider.innerHTML=
+product.images.map(
+(url,i)=>
+`
+<div class="slide">
 
-  /* DOTS */
+<img
+src="${escapeHtml(url)}"
+alt="${escapeHtml(product.title)}"
+loading="${i===0?"eager":"lazy"}"
+onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
 
-  const dots=
-    document.getElementById(
-      "dots"
-    );
+<div class="imgFallback">
+Image unavailable
+</div>
 
-  const multi=
-    product.images.length>1;
+</div>
+`
+).join("");
 
-  dots.innerHTML=
-    multi
-    ? product.images.map(
-        (_,i)=>`
+slider.scrollLeft=0;
 
-        <button
-          type="button"
-          class="dot ${i===0?"active":""}"
-          onclick="goToImage(${i})"
-          aria-label="Go to image ${i+1}"
-        ></button>
+slider.removeEventListener(
+"scroll",
+onSliderScroll
+);
 
-      `
-      ).join("")
-    : "";
+slider.addEventListener(
+"scroll",
+onSliderScroll,
+{passive:true}
+);
 
-  dots.style.display=
-    multi
-    ? "flex"
-    : "none";
 
-  document
-    .querySelectorAll(".navBtn")
-    .forEach(
-      b=>
-        b.style.display=
-          multi
-          ? ""
-          : "none"
-    );
+const dots=
+document.getElementById("dots");
 
-  updateNavState();
+const multi=
+product.images.length>1;
 
+dots.innerHTML=
+multi
+?
+product.images.map(
+(_,i)=>
+`
+<button
+type="button"
+class="dot ${i===0?"active":""}"
+onclick="goToImage(${i})"
+aria-label="Go to image ${i+1}">
+</button>
+`
+).join("")
+:"";
 
-  content.innerHTML=
-    "<h3>"+
-    escapeHtml(product.title)+
-    "</h3><p>"+
-    escapeHtml(product.description)+
-    "</p>";
+dots.style.display=
+multi?"flex":"none";
 
-  updateCart();
+document
+.querySelectorAll(".navBtn")
+.forEach(
+b=>b.style.display=
+multi?"":"none"
+);
+
+updateNavState();
+
+content.innerHTML=
+"<h3>"+
+escapeHtml(product.title)+
+"</h3><p>"+
+escapeHtml(product.description)+
+"</p>";
+
+updateCart();
+
 }
 
 
@@ -3023,136 +2946,152 @@ function render(){
 
 function onSliderScroll(){
 
-  const slider=
-    document.getElementById(
-      "slider"
-    );
+const slider=
+document.getElementById("slider");
 
-  const w=
-    slider.clientWidth||1;
+const w=
+slider.clientWidth||1;
 
-  const idx=
-    Math.round(
-      slider.scrollLeft/w
-    );
+const idx=
+Math.round(
+slider.scrollLeft/w
+);
 
-  if(idx!==currentIndex){
+if(idx!==currentIndex){
 
-    currentIndex=idx;
+currentIndex=idx;
 
-    product.image=
-      product.images[currentIndex] ||
-      product.image;
+product.image=
+product.images[currentIndex]||
+product.image;
 
-    updateDots();
-    updateNavState();
-  }
+updateDots();
+
+updateNavState();
+
+}
+
 }
 
 function updateDots(){
 
-  document
-    .querySelectorAll("#dots .dot")
-    .forEach(
-      (d,i)=>
-        d.classList.toggle(
-          "active",
-          i===currentIndex
-        )
-    );
+document
+.querySelectorAll("#dots .dot")
+.forEach(
+(d,i)=>
+d.classList.toggle(
+"active",
+i===currentIndex
+)
+);
+
 }
 
 function updateNavState(){
 
-  const prev=
-    document.querySelector(
-      ".prevBtn"
-    );
+const prev=
+document.querySelector(
+".prevBtn"
+);
 
-  const next=
-    document.querySelector(
-      ".nextBtn"
-    );
+const next=
+document.querySelector(
+".nextBtn"
+);
 
-  if(!prev || !next || !product)
-    return;
+if(!prev||!next||!product)
+return;
 
-  prev.disabled=
-    currentIndex<=0;
+prev.disabled=
+currentIndex<=0;
 
-  next.disabled=
-    currentIndex>=
-    product.images.length-1;
+next.disabled=
+currentIndex>=
+product.images.length-1;
+
 }
 
 function goToImage(i){
 
-  const slider=
-    document.getElementById(
-      "slider"
-    );
+const slider=
+document.getElementById("slider");
 
-  currentIndex=
-    Math.max(
-      0,
-      Math.min(
-        product.images.length-1,
-        i
-      )
-    );
+currentIndex=
+Math.max(
+0,
+Math.min(
+product.images.length-1,
+i
+)
+);
 
-  product.image=
-    product.images[currentIndex] ||
-    product.image;
+product.image=
+product.images[currentIndex]||
+product.image;
 
-  slider.scrollTo({
-    left:
-      currentIndex*
-      slider.clientWidth,
-    behavior:"smooth"
-  });
+slider.scrollTo({
+left:
+currentIndex*
+slider.clientWidth,
+behavior:"smooth"
+});
 
-  updateDots();
-  updateNavState();
+updateDots();
+
+updateNavState();
+
 }
 
 function prevImage(){
-  goToImage(currentIndex-1)
+goToImage(currentIndex-1);
 }
 
 function nextImage(){
-  goToImage(currentIndex+1)
+goToImage(currentIndex+1);
 }
 
 
 /* =====================================================
    QUANTITY
+   BUY PRICE ALWAYS UNIT PRICE
 ===================================================== */
 
 function changeQty(n){
 
-  qty=
-    Math.max(
-      1,
-      Math.min(
-        product.stock||99,
-        qty+n
-      )
-    );
+qty=
+Math.max(
+1,
+Math.min(
+product.stock||99,
+qty+n
+)
+);
 
-  document.getElementById(
-    "qty"
-  ).textContent=qty;
+document.getElementById(
+"qty"
+).textContent=qty;
 
-  /*
-    Buy-at stays UNIT PRICE.
-    Quantity change won't increase it.
-  */
+document.getElementById(
+"buyPrice"
+).textContent=
+money(product.price);
 
-  document.getElementById(
-    "buyPrice"
-  ).textContent=
-    money(product.price);
+}
+
+
+/* =====================================================
+   USER
+===================================================== */
+
+async function getUser(){
+
+const {data}=
+await supabaseClient
+.auth
+.getSession();
+
+return data.session?.user||null;
+
 }
 
 
@@ -3160,159 +3099,156 @@ function changeQty(n){
    CART
 ===================================================== */
 
-async function getUser(){
-
-  const {
-    data
-  }=
-    await supabaseClient.auth.getSession();
-
-  return data.session?.user||null;
-}
-
 async function addToCart(){
 
-  if(!product)return;
+if(!product)return;
 
-  const user=await getUser();
+const user=
+await getUser();
 
-  if(!user){
+if(!user){
 
-    toast("Please login first");
+toast("Please login first");
 
-    setTimeout(
-      ()=>location.href="/ecom/account.html",
-      800
-    );
+setTimeout(
+()=>location.href="/ecom/account.html",
+800
+);
 
-    return;
-  }
+return;
 
-  const {
-    data:old,
-    error:readError
-  }=
-    await supabaseClient
-      .from("cart_items")
-      .select("id,qty")
-      .eq("user_id",user.id)
-      .eq("product_id",product.id)
-      .maybeSingle();
-
-  if(readError){
-
-    toast(readError.message);
-    return;
-  }
-
-  const newQty=
-    (old?.qty||0)+qty;
-
-  const customizeInput=
-    document.getElementById(
-      "customizeInput"
-    );
-
-  const customizeText=
-    product.customize_enabled
-    ? (
-      customizeInput?.value||""
-    ).trim()
-    : "";
-
-  const row={
-
-    user_id:user.id,
-
-    product_id:product.id,
-
-    title:product.title,
-
-    image:product.image,
-
-    price:product.price,
-
-    mrp:product.mrp,
-
-    qty:newQty,
-
-    customize_text:customizeText,
-
-    updated_at:
-      new Date().toISOString()
-  };
-
-  const {
-    error
-  }=
-    await supabaseClient
-      .from("cart_items")
-      .upsert(
-        row,
-        {
-          onConflict:
-            "user_id,product_id"
-        }
-      );
-
-  if(error){
-
-    toast(error.message);
-    return;
-  }
-
-  updateCart();
-
-  toast("✓ Added to Cart");
 }
+
+const {
+data:old,
+error:readError
+}=
+await supabaseClient
+.from("cart_items")
+.select("id,qty")
+.eq("user_id",user.id)
+.eq("product_id",product.id)
+.maybeSingle();
+
+if(readError){
+
+toast(readError.message);
+
+return;
+
+}
+
+const newQty=
+(old?.qty||0)+qty;
+
+const customizeInput=
+document.getElementById(
+"customizeInput"
+);
+
+const customizeText=
+product.customize_enabled
+?(customizeInput?.value||"").trim()
+:"";
+
+const row={
+
+user_id:user.id,
+product_id:product.id,
+title:product.title,
+image:product.image,
+price:product.price,
+mrp:product.mrp,
+qty:newQty,
+customize_text:customizeText,
+updated_at:new Date().toISOString()
+
+};
+
+const {error}=
+await supabaseClient
+.from("cart_items")
+.upsert(
+row,
+{
+onConflict:
+"user_id,product_id"
+}
+);
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+updateCart();
+
+toast("✓ Added to Cart");
+
+}
+
+
+/* =====================================================
+   CART BADGE
+===================================================== */
 
 async function updateCart(){
 
-  const user=await getUser();
+const user=
+await getUser();
 
-  if(!user){
+if(!user){
 
-    const cartBadge=
-      document.getElementById(
-        "cartCount"
-      );
+const cartBadge=
+document.getElementById(
+"cartCount"
+);
 
-    if(cartBadge)
-      cartBadge.textContent="0";
+if(cartBadge)
+cartBadge.textContent="0";
 
-    return;
-  }
+return;
 
-  const {
-    data,
-    error
-  }=
-    await supabaseClient
-      .from("cart_items")
-      .select("qty")
-      .eq("user_id",user.id);
+}
 
-  if(error){
+const {
+data,
+error
+}=
+await supabaseClient
+.from("cart_items")
+.select("qty")
+.eq("user_id",user.id);
 
-    console.error(error);
-    return;
-  }
+if(error){
 
-  const cartBadge=
-    document.getElementById(
-      "cartCount"
-    );
+console.error(error);
 
-  if(cartBadge){
+return;
 
-    cartBadge.textContent=
-      (data||[]).reduce(
-        (s,x)=>
-          s+
-          (Number(x.qty)||0),
-        0
-      );
-  }
+}
+
+const cartBadge=
+document.getElementById(
+"cartCount"
+);
+
+if(cartBadge){
+
+cartBadge.textContent=
+(data||[])
+.reduce(
+(s,x)=>
+s+
+(Number(x.qty)||0),
+0
+);
+
+}
+
 }
 
 
@@ -3322,144 +3258,139 @@ async function updateCart(){
 
 async function buyNow(){
 
-  if(!product)return;
+if(!product)return;
 
-  const user=await getUser();
+const user=
+await getUser();
 
-  if(!user){
+if(!user){
 
-    toast("Please login first");
+toast("Please login first");
 
-    setTimeout(
-      ()=>location.href="/ecom/account.html",
-      800
-    );
+setTimeout(
+()=>location.href="/ecom/account.html",
+800
+);
 
-    return;
-  }
+return;
 
-  const customizeInput=
-    document.getElementById(
-      "customizeInput"
-    );
+}
 
-  const customizeText=
-    product.customize_enabled
-    ? (
-      customizeInput?.value||""
-    ).trim()
-    : "";
+const customizeInput=
+document.getElementById(
+"customizeInput"
+);
 
-  sessionStorage.setItem(
-    "checkoutItems",
-    JSON.stringify([{
+const customizeText=
+product.customize_enabled
+?(customizeInput?.value||"").trim()
+:"";
 
-      id:product.id,
+sessionStorage.setItem(
+"checkoutItems",
+JSON.stringify(
+[{
+id:product.id,
+title:product.title,
+image:product.image,
+price:product.price,
+mrp:product.mrp,
+qty:qty,
+product_id:product.id,
+customize_text:customizeText
+}]
+)
+);
 
-      title:product.title,
+location.href=
+"/ecom/checkout.html?mode=buy";
 
-      image:product.image,
-
-      price:product.price,
-
-      mrp:product.mrp,
-
-      qty:qty,
-
-      product_id:product.id,
-
-      customize_text:customizeText
-
-    }])
-  );
-
-  location.href=
-    "/ecom/checkout.html?mode=buy";
 }
 
 
 /* =====================================================
-   OLD TABS - KEPT
+   OLD TABS
 ===================================================== */
 
 function tab(type,b){
 
-  document
-    .querySelectorAll(".tab")
-    .forEach(
-      x=>
-        x.classList.remove("active")
-    );
+document
+.querySelectorAll(".tab")
+.forEach(
+x=>x.classList.remove("active")
+);
 
-  b.classList.add("active");
+b.classList.add("active");
 
-  content.innerHTML=
+content.innerHTML=
 
-    type==="about"
+type==="about"
 
-    ?
+?
 
-    "<h3>"+
-    escapeHtml(product.title)+
-    "</h3><p>"+
-    escapeHtml(product.description)+
-    "</p>"
+"<h3>"+
+escapeHtml(product.title)+
+"</h3><p>"+
+escapeHtml(product.description)+
+"</p>"
 
-    :
+:
 
-    type==="specs"
+type==="specs"
 
-    ?
+?
 
-    "<p><b>Category:</b> "+
-    escapeHtml(product.category||"—")+
-    "</p><p><b>Rating:</b> ★ "+
-    escapeHtml(product.rating)+
-    "</p><p><b>Product ID:</b> "+
-    escapeHtml(product.id)+
-    "</p><p><b>Payment:</b> COD available</p>"
+"<p><b>Category:</b> "+
+escapeHtml(product.category||"—")+
+"</p><p><b>Rating:</b> ★ "+
+escapeHtml(product.rating)+
+"</p><p><b>Product ID:</b> "+
+escapeHtml(product.id)+
+"</p><p><b>Payment:</b> COD available</p>"
 
-    :
+:
 
-    "<p><b>Delivery:</b> Dispatch after order confirmation.</p>"+
-    "<p><b>Returns:</b> "+
-    (
-      product.return_enabled
-      ? product.return_days+"-Day Return"
-      : "No Return"
-    )+
-    "</p>";
+"<p><b>Delivery:</b> Dispatch after order confirmation.</p>"+
+"<p><b>Returns:</b> "+
+(
+product.return_enabled
+?product.return_days+"-Day Return"
+:"No Return"
+)+
+"</p>";
+
 }
 
 
 /* =====================================================
-   ADDRESS REFRESH
+   EVENTS
 ===================================================== */
 
 window.addEventListener(
-  "resize",
-  ()=>{
-    if(product)
-      goToImage(currentIndex)
-  }
+"resize",
+()=>{
+if(product)
+goToImage(currentIndex);
+}
 );
 
 window.addEventListener(
-  "storage",
-  ()=>{
-    renderDeliveryDetails()
-  }
+"storage",
+()=>{
+renderDeliveryDetails();
+}
 );
 
 window.addEventListener(
-  "focus",
-  ()=>{
-    renderDeliveryDetails()
-  }
+"focus",
+()=>{
+renderDeliveryDetails();
+}
 );
 
 
 /* START */
+
 load();
 
 </script>
