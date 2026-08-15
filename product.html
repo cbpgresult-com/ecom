@@ -6,7 +6,9 @@
 <title>Product | MyStore</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -15,9 +17,18 @@ body{
   color:#111;
 }
 
-button,input{font:inherit}
-button{cursor:pointer}
-a{text-decoration:none;color:inherit}
+button,input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
 
 .page{
   width:min(1450px,100%);
@@ -46,7 +57,9 @@ a{text-decoration:none;color:inherit}
   border-right:1px solid #eee;
 }
 
-/* ================= IMAGE SLIDER ================= */
+/* =========================
+   IMAGE SLIDER
+========================= */
 
 .main{
   height:550px;
@@ -150,8 +163,13 @@ a{text-decoration:none;color:inherit}
   cursor:default;
 }
 
-.prevBtn{left:14px}
-.nextBtn{right:14px}
+.prevBtn{
+  left:14px;
+}
+
+.nextBtn{
+  right:14px;
+}
 
 .dots{
   display:flex;
@@ -178,7 +196,9 @@ a{text-decoration:none;color:inherit}
   transition:width .2s,background .2s;
 }
 
-/* ================= PRODUCT INFO ================= */
+/* =========================
+   PRODUCT INFO
+========================= */
 
 .info{
   padding:38px 42px;
@@ -271,7 +291,9 @@ a{text-decoration:none;color:inherit}
   gap:6px;
 }
 
-/* ================= QUANTITY ================= */
+/* =========================
+   QUANTITY
+========================= */
 
 .qtyrow{
   display:flex;
@@ -307,7 +329,26 @@ a{text-decoration:none;color:inherit}
   font-size:12px;
 }
 
-/* ================= DELIVERY ================= */
+#customizeWrap{
+  display:none;
+  align-items:center;
+  gap:7px;
+  margin-left:4px;
+}
+
+#customizeInput{
+  width:125px;
+  height:40px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:0 10px;
+  outline:none;
+  background:#fff;
+}
+
+/* =========================
+   DELIVERY
+========================= */
 
 .deliveryDetails{
   margin-top:24px;
@@ -436,7 +477,9 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
 }
 
-/* ================= FEATURE BOXES ================= */
+/* =========================
+   FEATURES
+========================= */
 
 .features{
   display:grid;
@@ -487,267 +530,235 @@ a{text-decoration:none;color:inherit}
   margin:0;
 }
 
-/* ================= CUSTOMIZE ================= */
-
-#customizeWrap{
-  display:none;
-  align-items:center;
-  gap:7px;
-  margin-left:4px;
-}
-
-#customizeInput{
-  width:125px;
-  height:40px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  padding:0 10px;
-  outline:none;
-  background:#fff;
-}
-
 /* =========================================================
-   FLIPKART STYLE PRODUCT HIGHLIGHTS + ALL DETAILS
-   NO CARD
+   PRODUCT HIGHLIGHTS
+   SIMPLE STYLE - NO CARD
 ========================================================= */
 
-.productSections{
-  margin-top:25px;
-  width:100%;
-  background:#fff;
+.productHighlights{
+  margin-top:28px;
+  border-top:1px solid #e5e5e5;
 }
 
-/* main section */
-
-.cleanSection{
-  width:100%;
-  border-top:1px solid #e5e7eb;
-  background:#fff;
-}
-
-.cleanSection:last-child{
-  border-bottom:1px solid #e5e7eb;
-}
-
-.cleanSectionHeader{
-  width:100%;
-  min-height:76px;
+.productHighlightsHeader{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:15px;
-  padding:14px 0;
+  min-height:70px;
+  padding:12px 0;
+  border-bottom:1px solid #e5e5e5;
   cursor:pointer;
-  user-select:none;
 }
 
-.cleanSectionHeaderLeft{
-  min-width:0;
-}
-
-.cleanSectionTitle{
+.highlightHeaderText h2{
   margin:0;
-  font-size:20px;
+  font-size:21px;
   line-height:1.25;
   font-weight:800;
-  color:#212121;
+  color:#111;
 }
 
-.cleanSectionSubtitle{
-  margin-top:6px;
-  color:#707070;
+.highlightHeaderText p{
+  margin:5px 0 0;
+  color:#777;
   font-size:13px;
-  line-height:1.3;
 }
 
-.cleanArrow{
+.sectionArrow{
   width:34px;
   height:34px;
-  min-width:34px;
   border:0;
-  border-radius:9px;
+  border-radius:10px;
   background:#f5f6f7;
   color:#222;
   display:flex;
   align-items:center;
   justify-content:center;
-  transition:transform .2s,background .2s;
+  font-size:17px;
+  flex:0 0 34px;
 }
 
-.cleanArrow:hover{
-  background:#eceeef;
-}
-
-.cleanArrow svg{
-  width:18px;
-  height:18px;
-  stroke:currentColor;
-  transition:transform .2s;
-}
-
-.cleanSection.open .cleanArrow svg{
-  transform:rotate(180deg);
-}
-
-/* content */
-
-.cleanSectionBody{
+.highlightBody{
   display:none;
-  padding:0 0 18px;
 }
 
-.cleanSection.open .cleanSectionBody{
+.highlightBody.open{
   display:block;
 }
 
-/* ================= HIGHLIGHTS ================= */
-
-.highlightList{
+.highlightRows{
   width:100%;
-  border-top:1px solid #e5e5e5;
 }
 
 .highlightRow{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:25px;
   min-height:62px;
-  padding:12px 0;
-  border-bottom:1px solid #e5e5e5;
   align-items:center;
+  border-bottom:1px solid #e5e5e5;
 }
 
 .highlightItem{
+  padding:10px 12px 10px 0;
   min-width:0;
 }
 
+.highlightItem:nth-child(even){
+  padding-left:23px;
+  border-left:0;
+}
+
 .highlightLabel{
-  display:block;
   color:#777;
-  font-size:12px;
-  line-height:1.3;
-  margin-bottom:4px;
+  font-size:13px;
+  line-height:1.25;
+  margin-bottom:3px;
 }
 
 .highlightValue{
-  display:block;
-  color:#212121;
+  color:#222;
   font-size:14px;
-  line-height:1.35;
-  font-weight:700;
+  font-weight:400;
+  line-height:1.3;
   word-break:break-word;
 }
 
-/* ================= ALL DETAILS ================= */
+/* =========================================================
+   ALL DETAILS
+   SAME SIMPLE STYLE
+========================================================= */
 
-.detailsTabs{
+.allDetailsSection{
+  margin-top:22px;
+  border-top:1px solid #e5e5e5;
+}
+
+.allDetailsHeader{
   display:flex;
   align-items:center;
-  gap:8px;
-  padding:0 0 15px;
+  justify-content:space-between;
+  min-height:70px;
+  padding:12px 0;
   border-bottom:1px solid #e5e5e5;
+  cursor:pointer;
+}
+
+.allDetailsHeaderText h2{
+  margin:0;
+  font-size:21px;
+  line-height:1.25;
+  font-weight:800;
+  color:#111;
+}
+
+.allDetailsHeaderText p{
+  margin:5px 0 0;
+  color:#777;
+  font-size:13px;
+}
+
+.allDetailsBody{
+  display:none;
+  padding-top:17px;
+}
+
+.allDetailsBody.open{
+  display:block;
+}
+
+.detailTabs{
+  display:flex;
+  gap:9px;
+  border-bottom:1px solid #e5e5e5;
+  padding-bottom:15px;
+  margin-bottom:22px;
   overflow-x:auto;
   scrollbar-width:none;
 }
 
-.detailsTabs::-webkit-scrollbar{
+.detailTabs::-webkit-scrollbar{
   display:none;
 }
 
-.detailsTab{
+.detailTab{
   flex:0 0 auto;
-  border:1px solid #d7d9dc;
+  border:1px solid #d6d9dd;
   background:#fff;
-  color:#444;
+  color:#222;
+  padding:9px 15px;
   border-radius:8px;
-  padding:9px 14px;
-  font-size:14px;
-  line-height:1;
-  white-space:nowrap;
+  font-size:13px;
+  cursor:pointer;
 }
 
-.detailsTab.active{
+.detailTab.active{
   background:#111;
   color:#fff;
   border-color:#111;
   font-weight:800;
 }
 
-.detailsPanel{
+.detailPanel{
   display:none;
-  padding-top:18px;
 }
 
-.detailsPanel.active{
+.detailPanel.active{
   display:block;
 }
 
-.detailGroup{
+.detailSection{
   margin-bottom:28px;
 }
 
-.detailGroup:last-child{
-  margin-bottom:0;
-}
-
-.detailGroupTitle{
+.detailSectionTitle{
   font-size:16px;
   font-weight:800;
-  color:#333;
-  margin:0 0 9px;
+  color:#222;
+  margin:0 0 12px;
 }
 
-.detailGrid{
+.detailRows{
   width:100%;
 }
 
 .detailRow{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:25px;
-  min-height:57px;
-  padding:11px 0;
+  min-height:54px;
   border-bottom:1px solid #e5e5e5;
   align-items:center;
 }
 
-.detailLabel{
+.detailKey{
   color:#777;
   font-size:13px;
-  line-height:1.3;
+  padding:10px 12px 10px 0;
 }
 
 .detailValue{
-  color:#333;
+  color:#222;
   font-size:14px;
-  line-height:1.35;
+  padding:10px 0;
   word-break:break-word;
 }
 
-.descriptionPanel{
+.detailDescription{
   color:#444;
   font-size:14px;
   line-height:1.75;
-  white-space:pre-line;
+  padding-bottom:18px;
+  white-space:pre-wrap;
 }
 
-.manufacturerBox{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:0 25px;
+.detailEmpty{
+  color:#777;
+  font-size:13px;
+  padding:15px 0;
 }
 
-/* ================= OLD DETAILS HIDDEN ================= */
-
-/*
-   Old bottom About/Specifications/Delivery card is not used.
-   Product Highlights + All details are now the only details section.
-*/
-#details{
-  display:none!important;
-}
-
-/* ================= CTA ================= */
+/* =========================
+   CTA
+========================= */
 
 .cta{
   display:grid;
@@ -757,7 +768,8 @@ a{text-decoration:none;color:inherit}
   padding-top:24px;
 }
 
-.add,.buy{
+.add,
+.buy{
   height:56px;
   border-radius:14px;
   font-weight:800;
@@ -776,7 +788,8 @@ a{text-decoration:none;color:inherit}
   box-shadow:0 8px 22px rgba(20,30,45,.08);
 }
 
-.add:active,.buy:active{
+.add:active,
+.buy:active{
   transform:scale(.98);
 }
 
@@ -795,7 +808,9 @@ a{text-decoration:none;color:inherit}
   stroke:currentColor;
 }
 
-/* ================= TOAST ================= */
+/* =========================
+   TOAST
+========================= */
 
 .toast{
   position:fixed;
@@ -818,7 +833,9 @@ a{text-decoration:none;color:inherit}
   transform:translate(-50%,0);
 }
 
-/* ================= MOBILE ================= */
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:900px){
 
@@ -870,7 +887,7 @@ a{text-decoration:none;color:inherit}
   }
 
   .deliveryAddress{
-    padding:10px 10px;
+    padding:10px;
     font-size:10px;
     min-height:43px;
   }
@@ -916,6 +933,7 @@ a{text-decoration:none;color:inherit}
     text-overflow:ellipsis;
     min-width:0;
     max-width:100%;
+    display:block;
   }
 
   .deliveryArrow{
@@ -1018,77 +1036,70 @@ a{text-decoration:none;color:inherit}
     font-size:11px;
   }
 
-  /* screenshot-like mobile highlights/details */
-
-  .productSections{
+  .productHighlights{
     margin-top:22px;
   }
 
-  .cleanSectionHeader{
-    min-height:70px;
-    padding:13px 0;
+  .highlightHeaderText h2,
+  .allDetailsHeaderText h2{
+    font-size:18px;
   }
 
-  .cleanSectionTitle{
-    font-size:19px;
+  .highlightHeaderText p,
+  .allDetailsHeaderText p{
+    font-size:11px;
   }
 
-  .cleanSectionSubtitle{
-    font-size:12px;
-    margin-top:5px;
-  }
-
-  .cleanArrow{
+  .sectionArrow{
     width:32px;
     height:32px;
-    min-width:32px;
-    border-radius:9px;
+    flex-basis:32px;
   }
 
   .highlightRow{
-    grid-template-columns:1fr 1fr;
-    gap:22px;
-    min-height:61px;
-    padding:11px 0;
+    min-height:57px;
+  }
+
+  .highlightItem{
+    padding:9px 8px 9px 0;
+  }
+
+  .highlightItem:nth-child(even){
+    padding-left:16px;
   }
 
   .highlightLabel{
-    font-size:12px;
-    margin-bottom:3px;
+    font-size:11px;
   }
 
   .highlightValue{
-    font-size:14px;
+    font-size:12px;
   }
 
-  .detailsTabs{
+  .allDetailsBody{
+    padding-top:14px;
+  }
+
+  .detailTabs{
     gap:7px;
-    padding-bottom:14px;
+    margin-bottom:18px;
   }
 
-  .detailsTab{
-    font-size:13px;
-    padding:9px 13px;
-    border-radius:8px;
+  .detailTab{
+    font-size:12px;
+    padding:8px 12px;
   }
 
-  .detailGroup{
-    margin-bottom:25px;
-  }
-
-  .detailGroupTitle{
-    font-size:16px;
-    margin-bottom:8px;
+  .detailSectionTitle{
+    font-size:15px;
   }
 
   .detailRow{
     grid-template-columns:1fr 1fr;
-    gap:20px;
-    min-height:56px;
-    padding:10px 0;
+    min-height:52px;
   }
 
-  .detailLabel{
+  .detailKey{
     font-size:12px;
   }
 
@@ -1096,14 +1107,8 @@ a{text-decoration:none;color:inherit}
     font-size:13px;
   }
 
-  .descriptionPanel{
+  .detailDescription{
     font-size:13px;
-    line-height:1.7;
-  }
-
-  .manufacturerBox{
-    grid-template-columns:1fr 1fr;
-    gap:0 20px;
   }
 
   .cta{
@@ -1119,40 +1124,9 @@ a{text-decoration:none;color:inherit}
     box-shadow:0 -6px 20px #0000000f;
   }
 
-  .add,.buy{
+  .add,
+  .buy{
     height:51px;
-  }
-}
-
-@media(max-width:420px){
-
-  .cleanSectionTitle{
-    font-size:18px;
-  }
-
-  .cleanSectionSubtitle{
-    font-size:11px;
-  }
-
-  .highlightRow,
-  .detailRow{
-    gap:14px;
-  }
-
-  .highlightLabel{
-    font-size:11px;
-  }
-
-  .highlightValue{
-    font-size:13px;
-  }
-
-  .detailLabel{
-    font-size:11px;
-  }
-
-  .detailValue{
-    font-size:12px;
   }
 }
 </style>
@@ -1163,15 +1137,17 @@ a{text-decoration:none;color:inherit}
 <main class="page">
 
 <div id="loading"
-style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-items:center;justify-content:center">
-<b>Loading product...</b>
+     style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-items:center;justify-content:center">
+  <b>Loading product...</b>
 </div>
 
 <section id="product" class="product">
 
 <div class="grid">
 
-<!-- ================= GALLERY ================= -->
+<!-- =========================
+     GALLERY
+========================= -->
 
 <div class="gallery">
 
@@ -1180,14 +1156,18 @@ style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-it
 <span id="badge" class="pill">BESTSELLER</span>
 
 <button type="button"
-class="navBtn prevBtn"
-onclick="prevImage()"
-aria-label="Previous image">‹</button>
+        class="navBtn prevBtn"
+        onclick="prevImage()"
+        aria-label="Previous image">
+  ‹
+</button>
 
 <button type="button"
-class="navBtn nextBtn"
-onclick="nextImage()"
-aria-label="Next image">›</button>
+        class="navBtn nextBtn"
+        onclick="nextImage()"
+        aria-label="Next image">
+  ›
+</button>
 
 <div class="slider" id="slider"></div>
 
@@ -1197,7 +1177,10 @@ aria-label="Next image">›</button>
 
 </div>
 
-<!-- ================= PRODUCT INFO ================= -->
+
+<!-- =========================
+     PRODUCT INFO
+========================= -->
 
 <div class="info">
 
@@ -1206,78 +1189,107 @@ aria-label="Next image">›</button>
 <h1 id="title" class="title"></h1>
 
 <div class="rating">
-<span id="rating" class="rate"></span>
-<span id="reviews" class="reviews"></span>
+  <span id="rating" class="rate"></span>
+  <span id="reviews" class="reviews"></span>
 </div>
 
 <div class="pricebox">
-<span id="price" class="price"></span>
-<br>
-<span id="mrp" class="mrp"></span>
-<span id="off" class="off"></span>
+  <span id="price" class="price"></span>
+  <br>
+  <span id="mrp" class="mrp"></span>
+  <span id="off" class="off"></span>
 </div>
+
+
+<!-- =========================
+     DELIVERY
+========================= -->
 
 <div id="deliveryDetails" class="deliveryDetails">
 
 <div class="deliveryTitle">
-Delivery details
+  Delivery details
 </div>
 
 <div class="deliveryCard">
 
 <div class="deliveryAddress"
-id="deliveryAddressRow"
-role="button"
-tabindex="0"
-onclick="openAddressSelector()"
-onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
+     id="deliveryAddressRow"
+     role="button"
+     tabindex="0"
+     onclick="openAddressSelector()"
+     onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
 
-<div class="deliveryIcon">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
+<div class="deliveryIcon" aria-hidden="true">
+
+<svg viewBox="0 0 24 24"
+     fill="none"
+     stroke-width="1.9">
+
 <path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z"/>
 <circle cx="12" cy="9" r="2.4"/>
+
 </svg>
+
 </div>
 
 <div id="deliveryAddressText"
-class="deliveryAddressText">
-Add delivery address
+     class="deliveryAddressText">
+  Add delivery address
 </div>
 
 <div class="deliveryArrow">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+
+<svg viewBox="0 0 24 24"
+     fill="none"
+     stroke-width="2">
+
 <path d="m9 18 6-6-6-6"/>
+
 </svg>
+
 </div>
 
 </div>
+
 
 <div class="deliveryDate">
 
 <div class="deliveryIcon">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+
+<svg viewBox="0 0 24 24"
+     fill="none"
+     stroke-width="1.8">
+
 <path d="M3 7h11v10H3z"/>
 <path d="M14 10h4l3 3v4h-7z"/>
 <circle cx="7" cy="18" r="2"/>
 <circle cx="18" cy="18" r="2"/>
 <path d="M5 10h6M16 13h4"/>
+
 </svg>
+
 </div>
 
 <div id="deliveryDateText">
-Delivery by …
+  Delivery by …
 </div>
 
 </div>
+
 
 <div class="deliverySeller">
 
 <div class="sellerMain">
 
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+<svg viewBox="0 0 24 24"
+     fill="none"
+     stroke-width="1.8">
+
 <path d="M4 10h16v10H4z"/>
 <path d="m3 10 2-5h14l2 5"/>
 <path d="M8 10v2a2 2 0 0 0 4 0v-2a2 2 0 0 0 4 0v-2"/>
+
 </svg>
 
 <span>Fulfilled by MyStore</span>
@@ -1285,198 +1297,178 @@ Delivery by …
 </div>
 
 <div class="sellerSub">
-Trusted seller · Quality checked
+  Trusted seller · Quality checked
 </div>
 
 <a class="sellerLink" href="/ecom/index.html">
-See other sellers <span>›</span>
+  See other sellers <span>›</span>
 </a>
 
 </div>
 
 </div>
+
 </div>
+
 
 <div id="description" class="desc"></div>
 
 <div id="stock" class="stock"></div>
+
+
+<!-- =========================
+     QUANTITY
+========================= -->
 
 <div class="qtyrow">
 
 Qty.
 
 <div class="qty">
-<button onclick="changeQty(-1)">−</button>
-<span id="qty">1</span>
-<button onclick="changeQty(1)">+</button>
+
+<button onclick="changeQty(-1)">
+  −
+</button>
+
+<span id="qty">
+  1
+</span>
+
+<button onclick="changeQty(1)">
+  +
+</button>
+
 </div>
+
 
 <div id="customizeWrap">
 
-<label for="customizeInput"
-style="font-size:12px;font-weight:800;white-space:nowrap;">
-Customize
+<label for="customizeInput">
+  Customize
 </label>
 
 <input id="customizeInput"
-type="text"
-maxlength="100"
-placeholder="Name / Text">
+       type="text"
+       maxlength="100"
+       placeholder="Name / Text">
 
 </div>
 
 </div>
+
+
+<!-- =========================
+     FEATURES
+========================= -->
 
 <div id="features" class="features"></div>
 
+
 <!-- =====================================================
-     PRODUCT HIGHLIGHTS + ALL DETAILS
+     PRODUCT HIGHLIGHTS
 ===================================================== -->
 
-<div class="productSections">
+<div id="productHighlights"
+     class="productHighlights"
+     style="display:none;">
 
-<!-- ================= PRODUCT HIGHLIGHTS ================= -->
+<div class="productHighlightsHeader"
+     onclick="toggleHighlights()">
 
-<section id="highlightsSection"
-class="cleanSection">
+<div class="highlightHeaderText">
 
-<div class="cleanSectionHeader"
-onclick="toggleSection('highlightsSection')">
-
-<div class="cleanSectionHeaderLeft">
-
-<h2 class="cleanSectionTitle">
-Product Highlights
+<h2>
+  Product Highlights
 </h2>
 
-<div class="cleanSectionSubtitle">
-Key features, expiry, usage, and more
-</div>
+<p>
+  Key features, expiry, usage, and more
+</p>
 
 </div>
 
-<button class="cleanArrow"
-type="button"
-onclick="event.stopPropagation();toggleSection('highlightsSection')"
-aria-label="Toggle product highlights">
-
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-<path d="m6 9 6 6 6-6"/>
-</svg>
-
+<button type="button"
+        class="sectionArrow"
+        id="highlightArrow"
+        onclick="event.stopPropagation();toggleHighlights()">
+  ↓
 </button>
 
 </div>
 
-<div class="cleanSectionBody">
 
-<div id="highlightList" class="highlightList"></div>
+<div id="highlightBody"
+     class="highlightBody">
+
+<div id="highlightRows"
+     class="highlightRows">
+</div>
 
 </div>
 
-</section>
+</div>
 
 
-<!-- ================= ALL DETAILS ================= -->
+<!-- =====================================================
+     ALL DETAILS
+===================================================== -->
 
-<section id="allDetailsSection"
-class="cleanSection">
+<div id="allDetailsSection"
+     class="allDetailsSection"
+     style="display:none;">
 
-<div class="cleanSectionHeader"
-onclick="toggleSection('allDetailsSection')">
+<div class="allDetailsHeader"
+     onclick="toggleAllDetails()">
 
-<div class="cleanSectionHeaderLeft">
+<div class="allDetailsHeaderText">
 
-<h2 class="cleanSectionTitle">
-All details
+<h2>
+  All details
 </h2>
 
-<div class="cleanSectionSubtitle">
-Features, description and more
-</div>
+<p>
+  Features, description and more
+</p>
 
 </div>
 
-<button class="cleanArrow"
-type="button"
-onclick="event.stopPropagation();toggleSection('allDetailsSection')"
-aria-label="Toggle all details">
-
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-<path d="m6 9 6 6 6-6"/>
-</svg>
-
-</button>
-
-</div>
-
-<div class="cleanSectionBody">
-
-<div class="detailsTabs">
-
-<button class="detailsTab active"
-onclick="showDetailsTab('specifications',this)">
-Specifications
-</button>
-
-<button class="detailsTab"
-onclick="showDetailsTab('description',this)">
-Description
-</button>
-
-<button class="detailsTab"
-onclick="showDetailsTab('manufacturer',this)">
-Manufacturer info
+<button type="button"
+        class="sectionArrow"
+        id="allDetailsArrow"
+        onclick="event.stopPropagation();toggleAllDetails()">
+  ↓
 </button>
 
 </div>
 
 
-<!-- SPECIFICATIONS -->
+<div id="allDetailsBody"
+     class="allDetailsBody">
 
-<div id="panelSpecifications"
-class="detailsPanel active">
-
-<div id="specificationContent"></div>
-
+<div id="detailTabs"
+     class="detailTabs">
 </div>
 
-
-<!-- DESCRIPTION -->
-
-<div id="panelDescription"
-class="detailsPanel">
-
-<div id="fullDescription"
-class="descriptionPanel"></div>
-
+<div id="detailPanels">
 </div>
-
-
-<!-- MANUFACTURER -->
-
-<div id="panelManufacturer"
-class="detailsPanel">
-
-<div id="manufacturerContent"></div>
 
 </div>
 
 </div>
 
-</section>
 
-</div>
-
-<!-- ================= CTA ================= -->
+<!-- =========================
+     CTA
+========================= -->
 
 <div class="cta">
 
-<button class="add" onclick="addToCart()">
+<button class="add"
+        onclick="addToCart()">
 
 <svg viewBox="0 0 24 24"
-fill="none"
-stroke-width="1.8">
+     fill="none"
+     stroke-width="1.8">
 
 <path d="M3 4h2l2.2 11h10.9l2-8H6"/>
 <circle cx="9" cy="19" r="1.5"/>
@@ -1488,11 +1480,13 @@ Add to Cart
 
 </button>
 
-<button class="buy" onclick="buyNow()">
+
+<button class="buy"
+        onclick="buyNow()">
 
 <svg viewBox="0 0 24 24"
-fill="none"
-stroke-width="1.9">
+     fill="none"
+     stroke-width="1.9">
 
 <path d="m13 2-9 12h7l-1 8 9-12h-7l1-8Z"/>
 
@@ -1510,10 +1504,8 @@ Buy at <span id="buyPrice"></span>
 
 </section>
 
-<!-- OLD DETAILS ELEMENT KE LIYE -->
-<section id="details" style="display:none"></section>
-
 </main>
+
 
 <div id="toast" class="toast"></div>
 
@@ -1522,68 +1514,95 @@ Buy at <span id="buyPrice"></span>
 
 <script>
 
-/* =========================================================
+/* =====================================================
    SUPABASE
-   SAME URL + SAME KEY
-========================================================= */
+===================================================== */
 
-const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
+const SUPABASE_URL =
+"https://bszojvhitsoamhksyjul.supabase.co";
 
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
 
-const supabaseClient=
+const supabaseClient =
 window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
 
-/* =========================================================
-   GLOBAL
-========================================================= */
+/* =====================================================
+   GLOBALS
+===================================================== */
 
-let product=null;
-let qty=1;
-let currentIndex=0;
+let product = null;
+let qty = 1;
+let currentIndex = 0;
 
-const money=n=>
-"₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
+let highlightsOpen = false;
+let allDetailsOpen = false;
+let currentDetailTab = 0;
 
-const id=()=>
-new URLSearchParams(location.search).get("id");
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+const money = n =>
+  "₹" +
+  Math.round(Number(n)||0).toLocaleString("en-IN");
+
+
+const id = () =>
+  new URLSearchParams(location.search).get("id");
+
 
 function v(o,ks,d=""){
+
   for(const k of ks){
-    if(o[k]!=null && o[k]!=="")
+
+    if(
+      o &&
+      o[k] !== undefined &&
+      o[k] !== null &&
+      o[k] !== ""
+    ){
       return o[k];
+    }
+
   }
+
   return d;
 }
 
-function num(v){
-  const m=String(v??"").match(/[0-9,]+(?:\.[0-9]+)?/);
-  return m?Number(m[0].replace(/,/g,"")):0;
+
+function num(value){
+
+  const m =
+    String(value ?? "")
+      .match(/[0-9,]+(?:\.[0-9]+)?/);
+
+  return m
+    ? Number(m[0].replace(/,/g,""))
+    : 0;
 }
 
-function toast(x){
-  const t=document.getElementById("toast");
-  t.textContent=x;
-  t.classList.add("show");
 
-  clearTimeout(window.tt);
+function cleanPart(value){
 
-  window.tt=setTimeout(
-    ()=>t.classList.remove("show"),
-    2200
-  );
+  return value == null
+    ? ""
+    : String(value).trim();
 }
+
 
 function escapeHtml(value){
-  const s=String(value??"");
+
+  const s = String(value ?? "");
 
   return s.replace(
     /[&<>"']/g,
-    c=>({
+    c => ({
       "&":"&amp;",
       "<":"&lt;",
       ">":"&gt;",
@@ -1594,41 +1613,43 @@ function escapeHtml(value){
 }
 
 
-/* =========================================================
-   JSON / ARRAY HELPERS
-========================================================= */
+function toast(x){
 
-function parseJSON(value,fallback=null){
+  const t =
+    document.getElementById("toast");
 
-  if(value==null || value==="")
-    return fallback;
+  t.textContent = x;
 
-  if(typeof value==="object")
-    return value;
+  t.classList.add("show");
 
-  try{
-    return JSON.parse(value);
-  }catch{
-    return fallback;
-  }
+  clearTimeout(window.tt);
+
+  window.tt =
+    setTimeout(
+      ()=>t.classList.remove("show"),
+      2200
+    );
 }
 
-function cleanPart(v){
-  return v==null ? "" : String(v).trim();
-}
+
+/* =====================================================
+   ADDRESS
+===================================================== */
 
 function uniqueParts(arr){
 
-  const out=[];
+  const out = [];
 
   for(const x of arr){
 
-    const s=cleanPart(x);
+    const s = cleanPart(x);
 
     if(
       s &&
       !out.some(
-        y=>y.toLowerCase()===s.toLowerCase()
+        y =>
+          y.toLowerCase() ===
+          s.toLowerCase()
       )
     ){
       out.push(s);
@@ -1640,95 +1661,113 @@ function uniqueParts(arr){
 }
 
 
-/* =========================================================
-   ADDRESS
-========================================================= */
-
 function formatSavedAddress(a){
 
   if(!a) return "";
 
-  if(typeof a==="string")
+  if(typeof a === "string"){
     return a.trim();
+  }
 
-  const village=cleanPart(
-    a.village ||
-    a.locality ||
-    a.area ||
-    a.town ||
-    a.place ||
-    ""
-  );
+  const village =
+    cleanPart(
+      a.village ||
+      a.locality ||
+      a.area ||
+      a.town ||
+      a.place ||
+      ""
+    );
 
-  const district=cleanPart(
-    a.district ||
-    a.district_name ||
-    ""
-  );
+  const district =
+    cleanPart(
+      a.district ||
+      a.district_name ||
+      ""
+    );
 
-  const city=cleanPart(
-    a.city ||
-    a.city_name ||
-    ""
-  );
+  const city =
+    cleanPart(
+      a.city ||
+      a.city_name ||
+      ""
+    );
 
-  const state=cleanPart(
-    a.state ||
-    a.state_name ||
-    ""
-  );
+  const state =
+    cleanPart(
+      a.state ||
+      a.state_name ||
+      ""
+    );
 
-  const pincode=cleanPart(
-    a.pincode ||
-    a.pin ||
-    a.postal_code ||
-    a.postcode ||
-    ""
-  );
+  const pincode =
+    cleanPart(
+      a.pincode ||
+      a.pin ||
+      a.postal_code ||
+      a.postcode ||
+      ""
+    );
 
-  const plus=cleanPart(
-    a.plus_code ||
-    a.plusCode ||
-    a.pluscode ||
-    a.plus_code_address ||
-    ""
-  );
+  const plus =
+    cleanPart(
+      a.plus_code ||
+      a.plusCode ||
+      a.pluscode ||
+      a.plus_code_address ||
+      ""
+    );
 
-  const direct=cleanPart(
-    a.full_address ||
-    a.fullAddress ||
-    a.formatted_address ||
-    a.formattedAddress
-  );
+  const direct =
+    cleanPart(
+      a.full_address ||
+      a.fullAddress ||
+      a.formatted_address ||
+      a.formattedAddress
+    );
 
-  const first=
-    uniqueParts([village,district])
-    .join(", ");
+  const first =
+    uniqueParts([
+      village,
+      district
+    ]).join(", ");
 
-  const second=
-    uniqueParts([state,pincode])
-    .join(", ");
+  const second =
+    uniqueParts([
+      state,
+      pincode
+    ]).join(", ");
 
-  const lines=[
-    first,
-    second,
-    plus
-  ].filter(Boolean);
+  const lines =
+    [
+      first,
+      second,
+      plus
+    ].filter(Boolean);
 
-  if(lines.length)
+  if(lines.length){
     return lines.join("\n");
+  }
 
-  const fallback=
-    uniqueParts([city,state,pincode])
-    .join(", ");
-
-  return fallback || direct;
+  return (
+    uniqueParts([
+      city,
+      state,
+      pincode
+    ]).join(", ")
+    || direct
+  );
 }
+
 
 function addressCacheKey(userId){
-  return "mystore_delivery_address_cache_v3_"+
-    String(userId||"guest");
+
+  return (
+    "mystore_delivery_address_cache_v3_" +
+    String(userId || "guest")
+  );
 }
+
 
 function cacheAddress(
   userId,
@@ -1738,12 +1777,12 @@ function cacheAddress(
 
   try{
 
-    const payload={
+    const payload = {
       savedAt:Date.now(),
       text:
         formatted ||
         formatSavedAddress(addressObject),
-      data:addressObject||null
+      data:addressObject || null
     };
 
     localStorage.setItem(
@@ -1752,89 +1791,111 @@ function cacheAddress(
     );
 
   }catch(e){
-    console.warn("Address cache error",e);
+
+    console.warn(
+      "Address cache error",
+      e
+    );
+
   }
 }
+
 
 function readCachedAddress(userId){
 
   try{
 
-    const raw=
+    const raw =
       localStorage.getItem(
         addressCacheKey(userId)
       );
 
     if(!raw) return "";
 
-    const x=JSON.parse(raw);
+    const x = JSON.parse(raw);
 
-    return cleanPart(x?.text) ||
-      formatSavedAddress(x?.data);
+    return (
+      cleanPart(x?.text) ||
+      formatSavedAddress(x?.data)
+    );
 
   }catch(e){
+
     return "";
+
   }
 }
 
+
 function paintAddress(text){
 
-  const el=
+  const el =
     document.getElementById(
       "deliveryAddressText"
     );
 
   if(!el) return;
 
-  const value=cleanPart(text);
+  const value =
+    cleanPart(text);
 
   if(!value){
 
-    el.textContent=
+    el.textContent =
       "Add delivery address";
 
     return;
   }
 
-  el.textContent=
+  /*
+    New lines become spaces.
+    CSS then shows one line with ...
+  */
+
+  el.textContent =
     value
       .replace(/\s*\n\s*/g," ")
       .replace(/\s+/g," ")
       .trim();
 }
 
+
 function looksLikeAddressObject(x){
 
   if(
     !x ||
-    typeof x!=="object" ||
+    typeof x !== "object" ||
     Array.isArray(x)
-  )
+  ){
     return false;
+  }
 
-  const keys=
+  const keys =
     Object.keys(x)
       .map(k=>k.toLowerCase());
 
-  return keys.some(k=>[
-    "village",
-    "district",
-    "state",
-    "pincode",
-    "pin",
-    "postal_code",
-    "plus_code",
-    "full_address",
-    "fulladdress",
-    "formatted_address",
-    "address",
-    "locality"
-  ].includes(k));
+  return keys.some(
+    k => [
+      "village",
+      "district",
+      "state",
+      "pincode",
+      "pin",
+      "postal_code",
+      "plus_code",
+      "full_address",
+      "fulladdress",
+      "formatted_address",
+      "address",
+      "locality"
+    ].includes(k)
+  );
 }
+
 
 function scanLocalStorageForAddress(){
 
-  const preferred=[
+  const preferred = [
     "selectedAddress",
     "selected_address",
     "savedAddress",
@@ -1851,87 +1912,116 @@ function scanLocalStorageForAddress(){
     "addresses"
   ];
 
-  const keys=[];
+  const keys = [];
 
-  for(const k of preferred)
-    if(!keys.includes(k))
+  for(const k of preferred){
+
+    if(!keys.includes(k)){
       keys.push(k);
+    }
+
+  }
 
   try{
 
-    for(let i=0;i<localStorage.length;i++){
+    for(
+      let i=0;
+      i<localStorage.length;
+      i++
+    ){
 
-      const k=localStorage.key(i);
+      const k =
+        localStorage.key(i);
 
-      if(k && !keys.includes(k))
+      if(
+        k &&
+        !keys.includes(k)
+      ){
         keys.push(k);
+      }
+
     }
 
   }catch(e){}
+
 
   for(const key of keys){
 
     try{
 
-      const raw=localStorage.getItem(key);
+      const raw =
+        localStorage.getItem(key);
 
       if(!raw) continue;
 
       let value;
 
       try{
-        value=JSON.parse(raw);
+        value = JSON.parse(raw);
       }catch{
-        value=raw;
+        value = raw;
       }
 
-      const candidates=[];
+      const candidates = [];
 
-      if(Array.isArray(value))
+      if(Array.isArray(value)){
         candidates.push(...value);
-      else
+      }else{
         candidates.push(value);
+      }
+
 
       for(const item of candidates){
 
-        if(typeof item==="string"){
+        if(typeof item === "string"){
 
-          const t=item.trim();
+          const t =
+            item.trim();
 
           if(
             t &&
             /(\d{5,6}|uttar|pradesh|district|village|plus)/i.test(t)
-          )
+          ){
             return t;
+          }
 
         }else if(
           looksLikeAddressObject(item)
         ){
 
-          const t=
+          const t =
             formatSavedAddress(item);
 
           if(t) return t;
+
         }
 
       }
 
     }catch(e){}
+
   }
 
   return "";
 }
 
+
 async function getCurrentUser(){
 
   try{
 
-    const {data,error}=
+    const {
+      data,
+      error
+    } =
       await supabaseClient.auth.getSession();
 
     if(error) return null;
 
-    return data?.session?.user||null;
+    return (
+      data?.session?.user ||
+      null
+    );
 
   }catch(e){
 
@@ -1940,6 +2030,7 @@ async function getCurrentUser(){
   }
 }
 
+
 async function readAddressTable(
   table,
   userId
@@ -1947,74 +2038,94 @@ async function readAddressTable(
 
   try{
 
-    const {data,error}=
+    const {
+      data,
+      error
+    } =
       await supabaseClient
         .from(table)
         .select("*")
         .eq("user_id",userId)
-        .order("created_at",{ascending:false})
+        .order(
+          "created_at",
+          {ascending:false}
+        )
         .limit(20);
 
     if(
       error ||
       !Array.isArray(data) ||
       !data.length
-    )
+    ){
       return null;
+    }
 
-    const preferred=
-      data.find(a=>
-        a?.is_current_location===true ||
-        a?.isCurrentLocation===true ||
-        a?.is_current===true ||
-        a?.selected===true ||
-        a?.is_selected===true ||
-        String(a?.type||"")
+    const preferred =
+      data.find(
+        a =>
+          a?.is_current_location === true ||
+          a?.isCurrentLocation === true ||
+          a?.is_current === true ||
+          a?.selected === true ||
+          a?.is_selected === true ||
+          String(
+            a?.type || ""
+          )
           .toLowerCase()
           .includes("current")
       ) || data[0];
 
-    const text=
+    const text =
       formatSavedAddress(preferred);
 
-    if(text)
+    if(text){
+
       return {
         data:preferred,
         text
       };
+
+    }
 
   }catch(e){}
 
   return null;
 }
 
+
 async function loadDeliveryAddress(){
 
-  const user=
+  const user =
     await getCurrentUser();
 
   if(user){
 
-    const cached=
+    const cached =
       readCachedAddress(user.id);
 
-    if(cached)
+    if(cached){
       paintAddress(cached);
+    }
+
   }
 
-  const local=
+  const local =
     scanLocalStorageForAddress();
 
   if(
     local &&
     (!user ||
-    !readCachedAddress(user.id))
-  )
+      !readCachedAddress(user.id))
+  ){
+
     paintAddress(local);
+
+  }
+
 
   if(user){
 
-    const tables=[
+    const tables = [
       "saved_addresses",
       "addresses",
       "user_addresses",
@@ -2023,7 +2134,7 @@ async function loadDeliveryAddress(){
 
     for(const table of tables){
 
-      const result=
+      const result =
         await readAddressTable(
           table,
           user.id
@@ -2037,53 +2148,54 @@ async function loadDeliveryAddress(){
           result.text
         );
 
-        paintAddress(result.text);
+        paintAddress(
+          result.text
+        );
 
         return;
+
       }
+
     }
+
   }
 
-  const current=
-    document.getElementById(
-      "deliveryAddressText"
-    );
-
-  if(
-    current &&
-    !current.textContent.trim()
-  )
-    current.textContent=
-      "Add delivery address";
 }
+
 
 function openAddressSelector(){
 
   try{
 
-    const target=
+    const target =
       localStorage.getItem(
         "addressSelectorUrl"
       );
 
     if(target){
-      location.href=target;
+
+      location.href =
+        target;
+
       return;
     }
 
-  }catch{}
+  }catch(e){}
 
-  location.href=
+  location.href =
     "/ecom/checkout.html";
 }
 
+
 function getDeliveryDate(){
 
-  const d=new Date();
+  const d = new Date();
 
   d.setHours(0,0,0,0);
 
-  d.setDate(d.getDate()+5);
+  d.setDate(
+    d.getDate()+5
+  );
 
   return d.toLocaleDateString(
     "en-IN",
@@ -2095,553 +2207,610 @@ function getDeliveryDate(){
   );
 }
 
+
 async function renderDeliveryDetails(){
 
-  const date=
+  const date =
     document.getElementById(
       "deliveryDateText"
     );
 
-  if(date)
-    date.textContent=
-      "Delivery by "+getDeliveryDate();
+  if(date){
+
+    date.textContent =
+      "Delivery by " +
+      getDeliveryDate();
+
+  }
 
   await loadDeliveryAddress();
 }
 
 
-/* =========================================================
-   HIGHLIGHTS DATA
-========================================================= */
+/* =====================================================
+   GENERIC JSON PARSER
+===================================================== */
 
-function getHighlights(data){
+function parseMaybeJSON(value){
 
-  let raw=v(
-    data,
-    [
-      "product_highlights",
-      "highlights",
-      "productHighlights",
-      "highlight"
-    ],
-    null
-  );
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+    return null;
+  }
 
-  raw=parseJSON(raw,raw);
+  if(
+    typeof value === "object"
+  ){
+    return value;
+  }
+
+  if(typeof value === "string"){
+
+    try{
+      return JSON.parse(value);
+    }catch{
+      return value;
+    }
+
+  }
+
+  return value;
+}
+
+
+/* =====================================================
+   HIGHLIGHTS
+===================================================== */
+
+function normalizeHighlights(raw){
+
+  raw =
+    parseMaybeJSON(raw);
 
   if(!raw) return [];
 
+  if(Array.isArray(raw)){
+    return raw;
+  }
+
+  if(
+    raw.highlights &&
+    Array.isArray(raw.highlights)
+  ){
+    return raw.highlights;
+  }
+
+  if(
+    raw.rows &&
+    Array.isArray(raw.rows)
+  ){
+    return raw.rows;
+  }
+
+  if(
+    raw.items &&
+    Array.isArray(raw.items)
+  ){
+    return raw.items;
+  }
+
   /*
-    Supported formats:
-
-    [
-      {label:"Color",value:"Purple"},
-      {label:"Material",value:"Plastic"}
-    ]
-
-    OR
-
+    Object format:
     {
-      "Color":"Purple",
-      "Material":"Plastic"
+      Color:"Purple",
+      Material:"Plastic"
     }
   */
 
-  if(Array.isArray(raw)){
+  if(
+    typeof raw === "object" &&
+    !Array.isArray(raw)
+  ){
 
-    return raw
-      .map(x=>{
+    const output = [];
 
-        if(typeof x==="string")
-          return {
-            label:"",
-            value:x
-          };
+    for(
+      const [key,value]
+      of Object.entries(raw)
+    ){
 
-        return {
-          label:
-            x.label ||
-            x.title ||
-            x.name ||
-            x.key ||
-            "",
-          value:
-            x.value ||
-            x.text ||
-            x.content ||
-            ""
-        };
+      if(
+        [
+          "sections",
+          "description",
+          "title"
+        ].includes(key)
+      ){
+        continue;
+      }
 
-      })
-      .filter(x=>
-        cleanPart(x.label) ||
-        cleanPart(x.value)
-      );
-  }
+      output.push({
+        key,
+        value
+      });
 
-  if(typeof raw==="object"){
+    }
 
-    return Object.entries(raw)
-      .map(([label,value])=>({
-        label,
-        value:
-          typeof value==="object"
-            ? JSON.stringify(value)
-            : value
-      }))
-      .filter(x=>
-        cleanPart(x.label) ||
-        cleanPart(x.value)
-      );
+    return output;
   }
 
   return [];
 }
 
 
-/* =========================================================
-   ALL DETAILS / SPECIFICATIONS
-========================================================= */
+function highlightKey(row){
 
-function normalizeDetailGroups(raw){
-
-  raw=parseJSON(raw,raw);
-
-  if(!raw) return [];
-
-  /*
-    Supports:
-
-    {
-      "Body and Design Features":{
-        "Body Material":"Plastic",
-        "Frame Material":"TR90"
-      }
-    }
-
-    OR
-
-    [
-      {
-        "title":"Body and Design Features",
-        "items":[
-          {"label":"Body Material","value":"Plastic"}
-        ]
-      }
-    ]
-  */
-
-  if(Array.isArray(raw)){
-
-    return raw.map(group=>{
-
-      if(
-        group &&
-        typeof group==="object" &&
-        Array.isArray(group.items)
-      ){
-
-        return {
-          title:
-            group.title ||
-            group.name ||
-            "",
-          items:
-            group.items
-              .map(x=>({
-                label:
-                  x.label ||
-                  x.name ||
-                  x.key ||
-                  "",
-                value:
-                  x.value ||
-                  x.text ||
-                  ""
-              }))
-              .filter(x=>
-                cleanPart(x.label) ||
-                cleanPart(x.value)
-              )
-        };
-
-      }
-
-      if(group && typeof group==="object"){
-
-        const title=
-          group.title ||
-          group.name ||
-          "";
-
-        const copy={...group};
-
-        delete copy.title;
-        delete copy.name;
-
-        return {
-          title,
-          items:
-            Object.entries(copy)
-              .map(([label,value])=>({
-                label,
-                value
-              }))
-        };
-      }
-
-      return {
-        title:"",
-        items:[]
-      };
-
-    }).filter(x=>x.items.length);
+  if(
+    row === null ||
+    row === undefined
+  ){
+    return "";
   }
 
-  if(typeof raw==="object"){
-
-    const groups=[];
-
-    for(const [groupTitle,value] of Object.entries(raw)){
-
-      if(
-        value &&
-        typeof value==="object" &&
-        !Array.isArray(value)
-      ){
-
-        groups.push({
-          title:groupTitle,
-          items:
-            Object.entries(value)
-              .map(([label,val])=>({
-                label,
-                value:val
-              }))
-              .filter(x=>
-                cleanPart(x.label) ||
-                cleanPart(x.value)
-              )
-        });
-
-      }else{
-
-        groups.push({
-          title:"",
-          items:[{
-            label:groupTitle,
-            value
-          }]
-        });
-
-      }
-    }
-
-    return groups.filter(x=>x.items.length);
+  if(
+    typeof row !== "object"
+  ){
+    return "";
   }
 
-  return [];
+  return String(
+    row.key ??
+    row.name ??
+    row.label ??
+    row.title ??
+    row.field ??
+    row.heading ??
+    row.feature ??
+    ""
+  ).trim();
 }
 
 
-/* =========================================================
-   RENDER HIGHLIGHTS
-========================================================= */
+function highlightValue(row){
 
-function renderHighlights(data){
+  if(
+    row === null ||
+    row === undefined
+  ){
+    return "";
+  }
 
-  const box=
+  if(
+    typeof row !== "object"
+  ){
+    return String(row);
+  }
+
+  return detailValueText(
+    row.value ??
+    row.val ??
+    row.text ??
+    row.answer ??
+    row.content ??
+    ""
+  ).trim();
+}
+
+
+function renderHighlights(){
+
+  const wrap =
     document.getElementById(
-      "highlightList"
+      "productHighlights"
     );
 
-  if(!box) return;
-
-  const items=
-    getHighlights(data);
-
-  if(!items.length){
-
-    box.innerHTML="";
-
+  const rowsEl =
     document.getElementById(
-      "highlightsSection"
-    ).style.display="none";
+      "highlightRows"
+    );
+
+  if(
+    !wrap ||
+    !rowsEl ||
+    !product
+  ){
+    return;
+  }
+
+
+  const rows =
+    normalizeHighlights(
+      product.highlights
+    )
+    .map(row => ({
+      key:highlightKey(row),
+      value:highlightValue(row)
+    }))
+    .filter(
+      row =>
+        row.key ||
+        row.value
+    );
+
+
+  if(!rows.length){
+
+    wrap.style.display =
+      "none";
 
     return;
   }
 
-  document.getElementById(
-    "highlightsSection"
-  ).style.display="block";
 
-  let html="";
+  wrap.style.display =
+    "block";
 
-  for(let i=0;i<items.length;i+=2){
 
-    const left=items[i];
-    const right=items[i+1];
+  let html = "";
 
-    html+=`
+  for(
+    let i=0;
+    i<rows.length;
+    i+=2
+  ){
+
+    const left =
+      rows[i];
+
+    const right =
+      rows[i+1];
+
+    html += `
       <div class="highlightRow">
 
         <div class="highlightItem">
 
-          ${
-            left.label
-              ? `<span class="highlightLabel">
-                   ${escapeHtml(left.label)}
-                 </span>`
-              : ""
-          }
+          <div class="highlightLabel">
+            ${escapeHtml(left.key)}
+          </div>
 
-          <span class="highlightValue">
+          <div class="highlightValue">
             ${escapeHtml(left.value)}
-          </span>
+          </div>
 
         </div>
-
-        <div class="highlightItem">
-
-          ${
-            right
-              ? `
-                ${
-                  right.label
-                    ? `<span class="highlightLabel">
-                         ${escapeHtml(right.label)}
-                       </span>`
-                    : ""
-                }
-
-                <span class="highlightValue">
-                  ${escapeHtml(right.value)}
-                </span>
-              `
-              : ""
-          }
-
-        </div>
-
-      </div>
-    `;
-  }
-
-  box.innerHTML=html;
-}
-
-
-/* =========================================================
-   RENDER SPECIFICATIONS
-========================================================= */
-
-function renderSpecifications(data){
-
-  const box=
-    document.getElementById(
-      "specificationContent"
-    );
-
-  if(!box) return;
-
-  let raw=v(
-    data,
-    [
-      "all_details",
-      "allDetails",
-      "specifications",
-      "specs",
-      "details"
-    ],
-    null
-  );
-
-  const groups=
-    normalizeDetailGroups(raw);
-
-  if(!groups.length){
-
-    box.innerHTML=
-      "<div style='color:#777;font-size:13px;padding:5px 0'>No specifications available.</div>";
-
-    return;
-  }
-
-  let html="";
-
-  groups.forEach(group=>{
-
-    html+=`
-      <div class="detailGroup">
 
         ${
-          group.title
-            ? `<h3 class="detailGroupTitle">
-                 ${escapeHtml(group.title)}
-               </h3>`
-            : ""
+          right
+          ? `
+          <div class="highlightItem">
+
+            <div class="highlightLabel">
+              ${escapeHtml(right.key)}
+            </div>
+
+            <div class="highlightValue">
+              ${escapeHtml(right.value)}
+            </div>
+
+          </div>
+          `
+          : `
+          <div class="highlightItem"></div>
+          `
         }
 
-        <div class="detailGrid">
-    `;
-
-    group.items.forEach(item=>{
-
-      html+=`
-        <div class="detailRow">
-
-          <div class="detailLabel">
-            ${escapeHtml(item.label)}
-          </div>
-
-          <div class="detailValue">
-            ${escapeHtml(item.value)}
-          </div>
-
-        </div>
-      `;
-
-    });
-
-    html+=`
-        </div>
       </div>
     `;
+  }
 
-  });
-
-  box.innerHTML=html;
+  rowsEl.innerHTML =
+    html;
 }
 
 
-/* =========================================================
-   DESCRIPTION
-========================================================= */
+function toggleHighlights(){
 
-function renderFullDescription(data){
+  highlightsOpen =
+    !highlightsOpen;
 
-  const box=
+  const body =
     document.getElementById(
-      "fullDescription"
+      "highlightBody"
     );
 
-  if(!box) return;
-
-  const text=
-    v(
-      data,
-      [
-        "description",
-        "long_description",
-        "longDescription",
-        "full_description",
-        "details"
-      ],
-      ""
-    );
-
-  box.textContent=
-    cleanPart(text) ||
-    "No description available.";
-}
-
-
-/* =========================================================
-   MANUFACTURER INFO
-========================================================= */
-
-function renderManufacturer(data){
-
-  const box=
+  const arrow =
     document.getElementById(
-      "manufacturerContent"
+      "highlightArrow"
     );
 
-  if(!box) return;
+  if(!body || !arrow) return;
 
-  let raw=v(
-    data,
-    [
-      "manufacturer_info",
-      "manufacturerInfo",
-      "manufacturer",
-      "brand_info",
-      "brandInfo"
-    ],
-    null
+  body.classList.toggle(
+    "open",
+    highlightsOpen
   );
 
-  raw=parseJSON(raw,raw);
+  arrow.textContent =
+    highlightsOpen
+      ? "↑"
+      : "↓";
+}
 
-  if(!raw){
 
-    box.innerHTML=
-      "<div style='color:#777;font-size:13px'>No manufacturer information available.</div>";
+/* =====================================================
+   ALL DETAILS
+===================================================== */
 
-    return;
-  }
-
-  let items=[];
+function detailValueText(value){
 
   if(
-    typeof raw==="object" &&
-    !Array.isArray(raw)
+    value === null ||
+    value === undefined
+  ){
+    return "";
+  }
+
+
+  if(
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ){
+    return String(value);
+  }
+
+
+  if(Array.isArray(value)){
+
+    return value
+      .map(item =>
+        detailValueText(item)
+      )
+      .filter(Boolean)
+      .join(", ");
+  }
+
+
+  if(
+    typeof value === "object"
   ){
 
-    items=
-      Object.entries(raw)
-        .map(([label,value])=>({
-          label,
+    const possibleValue =
+      value.value ??
+      value.val ??
+      value.text ??
+      value.name ??
+      value.label ??
+      value.title;
+
+
+    if(
+      possibleValue !== undefined
+    ){
+
+      return detailValueText(
+        possibleValue
+      );
+
+    }
+
+
+    return Object.entries(value)
+      .map(
+        ([key,val]) => {
+
+          const x =
+            detailValueText(val);
+
+          return x
+            ? `${key}: ${x}`
+            : "";
+
+        }
+      )
+      .filter(Boolean)
+      .join(", ");
+  }
+
+
+  return String(value);
+}
+
+
+function detailRowKey(row){
+
+  if(
+    !row ||
+    typeof row !== "object"
+  ){
+    return "";
+  }
+
+  return String(
+    row.key ??
+    row.name ??
+    row.label ??
+    row.title ??
+    row.field ??
+    row.heading ??
+    ""
+  ).trim();
+}
+
+
+function detailRowValue(row){
+
+  if(
+    !row ||
+    typeof row !== "object"
+  ){
+    return detailValueText(row);
+  }
+
+  return detailValueText(
+    row.value ??
+    row.val ??
+    row.text ??
+    row.answer ??
+    row.content ??
+    ""
+  ).trim();
+}
+
+
+function normalizeDetailSections(raw){
+
+  raw =
+    parseMaybeJSON(raw);
+
+  if(!raw) return [];
+
+
+  if(Array.isArray(raw)){
+
+    /*
+      Direct section array:
+      [
+        {
+          heading:"Body and Side",
+          rows:[...]
+        }
+      ]
+    */
+
+    return raw;
+  }
+
+
+  if(
+    raw.sections &&
+    Array.isArray(raw.sections)
+  ){
+
+    return raw.sections;
+  }
+
+
+  if(
+    raw.data &&
+    Array.isArray(raw.data)
+  ){
+
+    return raw.data;
+  }
+
+
+  if(
+    raw.rows &&
+    Array.isArray(raw.rows)
+  ){
+
+    return [{
+      heading:
+        raw.heading ||
+        raw.title ||
+        "All details",
+
+      rows:raw.rows
+    }];
+  }
+
+
+  return [];
+}
+
+
+function renderDetailSection(
+  section
+){
+
+  if(
+    !section ||
+    typeof section !== "object"
+  ){
+    return "";
+  }
+
+
+  const heading =
+    String(
+      section.heading ??
+      section.title ??
+      section.name ??
+      section.section ??
+      "Details"
+    ).trim();
+
+
+  let rows =
+    section.rows ??
+    section.items ??
+    section.details ??
+    section.fields ??
+    [];
+
+
+  rows =
+    parseMaybeJSON(rows);
+
+
+  if(!Array.isArray(rows)){
+    return "";
+  }
+
+
+  const validRows =
+    rows
+      .map(row => {
+
+        const key =
+          detailRowKey(row);
+
+        const value =
+          detailRowValue(row);
+
+        if(
+          !key &&
+          !value
+        ){
+          return null;
+        }
+
+        return {
+          key,
           value
-        }));
+        };
 
-  }else if(Array.isArray(raw)){
+      })
+      .filter(Boolean);
 
-    items=
-      raw.map(x=>({
 
-        label:
-          x.label ||
-          x.name ||
-          x.key ||
-          "",
-
-        value:
-          x.value ||
-          x.text ||
-          ""
-
-      }));
-
+  if(!validRows.length){
+    return "";
   }
 
-  if(!items.length){
 
-    box.innerHTML=
-      "<div style='color:#777;font-size:13px'>No manufacturer information available.</div>";
+  return `
 
-    return;
-  }
+    <div class="detailSection">
 
-  box.innerHTML=`
+      <h3 class="detailSectionTitle">
+        ${escapeHtml(heading)}
+      </h3>
 
-    <div class="manufacturerBox">
+      <div class="detailRows">
 
-      ${items.map(item=>`
+        ${validRows.map(row => `
 
-        <div class="detailRow">
+          <div class="detailRow">
 
-          <div class="detailLabel">
-            ${escapeHtml(item.label)}
+            <div class="detailKey">
+              ${escapeHtml(row.key)}
+            </div>
+
+            <div class="detailValue">
+              ${escapeHtml(row.value)}
+            </div>
+
           </div>
 
-          <div class="detailValue">
-            ${escapeHtml(item.value)}
-          </div>
+        `).join("")}
 
-        </div>
-
-      `).join("")}
+      </div>
 
     </div>
 
@@ -2649,110 +2818,367 @@ function renderManufacturer(data){
 }
 
 
-/* =========================================================
-   SECTION OPEN / CLOSE
-========================================================= */
+function getAllDetailsSource(){
 
-function toggleSection(id){
+  if(!product){
+    return null;
+  }
 
-  const section=
-    document.getElementById(id);
+  /*
+    Admin code may save the same data
+    under any of these names.
+  */
 
-  if(!section) return;
-
-  section.classList.toggle("open");
+  return (
+    product.all_details ??
+    product.allDetails ??
+    product.details_data ??
+    product.product_details ??
+    product.specifications ??
+    null
+  );
 }
 
 
-/* =========================================================
-   DETAILS TABS
-========================================================= */
+function getDescriptionSource(){
 
-function showDetailsTab(type,button){
+  return product?.description || "";
+}
 
-  document
-    .querySelectorAll(".detailsTab")
-    .forEach(x=>
-      x.classList.remove("active")
-    );
 
-  button.classList.add("active");
+function renderAllDetails(){
 
-  document
-    .querySelectorAll(".detailsPanel")
-    .forEach(x=>
-      x.classList.remove("active")
-    );
-
-  const target=
+  const wrap =
     document.getElementById(
-      "panel"+
-      type.charAt(0).toUpperCase()+
-      type.slice(1)
+      "allDetailsSection"
     );
 
-  if(target)
-    target.classList.add("active");
+  const tabs =
+    document.getElementById(
+      "detailTabs"
+    );
+
+  const panels =
+    document.getElementById(
+      "detailPanels"
+    );
+
+  if(
+    !wrap ||
+    !tabs ||
+    !panels ||
+    !product
+  ){
+    return;
+  }
+
+
+  const raw =
+    getAllDetailsSource();
+
+
+  let sections =
+    normalizeDetailSections(
+      raw
+    );
+
+
+  /*
+    Remove empty sections.
+  */
+
+  sections =
+    sections
+      .map(section => {
+
+        if(
+          !section ||
+          typeof section !== "object"
+        ){
+          return null;
+        }
+
+        let rows =
+          section.rows ??
+          section.items ??
+          section.details ??
+          section.fields ??
+          [];
+
+        rows =
+          parseMaybeJSON(rows);
+
+        if(!Array.isArray(rows)){
+          return null;
+        }
+
+        const valid =
+          rows.filter(row => {
+
+            const key =
+              detailRowKey(row);
+
+            const value =
+              detailRowValue(row);
+
+            return (
+              key ||
+              value
+            );
+
+          });
+
+        if(!valid.length){
+          return null;
+        }
+
+        return {
+          ...section,
+          rows:valid
+        };
+
+      })
+      .filter(Boolean);
+
+
+  /*
+    If nothing is saved, don't show
+    a broken/empty All Details block.
+  */
+
+  if(!sections.length){
+
+    wrap.style.display =
+      "none";
+
+    return;
+  }
+
+
+  wrap.style.display =
+    "block";
+
+
+  /*
+    Every admin section becomes a tab.
+    If admin has tab_name/category,
+    that is used.
+  */
+
+  tabs.innerHTML =
+    sections.map(
+      (section,index) => {
+
+        const name =
+          String(
+            section.tab ??
+            section.tab_name ??
+            section.category ??
+            (
+              index === 0
+                ? "Specifications"
+                : "Details"
+            )
+          );
+
+
+        return `
+
+          <button
+            type="button"
+            class="detailTab ${
+              index === currentDetailTab
+                ? "active"
+                : ""
+            }"
+            onclick="showDetailTab(${index})">
+
+            ${escapeHtml(name)}
+
+          </button>
+
+        `;
+
+      }
+    ).join("");
+
+
+  panels.innerHTML =
+    sections.map(
+      (section,index) => {
+
+        return `
+
+          <div
+            class="detailPanel ${
+              index === currentDetailTab
+                ? "active"
+                : ""
+            }"
+            id="detailPanel${index}">
+
+            ${renderDetailSection(section)}
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
 }
 
 
-/* =========================================================
+function showDetailTab(index){
+
+  currentDetailTab =
+    index;
+
+
+  document
+    .querySelectorAll(
+      ".detailTab"
+    )
+    .forEach(
+      (tab,i) => {
+
+        tab.classList.toggle(
+          "active",
+          i === index
+        );
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      ".detailPanel"
+    )
+    .forEach(
+      (panel,i) => {
+
+        panel.classList.toggle(
+          "active",
+          i === index
+        );
+
+      }
+    );
+}
+
+
+function toggleAllDetails(){
+
+  allDetailsOpen =
+    !allDetailsOpen;
+
+  const body =
+    document.getElementById(
+      "allDetailsBody"
+    );
+
+  const arrow =
+    document.getElementById(
+      "allDetailsArrow"
+    );
+
+  if(
+    !body ||
+    !arrow
+  ){
+    return;
+  }
+
+
+  body.classList.toggle(
+    "open",
+    allDetailsOpen
+  );
+
+  arrow.textContent =
+    allDetailsOpen
+      ? "↑"
+      : "↓";
+}
+
+
+/* =====================================================
    LOAD PRODUCT
-========================================================= */
+===================================================== */
 
 async function load(){
 
   try{
 
-    if(!id())
-      throw Error("Product ID missing");
+    if(!id()){
+      throw Error(
+        "Product ID missing"
+      );
+    }
 
-    const {data,error}=
+
+    const {
+      data,
+      error
+    } =
       await supabaseClient
         .from("products")
         .select("*")
         .eq("id",id())
         .single();
 
-    if(error)
+
+    if(error){
       throw error;
+    }
 
-    let gallery=[];
 
-    if(Array.isArray(data.images))
-      gallery=data.images;
+    let gallery = [];
 
-    else if(
-      typeof data.images==="string"
+
+    if(Array.isArray(data.images)){
+
+      gallery =
+        data.images;
+
+    }else if(
+      typeof data.images === "string"
     ){
 
       try{
 
-        const parsed=
+        const parsed =
           JSON.parse(data.images);
 
-        if(Array.isArray(parsed))
-          gallery=parsed;
+        if(
+          Array.isArray(parsed)
+        ){
+          gallery =
+            parsed;
+        }
 
       }catch{}
 
     }
 
-    gallery=
+
+    gallery =
       gallery
-        .map(x=>
-          typeof x==="string"
-            ? x
-            : (
-                x?.url ||
-                x?.src ||
-                x?.image ||
-                ""
-              )
+        .map(
+          x =>
+            typeof x === "string"
+              ? x
+              : (
+                  x?.url ||
+                  x?.src ||
+                  x?.image ||
+                  ""
+                )
         )
         .filter(Boolean);
 
-    const primary=
+
+    const primary =
       data.main_image ||
       gallery[0] ||
       v(
@@ -2766,15 +3192,44 @@ async function load(){
         ""
       );
 
-    const images=[
-      primary,
-      ...gallery.filter(
-        x=>x!==primary
-      )
-    ].filter(Boolean);
+
+    const images =
+      [
+        primary,
+        ...gallery.filter(
+          x => x !== primary
+        )
+      ].filter(Boolean);
 
 
-    product={
+    /*
+      ==============================
+      IMPORTANT DETAILS FIELDS
+      ==============================
+
+      This reads whatever field
+      your Admin is using.
+    */
+
+    const allDetails =
+      data.all_details ??
+      data.allDetails ??
+      data.details_data ??
+      data.product_details ??
+      data.specifications ??
+      null;
+
+
+    const highlights =
+      data.product_highlights ??
+      data.highlights ??
+      data.productHighlights ??
+      data.highlight_details ??
+      data.highlight_data ??
+      null;
+
+
+    product = {
 
       id:data.id,
 
@@ -2830,7 +3285,7 @@ async function load(){
             "short_description",
             "details"
           ],
-          "Premium quality product."
+          ""
         ),
 
       rating:
@@ -2892,28 +3347,46 @@ async function load(){
         ),
 
       return_enabled:
-        data.return_enabled===undefined
+        data.return_enabled === undefined
           ? true
-          : Boolean(data.return_enabled),
+          : Boolean(
+              data.return_enabled
+            ),
 
       return_days:
-        Number(data.return_days)||10,
+        Number(
+          data.return_days
+        ) || 10,
 
       cod_enabled:
-        data.cod_enabled===undefined
+        data.cod_enabled === undefined
           ? true
-          : Boolean(data.cod_enabled),
+          : Boolean(
+              data.cod_enabled
+            ),
 
       assured_enabled:
-        data.assured_enabled===undefined
+        data.assured_enabled === undefined
           ? true
-          : Boolean(data.assured_enabled),
+          : Boolean(
+              data.assured_enabled
+            ),
 
-      raw:data
+      /*
+        DETAILS
+      */
+
+      all_details:
+        allDetails,
+
+      highlights:
+        highlights
 
     };
 
+
     render();
+
 
   }catch(e){
 
@@ -2921,13 +3394,19 @@ async function load(){
 
     document.getElementById(
       "loading"
-    ).innerHTML=`
+    ).innerHTML = `
 
       <div style="text-align:center">
 
-        <h2>Product not found</h2>
+        <h2>
+          Product not found
+        </h2>
 
-        <p>${escapeHtml(e.message)}</p>
+        <p>
+          ${escapeHtml(
+            e.message
+          )}
+        </p>
 
       </div>
 
@@ -2937,133 +3416,176 @@ async function load(){
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER
-========================================================= */
+===================================================== */
 
 function render(){
 
   renderDeliveryDetails();
 
+
   document.getElementById(
     "loading"
-  ).style.display="none";
+  ).style.display =
+    "none";
+
 
   document.getElementById(
     "product"
-  ).style.display="block";
+  ).style.display =
+    "block";
 
 
   document.getElementById(
     "title"
-  ).textContent=product.title;
+  ).textContent =
+    product.title;
+
 
   document.getElementById(
     "price"
-  ).textContent=money(product.price);
+  ).textContent =
+    money(product.price);
+
+
+  /*
+    IMPORTANT:
+    Buy price ALWAYS remains
+    single product price.
+    Qty change does NOT multiply it.
+  */
 
   document.getElementById(
     "buyPrice"
-  ).textContent=money(product.price);
+  ).textContent =
+    money(product.price);
+
 
   document.getElementById(
     "mrp"
-  ).textContent=
+  ).textContent =
     product.mrp
       ? money(product.mrp)
       : "";
 
+
   document.getElementById(
     "off"
-  ).textContent=
-    product.mrp>product.price
+  ).textContent =
+    product.mrp > product.price
       ? Math.max(
           0,
           Math.round(
-            (1-product.price/product.mrp)*100
+            (
+              1 -
+              product.price /
+              product.mrp
+            ) * 100
           )
-        )+"% OFF"
+        ) + "% OFF"
       : "";
+
 
   document.getElementById(
     "description"
-  ).textContent=
+  ).textContent =
     product.description;
+
 
   document.getElementById(
     "rating"
-  ).textContent=
-    "★ "+product.rating;
+  ).textContent =
+    "★ " +
+    product.rating;
+
 
   document.getElementById(
     "reviews"
-  ).textContent=
-    product.reviews+" reviews";
+  ).textContent =
+    product.reviews +
+    " reviews";
+
 
   document.getElementById(
     "tag"
-  ).textContent=
+  ).textContent =
     product.badge;
+
 
   document.getElementById(
     "badge"
-  ).textContent=
+  ).textContent =
     product.badge;
+
 
   document.getElementById(
     "stock"
-  ).textContent=
-    product.stock>0
-      ? "✓ In Stock ("+
-        product.stock+
+  ).textContent =
+    product.stock > 0
+      ? "✓ In Stock (" +
+        product.stock +
         " available)"
       : "✕ Out of Stock";
 
 
-  /* customize */
+  /* Customize */
 
-  const customizeWrap=
+  const customizeWrap =
     document.getElementById(
       "customizeWrap"
     );
 
+
   if(customizeWrap){
 
-    customizeWrap.style.display=
+    customizeWrap.style.display =
       product.customize_enabled
         ? "flex"
         : "none";
 
-    if(!product.customize_enabled)
+
+    if(
+      !product.customize_enabled
+    ){
+
       document.getElementById(
         "customizeInput"
-      ).value="";
+      ).value = "";
+
+    }
+
   }
 
 
-  /* feature boxes */
+  /* Features */
 
-  const features=
+  const features =
     document.getElementById(
       "features"
     );
 
+
   if(features){
 
-    const returnText=
+    const returnText =
       product.return_enabled
-        ? product.return_days+"-Day Return"
+        ? product.return_days +
+          "-Day Return"
         : "No Return";
 
-    features.innerHTML=
 
-      `<div class="feature">
+    features.innerHTML =
+
+      `
+      <div class="feature">
 
         <div class="featureIcon">
 
-          <svg viewBox="0 0 24 24"
-          fill="none"
-          stroke-width="1.8">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke-width="1.8">
 
             <path d="M3 12a9 9 0 1 0 3-6.7"/>
             <path d="M3 4v6h6"/>
@@ -3074,92 +3596,136 @@ function render(){
 
         </div>
 
-        <b>${returnText}</b>
+        <b>
+          ${returnText}
+        </b>
 
-      </div>`+
+      </div>
+      `
+
+      +
 
       (
         product.cod_enabled
-          ? `<div class="feature">
+          ? `
+          <div class="feature">
 
-              <div class="featureIcon">
+            <div class="featureIcon">
 
-                <svg viewBox="0 0 24 24"
+              <svg
+                viewBox="0 0 24 24"
                 fill="none"
                 stroke-width="1.8">
 
-                  <rect x="3" y="6"
+                <rect
+                  x="3"
+                  y="6"
                   width="18"
                   height="12"
                   rx="2"/>
 
-                  <path d="M7 12h5M16 10v4"/>
+                <path d="M7 12h5"/>
+                <path d="M16 10v4"/>
 
-                </svg>
+              </svg>
 
-              </div>
+            </div>
 
-              <b>Cash on Delivery</b>
+            <b>
+              Cash on Delivery
+            </b>
 
-            </div>`
+          </div>
+          `
           : ""
-      )+
+      )
+
+      +
 
       (
         product.assured_enabled
-          ? `<div class="feature">
+          ? `
+          <div class="feature">
 
-              <div class="featureIcon">
+            <div class="featureIcon">
 
-                <svg viewBox="0 0 24 24"
+              <svg
+                viewBox="0 0 24 24"
                 fill="none"
                 stroke-width="1.8">
 
-                  <path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/>
+                <path
+                  d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/>
 
-                  <path d="m8.5 12 2.2 2.2 4.8-5"/>
+                <path
+                  d="m8.5 12 2.2 2.2 4.8-5"/>
 
-                </svg>
+              </svg>
 
-              </div>
+            </div>
 
-              <b>Trikunt Assured</b>
+            <b>
+              Trikunt Assured
+            </b>
 
-            </div>`
+          </div>
+          `
           : ""
       );
 
-    const count=
-      1+
-      (product.cod_enabled?1:0)+
-      (product.assured_enabled?1:0);
 
-    features.style.gridTemplateColumns=
-      "repeat("+count+",1fr)";
+    const count =
+      1 +
+      (
+        product.cod_enabled
+          ? 1
+          : 0
+      ) +
+      (
+        product.assured_enabled
+          ? 1
+          : 0
+      );
+
+
+    features.style.gridTemplateColumns =
+      "repeat(" +
+      count +
+      ",1fr)";
+
   }
 
 
-  /* images */
+  /* Images */
 
-  currentIndex=0;
+  currentIndex = 0;
 
-  const slider=
+
+  const slider =
     document.getElementById(
       "slider"
     );
 
-  slider.innerHTML=
+
+  slider.innerHTML =
     product.images
       .map(
-        (url,i)=>`
+        (url,i) => `
 
           <div class="slide">
 
             <img
               src="${escapeHtml(url)}"
               alt="${escapeHtml(product.title)}"
-              loading="${i===0?'eager':'lazy'}"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+              loading="${
+                i === 0
+                  ? "eager"
+                  : "lazy"
+              }"
+              onerror="
+                this.style.display='none';
+                this.nextElementSibling.style.display='flex'
+              "
             >
 
             <div class="imgFallback">
@@ -3172,125 +3738,139 @@ function render(){
       )
       .join("");
 
-  slider.scrollLeft=0;
+
+  slider.scrollLeft = 0;
+
 
   slider.removeEventListener(
     "scroll",
     onSliderScroll
   );
 
+
   slider.addEventListener(
     "scroll",
     onSliderScroll,
-    {passive:true}
+    {
+      passive:true
+    }
   );
 
 
-  const dots=
+  const dots =
     document.getElementById(
       "dots"
     );
 
-  const multi=
-    product.images.length>1;
 
-  dots.innerHTML=
+  const multi =
+    product.images.length > 1;
+
+
+  dots.innerHTML =
     multi
-      ? product.images.map(
-          (_,i)=>`
+      ? product.images
+          .map(
+            (_,i) => `
 
-            <button
-              type="button"
-              class="dot ${
-                i===0
-                  ? "active"
-                  : ""
-              }"
-              onclick="goToImage(${i})"
-              aria-label="Go to image ${i+1}">
-            </button>
+              <button
+                type="button"
+                class="dot ${
+                  i === 0
+                    ? "active"
+                    : ""
+                }"
+                onclick="goToImage(${i})"
+                aria-label="Go to image ${
+                  i+1
+                }">
+              </button>
 
-          `
-        ).join("")
+            `
+          )
+          .join("")
       : "";
 
-  dots.style.display=
+
+  dots.style.display =
     multi
       ? "flex"
       : "none";
 
+
   document
-    .querySelectorAll(".navBtn")
+    .querySelectorAll(
+      ".navBtn"
+    )
     .forEach(
-      b=>
-        b.style.display=
+      b =>
+        b.style.display =
           multi
             ? ""
             : "none"
     );
 
+
   updateNavState();
 
 
-  /* =====================================================
-     NEW HIGHLIGHTS + ALL DETAILS
-  ===================================================== */
+  /*
+    NEW SECTIONS
+  */
 
-  renderHighlights(product.raw);
+  renderHighlights();
 
-  renderSpecifications(product.raw);
-
-  renderFullDescription(product.raw);
-
-  renderManufacturer(product.raw);
-
-
-  /* keep both sections collapsed initially */
-
-  document
-    .getElementById("highlightsSection")
-    .classList.remove("open");
-
-  document
-    .getElementById("allDetailsSection")
-    .classList.remove("open");
+  renderAllDetails();
 
 
   updateCart();
+
 }
 
 
-/* =========================================================
+/* =====================================================
    IMAGE SLIDER
-========================================================= */
+===================================================== */
 
 function onSliderScroll(){
 
-  const slider=
+  const slider =
     document.getElementById(
       "slider"
     );
 
-  const w=
-    slider.clientWidth||1;
+  const w =
+    slider.clientWidth || 1;
 
-  const idx=
+  const idx =
     Math.round(
-      slider.scrollLeft/w
+      slider.scrollLeft /
+      w
     );
 
-  if(idx!==currentIndex){
 
-    currentIndex=idx;
+  if(
+    idx !== currentIndex
+  ){
 
-    product.image=
-      product.images[currentIndex] ||
+    currentIndex =
+      idx;
+
+    product.image =
+      product.images[
+        currentIndex
+      ] ||
       product.image;
 
+
     updateDots();
+
     updateNavState();
+
   }
+
 }
+
 
 function updateDots(){
 
@@ -3299,145 +3879,181 @@ function updateDots(){
       "#dots .dot"
     )
     .forEach(
-      (d,i)=>
+      (d,i) =>
         d.classList.toggle(
           "active",
-          i===currentIndex
+          i === currentIndex
         )
     );
+
 }
+
 
 function updateNavState(){
 
-  const prev=
+  const prev =
     document.querySelector(
       ".prevBtn"
     );
 
-  const next=
+  const next =
     document.querySelector(
       ".nextBtn"
     );
+
 
   if(
     !prev ||
     !next ||
     !product
-  )
+  ){
     return;
+  }
 
-  prev.disabled=
-    currentIndex<=0;
 
-  next.disabled=
-    currentIndex>=
-    product.images.length-1;
+  prev.disabled =
+    currentIndex <= 0;
+
+
+  next.disabled =
+    currentIndex >=
+    product.images.length - 1;
 }
+
 
 function goToImage(i){
 
-  const slider=
+  const slider =
     document.getElementById(
       "slider"
     );
 
-  currentIndex=
+
+  currentIndex =
     Math.max(
       0,
       Math.min(
-        product.images.length-1,
+        product.images.length - 1,
         i
       )
     );
 
-  product.image=
-    product.images[currentIndex] ||
+
+  product.image =
+    product.images[
+      currentIndex
+    ] ||
     product.image;
+
 
   slider.scrollTo({
     left:
-      currentIndex*
+      currentIndex *
       slider.clientWidth,
+
     behavior:"smooth"
   });
 
+
   updateDots();
+
   updateNavState();
+
 }
+
 
 function prevImage(){
+
   goToImage(
-    currentIndex-1
+    currentIndex - 1
   );
+
 }
+
 
 function nextImage(){
+
   goToImage(
-    currentIndex+1
+    currentIndex + 1
   );
+
 }
 
 
-/* =========================================================
+/* =====================================================
    QUANTITY
-   BUY PRICE UNIT PRICE HI RAHEGA
-========================================================= */
+===================================================== */
 
 function changeQty(n){
 
-  qty=
+  qty =
     Math.max(
       1,
       Math.min(
-        product.stock||99,
-        qty+n
+        product.stock || 99,
+        qty + n
       )
     );
 
+
   document.getElementById(
     "qty"
-  ).textContent=qty;
+  ).textContent =
+    qty;
+
+
+  /*
+    IMPORTANT:
+    Buy price DOES NOT multiply.
+  */
 
   document.getElementById(
     "buyPrice"
-  ).textContent=
+  ).textContent =
     money(product.price);
+
 }
 
 
-/* =========================================================
-   USER
-========================================================= */
+/* =====================================================
+   CART
+===================================================== */
 
 async function getUser(){
 
-  const {data}=
+  const {
+    data
+  } =
     await supabaseClient
       .auth
       .getSession();
 
-  return data.session?.user||null;
+  return (
+    data.session?.user ||
+    null
+  );
+
 }
 
-
-/* =========================================================
-   ADD TO CART
-========================================================= */
 
 async function addToCart(){
 
   if(!product) return;
 
-  const user=
+
+  const user =
     await getUser();
+
 
   if(!user){
 
-    toast("Please login first");
+    toast(
+      "Please login first"
+    );
 
     setTimeout(
-      ()=>
-        location.href=
+      () =>
+        location.href =
           "/ecom/account.html",
       800
     );
@@ -3445,40 +4061,56 @@ async function addToCart(){
     return;
   }
 
+
   const {
     data:old,
     error:readError
-  }=
+  } =
     await supabaseClient
       .from("cart_items")
       .select("id,qty")
-      .eq("user_id",user.id)
-      .eq("product_id",product.id)
+      .eq(
+        "user_id",
+        user.id
+      )
+      .eq(
+        "product_id",
+        product.id
+      )
       .maybeSingle();
+
 
   if(readError){
 
-    toast(readError.message);
+    toast(
+      readError.message
+    );
 
     return;
   }
 
-  const newQty=
-    (old?.qty||0)+qty;
 
-  const customizeInput=
+  const newQty =
+    (old?.qty || 0) +
+    qty;
+
+
+  const customizeInput =
     document.getElementById(
       "customizeInput"
     );
 
-  const customizeText=
+
+  const customizeText =
     product.customize_enabled
       ? (
-          customizeInput?.value||""
+          customizeInput?.value ||
+          ""
         ).trim()
       : "";
 
-  const row={
+
+  const row = {
 
     user_id:user.id,
 
@@ -3499,9 +4131,13 @@ async function addToCart(){
 
     updated_at:
       new Date().toISOString()
+
   };
 
-  const {error}=
+
+  const {
+    error
+  } =
     await supabaseClient
       .from("cart_items")
       .upsert(
@@ -3512,49 +4148,60 @@ async function addToCart(){
         }
       );
 
+
   if(error){
 
-    toast(error.message);
+    toast(
+      error.message
+    );
 
     return;
   }
 
+
   updateCart();
 
-  toast("✓ Added to Cart");
+  toast(
+    "✓ Added to Cart"
+  );
+
 }
 
 
-/* =========================================================
-   CART BADGE
-========================================================= */
-
 async function updateCart(){
 
-  const user=
+  const user =
     await getUser();
+
 
   if(!user){
 
-    const cartBadge=
+    const cartBadge =
       document.getElementById(
         "cartCount"
       );
 
-    if(cartBadge)
-      cartBadge.textContent="0";
+    if(cartBadge){
+      cartBadge.textContent =
+        "0";
+    }
 
     return;
   }
 
+
   const {
     data,
     error
-  }=
+  } =
     await supabaseClient
       .from("cart_items")
       .select("qty")
-      .eq("user_id",user.id);
+      .eq(
+        "user_id",
+        user.id
+      );
+
 
   if(error){
 
@@ -3563,43 +4210,54 @@ async function updateCart(){
     return;
   }
 
-  const cartBadge=
+
+  const cartBadge =
     document.getElementById(
       "cartCount"
     );
 
+
   if(cartBadge){
 
-    cartBadge.textContent=
-      (data||[])
+    cartBadge.textContent =
+      (data || [])
         .reduce(
-          (s,x)=>
-            s+
-            (Number(x.qty)||0),
+          (s,x) =>
+            s +
+            (
+              Number(x.qty) ||
+              0
+            ),
           0
         );
+
   }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    BUY NOW
-========================================================= */
+===================================================== */
 
 async function buyNow(){
 
   if(!product) return;
 
-  const user=
+
+  const user =
     await getUser();
+
 
   if(!user){
 
-    toast("Please login first");
+    toast(
+      "Please login first"
+    );
 
     setTimeout(
-      ()=>
-        location.href=
+      () =>
+        location.href =
           "/ecom/account.html",
       800
     );
@@ -3607,17 +4265,21 @@ async function buyNow(){
     return;
   }
 
-  const customizeInput=
+
+  const customizeInput =
     document.getElementById(
       "customizeInput"
     );
 
-  const customizeText=
+
+  const customizeText =
     product.customize_enabled
       ? (
-          customizeInput?.value||""
+          customizeInput?.value ||
+          ""
         ).trim()
       : "";
+
 
   sessionStorage.setItem(
     "checkoutItems",
@@ -3636,41 +4298,47 @@ async function buyNow(){
     ])
   );
 
-  location.href=
+
+  location.href =
     "/ecom/checkout.html?mode=buy";
 }
 
 
-/* =========================================================
-   WINDOW EVENTS
-========================================================= */
+/* =====================================================
+   EVENTS
+===================================================== */
 
 window.addEventListener(
   "resize",
-  ()=>{
-    if(product)
-      goToImage(currentIndex);
+  () => {
+
+    if(product){
+      goToImage(
+        currentIndex
+      );
+    }
+
   }
 );
+
 
 window.addEventListener(
   "storage",
-  ()=>{
-    renderDeliveryDetails();
-  }
+  () =>
+    renderDeliveryDetails()
 );
+
 
 window.addEventListener(
   "focus",
-  ()=>{
-    renderDeliveryDetails();
-  }
+  () =>
+    renderDeliveryDetails()
 );
 
 
-/* =========================================================
+/* =====================================================
    START
-========================================================= */
+===================================================== */
 
 load();
 
