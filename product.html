@@ -1616,6 +1616,17 @@ a{text-decoration:none;color:inherit}
 
   #desktopIndexHeader .logo{
     color:var(--violet) !important;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  /* Prevent the Login -> user-name flash while Supabase auth is loading. */
+  #desktopIndexHeader #accountName{
+    visibility:hidden;
+  }
+
+  #desktopIndexHeader #accountName.account-ready{
+    visibility:visible;
   }
 }
 </style>
@@ -1628,7 +1639,7 @@ a{text-decoration:none;color:inherit}
 <div id="desktopIndexHeader">
 <header class="header">
 
-  <div class="logo">MyStore</div>
+  <div class="logo" id="desktopStoreLogo" role="button" tabindex="0" aria-label="Home" onclick="goHome()">MyStore</div>
 
   <div class="search">
     <input
@@ -2281,6 +2292,20 @@ SUPABASE_KEY
 
 
 /* =========================================================
+   DESKTOP LOGO -> HOME
+========================================================= */
+const desktopStoreLogo = document.getElementById("desktopStoreLogo");
+if(desktopStoreLogo){
+  desktopStoreLogo.addEventListener("keydown", function(e){
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      goHome();
+    }
+  });
+}
+
+
+/* =========================================================
    ACCOUNT
 ========================================================= */
 
@@ -2373,6 +2398,7 @@ async function loadAccount(){
 
       accountName.textContent =
         "Login";
+      accountName.classList.add("account-ready");
 
       loggedOutMenu.style.display =
         "block";
@@ -2439,6 +2465,7 @@ async function loadAccount(){
 
     accountName.textContent =
       firstName;
+    accountName.classList.add("account-ready");
 
     welcomeName.textContent =
       "Welcome, " + firstName + "!";
@@ -2458,6 +2485,9 @@ async function loadAccount(){
       "Account error:",
       error
     );
+
+    accountName.textContent = "Login";
+    accountName.classList.add("account-ready");
 
   }
 
@@ -2484,6 +2514,11 @@ supabaseClient.auth.onAuthStateChange(
 /* =========================================================
    EXACT INDEX HEADER NAVIGATION
 ========================================================= */
+
+function goHome(){
+  window.location.href = "index.html";
+}
+
 
 function goLogin(){
 
@@ -5090,7 +5125,7 @@ async function loadCartCount(){
     let total = 0;
 
     (data || []).forEach(item => {
-      total += Number(item.quantity || 0);
+      total += Number(item.qty || 0);
     });
 
     if(total > 0){
