@@ -7,12 +7,14 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
   background:#f5f6f8;
-  color:#111
+  color:#111;
 }
+
 button,input{font:inherit}
 button{cursor:pointer}
 a{text-decoration:none;color:inherit}
@@ -20,7 +22,7 @@ a{text-decoration:none;color:inherit}
 .page{
   width:min(1450px,100%);
   margin:auto;
-  padding:22px 4%
+  padding:22px 4%;
 }
 
 .product{
@@ -29,29 +31,30 @@ a{text-decoration:none;color:inherit}
   border:1px solid #e5e7eb;
   border-radius:24px;
   overflow:hidden;
-  box-shadow:0 12px 40px #0000000d
+  box-shadow:0 12px 40px #0000000d;
 }
 
 .grid{
   display:grid;
   grid-template-columns:1.05fr .95fr;
-  min-height:650px
+  min-height:650px;
 }
 
 .gallery{
   padding:28px;
   background:linear-gradient(145deg,#fff,#f1f3f5);
-  border-right:1px solid #eee
+  border-right:1px solid #eee;
 }
 
-/* IMAGE SLIDER */
+/* ================= IMAGE SLIDER ================= */
+
 .main{
   height:550px;
   background:#fff;
   border:1px solid #eee;
   border-radius:20px;
   position:relative;
-  overflow:hidden
+  overflow:hidden;
 }
 
 .pill{
@@ -65,7 +68,7 @@ a{text-decoration:none;color:inherit}
   font-size:10px;
   font-weight:800;
   z-index:6;
-  letter-spacing:.3px
+  letter-spacing:.3px;
 }
 
 .slider{
@@ -76,10 +79,12 @@ a{text-decoration:none;color:inherit}
   overflow-y:hidden;
   scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;
-  scrollbar-width:none
+  scrollbar-width:none;
 }
 
-.slider::-webkit-scrollbar{display:none}
+.slider::-webkit-scrollbar{
+  display:none;
+}
 
 .slide{
   flex:0 0 100%;
@@ -90,7 +95,7 @@ a{text-decoration:none;color:inherit}
   display:flex;
   align-items:center;
   justify-content:center;
-  position:relative
+  position:relative;
 }
 
 .slide img{
@@ -100,7 +105,7 @@ a{text-decoration:none;color:inherit}
   object-fit:contain;
   padding:35px;
   min-width:0;
-  min-height:0
+  min-height:0;
 }
 
 .imgFallback{
@@ -112,7 +117,7 @@ a{text-decoration:none;color:inherit}
   color:#777;
   font-size:13px;
   position:absolute;
-  inset:0
+  inset:0;
 }
 
 .navBtn{
@@ -131,12 +136,18 @@ a{text-decoration:none;color:inherit}
   justify-content:center;
   box-shadow:0 4px 14px #0000001f;
   z-index:6;
-  color:#111
+  color:#111;
+  transition:box-shadow .15s,transform .15s;
+}
+
+.navBtn:hover:not(:disabled){
+  box-shadow:0 6px 18px #00000029;
+  transform:translateY(-50%) scale(1.05);
 }
 
 .navBtn:disabled{
   opacity:.35;
-  cursor:default
+  cursor:default;
 }
 
 .prevBtn{left:14px}
@@ -147,7 +158,7 @@ a{text-decoration:none;color:inherit}
   justify-content:center;
   align-items:center;
   gap:7px;
-  padding:14px 0 2px
+  padding:14px 0 2px;
 }
 
 .dot{
@@ -156,20 +167,23 @@ a{text-decoration:none;color:inherit}
   border-radius:50%;
   background:#d9d9d9;
   border:0;
-  padding:0
+  padding:0;
+  cursor:pointer;
 }
 
 .dot.active{
   background:#111;
   width:20px;
-  border-radius:5px
+  border-radius:5px;
+  transition:width .2s,background .2s;
 }
 
-/* INFO */
+/* ================= PRODUCT INFO ================= */
+
 .info{
   padding:38px 42px;
   display:flex;
-  flex-direction:column
+  flex-direction:column;
 }
 
 .tag{
@@ -179,7 +193,8 @@ a{text-decoration:none;color:inherit}
   border-radius:7px;
   padding:6px 9px;
   font-size:10px;
-  font-weight:800
+  font-weight:800;
+  letter-spacing:.3px;
 }
 
 .title{
@@ -187,14 +202,14 @@ a{text-decoration:none;color:inherit}
   line-height:1.3;
   margin:14px 0 0;
   font-weight:700;
-  color:#1a1a1a
+  color:#1a1a1a;
 }
 
 .rating{
   display:flex;
   gap:9px;
   align-items:center;
-  margin-top:15px
+  margin-top:15px;
 }
 
 .rate{
@@ -203,43 +218,47 @@ a{text-decoration:none;color:inherit}
   padding:4px 8px;
   border-radius:5px;
   font-size:12px;
-  font-weight:800
+  font-weight:800;
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
 }
 
 .reviews{
   color:#6b7280;
-  font-size:12px
+  font-size:12px;
 }
 
 .pricebox{
   margin-top:24px;
   padding-bottom:20px;
-  border-bottom:1px solid #eee
+  border-bottom:1px solid #eee;
 }
 
 .price{
   font-size:33px;
-  font-weight:800
+  font-weight:800;
+  letter-spacing:-.5px;
 }
 
 .mrp{
   text-decoration:line-through;
   color:#888;
-  font-size:14px
+  font-size:14px;
 }
 
 .off{
   color:#15803d;
   font-weight:800;
   font-size:13px;
-  margin-left:8px
+  margin-left:8px;
 }
 
 .desc{
   color:#4b5563;
   font-size:14px;
   line-height:1.75;
-  margin-top:20px
+  margin-top:20px;
 }
 
 .stock{
@@ -249,10 +268,11 @@ a{text-decoration:none;color:inherit}
   margin-top:16px;
   display:flex;
   align-items:center;
-  gap:6px
+  gap:6px;
 }
 
-/* QTY */
+/* ================= QUANTITY ================= */
+
 .qtyrow{
   display:flex;
   align-items:center;
@@ -261,7 +281,7 @@ a{text-decoration:none;color:inherit}
   margin-top:14px;
   font-size:12px;
   font-weight:800;
-  min-height:34px
+  min-height:34px;
 }
 
 .qty{
@@ -269,31 +289,36 @@ a{text-decoration:none;color:inherit}
   border:1px solid #ddd;
   border-radius:8px;
   overflow:hidden;
-  height:34px
+  height:34px;
 }
 
 .qty button{
   width:32px;
   border:0;
-  background:#f7f7f7
+  background:#f7f7f7;
+  font-size:13px;
 }
 
 .qty span{
   width:34px;
   display:flex;
   align-items:center;
-  justify-content:center
+  justify-content:center;
+  font-size:12px;
 }
 
-/* ADDRESS */
+/* ================= DELIVERY ================= */
+
 .deliveryDetails{
-  margin-top:24px
+  margin-top:24px;
 }
 
 .deliveryTitle{
   font-size:18px;
   font-weight:800;
-  margin-bottom:11px
+  margin-bottom:11px;
+  color:#111;
+  letter-spacing:-.2px;
 }
 
 .deliveryCard{
@@ -301,7 +326,7 @@ a{text-decoration:none;color:inherit}
   overflow:hidden;
   border:1px solid #e3e7ed;
   background:#fff;
-  box-shadow:0 8px 24px rgba(20,30,45,.07)
+  box-shadow:0 8px 24px rgba(20,30,45,.07);
 }
 
 .deliveryAddress{
@@ -311,7 +336,7 @@ a{text-decoration:none;color:inherit}
   gap:11px;
   background:linear-gradient(180deg,#f4f8ff,#eef5ff);
   padding:13px 14px;
-  min-height:50px
+  min-height:50px;
 }
 
 .deliveryIcon{
@@ -320,22 +345,29 @@ a{text-decoration:none;color:inherit}
   display:flex;
   align-items:center;
   justify-content:center;
-  flex:0 0 26px
+  flex:0 0 26px;
+  color:#111;
 }
 
 .deliveryIcon svg{
   width:22px;
-  height:22px
+  height:22px;
+  display:block;
+  stroke:currentColor;
 }
 
 .deliveryAddressText{
   flex:1 1 auto;
   min-width:0;
+  max-width:100%;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+  color:#20242b;
+  line-height:1.2;
   font-size:12px;
-  font-weight:700
+  font-weight:700;
+  display:block;
 }
 
 .deliveryArrow{
@@ -343,7 +375,15 @@ a{text-decoration:none;color:inherit}
   height:24px;
   display:flex;
   align-items:center;
-  justify-content:center
+  justify-content:center;
+  color:#6b7280;
+  flex:0 0 24px;
+}
+
+.deliveryArrow svg{
+  width:18px;
+  height:18px;
+  stroke:currentColor;
 }
 
 .deliveryDate{
@@ -354,13 +394,14 @@ a{text-decoration:none;color:inherit}
   background:#fafafa;
   border-top:1px solid #edf0f3;
   font-size:12px;
-  font-weight:800
+  font-weight:800;
+  color:#20242b;
 }
 
 .deliverySeller{
   padding:12px 14px 13px;
   background:#fafafa;
-  border-top:1px solid #edf0f3
+  border-top:1px solid #edf0f3;
 }
 
 .sellerMain{
@@ -368,18 +409,21 @@ a{text-decoration:none;color:inherit}
   align-items:center;
   gap:8px;
   font-size:12px;
-  font-weight:800
+  font-weight:800;
+  color:#20242b;
 }
 
 .sellerMain svg{
   width:20px;
-  height:20px
+  height:20px;
+  stroke:currentColor;
+  flex:0 0 20px;
 }
 
 .sellerSub{
   font-size:10px;
   color:#747b85;
-  margin:4px 0 0 28px
+  margin:4px 0 0 28px;
 }
 
 .sellerLink{
@@ -389,15 +433,16 @@ a{text-decoration:none;color:inherit}
   margin:6px 0 0 28px;
   color:#1769d5;
   font-size:11px;
-  font-weight:800
+  font-weight:800;
 }
 
-/* FEATURES */
+/* ================= FEATURE BOXES ================= */
+
 .features{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:9px;
-  margin-top:22px
+  margin-top:22px;
 }
 
 .feature{
@@ -405,14 +450,15 @@ a{text-decoration:none;color:inherit}
   border:1px solid #e4e7eb;
   border-radius:15px;
   background:linear-gradient(180deg,#fff,#fbfcfd);
-  padding:11px 5px;
+  padding:11px 5px 10px;
   font-size:9px;
   color:#69717c;
   min-height:78px;
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center
+  justify-content:center;
+  box-shadow:0 5px 16px rgba(20,30,45,.045);
 }
 
 .featureIcon{
@@ -424,226 +470,333 @@ a{text-decoration:none;color:inherit}
   align-items:center;
   justify-content:center;
   margin-bottom:7px;
-  color:#1d4ed8
+  color:#1d4ed8;
 }
 
 .featureIcon svg{
   width:19px;
-  height:19px
+  height:19px;
+  stroke:currentColor;
 }
 
 .feature b{
+  display:block;
   color:#20242b;
-  font-size:9px
+  font-size:9px;
+  line-height:1.2;
+  margin:0;
 }
 
-/* =====================================================
-   PRODUCT HIGHLIGHTS
-   EXACT SIMPLE STYLE
-===================================================== */
+/* ================= CUSTOMIZE ================= */
 
-.productExtra{
-  margin-top:28px;
+#customizeWrap{
+  display:none;
+  align-items:center;
+  gap:7px;
+  margin-left:4px;
+}
+
+#customizeInput{
+  width:125px;
+  height:40px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:0 10px;
+  outline:none;
+  background:#fff;
+}
+
+/* =========================================================
+   FLIPKART STYLE PRODUCT HIGHLIGHTS + ALL DETAILS
+   NO CARD
+========================================================= */
+
+.productSections{
+  margin-top:25px;
+  width:100%;
+  background:#fff;
+}
+
+/* main section */
+
+.cleanSection{
+  width:100%;
   border-top:1px solid #e5e7eb;
+  background:#fff;
 }
 
-.extraSection{
+.cleanSection:last-child{
   border-bottom:1px solid #e5e7eb;
 }
 
-.extraHeader{
+.cleanSectionHeader{
   width:100%;
+  min-height:76px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  text-align:left;
-  background:#fff;
-  border:0;
-  padding:20px 0 14px;
+  gap:15px;
+  padding:14px 0;
+  cursor:pointer;
+  user-select:none;
 }
 
-.extraHeaderText{
+.cleanSectionHeaderLeft{
   min-width:0;
 }
 
-.extraTitle{
+.cleanSectionTitle{
+  margin:0;
   font-size:20px;
-  font-weight:800;
-  color:#171717;
-  margin:0 0 4px;
   line-height:1.25;
+  font-weight:800;
+  color:#212121;
 }
 
-.extraSubtitle{
+.cleanSectionSubtitle{
+  margin-top:6px;
+  color:#707070;
   font-size:13px;
-  color:#737373;
-  line-height:1.4;
+  line-height:1.3;
 }
 
-.extraArrow{
+.cleanArrow{
   width:34px;
   height:34px;
-  border-radius:10px;
-  background:#f5f5f5;
+  min-width:34px;
+  border:0;
+  border-radius:9px;
+  background:#f5f6f7;
+  color:#222;
   display:flex;
   align-items:center;
   justify-content:center;
-  flex:0 0 34px;
-  margin-left:15px;
-  transition:transform .2s
+  transition:transform .2s,background .2s;
 }
 
-.extraArrow svg{
+.cleanArrow:hover{
+  background:#eceeef;
+}
+
+.cleanArrow svg{
   width:18px;
   height:18px;
-  stroke:#222
+  stroke:currentColor;
+  transition:transform .2s;
 }
 
-.extraSection.closed .extraArrow{
-  transform:rotate(180deg)
+.cleanSection.open .cleanArrow svg{
+  transform:rotate(180deg);
 }
 
-.extraBody{
-  overflow:hidden;
-  max-height:2000px;
-  opacity:1;
-  transition:max-height .28s ease,opacity .2s ease
+/* content */
+
+.cleanSectionBody{
+  display:none;
+  padding:0 0 18px;
 }
 
-.extraSection.closed .extraBody{
-  max-height:0;
-  opacity:0
+.cleanSection.open .cleanSectionBody{
+  display:block;
 }
 
-/* HIGHLIGHT ROWS */
+/* ================= HIGHLIGHTS ================= */
+
 .highlightList{
+  width:100%;
   border-top:1px solid #e5e5e5;
 }
 
 .highlightRow{
-  display:flex;
-  align-items:center;
-  gap:13px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:25px;
+  min-height:62px;
   padding:12px 0;
-  min-height:61px;
   border-bottom:1px solid #e5e5e5;
-}
-
-.highlightIcon{
-  width:38px;
-  height:38px;
-  flex:0 0 38px;
-  border-radius:50%;
-  background:#f1f1f1;
-  display:flex;
   align-items:center;
-  justify-content:center;
 }
 
-.highlightIcon svg{
-  width:19px;
-  height:19px;
-  stroke:#222;
-}
-
-.highlightText{
+.highlightItem{
   min-width:0;
-  display:flex;
-  flex-direction:column;
-  gap:3px;
 }
 
 .highlightLabel{
+  display:block;
   color:#777;
   font-size:12px;
-  line-height:1.2;
+  line-height:1.3;
+  margin-bottom:4px;
 }
 
 .highlightValue{
-  color:#111;
+  display:block;
+  color:#212121;
   font-size:14px;
-  line-height:1.25;
-  font-weight:800;
+  line-height:1.35;
+  font-weight:700;
   word-break:break-word;
 }
 
-/* ALL DETAILS */
-.detailsHeading{
-  font-size:17px;
-  font-weight:800;
-  margin:18px 0 8px;
+/* ================= ALL DETAILS ================= */
+
+.detailsTabs{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 0 15px;
+  border-bottom:1px solid #e5e5e5;
+  overflow-x:auto;
+  scrollbar-width:none;
 }
 
-.detailRows{
+.detailsTabs::-webkit-scrollbar{
+  display:none;
+}
+
+.detailsTab{
+  flex:0 0 auto;
+  border:1px solid #d7d9dc;
+  background:#fff;
+  color:#444;
+  border-radius:8px;
+  padding:9px 14px;
+  font-size:14px;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.detailsTab.active{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+  font-weight:800;
+}
+
+.detailsPanel{
+  display:none;
+  padding-top:18px;
+}
+
+.detailsPanel.active{
+  display:block;
+}
+
+.detailGroup{
+  margin-bottom:28px;
+}
+
+.detailGroup:last-child{
+  margin-bottom:0;
+}
+
+.detailGroupTitle{
+  font-size:16px;
+  font-weight:800;
+  color:#333;
+  margin:0 0 9px;
+}
+
+.detailGrid{
   width:100%;
 }
 
 .detailRow{
   display:grid;
   grid-template-columns:1fr 1fr;
+  gap:25px;
   min-height:57px;
-  align-items:center;
+  padding:11px 0;
   border-bottom:1px solid #e5e5e5;
-  column-gap:25px;
+  align-items:center;
 }
 
 .detailLabel{
   color:#777;
   font-size:13px;
-  line-height:1.35;
+  line-height:1.3;
 }
 
 .detailValue{
-  color:#111;
+  color:#333;
   font-size:14px;
-  line-height:1.4;
+  line-height:1.35;
   word-break:break-word;
 }
 
-.detailDescription{
-  padding:16px 0 20px;
+.descriptionPanel{
   color:#444;
-  font-size:13px;
-  line-height:1.7;
+  font-size:14px;
+  line-height:1.75;
+  white-space:pre-line;
 }
 
-/* CTA */
+.manufacturerBox{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 25px;
+}
+
+/* ================= OLD DETAILS HIDDEN ================= */
+
+/*
+   Old bottom About/Specifications/Delivery card is not used.
+   Product Highlights + All details are now the only details section.
+*/
+#details{
+  display:none!important;
+}
+
+/* ================= CTA ================= */
+
 .cta{
   display:grid;
   grid-template-columns:1fr 1.2fr;
   gap:10px;
   margin-top:auto;
-  padding-top:24px
+  padding-top:24px;
 }
 
 .add,.buy{
   height:56px;
   border-radius:14px;
   font-weight:800;
-  font-size:14px
+  font-size:14px;
+  transition:transform .12s,box-shadow .12s,background .15s;
 }
 
 .add{
   background:#fff;
   border:1px solid #d9dde3;
-  box-shadow:0 5px 16px rgba(20,30,45,.05)
+  box-shadow:0 5px 16px rgba(20,30,45,.05);
+}
+
+.add:hover{
+  background:#f8fafc;
+  box-shadow:0 8px 22px rgba(20,30,45,.08);
+}
+
+.add:active,.buy:active{
+  transform:scale(.98);
 }
 
 .buy{
   background:linear-gradient(135deg,#ffbd19,#ff9800);
   border:0;
   box-shadow:0 8px 22px rgba(255,152,0,.28);
-  color:#1a1a1a
+  color:#1a1a1a;
 }
 
 .cta svg{
   width:18px;
   height:18px;
   vertical-align:-4px;
-  margin-right:5px
+  margin-right:5px;
+  stroke:currentColor;
 }
 
-/* TOAST */
+/* ================= TOAST ================= */
+
 .toast{
   position:fixed;
   left:50%;
@@ -657,184 +810,300 @@ a{text-decoration:none;color:inherit}
   font-size:12px;
   font-weight:800;
   transition:.25s;
-  z-index:100
+  z-index:100;
 }
 
 .toast.show{
   opacity:1;
-  transform:translate(-50%,0)
+  transform:translate(-50%,0);
 }
 
-/* MOBILE */
+/* ================= MOBILE ================= */
+
 @media(max-width:900px){
 
+  #customizeWrap{
+    margin-left:0!important;
+    flex:1;
+    min-width:0;
+  }
+
+  #customizeWrap input{
+    width:100%!important;
+    max-width:135px;
+    height:34px!important;
+  }
+
+  #customizeWrap label{
+    font-size:10px!important;
+  }
+
+  .qtyrow{
+    gap:6px;
+    margin-top:12px;
+    font-size:11px;
+    min-height:32px;
+  }
+
+  .qty{
+    height:32px;
+    border-radius:8px;
+  }
+
+  .qty button{
+    width:29px;
+    font-size:12px;
+  }
+
+  .qty span{
+    width:30px;
+    font-size:11px;
+  }
+
+  .deliveryDetails{
+    margin-top:18px;
+  }
+
+  .deliveryTitle{
+    font-size:15px;
+    margin-bottom:8px;
+  }
+
+  .deliveryAddress{
+    padding:10px 10px;
+    font-size:10px;
+    min-height:43px;
+  }
+
+  .deliveryDate{
+    padding:10px;
+    font-size:10px;
+  }
+
+  .deliverySeller{
+    padding:10px;
+  }
+
+  .sellerMain{
+    font-size:10px;
+  }
+
+  .sellerSub{
+    font-size:8.5px;
+    margin-left:27px;
+  }
+
+  .sellerLink{
+    font-size:9px;
+    margin:5px 0 0 27px;
+  }
+
+  .deliveryIcon{
+    width:23px;
+    height:23px;
+    flex-basis:23px;
+  }
+
+  .deliveryIcon svg{
+    width:19px;
+    height:19px;
+  }
+
+  .deliveryAddressText{
+    font-size:10px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    min-width:0;
+    max-width:100%;
+  }
+
+  .deliveryArrow{
+    width:21px;
+    flex-basis:21px;
+  }
+
+  .deliveryArrow svg{
+    width:16px;
+    height:16px;
+  }
+
+  .features{
+    gap:7px;
+    margin-top:16px;
+  }
+
+  .feature{
+    min-height:68px;
+    padding:8px 3px;
+  }
+
+  .featureIcon{
+    width:27px;
+    height:27px;
+    border-radius:9px;
+    margin-bottom:5px;
+  }
+
+  .featureIcon svg{
+    width:17px;
+    height:17px;
+  }
+
+  .feature b{
+    font-size:8.5px;
+  }
+
   .page{
-    padding:12px 9px 90px
+    padding:12px 9px 90px;
   }
 
   .product{
-    border-radius:17px
+    border-radius:17px;
   }
 
   .grid{
-    grid-template-columns:1fr
+    grid-template-columns:1fr;
   }
 
   .gallery{
     padding:9px 0;
     border-right:0;
-    border-bottom:1px solid #eee
+    border-bottom:1px solid #eee;
   }
 
   .main{
     height:340px;
     border:0;
     background:transparent;
-    border-radius:0
+    border-radius:0;
+    box-shadow:none;
   }
 
   .slide img{
-    padding:10px
+    padding:10px;
   }
 
   .navBtn{
-    display:none!important
+    display:none!important;
   }
 
   .info{
-    padding:20px 16px
+    padding:20px 16px;
   }
 
   .title{
     font-size:19px;
-    line-height:1.35
+    line-height:1.35;
+    margin-top:10px;
   }
 
   .price{
-    font-size:26px
+    font-size:26px;
   }
 
-  .features{
-    gap:7px;
-    margin-top:16px
+  .mrp{
+    font-size:12px;
   }
 
-  .feature{
-    min-height:68px;
-    padding:8px 3px
+  .off{
+    font-size:12px;
   }
 
-  .featureIcon{
-    width:27px;
-    height:27px
+  .rate{
+    font-size:11px;
   }
 
-  .feature b{
-    font-size:8.5px
+  .reviews{
+    font-size:11px;
   }
 
-  .deliveryDetails{
-    margin-top:18px
+  /* screenshot-like mobile highlights/details */
+
+  .productSections{
+    margin-top:22px;
   }
 
-  .deliveryTitle{
-    font-size:15px;
-    margin-bottom:8px
+  .cleanSectionHeader{
+    min-height:70px;
+    padding:13px 0;
   }
 
-  .deliveryAddress{
-    padding:10px;
-    min-height:43px
+  .cleanSectionTitle{
+    font-size:19px;
   }
 
-  .deliveryDate{
-    padding:10px;
-    font-size:10px
+  .cleanSectionSubtitle{
+    font-size:12px;
+    margin-top:5px;
   }
 
-  .deliverySeller{
-    padding:10px
-  }
-
-  .deliveryAddressText{
-    font-size:10px;
-  }
-
-  .sellerMain{
-    font-size:10px
-  }
-
-  .sellerSub{
-    font-size:8.5px
-  }
-
-  .sellerLink{
-    font-size:9px
-  }
-
-  /* EXACT MOBILE HIGHLIGHT STYLE */
-  .productExtra{
-    margin-top:22px
-  }
-
-  .extraHeader{
-    padding:16px 0 12px
-  }
-
-  .extraTitle{
-    font-size:18px
-  }
-
-  .extraSubtitle{
-    font-size:11px
-  }
-
-  .extraArrow{
+  .cleanArrow{
     width:32px;
     height:32px;
-    flex-basis:32px
+    min-width:32px;
+    border-radius:9px;
   }
 
   .highlightRow{
-    min-height:62px;
-    padding:11px 0
-  }
-
-  .highlightIcon{
-    width:38px;
-    height:38px;
-    flex-basis:38px
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+    min-height:61px;
+    padding:11px 0;
   }
 
   .highlightLabel{
-    font-size:11px
+    font-size:12px;
+    margin-bottom:3px;
   }
 
   .highlightValue{
-    font-size:13px
+    font-size:14px;
   }
 
-  .detailsHeading{
+  .detailsTabs{
+    gap:7px;
+    padding-bottom:14px;
+  }
+
+  .detailsTab{
+    font-size:13px;
+    padding:9px 13px;
+    border-radius:8px;
+  }
+
+  .detailGroup{
+    margin-bottom:25px;
+  }
+
+  .detailGroupTitle{
     font-size:16px;
-    margin:16px 0 6px
+    margin-bottom:8px;
   }
 
   .detailRow{
     grid-template-columns:1fr 1fr;
-    min-height:55px;
-    column-gap:15px
+    gap:20px;
+    min-height:56px;
+    padding:10px 0;
   }
 
   .detailLabel{
-    font-size:12px
+    font-size:12px;
   }
 
   .detailValue{
-    font-size:13px
+    font-size:13px;
   }
 
-  .detailDescription{
-    font-size:12px
+  .descriptionPanel{
+    font-size:13px;
+    line-height:1.7;
+  }
+
+  .manufacturerBox{
+    grid-template-columns:1fr 1fr;
+    gap:0 20px;
   }
 
   .cta{
@@ -847,11 +1116,43 @@ a{text-decoration:none;color:inherit}
     padding:9px 10px calc(9px + env(safe-area-inset-bottom));
     margin:0;
     border-top:1px solid #ddd;
-    box-shadow:0 -6px 20px #0000000f
+    box-shadow:0 -6px 20px #0000000f;
   }
 
   .add,.buy{
-    height:51px
+    height:51px;
+  }
+}
+
+@media(max-width:420px){
+
+  .cleanSectionTitle{
+    font-size:18px;
+  }
+
+  .cleanSectionSubtitle{
+    font-size:11px;
+  }
+
+  .highlightRow,
+  .detailRow{
+    gap:14px;
+  }
+
+  .highlightLabel{
+    font-size:11px;
+  }
+
+  .highlightValue{
+    font-size:13px;
+  }
+
+  .detailLabel{
+    font-size:11px;
+  }
+
+  .detailValue{
+    font-size:12px;
   }
 }
 </style>
@@ -880,11 +1181,13 @@ style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-it
 
 <button type="button"
 class="navBtn prevBtn"
-onclick="prevImage()">‹</button>
+onclick="prevImage()"
+aria-label="Previous image">‹</button>
 
 <button type="button"
 class="navBtn nextBtn"
-onclick="nextImage()">›</button>
+onclick="nextImage()"
+aria-label="Next image">›</button>
 
 <div class="slider" id="slider"></div>
 
@@ -908,27 +1211,29 @@ onclick="nextImage()">›</button>
 </div>
 
 <div class="pricebox">
-
 <span id="price" class="price"></span>
 <br>
-
 <span id="mrp" class="mrp"></span>
 <span id="off" class="off"></span>
-
 </div>
 
 <div id="deliveryDetails" class="deliveryDetails">
 
-<div class="deliveryTitle">Delivery details</div>
+<div class="deliveryTitle">
+Delivery details
+</div>
 
 <div class="deliveryCard">
 
 <div class="deliveryAddress"
 id="deliveryAddressRow"
-onclick="openAddressSelector()">
+role="button"
+tabindex="0"
+onclick="openAddressSelector()"
+onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
 
 <div class="deliveryIcon">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
 <path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z"/>
 <circle cx="12" cy="9" r="2.4"/>
 </svg>
@@ -940,7 +1245,7 @@ Add delivery address
 </div>
 
 <div class="deliveryArrow">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
 <path d="m9 18 6-6-6-6"/>
 </svg>
 </div>
@@ -950,11 +1255,12 @@ Add delivery address
 <div class="deliveryDate">
 
 <div class="deliveryIcon">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
 <path d="M3 7h11v10H3z"/>
 <path d="M14 10h4l3 3v4h-7z"/>
 <circle cx="7" cy="18" r="2"/>
 <circle cx="18" cy="18" r="2"/>
+<path d="M5 10h6M16 13h4"/>
 </svg>
 </div>
 
@@ -968,9 +1274,10 @@ Delivery by …
 
 <div class="sellerMain">
 
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
 <path d="M4 10h16v10H4z"/>
 <path d="m3 10 2-5h14l2 5"/>
+<path d="M8 10v2a2 2 0 0 0 4 0v-2a2 2 0 0 0 4 0v-2"/>
 </svg>
 
 <span>Fulfilled by MyStore</span>
@@ -988,31 +1295,23 @@ See other sellers <span>›</span>
 </div>
 
 </div>
-
 </div>
 
 <div id="description" class="desc"></div>
 
 <div id="stock" class="stock"></div>
 
-<!-- QTY -->
-
 <div class="qtyrow">
 
 Qty.
 
 <div class="qty">
-
 <button onclick="changeQty(-1)">−</button>
-
 <span id="qty">1</span>
-
 <button onclick="changeQty(1)">+</button>
-
 </div>
 
-<div id="customizeWrap"
-style="display:none;align-items:center;gap:7px;margin-left:4px;">
+<div id="customizeWrap">
 
 <label for="customizeInput"
 style="font-size:12px;font-weight:800;white-space:nowrap;">
@@ -1022,58 +1321,54 @@ Customize
 <input id="customizeInput"
 type="text"
 maxlength="100"
-placeholder="Name / Text"
-style="width:125px;height:40px;border:1px solid #ddd;border-radius:10px;padding:0 10px;outline:none;background:#fff;">
+placeholder="Name / Text">
 
 </div>
 
 </div>
-
-<!-- FEATURES -->
 
 <div id="features" class="features"></div>
-
 
 <!-- =====================================================
      PRODUCT HIGHLIGHTS + ALL DETAILS
 ===================================================== -->
 
-<div class="productExtra">
+<div class="productSections">
 
-<!-- PRODUCT HIGHLIGHTS -->
+<!-- ================= PRODUCT HIGHLIGHTS ================= -->
 
-<section id="highlightSection" class="extraSection">
+<section id="highlightsSection"
+class="cleanSection">
 
-<button class="extraHeader"
-type="button"
-onclick="toggleExtra('highlightSection')">
+<div class="cleanSectionHeader"
+onclick="toggleSection('highlightsSection')">
 
-<div class="extraHeaderText">
+<div class="cleanSectionHeaderLeft">
 
-<div class="extraTitle">
+<h2 class="cleanSectionTitle">
 Product Highlights
-</div>
+</h2>
 
-<div class="extraSubtitle">
+<div class="cleanSectionSubtitle">
 Key features, expiry, usage, and more
 </div>
 
 </div>
 
-<div class="extraArrow">
+<button class="cleanArrow"
+type="button"
+onclick="event.stopPropagation();toggleSection('highlightsSection')"
+aria-label="Toggle product highlights">
 
-<svg viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-stroke-width="2">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
 <path d="m6 9 6 6 6-6"/>
 </svg>
 
-</div>
-
 </button>
 
-<div class="extraBody">
+</div>
+
+<div class="cleanSectionBody">
 
 <div id="highlightList" class="highlightList"></div>
 
@@ -1082,42 +1377,90 @@ stroke-width="2">
 </section>
 
 
-<!-- ALL DETAILS -->
+<!-- ================= ALL DETAILS ================= -->
 
-<section id="allDetailsSection" class="extraSection">
+<section id="allDetailsSection"
+class="cleanSection">
 
-<button class="extraHeader"
-type="button"
-onclick="toggleExtra('allDetailsSection')">
+<div class="cleanSectionHeader"
+onclick="toggleSection('allDetailsSection')">
 
-<div class="extraHeaderText">
+<div class="cleanSectionHeaderLeft">
 
-<div class="extraTitle">
+<h2 class="cleanSectionTitle">
 All details
-</div>
+</h2>
 
-<div class="extraSubtitle">
+<div class="cleanSectionSubtitle">
 Features, description and more
 </div>
 
 </div>
 
-<div class="extraArrow">
+<button class="cleanArrow"
+type="button"
+onclick="event.stopPropagation();toggleSection('allDetailsSection')"
+aria-label="Toggle all details">
 
-<svg viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-stroke-width="2">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
 <path d="m6 9 6 6 6-6"/>
 </svg>
 
-</div>
-
 </button>
 
-<div class="extraBody">
+</div>
 
-<div id="allDetailsContent"></div>
+<div class="cleanSectionBody">
+
+<div class="detailsTabs">
+
+<button class="detailsTab active"
+onclick="showDetailsTab('specifications',this)">
+Specifications
+</button>
+
+<button class="detailsTab"
+onclick="showDetailsTab('description',this)">
+Description
+</button>
+
+<button class="detailsTab"
+onclick="showDetailsTab('manufacturer',this)">
+Manufacturer info
+</button>
+
+</div>
+
+
+<!-- SPECIFICATIONS -->
+
+<div id="panelSpecifications"
+class="detailsPanel active">
+
+<div id="specificationContent"></div>
+
+</div>
+
+
+<!-- DESCRIPTION -->
+
+<div id="panelDescription"
+class="detailsPanel">
+
+<div id="fullDescription"
+class="descriptionPanel"></div>
+
+</div>
+
+
+<!-- MANUFACTURER -->
+
+<div id="panelManufacturer"
+class="detailsPanel">
+
+<div id="manufacturerContent"></div>
+
+</div>
 
 </div>
 
@@ -1125,17 +1468,14 @@ stroke-width="2">
 
 </div>
 
-
-<!-- CTA -->
+<!-- ================= CTA ================= -->
 
 <div class="cta">
 
-<button class="add"
-onclick="addToCart()">
+<button class="add" onclick="addToCart()">
 
 <svg viewBox="0 0 24 24"
 fill="none"
-stroke="currentColor"
 stroke-width="1.8">
 
 <path d="M3 4h2l2.2 11h10.9l2-8H6"/>
@@ -1148,13 +1488,10 @@ Add to Cart
 
 </button>
 
-
-<button class="buy"
-onclick="buyNow()">
+<button class="buy" onclick="buyNow()">
 
 <svg viewBox="0 0 24 24"
 fill="none"
-stroke="currentColor"
 stroke-width="1.9">
 
 <path d="m13 2-9 12h7l-1 8 9-12h-7l1-8Z"/>
@@ -1168,9 +1505,13 @@ Buy at <span id="buyPrice"></span>
 </div>
 
 </div>
+
 </div>
 
 </section>
+
+<!-- OLD DETAILS ELEMENT KE LIYE -->
+<section id="details" style="display:none"></section>
 
 </main>
 
@@ -1181,1696 +1522,2155 @@ Buy at <span id="buyPrice"></span>
 
 <script>
 
-/* =====================================================
+/* =========================================================
    SUPABASE
-   SAME URL + SAME API KEY
-===================================================== */
+   SAME URL + SAME KEY
+========================================================= */
 
 const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
 
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
 
-const supabaseClient =
+const supabaseClient=
 window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 let product=null;
 let qty=1;
 let currentIndex=0;
 
-
-/* =====================================================
-   HELPERS
-===================================================== */
-
-const money=n =>
+const money=n=>
 "₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
 
-const id=() =>
+const id=()=>
 new URLSearchParams(location.search).get("id");
 
 function v(o,ks,d=""){
-for(const k of ks){
-if(o[k]!=null && o[k]!=="") return o[k];
-}
-return d;
+  for(const k of ks){
+    if(o[k]!=null && o[k]!=="")
+      return o[k];
+  }
+  return d;
 }
 
 function num(v){
-const m=String(v??"")
-.match(/[0-9,]+(?:\.[0-9]+)?/);
-return m?Number(m[0].replace(/,/g,"")):0;
-}
-
-function escapeHtml(value){
-const s=String(value??"");
-return s.replace(/[&<>"']/g,c=>({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#039;"
-}[c]));
+  const m=String(v??"").match(/[0-9,]+(?:\.[0-9]+)?/);
+  return m?Number(m[0].replace(/,/g,"")):0;
 }
 
 function toast(x){
-const t=document.getElementById("toast");
-t.textContent=x;
-t.classList.add("show");
-clearTimeout(window.tt);
-window.tt=setTimeout(()=>{
-t.classList.remove("show")
-},2200);
+  const t=document.getElementById("toast");
+  t.textContent=x;
+  t.classList.add("show");
+
+  clearTimeout(window.tt);
+
+  window.tt=setTimeout(
+    ()=>t.classList.remove("show"),
+    2200
+  );
+}
+
+function escapeHtml(value){
+  const s=String(value??"");
+
+  return s.replace(
+    /[&<>"']/g,
+    c=>({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[c])
+  );
 }
 
 
-/* =====================================================
-   EXTRA DATA PARSER
-   Supports JSON / ARRAY / OBJECT / STRING
-===================================================== */
+/* =========================================================
+   JSON / ARRAY HELPERS
+========================================================= */
 
-function parseExtraData(value){
+function parseJSON(value,fallback=null){
 
-if(value==null || value==="") return [];
+  if(value==null || value==="")
+    return fallback;
 
-if(Array.isArray(value)) return value;
+  if(typeof value==="object")
+    return value;
 
-if(typeof value==="object"){
-
-/* object like:
-   {Color:"Purple", Material:"Plastic"}
-*/
-
-return Object.entries(value).map(([label,val])=>({
-label:label,
-value:val
-}));
-
+  try{
+    return JSON.parse(value);
+  }catch{
+    return fallback;
+  }
 }
-
-if(typeof value==="string"){
-
-let s=value.trim();
-
-if(!s) return [];
-
-try{
-
-const parsed=JSON.parse(s);
-
-if(Array.isArray(parsed)) return parsed;
-
-if(parsed && typeof parsed==="object"){
-return Object.entries(parsed).map(([label,val])=>({
-label:label,
-value:val
-}));
-}
-
-}catch(e){}
-
-/*
-   Supports:
-   Color: Purple
-   Material: Plastic
-*/
-
-return s
-.split(/\n|•/)
-.map(x=>x.trim())
-.filter(Boolean)
-.map(x=>{
-
-const p=x.indexOf(":");
-
-if(p>-1){
-
-return {
-label:x.slice(0,p).trim(),
-value:x.slice(p+1).trim()
-};
-
-}
-
-return {
-label:"",
-value:x
-};
-
-});
-
-}
-
-return [];
-}
-
-
-function normalizeExtra(item){
-
-if(item==null) return null;
-
-if(typeof item==="string"){
-
-return {
-label:"",
-value:item
-};
-
-}
-
-if(Array.isArray(item)){
-
-return {
-label:item[0]||"",
-value:item[1]||""
-};
-
-}
-
-if(typeof item==="object"){
-
-const label=
-item.label ??
-item.name ??
-item.key ??
-item.title ??
-item.field ??
-item.heading ??
-"";
-
-const value=
-item.value ??
-item.text ??
-item.answer ??
-item.content ??
-item.description ??
-"";
-
-return {
-label:String(label).trim(),
-value:String(value).trim(),
-icon:item.icon||""
-};
-
-}
-
-return null;
-}
-
-
-/* =====================================================
-   GET HIGHLIGHTS
-===================================================== */
-
-function getHighlights(data){
-
-let raw=
-v(data,[
-"product_highlights",
-"product_highlight",
-"highlights",
-"highlight",
-"key_features",
-"keyFeatures"
-],"");
-
-let arr=parseExtraData(raw)
-.map(normalizeExtra)
-.filter(x=>x && x.value);
-
-return arr;
-
-}
-
-
-/* =====================================================
-   GET ALL DETAILS
-===================================================== */
-
-function getAllDetails(data){
-
-let raw=
-v(data,[
-"all_details",
-"allDetails",
-"product_details",
-"productDetails",
-"specifications",
-"specs",
-"details"
-],"");
-
-let arr=parseExtraData(raw)
-.map(normalizeExtra)
-.filter(x=>x && (x.label || x.value));
-
-return arr;
-
-}
-
-
-/* =====================================================
-   RENDER HIGHLIGHTS
-===================================================== */
-
-function renderHighlights(){
-
-const box=document.getElementById("highlightList");
-
-const arr=getHighlights(product.raw);
-
-if(!arr.length){
-
-document.getElementById("highlightSection").style.display="none";
-return;
-
-}
-
-document.getElementById("highlightSection").style.display="block";
-
-box.innerHTML=arr.map((x,i)=>`
-
-<div class="highlightRow">
-
-<div class="highlightIcon">
-
-<svg viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-stroke-width="1.8">
-
-<path d="m12 3 2.8 5.7L21 9.6l-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>
-
-</svg>
-
-</div>
-
-<div class="highlightText">
-
-${x.label?
-`<div class="highlightLabel">
-${escapeHtml(x.label)}
-</div>`:""}
-
-<div class="highlightValue">
-${escapeHtml(x.value)}
-</div>
-
-</div>
-
-</div>
-
-`).join("");
-
-}
-
-
-/* =====================================================
-   RENDER ALL DETAILS
-===================================================== */
-
-function renderAllDetails(){
-
-const box=document.getElementById("allDetailsContent");
-
-const arr=getAllDetails(product.raw);
-
-let html="";
-
-/* If admin has details */
-
-if(arr.length){
-
-html+=`
-<div class="detailsHeading">
-All details
-</div>
-
-<div class="detailRows">
-`;
-
-arr.forEach(x=>{
-
-html+=`
-
-<div class="detailRow">
-
-<div class="detailLabel">
-${escapeHtml(x.label || "Details")}
-</div>
-
-<div class="detailValue">
-${escapeHtml(x.value)}
-</div>
-
-</div>
-
-`;
-
-});
-
-html+=`
-</div>
-`;
-
-}
-
-/*
-   Description is shown ONLY if available.
-   No fake details are created.
-*/
-
-if(product.description){
-
-html+=`
-
-<div class="detailsHeading">
-Description
-</div>
-
-<div class="detailDescription">
-${escapeHtml(product.description)}
-</div>
-
-`;
-
-}
-
-/* If nothing was entered in admin */
-
-if(!html){
-
-html=`
-<div style="
-padding:18px 0;
-color:#777;
-font-size:13px;
-">
-No additional details available.
-</div>
-`;
-
-}
-
-box.innerHTML=html;
-
-}
-
-
-/* =====================================================
-   OPEN / CLOSE
-===================================================== */
-
-function toggleExtra(sectionId){
-
-const section=document.getElementById(sectionId);
-
-if(!section)return;
-
-section.classList.toggle("closed");
-
-}
-
-
-/* =====================================================
-   ADDRESS
-===================================================== */
 
 function cleanPart(v){
-return v==null?"":String(v).trim();
+  return v==null ? "" : String(v).trim();
 }
 
 function uniqueParts(arr){
 
-const out=[];
+  const out=[];
 
-for(const x of arr){
+  for(const x of arr){
 
-const s=cleanPart(x);
+    const s=cleanPart(x);
 
-if(
-s &&
-!out.some(
-y=>y.toLowerCase()===s.toLowerCase()
-)
-){
-out.push(s);
+    if(
+      s &&
+      !out.some(
+        y=>y.toLowerCase()===s.toLowerCase()
+      )
+    ){
+      out.push(s);
+    }
+
+  }
+
+  return out;
 }
 
-}
 
-return out;
-}
+/* =========================================================
+   ADDRESS
+========================================================= */
 
 function formatSavedAddress(a){
 
-if(!a)return "";
+  if(!a) return "";
 
-if(typeof a==="string")return a.trim();
+  if(typeof a==="string")
+    return a.trim();
 
-const village=
-cleanPart(
-a.village ||
-a.locality ||
-a.area ||
-a.town ||
-a.place ||
-""
-);
+  const village=cleanPart(
+    a.village ||
+    a.locality ||
+    a.area ||
+    a.town ||
+    a.place ||
+    ""
+  );
 
-const district=
-cleanPart(
-a.district ||
-a.district_name ||
-""
-);
+  const district=cleanPart(
+    a.district ||
+    a.district_name ||
+    ""
+  );
 
-const city=
-cleanPart(
-a.city ||
-a.city_name ||
-""
-);
+  const city=cleanPart(
+    a.city ||
+    a.city_name ||
+    ""
+  );
 
-const state=
-cleanPart(
-a.state ||
-a.state_name ||
-""
-);
+  const state=cleanPart(
+    a.state ||
+    a.state_name ||
+    ""
+  );
 
-const pincode=
-cleanPart(
-a.pincode ||
-a.pin ||
-a.postal_code ||
-a.postcode ||
-""
-);
+  const pincode=cleanPart(
+    a.pincode ||
+    a.pin ||
+    a.postal_code ||
+    a.postcode ||
+    ""
+  );
 
-const plus=
-cleanPart(
-a.plus_code ||
-a.plusCode ||
-a.pluscode ||
-a.plus_code_address ||
-""
-);
+  const plus=cleanPart(
+    a.plus_code ||
+    a.plusCode ||
+    a.pluscode ||
+    a.plus_code_address ||
+    ""
+  );
 
-const direct=
-cleanPart(
-a.full_address ||
-a.fullAddress ||
-a.formatted_address ||
-a.formattedAddress
-);
+  const direct=cleanPart(
+    a.full_address ||
+    a.fullAddress ||
+    a.formatted_address ||
+    a.formattedAddress
+  );
 
-const first=
-uniqueParts([
-village,
-district
-]).join(", ");
+  const first=
+    uniqueParts([village,district])
+    .join(", ");
 
-const second=
-uniqueParts([
-state,
-pincode
-]).join(", ");
+  const second=
+    uniqueParts([state,pincode])
+    .join(", ");
 
-const lines=[
-first,
-second,
-plus
-].filter(Boolean);
+  const lines=[
+    first,
+    second,
+    plus
+  ].filter(Boolean);
 
-if(lines.length)return lines.join("\n");
+  if(lines.length)
+    return lines.join("\n");
 
-const fallback=
-uniqueParts([
-city,
-state,
-pincode
-]).join(", ");
+  const fallback=
+    uniqueParts([city,state,pincode])
+    .join(", ");
 
-return fallback||direct;
+  return fallback || direct;
 }
 
 function addressCacheKey(userId){
-
-return "mystore_delivery_address_cache_v3_"+
-String(userId||"guest");
-
+  return "mystore_delivery_address_cache_v3_"+
+    String(userId||"guest");
 }
 
-function cacheAddress(userId,addressObject,formatted){
+function cacheAddress(
+  userId,
+  addressObject,
+  formatted
+){
 
-try{
+  try{
 
-localStorage.setItem(
-addressCacheKey(userId),
-JSON.stringify({
-savedAt:Date.now(),
-text:formatted||formatSavedAddress(addressObject),
-data:addressObject||null
-})
-);
+    const payload={
+      savedAt:Date.now(),
+      text:
+        formatted ||
+        formatSavedAddress(addressObject),
+      data:addressObject||null
+    };
 
-}catch(e){}
+    localStorage.setItem(
+      addressCacheKey(userId),
+      JSON.stringify(payload)
+    );
 
+  }catch(e){
+    console.warn("Address cache error",e);
+  }
 }
 
 function readCachedAddress(userId){
 
-try{
+  try{
 
-const raw=
-localStorage.getItem(
-addressCacheKey(userId)
-);
+    const raw=
+      localStorage.getItem(
+        addressCacheKey(userId)
+      );
 
-if(!raw)return "";
+    if(!raw) return "";
 
-const x=JSON.parse(raw);
+    const x=JSON.parse(raw);
 
-return cleanPart(x?.text) ||
-formatSavedAddress(x?.data);
+    return cleanPart(x?.text) ||
+      formatSavedAddress(x?.data);
 
-}catch(e){
-
-return "";
-
-}
-
+  }catch(e){
+    return "";
+  }
 }
 
 function paintAddress(text){
 
-const el=
-document.getElementById(
-"deliveryAddressText"
-);
+  const el=
+    document.getElementById(
+      "deliveryAddressText"
+    );
 
-if(!el)return;
+  if(!el) return;
 
-const value=cleanPart(text);
+  const value=cleanPart(text);
 
-el.textContent=
-value?
-value.replace(/\s*\n\s*/g," ")
-.replace(/\s+/g," ")
-.trim()
-:
-"Add delivery address";
+  if(!value){
 
+    el.textContent=
+      "Add delivery address";
+
+    return;
+  }
+
+  el.textContent=
+    value
+      .replace(/\s*\n\s*/g," ")
+      .replace(/\s+/g," ")
+      .trim();
+}
+
+function looksLikeAddressObject(x){
+
+  if(
+    !x ||
+    typeof x!=="object" ||
+    Array.isArray(x)
+  )
+    return false;
+
+  const keys=
+    Object.keys(x)
+      .map(k=>k.toLowerCase());
+
+  return keys.some(k=>[
+    "village",
+    "district",
+    "state",
+    "pincode",
+    "pin",
+    "postal_code",
+    "plus_code",
+    "full_address",
+    "fulladdress",
+    "formatted_address",
+    "address",
+    "locality"
+  ].includes(k));
+}
+
+function scanLocalStorageForAddress(){
+
+  const preferred=[
+    "selectedAddress",
+    "selected_address",
+    "savedAddress",
+    "saved_address",
+    "savedAddresses",
+    "saved_addresses",
+    "deliveryAddress",
+    "delivery_address",
+    "currentAddress",
+    "current_address",
+    "userAddress",
+    "user_address",
+    "address",
+    "addresses"
+  ];
+
+  const keys=[];
+
+  for(const k of preferred)
+    if(!keys.includes(k))
+      keys.push(k);
+
+  try{
+
+    for(let i=0;i<localStorage.length;i++){
+
+      const k=localStorage.key(i);
+
+      if(k && !keys.includes(k))
+        keys.push(k);
+    }
+
+  }catch(e){}
+
+  for(const key of keys){
+
+    try{
+
+      const raw=localStorage.getItem(key);
+
+      if(!raw) continue;
+
+      let value;
+
+      try{
+        value=JSON.parse(raw);
+      }catch{
+        value=raw;
+      }
+
+      const candidates=[];
+
+      if(Array.isArray(value))
+        candidates.push(...value);
+      else
+        candidates.push(value);
+
+      for(const item of candidates){
+
+        if(typeof item==="string"){
+
+          const t=item.trim();
+
+          if(
+            t &&
+            /(\d{5,6}|uttar|pradesh|district|village|plus)/i.test(t)
+          )
+            return t;
+
+        }else if(
+          looksLikeAddressObject(item)
+        ){
+
+          const t=
+            formatSavedAddress(item);
+
+          if(t) return t;
+        }
+
+      }
+
+    }catch(e){}
+  }
+
+  return "";
 }
 
 async function getCurrentUser(){
 
-try{
+  try{
 
-const {data,error}=
-await supabaseClient.auth.getSession();
+    const {data,error}=
+      await supabaseClient.auth.getSession();
 
-if(error)return null;
+    if(error) return null;
 
-return data?.session?.user||null;
+    return data?.session?.user||null;
 
-}catch(e){
+  }catch(e){
 
-return null;
+    return null;
 
+  }
 }
 
-}
+async function readAddressTable(
+  table,
+  userId
+){
 
-async function readAddressTable(table,userId){
+  try{
 
-try{
+    const {data,error}=
+      await supabaseClient
+        .from(table)
+        .select("*")
+        .eq("user_id",userId)
+        .order("created_at",{ascending:false})
+        .limit(20);
 
-const {data,error}=
-await supabaseClient
-.from(table)
-.select("*")
-.eq("user_id",userId)
-.order("created_at",{ascending:false})
-.limit(20);
+    if(
+      error ||
+      !Array.isArray(data) ||
+      !data.length
+    )
+      return null;
 
-if(
-error ||
-!Array.isArray(data) ||
-!data.length
-)return null;
+    const preferred=
+      data.find(a=>
+        a?.is_current_location===true ||
+        a?.isCurrentLocation===true ||
+        a?.is_current===true ||
+        a?.selected===true ||
+        a?.is_selected===true ||
+        String(a?.type||"")
+          .toLowerCase()
+          .includes("current")
+      ) || data[0];
 
-const preferred=
-data.find(a=>
-a?.is_current_location===true ||
-a?.isCurrentLocation===true ||
-a?.is_current===true ||
-a?.selected===true ||
-a?.is_selected===true
-)||
-data[0];
+    const text=
+      formatSavedAddress(preferred);
 
-const text=
-formatSavedAddress(preferred);
+    if(text)
+      return {
+        data:preferred,
+        text
+      };
 
-if(text){
+  }catch(e){}
 
-return {
-data:preferred,
-text:text
-};
-
-}
-
-}catch(e){}
-
-return null;
-
+  return null;
 }
 
 async function loadDeliveryAddress(){
 
-const user=
-await getCurrentUser();
+  const user=
+    await getCurrentUser();
 
-if(user){
+  if(user){
 
-const cached=
-readCachedAddress(user.id);
+    const cached=
+      readCachedAddress(user.id);
 
-if(cached)paintAddress(cached);
+    if(cached)
+      paintAddress(cached);
+  }
 
-}
+  const local=
+    scanLocalStorageForAddress();
 
-if(user){
+  if(
+    local &&
+    (!user ||
+    !readCachedAddress(user.id))
+  )
+    paintAddress(local);
 
-const tables=[
-"saved_addresses",
-"addresses",
-"user_addresses",
-"delivery_addresses"
-];
+  if(user){
 
-for(const table of tables){
+    const tables=[
+      "saved_addresses",
+      "addresses",
+      "user_addresses",
+      "delivery_addresses"
+    ];
 
-const result=
-await readAddressTable(
-table,
-user.id
-);
+    for(const table of tables){
 
-if(result){
+      const result=
+        await readAddressTable(
+          table,
+          user.id
+        );
 
-cacheAddress(
-user.id,
-result.data,
-result.text
-);
+      if(result){
 
-paintAddress(result.text);
+        cacheAddress(
+          user.id,
+          result.data,
+          result.text
+        );
 
-return;
+        paintAddress(result.text);
 
-}
+        return;
+      }
+    }
+  }
 
-}
+  const current=
+    document.getElementById(
+      "deliveryAddressText"
+    );
 
-}
-
+  if(
+    current &&
+    !current.textContent.trim()
+  )
+    current.textContent=
+      "Add delivery address";
 }
 
 function openAddressSelector(){
 
-try{
+  try{
 
-const target=
-localStorage.getItem(
-"addressSelectorUrl"
-);
+    const target=
+      localStorage.getItem(
+        "addressSelectorUrl"
+      );
 
-if(target){
+    if(target){
+      location.href=target;
+      return;
+    }
 
-location.href=target;
-return;
+  }catch{}
 
-}
-
-}catch(e){}
-
-location.href="/ecom/checkout.html";
-
+  location.href=
+    "/ecom/checkout.html";
 }
 
 function getDeliveryDate(){
 
-const d=new Date();
+  const d=new Date();
 
-d.setHours(0,0,0,0);
+  d.setHours(0,0,0,0);
 
-d.setDate(d.getDate()+5);
+  d.setDate(d.getDate()+5);
 
-return d.toLocaleDateString(
-"en-IN",
-{
-day:"numeric",
-month:"short",
-weekday:"short"
-}
-);
-
+  return d.toLocaleDateString(
+    "en-IN",
+    {
+      day:"numeric",
+      month:"short",
+      weekday:"short"
+    }
+  );
 }
 
 async function renderDeliveryDetails(){
 
-const date=
-document.getElementById(
-"deliveryDateText"
-);
+  const date=
+    document.getElementById(
+      "deliveryDateText"
+    );
 
-if(date){
+  if(date)
+    date.textContent=
+      "Delivery by "+getDeliveryDate();
 
-date.textContent=
-"Delivery by "+getDeliveryDate();
-
-}
-
-await loadDeliveryAddress();
-
+  await loadDeliveryAddress();
 }
 
 
-/* =====================================================
+/* =========================================================
+   HIGHLIGHTS DATA
+========================================================= */
+
+function getHighlights(data){
+
+  let raw=v(
+    data,
+    [
+      "product_highlights",
+      "highlights",
+      "productHighlights",
+      "highlight"
+    ],
+    null
+  );
+
+  raw=parseJSON(raw,raw);
+
+  if(!raw) return [];
+
+  /*
+    Supported formats:
+
+    [
+      {label:"Color",value:"Purple"},
+      {label:"Material",value:"Plastic"}
+    ]
+
+    OR
+
+    {
+      "Color":"Purple",
+      "Material":"Plastic"
+    }
+  */
+
+  if(Array.isArray(raw)){
+
+    return raw
+      .map(x=>{
+
+        if(typeof x==="string")
+          return {
+            label:"",
+            value:x
+          };
+
+        return {
+          label:
+            x.label ||
+            x.title ||
+            x.name ||
+            x.key ||
+            "",
+          value:
+            x.value ||
+            x.text ||
+            x.content ||
+            ""
+        };
+
+      })
+      .filter(x=>
+        cleanPart(x.label) ||
+        cleanPart(x.value)
+      );
+  }
+
+  if(typeof raw==="object"){
+
+    return Object.entries(raw)
+      .map(([label,value])=>({
+        label,
+        value:
+          typeof value==="object"
+            ? JSON.stringify(value)
+            : value
+      }))
+      .filter(x=>
+        cleanPart(x.label) ||
+        cleanPart(x.value)
+      );
+  }
+
+  return [];
+}
+
+
+/* =========================================================
+   ALL DETAILS / SPECIFICATIONS
+========================================================= */
+
+function normalizeDetailGroups(raw){
+
+  raw=parseJSON(raw,raw);
+
+  if(!raw) return [];
+
+  /*
+    Supports:
+
+    {
+      "Body and Design Features":{
+        "Body Material":"Plastic",
+        "Frame Material":"TR90"
+      }
+    }
+
+    OR
+
+    [
+      {
+        "title":"Body and Design Features",
+        "items":[
+          {"label":"Body Material","value":"Plastic"}
+        ]
+      }
+    ]
+  */
+
+  if(Array.isArray(raw)){
+
+    return raw.map(group=>{
+
+      if(
+        group &&
+        typeof group==="object" &&
+        Array.isArray(group.items)
+      ){
+
+        return {
+          title:
+            group.title ||
+            group.name ||
+            "",
+          items:
+            group.items
+              .map(x=>({
+                label:
+                  x.label ||
+                  x.name ||
+                  x.key ||
+                  "",
+                value:
+                  x.value ||
+                  x.text ||
+                  ""
+              }))
+              .filter(x=>
+                cleanPart(x.label) ||
+                cleanPart(x.value)
+              )
+        };
+
+      }
+
+      if(group && typeof group==="object"){
+
+        const title=
+          group.title ||
+          group.name ||
+          "";
+
+        const copy={...group};
+
+        delete copy.title;
+        delete copy.name;
+
+        return {
+          title,
+          items:
+            Object.entries(copy)
+              .map(([label,value])=>({
+                label,
+                value
+              }))
+        };
+      }
+
+      return {
+        title:"",
+        items:[]
+      };
+
+    }).filter(x=>x.items.length);
+  }
+
+  if(typeof raw==="object"){
+
+    const groups=[];
+
+    for(const [groupTitle,value] of Object.entries(raw)){
+
+      if(
+        value &&
+        typeof value==="object" &&
+        !Array.isArray(value)
+      ){
+
+        groups.push({
+          title:groupTitle,
+          items:
+            Object.entries(value)
+              .map(([label,val])=>({
+                label,
+                value:val
+              }))
+              .filter(x=>
+                cleanPart(x.label) ||
+                cleanPart(x.value)
+              )
+        });
+
+      }else{
+
+        groups.push({
+          title:"",
+          items:[{
+            label:groupTitle,
+            value
+          }]
+        });
+
+      }
+    }
+
+    return groups.filter(x=>x.items.length);
+  }
+
+  return [];
+}
+
+
+/* =========================================================
+   RENDER HIGHLIGHTS
+========================================================= */
+
+function renderHighlights(data){
+
+  const box=
+    document.getElementById(
+      "highlightList"
+    );
+
+  if(!box) return;
+
+  const items=
+    getHighlights(data);
+
+  if(!items.length){
+
+    box.innerHTML="";
+
+    document.getElementById(
+      "highlightsSection"
+    ).style.display="none";
+
+    return;
+  }
+
+  document.getElementById(
+    "highlightsSection"
+  ).style.display="block";
+
+  let html="";
+
+  for(let i=0;i<items.length;i+=2){
+
+    const left=items[i];
+    const right=items[i+1];
+
+    html+=`
+      <div class="highlightRow">
+
+        <div class="highlightItem">
+
+          ${
+            left.label
+              ? `<span class="highlightLabel">
+                   ${escapeHtml(left.label)}
+                 </span>`
+              : ""
+          }
+
+          <span class="highlightValue">
+            ${escapeHtml(left.value)}
+          </span>
+
+        </div>
+
+        <div class="highlightItem">
+
+          ${
+            right
+              ? `
+                ${
+                  right.label
+                    ? `<span class="highlightLabel">
+                         ${escapeHtml(right.label)}
+                       </span>`
+                    : ""
+                }
+
+                <span class="highlightValue">
+                  ${escapeHtml(right.value)}
+                </span>
+              `
+              : ""
+          }
+
+        </div>
+
+      </div>
+    `;
+  }
+
+  box.innerHTML=html;
+}
+
+
+/* =========================================================
+   RENDER SPECIFICATIONS
+========================================================= */
+
+function renderSpecifications(data){
+
+  const box=
+    document.getElementById(
+      "specificationContent"
+    );
+
+  if(!box) return;
+
+  let raw=v(
+    data,
+    [
+      "all_details",
+      "allDetails",
+      "specifications",
+      "specs",
+      "details"
+    ],
+    null
+  );
+
+  const groups=
+    normalizeDetailGroups(raw);
+
+  if(!groups.length){
+
+    box.innerHTML=
+      "<div style='color:#777;font-size:13px;padding:5px 0'>No specifications available.</div>";
+
+    return;
+  }
+
+  let html="";
+
+  groups.forEach(group=>{
+
+    html+=`
+      <div class="detailGroup">
+
+        ${
+          group.title
+            ? `<h3 class="detailGroupTitle">
+                 ${escapeHtml(group.title)}
+               </h3>`
+            : ""
+        }
+
+        <div class="detailGrid">
+    `;
+
+    group.items.forEach(item=>{
+
+      html+=`
+        <div class="detailRow">
+
+          <div class="detailLabel">
+            ${escapeHtml(item.label)}
+          </div>
+
+          <div class="detailValue">
+            ${escapeHtml(item.value)}
+          </div>
+
+        </div>
+      `;
+
+    });
+
+    html+=`
+        </div>
+      </div>
+    `;
+
+  });
+
+  box.innerHTML=html;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+function renderFullDescription(data){
+
+  const box=
+    document.getElementById(
+      "fullDescription"
+    );
+
+  if(!box) return;
+
+  const text=
+    v(
+      data,
+      [
+        "description",
+        "long_description",
+        "longDescription",
+        "full_description",
+        "details"
+      ],
+      ""
+    );
+
+  box.textContent=
+    cleanPart(text) ||
+    "No description available.";
+}
+
+
+/* =========================================================
+   MANUFACTURER INFO
+========================================================= */
+
+function renderManufacturer(data){
+
+  const box=
+    document.getElementById(
+      "manufacturerContent"
+    );
+
+  if(!box) return;
+
+  let raw=v(
+    data,
+    [
+      "manufacturer_info",
+      "manufacturerInfo",
+      "manufacturer",
+      "brand_info",
+      "brandInfo"
+    ],
+    null
+  );
+
+  raw=parseJSON(raw,raw);
+
+  if(!raw){
+
+    box.innerHTML=
+      "<div style='color:#777;font-size:13px'>No manufacturer information available.</div>";
+
+    return;
+  }
+
+  let items=[];
+
+  if(
+    typeof raw==="object" &&
+    !Array.isArray(raw)
+  ){
+
+    items=
+      Object.entries(raw)
+        .map(([label,value])=>({
+          label,
+          value
+        }));
+
+  }else if(Array.isArray(raw)){
+
+    items=
+      raw.map(x=>({
+
+        label:
+          x.label ||
+          x.name ||
+          x.key ||
+          "",
+
+        value:
+          x.value ||
+          x.text ||
+          ""
+
+      }));
+
+  }
+
+  if(!items.length){
+
+    box.innerHTML=
+      "<div style='color:#777;font-size:13px'>No manufacturer information available.</div>";
+
+    return;
+  }
+
+  box.innerHTML=`
+
+    <div class="manufacturerBox">
+
+      ${items.map(item=>`
+
+        <div class="detailRow">
+
+          <div class="detailLabel">
+            ${escapeHtml(item.label)}
+          </div>
+
+          <div class="detailValue">
+            ${escapeHtml(item.value)}
+          </div>
+
+        </div>
+
+      `).join("")}
+
+    </div>
+
+  `;
+}
+
+
+/* =========================================================
+   SECTION OPEN / CLOSE
+========================================================= */
+
+function toggleSection(id){
+
+  const section=
+    document.getElementById(id);
+
+  if(!section) return;
+
+  section.classList.toggle("open");
+}
+
+
+/* =========================================================
+   DETAILS TABS
+========================================================= */
+
+function showDetailsTab(type,button){
+
+  document
+    .querySelectorAll(".detailsTab")
+    .forEach(x=>
+      x.classList.remove("active")
+    );
+
+  button.classList.add("active");
+
+  document
+    .querySelectorAll(".detailsPanel")
+    .forEach(x=>
+      x.classList.remove("active")
+    );
+
+  const target=
+    document.getElementById(
+      "panel"+
+      type.charAt(0).toUpperCase()+
+      type.slice(1)
+    );
+
+  if(target)
+    target.classList.add("active");
+}
+
+
+/* =========================================================
    LOAD PRODUCT
-===================================================== */
+========================================================= */
 
 async function load(){
 
-try{
+  try{
 
-if(!id())
-throw Error("Product ID missing");
+    if(!id())
+      throw Error("Product ID missing");
 
-const {data,error}=
-await supabaseClient
-.from("products")
-.select("*")
-.eq("id",id())
-.single();
+    const {data,error}=
+      await supabaseClient
+        .from("products")
+        .select("*")
+        .eq("id",id())
+        .single();
 
-if(error)throw error;
+    if(error)
+      throw error;
 
-let gallery=[];
+    let gallery=[];
 
-if(Array.isArray(data.images)){
+    if(Array.isArray(data.images))
+      gallery=data.images;
 
-gallery=data.images;
+    else if(
+      typeof data.images==="string"
+    ){
 
-}else if(
-typeof data.images==="string"
-){
+      try{
 
-try{
+        const parsed=
+          JSON.parse(data.images);
 
-const parsed=
-JSON.parse(data.images);
+        if(Array.isArray(parsed))
+          gallery=parsed;
 
-if(Array.isArray(parsed))
-gallery=parsed;
+      }catch{}
 
-}catch(e){}
+    }
 
+    gallery=
+      gallery
+        .map(x=>
+          typeof x==="string"
+            ? x
+            : (
+                x?.url ||
+                x?.src ||
+                x?.image ||
+                ""
+              )
+        )
+        .filter(Boolean);
+
+    const primary=
+      data.main_image ||
+      gallery[0] ||
+      v(
+        data,
+        [
+          "image",
+          "image_url",
+          "thumbnail",
+          "product_image"
+        ],
+        ""
+      );
+
+    const images=[
+      primary,
+      ...gallery.filter(
+        x=>x!==primary
+      )
+    ].filter(Boolean);
+
+
+    product={
+
+      id:data.id,
+
+      title:
+        v(
+          data,
+          [
+            "name",
+            "title",
+            "product_name"
+          ],
+          "Product"
+        ),
+
+      image:primary,
+
+      images:
+        images.length
+          ? images
+          : [""],
+
+      price:
+        num(
+          v(
+            data,
+            [
+              "price",
+              "selling_price",
+              "sale_price"
+            ],
+            149
+          )
+        ) || 149,
+
+      mrp:
+        num(
+          v(
+            data,
+            [
+              "mrp",
+              "original_price",
+              "old_price"
+            ],
+            999
+          )
+        ) || 999,
+
+      description:
+        v(
+          data,
+          [
+            "description",
+            "short_description",
+            "details"
+          ],
+          "Premium quality product."
+        ),
+
+      rating:
+        v(
+          data,
+          [
+            "rating",
+            "avg_rating"
+          ],
+          4.5
+        ),
+
+      reviews:
+        v(
+          data,
+          [
+            "review_count",
+            "reviews"
+          ],
+          128
+        ),
+
+      stock:
+        Number(
+          v(
+            data,
+            [
+              "stock",
+              "inventory",
+              "available_stock"
+            ],
+            50
+          )
+        ),
+
+      badge:
+        v(
+          data,
+          [
+            "badge",
+            "label"
+          ],
+          "BESTSELLER"
+        ),
+
+      category:
+        v(
+          data,
+          [
+            "category",
+            "category_name"
+          ],
+          ""
+        ),
+
+      customize_enabled:
+        Boolean(
+          data.customize_enabled
+        ),
+
+      return_enabled:
+        data.return_enabled===undefined
+          ? true
+          : Boolean(data.return_enabled),
+
+      return_days:
+        Number(data.return_days)||10,
+
+      cod_enabled:
+        data.cod_enabled===undefined
+          ? true
+          : Boolean(data.cod_enabled),
+
+      assured_enabled:
+        data.assured_enabled===undefined
+          ? true
+          : Boolean(data.assured_enabled),
+
+      raw:data
+
+    };
+
+    render();
+
+  }catch(e){
+
+    console.error(e);
+
+    document.getElementById(
+      "loading"
+    ).innerHTML=`
+
+      <div style="text-align:center">
+
+        <h2>Product not found</h2>
+
+        <p>${escapeHtml(e.message)}</p>
+
+      </div>
+
+    `;
+
+  }
 }
 
-gallery=
-gallery
-.map(x=>
-typeof x==="string"
-?x
-:(x?.url||
-x?.src||
-x?.image||
-"")
-)
-.filter(Boolean);
 
-const primary=
-data.main_image||
-gallery[0]||
-v(
-data,
-[
-"image",
-"image_url",
-"thumbnail",
-"product_image"
-],
-""
-);
-
-const images=[
-primary,
-...gallery.filter(x=>x!==primary)
-].filter(Boolean);
-
-product={
-
-id:data.id,
-
-title:v(
-data,
-["name","title","product_name"],
-"Product"
-),
-
-image:primary,
-
-images:
-images.length?
-images:
-[""],
-
-price:
-num(
-v(
-data,
-[
-"price",
-"selling_price",
-"sale_price"
-],
-149
-)
-)||149,
-
-mrp:
-num(
-v(
-data,
-[
-"mrp",
-"original_price",
-"old_price"
-],
-999
-)
-)||999,
-
-description:
-v(
-data,
-[
-"description",
-"short_description"
-],
-""
-),
-
-rating:
-v(
-data,
-[
-"rating",
-"avg_rating"
-],
-4.5
-),
-
-reviews:
-v(
-data,
-[
-"review_count",
-"reviews"
-],
-128
-),
-
-stock:
-Number(
-v(
-data,
-[
-"stock",
-"inventory",
-"available_stock"
-],
-50
-)
-),
-
-badge:
-v(
-data,
-[
-"badge",
-"label"
-],
-"BESTSELLER"
-),
-
-category:
-v(
-data,
-[
-"category",
-"category_name"
-],
-""
-),
-
-customize_enabled:
-Boolean(data.customize_enabled),
-
-return_enabled:
-data.return_enabled===undefined
-?true
-:Boolean(data.return_enabled),
-
-return_days:
-Number(data.return_days)||10,
-
-cod_enabled:
-data.cod_enabled===undefined
-?true
-:Boolean(data.cod_enabled),
-
-assured_enabled:
-data.assured_enabled===undefined
-?true
-:Boolean(data.assured_enabled),
-
-raw:data
-
-};
-
-render();
-
-}catch(e){
-
-console.error(e);
-
-document.getElementById("loading").innerHTML=`
-
-<div style="text-align:center">
-
-<h2>Product not found</h2>
-
-<p>${escapeHtml(e.message)}</p>
-
-</div>
-
-`;
-
-}
-
-}
-
-
-/* =====================================================
+/* =========================================================
    RENDER
-===================================================== */
+========================================================= */
 
 function render(){
 
-renderDeliveryDetails();
+  renderDeliveryDetails();
 
-document.getElementById(
-"loading"
-).style.display="none";
+  document.getElementById(
+    "loading"
+  ).style.display="none";
 
-document.getElementById(
-"product"
-).style.display="block";
-
-
-document.getElementById("title")
-.textContent=product.title;
-
-document.getElementById("price")
-.textContent=money(product.price);
-
-document.getElementById("buyPrice")
-.textContent=money(product.price);
-
-document.getElementById("mrp")
-.textContent=
-product.mrp?
-money(product.mrp):
-"";
-
-document.getElementById("off")
-.textContent=
-product.mrp>product.price
-?
-Math.max(
-0,
-Math.round(
-(1-product.price/product.mrp)*100
-)
-)+"% OFF"
-:"";
-
-document.getElementById("description")
-.textContent=product.description;
-
-document.getElementById("rating")
-.textContent="★ "+product.rating;
-
-document.getElementById("reviews")
-.textContent=
-product.reviews+" reviews";
-
-document.getElementById("tag")
-.textContent=product.badge;
-
-document.getElementById("badge")
-.textContent=product.badge;
-
-document.getElementById("stock")
-.textContent=
-product.stock>0
-?
-"✓ In Stock ("+
-product.stock+
-" available)"
-:
-"✕ Out of Stock";
+  document.getElementById(
+    "product"
+  ).style.display="block";
 
 
-/* CUSTOMIZE */
+  document.getElementById(
+    "title"
+  ).textContent=product.title;
 
-const customizeWrap=
-document.getElementById(
-"customizeWrap"
-);
+  document.getElementById(
+    "price"
+  ).textContent=money(product.price);
 
-if(customizeWrap){
+  document.getElementById(
+    "buyPrice"
+  ).textContent=money(product.price);
 
-customizeWrap.style.display=
-product.customize_enabled?
-"flex":
-"none";
+  document.getElementById(
+    "mrp"
+  ).textContent=
+    product.mrp
+      ? money(product.mrp)
+      : "";
 
-if(!product.customize_enabled){
+  document.getElementById(
+    "off"
+  ).textContent=
+    product.mrp>product.price
+      ? Math.max(
+          0,
+          Math.round(
+            (1-product.price/product.mrp)*100
+          )
+        )+"% OFF"
+      : "";
 
-document.getElementById(
-"customizeInput"
-).value="";
+  document.getElementById(
+    "description"
+  ).textContent=
+    product.description;
 
+  document.getElementById(
+    "rating"
+  ).textContent=
+    "★ "+product.rating;
+
+  document.getElementById(
+    "reviews"
+  ).textContent=
+    product.reviews+" reviews";
+
+  document.getElementById(
+    "tag"
+  ).textContent=
+    product.badge;
+
+  document.getElementById(
+    "badge"
+  ).textContent=
+    product.badge;
+
+  document.getElementById(
+    "stock"
+  ).textContent=
+    product.stock>0
+      ? "✓ In Stock ("+
+        product.stock+
+        " available)"
+      : "✕ Out of Stock";
+
+
+  /* customize */
+
+  const customizeWrap=
+    document.getElementById(
+      "customizeWrap"
+    );
+
+  if(customizeWrap){
+
+    customizeWrap.style.display=
+      product.customize_enabled
+        ? "flex"
+        : "none";
+
+    if(!product.customize_enabled)
+      document.getElementById(
+        "customizeInput"
+      ).value="";
+  }
+
+
+  /* feature boxes */
+
+  const features=
+    document.getElementById(
+      "features"
+    );
+
+  if(features){
+
+    const returnText=
+      product.return_enabled
+        ? product.return_days+"-Day Return"
+        : "No Return";
+
+    features.innerHTML=
+
+      `<div class="feature">
+
+        <div class="featureIcon">
+
+          <svg viewBox="0 0 24 24"
+          fill="none"
+          stroke-width="1.8">
+
+            <path d="M3 12a9 9 0 1 0 3-6.7"/>
+            <path d="M3 4v6h6"/>
+
+            <path d="M12 7v5l3 2"/>
+
+          </svg>
+
+        </div>
+
+        <b>${returnText}</b>
+
+      </div>`+
+
+      (
+        product.cod_enabled
+          ? `<div class="feature">
+
+              <div class="featureIcon">
+
+                <svg viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="1.8">
+
+                  <rect x="3" y="6"
+                  width="18"
+                  height="12"
+                  rx="2"/>
+
+                  <path d="M7 12h5M16 10v4"/>
+
+                </svg>
+
+              </div>
+
+              <b>Cash on Delivery</b>
+
+            </div>`
+          : ""
+      )+
+
+      (
+        product.assured_enabled
+          ? `<div class="feature">
+
+              <div class="featureIcon">
+
+                <svg viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="1.8">
+
+                  <path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/>
+
+                  <path d="m8.5 12 2.2 2.2 4.8-5"/>
+
+                </svg>
+
+              </div>
+
+              <b>Trikunt Assured</b>
+
+            </div>`
+          : ""
+      );
+
+    const count=
+      1+
+      (product.cod_enabled?1:0)+
+      (product.assured_enabled?1:0);
+
+    features.style.gridTemplateColumns=
+      "repeat("+count+",1fr)";
+  }
+
+
+  /* images */
+
+  currentIndex=0;
+
+  const slider=
+    document.getElementById(
+      "slider"
+    );
+
+  slider.innerHTML=
+    product.images
+      .map(
+        (url,i)=>`
+
+          <div class="slide">
+
+            <img
+              src="${escapeHtml(url)}"
+              alt="${escapeHtml(product.title)}"
+              loading="${i===0?'eager':'lazy'}"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+            >
+
+            <div class="imgFallback">
+              Image unavailable
+            </div>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+  slider.scrollLeft=0;
+
+  slider.removeEventListener(
+    "scroll",
+    onSliderScroll
+  );
+
+  slider.addEventListener(
+    "scroll",
+    onSliderScroll,
+    {passive:true}
+  );
+
+
+  const dots=
+    document.getElementById(
+      "dots"
+    );
+
+  const multi=
+    product.images.length>1;
+
+  dots.innerHTML=
+    multi
+      ? product.images.map(
+          (_,i)=>`
+
+            <button
+              type="button"
+              class="dot ${
+                i===0
+                  ? "active"
+                  : ""
+              }"
+              onclick="goToImage(${i})"
+              aria-label="Go to image ${i+1}">
+            </button>
+
+          `
+        ).join("")
+      : "";
+
+  dots.style.display=
+    multi
+      ? "flex"
+      : "none";
+
+  document
+    .querySelectorAll(".navBtn")
+    .forEach(
+      b=>
+        b.style.display=
+          multi
+            ? ""
+            : "none"
+    );
+
+  updateNavState();
+
+
+  /* =====================================================
+     NEW HIGHLIGHTS + ALL DETAILS
+  ===================================================== */
+
+  renderHighlights(product.raw);
+
+  renderSpecifications(product.raw);
+
+  renderFullDescription(product.raw);
+
+  renderManufacturer(product.raw);
+
+
+  /* keep both sections collapsed initially */
+
+  document
+    .getElementById("highlightsSection")
+    .classList.remove("open");
+
+  document
+    .getElementById("allDetailsSection")
+    .classList.remove("open");
+
+
+  updateCart();
 }
 
-}
 
-
-/* FEATURES */
-
-const features=
-document.getElementById(
-"features"
-);
-
-if(features){
-
-const returnText=
-product.return_enabled
-?
-product.return_days+"-Day Return"
-:
-"No Return";
-
-features.innerHTML=
-
-`
-<div class="feature">
-
-<div class="featureIcon">
-
-<svg viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-stroke-width="1.8">
-
-<path d="M3 12a9 9 0 1 0 3-6.7"/>
-<path d="M3 4v6h6"/>
-
-</svg>
-
-</div>
-
-<b>${returnText}</b>
-
-</div>
-`
-
-+
-
-(
-product.cod_enabled
-?
-`
-<div class="feature">
-
-<div class="featureIcon">
-
-<svg viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-stroke-width="1.8">
-
-<rect x="3" y="6"
-width="18"
-height="12"
-rx="2"/>
-
-<path d="M7 12h5M16 10v4"/>
-
-</svg>
-
-</div>
-
-<b>Cash on Delivery</b>
-
-</div>
-`
-:""
-)
-
-+
-
-(
-product.assured_enabled
-?
-`
-<div class="feature">
-
-<div class="featureIcon">
-
-<svg viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-stroke-width="1.8">
-
-<path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/>
-
-<path d="m8.5 12 2.2 2.2 4.8-5"/>
-
-</svg>
-
-</div>
-
-<b>Trikunt Assured</b>
-
-</div>
-`
-:"");
-
-const count=
-1+
-(product.cod_enabled?1:0)+
-(product.assured_enabled?1:0);
-
-features.style.gridTemplateColumns=
-"repeat("+count+",1fr)";
-
-}
-
-
-/* HIGHLIGHTS + ALL DETAILS */
-
-renderHighlights();
-
-renderAllDetails();
-
-
-/* IMAGE SLIDER */
-
-currentIndex=0;
-
-const slider=
-document.getElementById("slider");
-
-slider.innerHTML=
-product.images
-.map((url,i)=>`
-
-<div class="slide">
-
-<img
-src="${escapeHtml(url)}"
-alt="${escapeHtml(product.title)}"
-loading="${i===0?"eager":"lazy"}"
-onerror="
-this.style.display='none';
-this.nextElementSibling.style.display='flex'
-">
-
-<div class="imgFallback">
-Image unavailable
-</div>
-
-</div>
-
-`)
-.join("");
-
-slider.scrollLeft=0;
-
-slider.removeEventListener(
-"scroll",
-onSliderScroll
-);
-
-slider.addEventListener(
-"scroll",
-onSliderScroll,
-{passive:true}
-);
-
-
-const dots=
-document.getElementById("dots");
-
-const multi=
-product.images.length>1;
-
-dots.innerHTML=
-multi
-?
-product.images.map(
-(_,i)=>`
-
-<button
-type="button"
-class="dot ${i===0?"active":""}"
-onclick="goToImage(${i})">
-</button>
-
-`
-).join("")
-:"";
-
-dots.style.display=
-multi?"flex":"none";
-
-document
-.querySelectorAll(".navBtn")
-.forEach(
-b=>b.style.display=
-multi?"":"none"
-);
-
-updateNavState();
-
-updateCart();
-
-}
-
-
-/* =====================================================
-   SLIDER
-===================================================== */
+/* =========================================================
+   IMAGE SLIDER
+========================================================= */
 
 function onSliderScroll(){
 
-const slider=
-document.getElementById("slider");
+  const slider=
+    document.getElementById(
+      "slider"
+    );
 
-const w=
-slider.clientWidth||1;
+  const w=
+    slider.clientWidth||1;
 
-const idx=
-Math.round(
-slider.scrollLeft/w
-);
+  const idx=
+    Math.round(
+      slider.scrollLeft/w
+    );
 
-if(idx!==currentIndex){
+  if(idx!==currentIndex){
 
-currentIndex=idx;
+    currentIndex=idx;
 
-product.image=
-product.images[currentIndex]||
-product.image;
+    product.image=
+      product.images[currentIndex] ||
+      product.image;
 
-updateDots();
-
-updateNavState();
-
-}
-
+    updateDots();
+    updateNavState();
+  }
 }
 
 function updateDots(){
 
-document
-.querySelectorAll("#dots .dot")
-.forEach(
-(d,i)=>
-d.classList.toggle(
-"active",
-i===currentIndex
-)
-);
-
+  document
+    .querySelectorAll(
+      "#dots .dot"
+    )
+    .forEach(
+      (d,i)=>
+        d.classList.toggle(
+          "active",
+          i===currentIndex
+        )
+    );
 }
 
 function updateNavState(){
 
-const prev=
-document.querySelector(".prevBtn");
+  const prev=
+    document.querySelector(
+      ".prevBtn"
+    );
 
-const next=
-document.querySelector(".nextBtn");
+  const next=
+    document.querySelector(
+      ".nextBtn"
+    );
 
-if(!prev||!next||!product)return;
+  if(
+    !prev ||
+    !next ||
+    !product
+  )
+    return;
 
-prev.disabled=
-currentIndex<=0;
+  prev.disabled=
+    currentIndex<=0;
 
-next.disabled=
-currentIndex>=
-product.images.length-1;
-
+  next.disabled=
+    currentIndex>=
+    product.images.length-1;
 }
 
 function goToImage(i){
 
-const slider=
-document.getElementById("slider");
+  const slider=
+    document.getElementById(
+      "slider"
+    );
 
-currentIndex=
-Math.max(
-0,
-Math.min(
-product.images.length-1,
-i
-)
-);
+  currentIndex=
+    Math.max(
+      0,
+      Math.min(
+        product.images.length-1,
+        i
+      )
+    );
 
-product.image=
-product.images[currentIndex]||
-product.image;
+  product.image=
+    product.images[currentIndex] ||
+    product.image;
 
-slider.scrollTo({
-left:
-currentIndex*
-slider.clientWidth,
-behavior:"smooth"
-});
+  slider.scrollTo({
+    left:
+      currentIndex*
+      slider.clientWidth,
+    behavior:"smooth"
+  });
 
-updateDots();
-
-updateNavState();
-
+  updateDots();
+  updateNavState();
 }
 
 function prevImage(){
-goToImage(currentIndex-1)
+  goToImage(
+    currentIndex-1
+  );
 }
 
 function nextImage(){
-goToImage(currentIndex+1)
+  goToImage(
+    currentIndex+1
+  );
 }
 
 
-/* =====================================================
+/* =========================================================
    QUANTITY
-   BUY PRICE NEVER MULTIPLIES
-===================================================== */
+   BUY PRICE UNIT PRICE HI RAHEGA
+========================================================= */
 
 function changeQty(n){
 
-qty=
-Math.max(
-1,
-Math.min(
-product.stock||99,
-qty+n
-)
-);
+  qty=
+    Math.max(
+      1,
+      Math.min(
+        product.stock||99,
+        qty+n
+      )
+    );
 
-document.getElementById(
-"qty"
-).textContent=qty;
+  document.getElementById(
+    "qty"
+  ).textContent=qty;
 
-/* IMPORTANT:
-   Unit price only
-*/
-
-document.getElementById(
-"buyPrice"
-).textContent=
-money(product.price);
-
+  document.getElementById(
+    "buyPrice"
+  ).textContent=
+    money(product.price);
 }
 
 
-/* =====================================================
-   CART
-===================================================== */
+/* =========================================================
+   USER
+========================================================= */
 
 async function getUser(){
 
-const {data}=
-await supabaseClient.auth.getSession();
+  const {data}=
+    await supabaseClient
+      .auth
+      .getSession();
 
-return data.session?.user||null;
-
+  return data.session?.user||null;
 }
+
+
+/* =========================================================
+   ADD TO CART
+========================================================= */
 
 async function addToCart(){
 
-if(!product)return;
+  if(!product) return;
 
-const user=
-await getUser();
+  const user=
+    await getUser();
 
-if(!user){
+  if(!user){
 
-toast("Please login first");
+    toast("Please login first");
 
-setTimeout(
-()=>location.href="/ecom/account.html",
-800
-);
+    setTimeout(
+      ()=>
+        location.href=
+          "/ecom/account.html",
+      800
+    );
 
-return;
+    return;
+  }
 
+  const {
+    data:old,
+    error:readError
+  }=
+    await supabaseClient
+      .from("cart_items")
+      .select("id,qty")
+      .eq("user_id",user.id)
+      .eq("product_id",product.id)
+      .maybeSingle();
+
+  if(readError){
+
+    toast(readError.message);
+
+    return;
+  }
+
+  const newQty=
+    (old?.qty||0)+qty;
+
+  const customizeInput=
+    document.getElementById(
+      "customizeInput"
+    );
+
+  const customizeText=
+    product.customize_enabled
+      ? (
+          customizeInput?.value||""
+        ).trim()
+      : "";
+
+  const row={
+
+    user_id:user.id,
+
+    product_id:product.id,
+
+    title:product.title,
+
+    image:product.image,
+
+    price:product.price,
+
+    mrp:product.mrp,
+
+    qty:newQty,
+
+    customize_text:
+      customizeText,
+
+    updated_at:
+      new Date().toISOString()
+  };
+
+  const {error}=
+    await supabaseClient
+      .from("cart_items")
+      .upsert(
+        row,
+        {
+          onConflict:
+            "user_id,product_id"
+        }
+      );
+
+  if(error){
+
+    toast(error.message);
+
+    return;
+  }
+
+  updateCart();
+
+  toast("✓ Added to Cart");
 }
 
-const {data:old,error:readError}=
-await supabaseClient
-.from("cart_items")
-.select("id,qty")
-.eq("user_id",user.id)
-.eq("product_id",product.id)
-.maybeSingle();
 
-if(readError){
-
-toast(readError.message);
-return;
-
-}
-
-const newQty=
-(old?.qty||0)+qty;
-
-const customizeInput=
-document.getElementById(
-"customizeInput"
-);
-
-const customizeText=
-product.customize_enabled
-?
-(customizeInput?.value||"").trim()
-:"";
-
-const row={
-
-user_id:user.id,
-
-product_id:product.id,
-
-title:product.title,
-
-image:product.image,
-
-price:product.price,
-
-mrp:product.mrp,
-
-qty:newQty,
-
-customize_text:customizeText,
-
-updated_at:
-new Date().toISOString()
-
-};
-
-const {error}=
-await supabaseClient
-.from("cart_items")
-.upsert(
-row,
-{
-onConflict:
-"user_id,product_id"
-}
-);
-
-if(error){
-
-toast(error.message);
-return;
-
-}
-
-updateCart();
-
-toast("✓ Added to Cart");
-
-}
-
-
-/* =====================================================
+/* =========================================================
    CART BADGE
-===================================================== */
+========================================================= */
 
 async function updateCart(){
 
-const user=
-await getUser();
+  const user=
+    await getUser();
 
-if(!user)return;
+  if(!user){
 
-const {data,error}=
-await supabaseClient
-.from("cart_items")
-.select("qty")
-.eq("user_id",user.id);
+    const cartBadge=
+      document.getElementById(
+        "cartCount"
+      );
 
-if(error){
+    if(cartBadge)
+      cartBadge.textContent="0";
 
-console.error(error);
-return;
+    return;
+  }
 
+  const {
+    data,
+    error
+  }=
+    await supabaseClient
+      .from("cart_items")
+      .select("qty")
+      .eq("user_id",user.id);
+
+  if(error){
+
+    console.error(error);
+
+    return;
+  }
+
+  const cartBadge=
+    document.getElementById(
+      "cartCount"
+    );
+
+  if(cartBadge){
+
+    cartBadge.textContent=
+      (data||[])
+        .reduce(
+          (s,x)=>
+            s+
+            (Number(x.qty)||0),
+          0
+        );
+  }
 }
 
-const cartBadge=
-document.getElementById(
-"cartCount"
-);
 
-if(cartBadge){
-
-cartBadge.textContent=
-(data||[])
-.reduce(
-(s,x)=>
-s+
-(Number(x.qty)||0),
-0
-);
-
-}
-
-}
-
-
-/* =====================================================
+/* =========================================================
    BUY NOW
-===================================================== */
+========================================================= */
 
 async function buyNow(){
 
-if(!product)return;
+  if(!product) return;
 
-const user=
-await getUser();
+  const user=
+    await getUser();
 
-if(!user){
+  if(!user){
 
-toast("Please login first");
+    toast("Please login first");
 
-setTimeout(
-()=>location.href="/ecom/account.html",
-800
-);
+    setTimeout(
+      ()=>
+        location.href=
+          "/ecom/account.html",
+      800
+    );
 
-return;
+    return;
+  }
 
-}
+  const customizeInput=
+    document.getElementById(
+      "customizeInput"
+    );
 
-const customizeInput=
-document.getElementById(
-"customizeInput"
-);
+  const customizeText=
+    product.customize_enabled
+      ? (
+          customizeInput?.value||""
+        ).trim()
+      : "";
 
-const customizeText=
-product.customize_enabled
-?
-(customizeInput?.value||"").trim()
-:"";
+  sessionStorage.setItem(
+    "checkoutItems",
+    JSON.stringify([
+      {
+        id:product.id,
+        title:product.title,
+        image:product.image,
+        price:product.price,
+        mrp:product.mrp,
+        qty:qty,
+        product_id:product.id,
+        customize_text:
+          customizeText
+      }
+    ])
+  );
 
-sessionStorage.setItem(
-"checkoutItems",
-JSON.stringify([{
-
-id:product.id,
-
-title:product.title,
-
-image:product.image,
-
-price:product.price,
-
-mrp:product.mrp,
-
-qty:qty,
-
-product_id:product.id,
-
-customize_text:
-customizeText
-
-}])
-);
-
-location.href=
-"/ecom/checkout.html?mode=buy";
-
+  location.href=
+    "/ecom/checkout.html?mode=buy";
 }
 
 
-/* =====================================================
-   RESIZE
-===================================================== */
+/* =========================================================
+   WINDOW EVENTS
+========================================================= */
 
 window.addEventListener(
-"resize",
-()=>{
-if(product)
-goToImage(currentIndex);
-}
+  "resize",
+  ()=>{
+    if(product)
+      goToImage(currentIndex);
+  }
 );
 
 window.addEventListener(
-"storage",
-()=>renderDeliveryDetails()
+  "storage",
+  ()=>{
+    renderDeliveryDetails();
+  }
 );
 
 window.addEventListener(
-"focus",
-()=>renderDeliveryDetails()
+  "focus",
+  ()=>{
+    renderDeliveryDetails();
+  }
 );
 
 
-/* START */
+/* =========================================================
+   START
+========================================================= */
 
 load();
 
