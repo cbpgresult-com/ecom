@@ -2290,11 +2290,7 @@ async function loadProducts(){
     } =
       await sb
         .from("products")
-        .select("*")
-        .order(
-          "created_at",
-          {ascending:false}
-        );
+        .select("*");
 
 
     if(error)
@@ -2302,7 +2298,17 @@ async function loadProducts(){
 
 
     products =
-      data || [];
+      (data || []).sort((a, b) => {
+        const ta = new Date(
+          a.updated_at || a.created_at || 0
+        ).getTime();
+
+        const tb = new Date(
+          b.updated_at || b.created_at || 0
+        ).getTime();
+
+        return tb - ta;
+      });
 
 
     stats();
@@ -2413,20 +2419,15 @@ function productTimeInfo(p){
       : NaN;
 
   /*
-    New:
-      created_at exists and updated_at is missing,
-      or both are effectively the same timestamp.
+    New product:
+      created_at exists and there is no real updated_at.
 
-    Updated:
-      updated_at is genuinely later than created_at.
+    Updated product:
+      updated_at exists. It is intentionally treated as the
+      current edit timestamp even when the admin manually changes
+      it to an earlier date/time than created_at.
   */
-  if(
-    Number.isFinite(updated) &&
-    (
-      !Number.isFinite(created) ||
-      updated > created + 1000
-    )
-  ){
+  if(Number.isFinite(updated)){
     return {
       label:"Updated",
       value:productDateTime(p.updated_at)
@@ -2435,9 +2436,7 @@ function productTimeInfo(p){
 
   return {
     label:"New",
-    value:productDateTime(
-      p.created_at || p.updated_at
-    )
+    value:productDateTime(p.created_at)
   };
 }
 
@@ -4241,6 +4240,24 @@ async function save(e){
       if(error)
         throw error;
 
+      const { data: savedProduct, error: fetchUpdatedError } =
+        await sb
+          .from("products")
+          .select("*")
+          .eq("id", editing.id)
+          .single();
+
+      if(fetchUpdatedError)
+        throw fetchUpdatedError;
+
+      if(savedProduct){
+        const index = products.findIndex(
+          x => Number(x.id) === Number(editing.id)
+        );
+
+        if(index !== -1)
+          products[index] = savedProduct;
+      }
 
       toast(
         "✓ Product updated"
