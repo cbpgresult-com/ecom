@@ -1635,9 +1635,15 @@ function createProductCard(product){
 
       if(!product.id) return;
 
+      const startedAt =
+        productNavigationStartedAt ||
+        Date.now();
+
       window.location.href =
         "product.html?id=" +
-        encodeURIComponent(product.id);
+        encodeURIComponent(product.id) +
+        "&navt=" +
+        encodeURIComponent(startedAt);
 
     }
   );
@@ -1849,6 +1855,22 @@ function goAccount(){
 
 
 
+let productNavigationStartedAt = 0;
+
+function showIndexProductLoader(){
+
+  const loader =
+    document.getElementById("indexProductLoading");
+
+  if(!loader) return;
+
+  productNavigationStartedAt = Date.now();
+
+  loader.classList.add("show");
+  loader.setAttribute("aria-hidden","false");
+
+}
+
 /* =========================================================
    PRODUCT CARD LOADER — POINTERDOWN
    pointerdown fires before click, allowing the loader to paint
@@ -1872,11 +1894,7 @@ document.addEventListener(
 
     if(!loader) return;
 
-    loader.classList.add("show");
-    loader.setAttribute(
-      "aria-hidden",
-      "false"
-    );
+    showIndexProductLoader();
 
   },
   true
