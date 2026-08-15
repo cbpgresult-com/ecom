@@ -233,13 +233,7 @@ a{text-decoration:none;color:inherit}
 .pricebox{
   margin-top:24px;
   padding-bottom:20px;
-}
-
-.priceRow{
-  display:flex;
-  align-items:baseline;
-  flex-wrap:wrap;
-  gap:9px;
+  border-bottom:1px solid #eee;
 }
 
 .price{
@@ -251,26 +245,14 @@ a{text-decoration:none;color:inherit}
 .mrp{
   text-decoration:line-through;
   color:#888;
-  font-size:17px;
-  font-weight:500;
-}
-
-.offBadge{
-  display:inline-flex;
-  align-items:center;
-  width:max-content;
-  margin-top:10px;
-  padding:5px 9px;
-  border-radius:5px;
-  background:#e8f8ee;
-  color:#15803d;
-  font-size:12px;
-  font-weight:800;
-  line-height:1.2;
+  font-size:14px;
 }
 
 .off{
-  display:none;
+  color:#15803d;
+  font-weight:800;
+  font-size:13px;
+  margin-left:8px;
 }
 
 .desc{
@@ -864,171 +846,9 @@ a{text-decoration:none;color:inherit}
   transform:translate(-50%,0);
 }
 
-
-/* =========================================================
-   MOBILE STORE HEADER + REAL PAGE LOADER
-========================================================= */
-.mobileHeader{
-  display:none;
-}
-
-#pageLoader{
-  display:none;
-}
-
-@media(max-width:900px){
-  body{
-    padding-top:58px;
-  }
-
-  .mobileHeader{
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    height:58px;
-    z-index:1000;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:7px 12px;
-    background:#fff;
-    border-bottom:1px solid #e5e7eb;
-    box-shadow:0 1px 4px rgba(0,0,0,.06);
-  }
-
-  .mobileHeaderBtn{
-    width:38px;
-    height:42px;
-    min-width:38px;
-    border:0;
-    background:transparent;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0;
-    color:#111;
-  }
-
-  .mobileHeaderBtn svg{
-    width:25px;
-    height:25px;
-    stroke:currentColor;
-  }
-
-  .mobileSearch{
-    flex:1;
-    min-width:0;
-    height:44px;
-    border:2px solid #2874d0;
-    border-radius:12px;
-    background:#fff;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:0 11px;
-  }
-
-  .mobileSearch svg{
-    width:21px;
-    height:21px;
-    min-width:21px;
-    stroke:#111;
-  }
-
-  .mobileSearch input{
-    width:100%;
-    min-width:0;
-    border:0;
-    outline:0;
-    background:transparent;
-    color:#222;
-    font-size:14px;
-    font-weight:500;
-    padding:0;
-  }
-
-  .mobileSearch input::placeholder{
-    color:#777;
-  }
-
-  .mobileHeaderCart{
-    position:relative;
-  }
-
-  .mobileCartBadge{
-    position:absolute;
-    top:1px;
-    right:0;
-    min-width:17px;
-    height:17px;
-    padding:0 4px;
-    border-radius:10px;
-    background:#e53935;
-    color:#fff;
-    font-size:9px;
-    font-weight:800;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    line-height:1;
-  }
-
-  .mobileHeader.loaded .loadingHeaderSearch{
-    display:none;
-  }
-
-  .mobileHeader:not(.loaded) .loadedHeaderSearch{
-    display:none;
-  }
-
-  #pageLoader{
-    position:fixed;
-    top:58px;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:999;
-    background:#f5f6f8;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  #pageLoader.hidden{
-    display:none;
-  }
-
-  .pageLoaderSpinner{
-    width:48px;
-    height:48px;
-    border:4px solid #d7dce3;
-    border-top-color:#2874d0;
-    border-radius:50%;
-    animation:pageSpin .8s linear infinite;
-  }
-
-  @keyframes pageSpin{
-    to{transform:rotate(360deg)}
-  }
-
-  body.page-loading .page{
-    visibility:hidden;
-  }
-
-  body.page-loaded .page{
-    visibility:visible;
-  }
-}
-
 /* ================= MOBILE ================= */
 
 @media(max-width:900px){
-
-  body{
-    width:100%;
-    overflow-x:hidden;
-  }
 
   #customizeWrap{
     margin-left:0!important;
@@ -1163,17 +983,11 @@ a{text-decoration:none;color:inherit}
   }
 
   .page{
-    width:100%;
-    margin:0;
-    padding:0 0 90px;
+    padding:12px 9px 90px;
   }
 
   .product{
-    width:100%;
-    margin:0;
-    border-radius:0;
-    border-left:0;
-    border-right:0;
+    border-radius:17px;
   }
 
   .grid{
@@ -1202,8 +1016,7 @@ a{text-decoration:none;color:inherit}
     grid-column:auto;
     grid-row:auto;
     width:100%;
-    padding:0 16px 28px;
-    box-sizing:border-box;
+    padding:0;
   }
 
   .main{
@@ -1237,13 +1050,11 @@ a{text-decoration:none;color:inherit}
   }
 
   .mrp{
-    font-size:15px;
+    font-size:12px;
   }
 
-  .offBadge{
-    font-size:11px;
-    margin-top:9px;
-    padding:5px 8px;
+  .off{
+    font-size:12px;
   }
 
   .rate{
@@ -1391,59 +1202,194 @@ a{text-decoration:none;color:inherit}
     font-size:12px;
   }
 }
+
+/* ================= MOBILE PRODUCT LOADER HEADER ================= */
+.mobileProductLoader{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  background:#f5f6f8;
+  display:none;
+  flex-direction:column;
+}
+.mobileProductLoaderHeader{
+  height:76px;
+  flex:0 0 76px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  padding:0 16px;
+  gap:14px;
+}
+.mobileLoaderBack{
+  width:32px;
+  height:32px;
+  border:0;
+  background:transparent;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.mobileLoaderBack svg{
+  width:27px;
+  height:27px;
+  stroke:#111;
+}
+.mobileLoaderLogo{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:20px;
+  font-weight:800;
+  color:#2874f0;
+  white-space:nowrap;
+}
+.mobileLoaderLogoIcon{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#2874f0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.mobileLoaderLogoIcon svg{
+  width:21px;
+  height:21px;
+  stroke:#fff;
+}
+.mobileLoaderSpacer{flex:1}
+.mobileLoaderAction{
+  width:36px;
+  height:36px;
+  border:0;
+  background:transparent;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.mobileLoaderAction svg{
+  width:25px;
+  height:25px;
+  stroke:#111;
+}
+.mobileLoaderCartBadge{
+  position:absolute;
+  top:-1px;
+  right:-1px;
+  min-width:16px;
+  height:16px;
+  padding:0 4px;
+  border-radius:10px;
+  background:#e53935;
+  color:#fff;
+  font-size:9px;
+  font-weight:800;
+  line-height:16px;
+  text-align:center;
+}
+.mobileLoaderCenter{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.mobileLoaderSpinner{
+  width:48px;
+  height:48px;
+  border:4px solid #dfe7f5;
+  border-top-color:#2874f0;
+  border-radius:50%;
+  animation:mobileProductSpin .75s linear infinite;
+}
+@keyframes mobileProductSpin{to{transform:rotate(360deg)}}
+@media(max-width:900px){
+  #loading{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:999998 !important;
+    min-height:100vh !important;
+    width:100vw !important;
+    border-radius:0 !important;
+    background:#f5f6f8 !important;
+    display:flex !important;
+    align-items:stretch !important;
+    justify-content:stretch !important;
+  }
+  .mobileProductLoader{display:flex;}
+  #loading > b{display:none !important;}
+}
+@media(min-width:901px){
+  .mobileProductLoader{display:none !important;}
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- =========================================================
-     MOBILE STORE HEADER
-========================================================= -->
-<header id="mobileHeader" class="mobileHeader" aria-label="Store navigation">
-
-  <button class="mobileHeaderBtn" type="button" onclick="goBack()" aria-label="Back">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-      <path d="M19 12H5"/>
-      <path d="m12 19-7-7 7-7"/>
-    </svg>
-  </button>
-
-  <button class="mobileHeaderBtn loadingHeaderSearch" type="button" onclick="openSearch()" aria-label="Search">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-      <circle cx="11" cy="11" r="7"/>
-      <path d="m20 20-4-4"/>
-    </svg>
-  </button>
-
-  <div class="mobileSearch loadedHeaderSearch">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-      <circle cx="11" cy="11" r="7"/>
-      <path d="m20 20-4-4"/>
-    </svg>
-    <input id="mobileSearchInput" type="search" autocomplete="off" placeholder="Search for products, brands and more">
-  </div>
-
-  <button class="mobileHeaderBtn mobileHeaderCart" type="button" onclick="openCart()" aria-label="Cart">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
-      <path d="M3 4h2l2.2 11h10.9l2-8H6"/>
-      <circle cx="9" cy="19" r="1.5"/>
-      <circle cx="18" cy="19" r="1.5"/>
-    </svg>
-    <span id="mobileCartCount" class="mobileCartBadge">0</span>
-  </button>
-
-</header>
-
-<!-- REAL LOADING SCREEN -->
-<div id="pageLoader" aria-live="polite" aria-label="Loading">
-  <div class="pageLoaderSpinner"></div>
-</div>
-
 <main class="page">
 
 <div id="loading"
 style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-items:center;justify-content:center">
-<b>Loading product...</b>
+
+  <div class="mobileProductLoader">
+
+    <div class="mobileProductLoaderHeader">
+
+      <button class="mobileLoaderBack" type="button"
+        onclick="history.length>1 ? history.back() : (window.location.href='index.html')"
+        aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+      </button>
+
+      <div class="mobileLoaderLogo" aria-label="MyStore">
+        <span class="mobileLoaderLogoIcon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
+            <path d="M4 9h16l-1 11H5L4 9Z"></path>
+            <path d="M7 9a5 5 0 0 1 10 0"></path>
+            <path d="M9 13h6"></path>
+          </svg>
+        </span>
+        <span>MyStore</span>
+      </div>
+
+      <div class="mobileLoaderSpacer"></div>
+
+      <button class="mobileLoaderAction" type="button"
+        onclick="window.location.href='index.html'" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-4-4"></path>
+        </svg>
+      </button>
+
+      <button class="mobileLoaderAction" type="button"
+        onclick="window.location.href='cart.html'" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
+          <path d="M3 4h2l2.2 11h10.9l2-8H6"></path>
+          <circle cx="9" cy="19" r="1.5"></circle>
+          <circle cx="18" cy="19" r="1.5"></circle>
+        </svg>
+        <span class="mobileLoaderCartBadge" id="mobileLoaderCartBadge">0</span>
+      </button>
+
+    </div>
+
+    <div class="mobileLoaderCenter">
+      <div class="mobileLoaderSpinner" aria-label="Loading"></div>
+    </div>
+
+  </div>
+
+  <b>Loading product...</b>
 </div>
 
 <section id="product" class="product">
@@ -1621,6 +1567,7 @@ class="detailsPanel">
 
 <div class="info">
 
+<span id="tag" class="tag">BESTSELLER</span>
 
 <h1 id="title" class="title"></h1>
 
@@ -1630,11 +1577,10 @@ class="detailsPanel">
 </div>
 
 <div class="pricebox">
-  <div class="priceRow">
-    <span id="price" class="price"></span>
-    <span id="mrp" class="mrp"></span>
-  </div>
-  <div id="offBadge" class="offBadge">35% OFF this order</div>
+<span id="price" class="price"></span>
+<br>
+<span id="mrp" class="mrp"></span>
+<span id="off" class="off"></span>
 </div>
 
 <div id="deliveryDetails" class="deliveryDetails">
@@ -2936,58 +2882,6 @@ function showDetailsTab(type,button){
 
 
 /* =========================================================
-   MOBILE HEADER / PAGE LOADING
-========================================================= */
-
-function goBack(){
-  if(history.length>1){
-    history.back();
-    return;
-  }
-  location.href="/ecom/index.html";
-}
-
-function openSearch(){
-  const input=document.getElementById("mobileSearchInput");
-  const header=document.getElementById("mobileHeader");
-
-  if(header && !header.classList.contains("loaded")){
-    location.href="/ecom/index.html";
-    return;
-  }
-
-  if(input){
-    input.focus();
-    input.select();
-  }
-}
-
-function openCart(){
-  /* Use the existing MyStore cart entry point when available. */
-  location.href="/ecom/index.html#cart";
-}
-
-function setMobileSearchTitle(title){
-  const input=document.getElementById("mobileSearchInput");
-  if(!input) return;
-
-  const text=String(title||"").trim();
-  input.value=text.length>34 ? text.slice(0,34)+"…" : text;
-}
-
-/* Start in the real loading state immediately. */
-document.body.classList.add("page-loading");
-
-
-document.addEventListener("keydown",function(e){
-  if(e.key!=="Enter") return;
-  const input=document.getElementById("mobileSearchInput");
-  if(!input || document.activeElement!==input) return;
-  const q=input.value.trim();
-  if(q) location.href="/ecom/index.html?search="+encodeURIComponent(q);
-});
-
-/* =========================================================
    LOAD PRODUCT
 ========================================================= */
 
@@ -3210,13 +3104,6 @@ async function load(){
 
     console.error(e);
 
-    document.body.classList.remove("page-loading");
-    document.body.classList.add("page-loaded");
-    const pageLoader=document.getElementById("pageLoader");
-    if(pageLoader) pageLoader.classList.add("hidden");
-    const mobileHeader=document.getElementById("mobileHeader");
-    if(mobileHeader) mobileHeader.classList.add("loaded");
-
     document.getElementById(
       "loading"
     ).innerHTML=`
@@ -3247,15 +3134,6 @@ function render(){
     "loading"
   ).style.display="none";
 
-  document.body.classList.remove("page-loading");
-  document.body.classList.add("page-loaded");
-
-  const pageLoader=document.getElementById("pageLoader");
-  if(pageLoader) pageLoader.classList.add("hidden");
-
-  const mobileHeader=document.getElementById("mobileHeader");
-  if(mobileHeader) mobileHeader.classList.add("loaded");
-
   document.getElementById(
     "product"
   ).style.display="block";
@@ -3264,8 +3142,6 @@ function render(){
   document.getElementById(
     "title"
   ).textContent=product.title;
-
-  setMobileSearchTitle(product.title);
 
   document.getElementById(
     "price"
@@ -3282,20 +3158,17 @@ function render(){
       ? money(product.mrp)
       : "";
 
-  /*
-    Order discount badge:
-    Keep this separate from MRP discount calculation.
-    The old 77% calculated discount is intentionally not shown.
-  */
-  const orderDiscount = 35;
-
-  const offBadge =
-    document.getElementById("offBadge");
-
-  if(offBadge){
-    offBadge.textContent =
-      orderDiscount + "% OFF this order";
-  }
+  document.getElementById(
+    "off"
+  ).textContent=
+    product.mrp>product.price
+      ? Math.max(
+          0,
+          Math.round(
+            (1-product.price/product.mrp)*100
+          )
+        )+"% OFF"
+      : "";
 
   document.getElementById(
     "description"
@@ -3311,6 +3184,11 @@ function render(){
     "reviews"
   ).textContent=
     product.reviews+" reviews";
+
+  document.getElementById(
+    "tag"
+  ).textContent=
+    product.badge;
 
   document.getElementById(
     "badge"
@@ -3872,9 +3750,6 @@ async function updateCart(){
     if(cartBadge)
       cartBadge.textContent="0";
 
-    const mobileBadge=document.getElementById("mobileCartCount");
-    if(mobileBadge) mobileBadge.textContent="0";
-
     return;
   }
 
@@ -3909,15 +3784,6 @@ async function updateCart(){
             (Number(x.qty)||0),
           0
         );
-  }
-
-  const mobileBadge=document.getElementById("mobileCartCount");
-  if(mobileBadge){
-    const total=(data||[]).reduce(
-      (s,x)=>s+(Number(x.qty)||0),
-      0
-    );
-    mobileBadge.textContent=total>99?"99+":String(total);
   }
 }
 
