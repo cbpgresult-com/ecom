@@ -2078,7 +2078,7 @@ body{padding:0 !important;margin:0 !important;}
      out_for_delivery_at, order_number, cancel_requested_at,
      processed_at, picked_up_at, courier_name,
      courier_tracking_id, hub_received_at, advance_status,
-     advance_amount, cod_due, advance_checked_at
+     advance_amount, advance_checked_at
   ========================================================= */
   window.ckPlaceOrder=async function(){
     var btn=el('ckFooterBtn');
@@ -2130,6 +2130,7 @@ body{padding:0 !important;margin:0 !important;}
         saved_addresses ki current selected address ko
         order ke saath snapshot ki tarah save kar rahe hain.
       */
+      /* District orders.address JSON ke andar snapshot hoga; separate orders.district column ki zarurat nahi. */
       var addressForOrder={
         id:selectedAddress.id || null,
         name:selectedAddress.name || '',
@@ -2161,7 +2162,7 @@ body{padding:0 !important;margin:0 !important;}
         payment_method:'cod',
         total_amount:lastTotal,
         status:'placed',
-        user_email:currentUser.email || '',
+        user_email:currentUser.email || ''
       };
 
       console.log('Creating order:',orderPayload);
