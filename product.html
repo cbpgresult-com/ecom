@@ -487,113 +487,114 @@ a{text-decoration:none;color:inherit}
 }
 
 /* =========================================================
-   PRODUCT HIGHLIGHTS
+   PRODUCT HIGHLIGHTS + ALL DETAILS
+   Flipkart-style clean accordion — no cards
 ========================================================= */
-.productExtra{
+
+.productExtra,
+.allDetails{
   margin-top:18px;
   background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:20px;
+  border:0;
+  border-top:1px solid #e6e6e6;
+  border-bottom:1px solid #e6e6e6;
+  border-radius:0;
   overflow:hidden;
-  box-shadow:0 8px 28px rgba(20,30,45,.055)
+  box-shadow:none
 }
 
-.extraHeader{
-  padding:20px 22px 15px;
-  border-bottom:1px solid #edf0f3;
+.extraAccordionHeader{
+  width:100%;
+  min-height:76px;
+  padding:14px 0;
+  border:0;
+  background:#fff;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:15px
+  gap:18px;
+  text-align:left;
+  color:#111;
+  -webkit-tap-highlight-color:transparent
 }
 
-.extraHeaderLeft{
+.extraAccordionHeader:hover{
+  background:#fff
+}
+
+.extraHeaderText{
+  min-width:0;
   display:flex;
-  align-items:center;
-  gap:11px;
-  min-width:0
+  flex-direction:column;
+  gap:5px
 }
 
-.extraHeaderIcon{
-  width:38px;
-  height:38px;
-  flex:0 0 38px;
-  border-radius:12px;
+.extraHeaderText strong{
+  font-size:19px;
+  line-height:1.2;
+  font-weight:800;
+  color:#2b2b2b
+}
+
+.extraHeaderText small{
+  font-size:13px;
+  line-height:1.25;
+  color:#777;
+  font-weight:400
+}
+
+.extraChevron{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  border-radius:10px;
+  background:#f5f6f7;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(145deg,#111,#30343a);
-  color:#fff;
-  box-shadow:0 5px 14px #00000018
+  color:#222;
+  transition:transform .2s ease,background .2s ease
 }
 
-.extraHeaderIcon svg{
-  width:20px;
-  height:20px;
+.extraChevron svg{
+  width:18px;
+  height:18px;
   stroke:currentColor
 }
 
-.extraHeader h2{
-  margin:0;
-  font-size:18px;
-  line-height:1.2;
-  font-weight:800;
-  color:#15171a
+.extraAccordionHeader[aria-expanded="true"] .extraChevron{
+  transform:rotate(180deg);
+  background:#f0f1f2
 }
 
-.extraHeader p{
-  margin:4px 0 0;
-  font-size:10px;
-  color:#7b8189
+/* Open highlight content: plain rows, no cards */
+.highlightContent{
+  padding:0 0 12px;
+  border-top:1px solid #eeeeee
 }
 
-/* HIGHLIGHT GRID */
-.highlightGrid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:11px;
-  padding:17px
+.highlightItem{
+  min-height:58px;
+  padding:12px 0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid #eeeeee
 }
 
-.highlightCard{
-  position:relative;
-  min-width:0;
-  min-height:112px;
-  padding:15px 13px;
-  border:1px solid #e8ebef;
-  border-radius:16px;
-  background:linear-gradient(145deg,#fff,#fafbfc);
-  box-shadow:0 5px 16px rgba(20,30,45,.045);
-  overflow:hidden;
-  transition:transform .16s,box-shadow .16s,border-color .16s
-}
-
-.highlightCard:hover{
-  transform:translateY(-2px);
-  box-shadow:0 9px 22px rgba(20,30,45,.09);
-  border-color:#dfe4e9
-}
-
-.highlightCard:before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:13px;
-  bottom:13px;
-  width:3px;
-  border-radius:0 4px 4px 0;
-  background:var(--highlight-color,#111)
+.highlightItem:last-child{
+  border-bottom:0
 }
 
 .highlightIcon{
-  width:34px;
-  height:34px;
-  border-radius:11px;
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin-bottom:10px;
-  background:var(--highlight-bg,#f1f3f5);
+  background:#f5f6f7;
   color:var(--highlight-color,#111)
 }
 
@@ -603,78 +604,36 @@ a{text-decoration:none;color:inherit}
   stroke:currentColor
 }
 
+.highlightText{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px
+}
+
 .highlightLabel{
-  font-size:10px;
-  font-weight:700;
-  color:#7a8088;
-  line-height:1.25;
-  margin-bottom:4px
+  font-size:12px;
+  color:#777;
+  font-weight:500;
+  line-height:1.25
 }
 
 .highlightValue{
-  font-size:13px;
-  font-weight:800;
-  color:#181b20;
+  font-size:14px;
+  color:#333;
+  font-weight:700;
   line-height:1.35;
   word-break:break-word
 }
 
-/* =========================================================
-   ALL DETAILS
-========================================================= */
-.allDetails{
-  margin-top:18px;
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 8px 28px rgba(20,30,45,.055)
-}
-
-.detailsTop{
-  padding:20px 22px 15px;
-  border-bottom:1px solid #edf0f3;
-  display:flex;
-  align-items:center;
-  gap:11px
-}
-
-.detailsTopIcon{
-  width:38px;
-  height:38px;
-  flex:0 0 38px;
-  border-radius:12px;
-  background:#f1f3f6;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#20242b
-}
-
-.detailsTopIcon svg{
-  width:20px;
-  height:20px;
-  stroke:currentColor
-}
-
-.detailsTop h2{
-  margin:0;
-  font-size:18px;
-  font-weight:800
-}
-
-.detailsTop p{
-  margin:4px 0 0;
-  font-size:10px;
-  color:#7b8189
-}
-
+/* All details: clean Flipkart-style specification rows */
 .detailSections{
-  padding:8px 17px 17px
+  padding:0 0 10px;
+  border-top:1px solid #eeeeee
 }
 
 .detailSection{
-  border-bottom:1px solid #edf0f3
+  border-bottom:1px solid #e8e8e8
 }
 
 .detailSection:last-child{
@@ -682,64 +641,141 @@ a{text-decoration:none;color:inherit}
 }
 
 .detailSectionTitle{
-  padding:16px 5px 10px;
-  font-size:12px;
+  padding:17px 0 11px;
+  font-size:15px;
   font-weight:800;
-  color:#17191d;
+  color:#333;
   display:flex;
   align-items:center;
-  gap:8px
+  gap:0
 }
 
 .detailSectionTitle:before{
-  content:"";
-  width:4px;
-  height:15px;
-  border-radius:4px;
-  background:#111;
-  display:block
+  display:none
 }
 
 .detailRows{
-  border:1px solid #edf0f3;
-  border-radius:13px;
+  border:0;
+  border-radius:0;
   overflow:hidden;
-  margin-bottom:13px
+  margin:0
 }
 
 .detailRow{
   display:grid;
-  grid-template-columns:34% 66%;
-  min-width:0;
-  border-bottom:1px solid #edf0f3
+  grid-template-columns:1fr 1fr;
+  min-height:57px;
+  border-bottom:1px solid #e7e7e7
 }
 
 .detailRow:last-child{
   border-bottom:0
 }
 
+.detailKey,
+.detailValue{
+  padding:10px 14px 10px 0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-width:0
+}
+
 .detailKey{
-  min-width:0;
-  padding:11px 12px;
-  background:#fafbfc;
-  color:#737982;
-  font-size:11px;
-  font-weight:700;
-  word-break:break-word
+  color:#777;
+  font-size:13px;
+  line-height:1.25
 }
 
 .detailValue{
-  min-width:0;
-  padding:11px 12px;
-  color:#20242b;
-  font-size:11px;
-  font-weight:700;
-  word-break:break-word
+  color:#333;
+  font-size:14px;
+  line-height:1.3;
+  font-weight:500;
+  border-left:0
 }
 
-/* EMPTY STATE hidden */
-.extraEmpty{
-  display:none!important
+@media(max-width:900px){
+  .productExtra,
+  .allDetails{
+    margin-top:14px;
+    border-top:1px solid #e5e5e5;
+    border-bottom:1px solid #e5e5e5;
+    border-radius:0
+  }
+
+  .extraAccordionHeader{
+    min-height:70px;
+    padding:13px 0
+  }
+
+  .extraHeaderText strong{
+    font-size:17px
+  }
+
+  .extraHeaderText small{
+    font-size:12px
+  }
+
+  .extraChevron{
+    width:32px;
+    height:32px;
+    flex-basis:32px;
+    border-radius:9px
+  }
+
+  .highlightContent{
+    padding-bottom:8px
+  }
+
+  .highlightItem{
+    min-height:54px;
+    padding:11px 0;
+    gap:10px
+  }
+
+  .highlightIcon{
+    width:32px;
+    height:32px;
+    flex-basis:32px
+  }
+
+  .highlightIcon svg{
+    width:16px;
+    height:16px
+  }
+
+  .highlightLabel{
+    font-size:11px
+  }
+
+  .highlightValue{
+    font-size:13px
+  }
+
+  .detailSections{
+    padding-bottom:8px
+  }
+
+  .detailSectionTitle{
+    padding:15px 0 9px;
+    font-size:14px
+  }
+
+  .detailRow{
+    grid-template-columns:1fr 1fr;
+    min-height:54px
+  }
+
+  .detailKey,
+  .detailValue{
+    padding:9px 9px 9px 0;
+    font-size:11px
+  }
+
+  .detailValue{
+    font-size:12px
+  }
 }
 
 /* CTA */
@@ -1325,61 +1361,33 @@ style="width:125px;height:40px;border:1px solid #ddd;border-radius:10px;padding:
 <!-- =====================================================
      PRODUCT HIGHLIGHTS
 ===================================================== -->
-
 <section id="productHighlights" class="productExtra" style="display:none">
-
-<div class="extraHeader">
-
-<div class="extraHeaderLeft">
-
-<div class="extraHeaderIcon">
-
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-<path d="m12 3 2.5 5.1 5.5.8-4 4 1 5.6-5-2.7-5 2.7 1-5.6-4-4 5.5-.8L12 3Z"/>
-</svg>
-
-</div>
-
-<div>
-<h2>Product Highlights</h2>
-<p>Key features of this product</p>
-</div>
-
-</div>
-
-</div>
-
-<div id="highlightGrid" class="highlightGrid"></div>
-
+  <button type="button" class="extraAccordionHeader" onclick="toggleExtraSection('productHighlights')" aria-expanded="false">
+    <span class="extraHeaderText">
+      <strong>Product Highlights</strong>
+      <small>Key features, expiry, usage, and more</small>
+    </span>
+    <span class="extraChevron" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg>
+    </span>
+  </button>
+  <div id="highlightGrid" class="highlightContent" hidden></div>
 </section>
-
 
 <!-- =====================================================
      ALL DETAILS
 ===================================================== -->
-
 <section id="allDetailsBox" class="allDetails" style="display:none">
-
-<div class="detailsTop">
-
-<div class="detailsTopIcon">
-
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-<path d="M5 4h14v16H5z"/>
-<path d="M8 8h8M8 12h8M8 16h5"/>
-</svg>
-
-</div>
-
-<div>
-<h2>All Details</h2>
-<p>Complete product information</p>
-</div>
-
-</div>
-
-<div id="detailSections" class="detailSections"></div>
-
+  <button type="button" class="extraAccordionHeader" onclick="toggleExtraSection('allDetailsBox')" aria-expanded="false">
+    <span class="extraHeaderText">
+      <strong>All details</strong>
+      <small>Features, description and more</small>
+    </span>
+    <span class="extraChevron" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg>
+    </span>
+  </button>
+  <div id="detailSections" class="detailSections" hidden></div>
 </section>
 
 
@@ -2317,29 +2325,27 @@ function colorToSoft(color){
    RENDER HIGHLIGHTS
 ===================================================== */
 
+function toggleExtraSection(id){
+  const box=document.getElementById(id);
+  if(!box)return;
+
+  const header=box.querySelector(".extraAccordionHeader");
+  const content=box.querySelector(".highlightContent, .detailSections");
+  if(!header || !content)return;
+
+  const isOpen=header.getAttribute("aria-expanded")==="true";
+  header.setAttribute("aria-expanded",String(!isOpen));
+  content.hidden=isOpen;
+}
+
 function renderHighlights(raw){
-
-  const box=
-    document.getElementById(
-      "productHighlights"
-    );
-
-  const grid=
-    document.getElementById(
-      "highlightGrid"
-    );
-
+  const box=document.getElementById("productHighlights");
+  const grid=document.getElementById("highlightGrid");
   if(!box || !grid)return;
 
   const list=normalizeHighlights(raw);
 
-  /*
-    IMPORTANT:
-    No saved highlights = don't show card.
-  */
-
   if(!list.length){
-
     box.style.display="none";
     grid.innerHTML="";
     return;
@@ -2347,44 +2353,31 @@ function renderHighlights(raw){
 
   box.style.display="block";
 
+  // Keep it collapsed initially, like the requested screenshot.
+  const header=box.querySelector(".extraAccordionHeader");
+  if(header)header.setAttribute("aria-expanded","false");
+  grid.hidden=true;
+
   grid.innerHTML=list.map(item=>{
-
-    const color=
-      escapeHtml(item.color || "#111");
-
-    const bg=
-      colorToSoft(
-        item.color || "#111"
-      );
+    const color=escapeHtml(item.color || "#111");
+    const bg=colorToSoft(item.color || "#111");
 
     return `
-      <article
-        class="highlightCard"
-        style="--highlight-color:${color};--highlight-bg:${bg}"
-      >
-
-        <div class="highlightIcon">
-          ${highlightIcon(
-            String(item.icon||"star")
-              .toLowerCase()
-          )}
+      <div class="highlightItem">
+        <div class="highlightIcon"
+             style="--highlight-color:${color};background:${bg}">
+          ${highlightIcon(String(item.icon||"star").toLowerCase())}
         </div>
 
-        ${
-          item.label
-          ? `<div class="highlightLabel">
-              ${escapeHtml(item.label)}
-             </div>`
-          : ""
-        }
-
-        <div class="highlightValue">
-          ${escapeHtml(item.value)}
+        <div class="highlightText">
+          ${item.label
+            ? `<div class="highlightLabel">${escapeHtml(item.label)}</div>`
+            : ""
+          }
+          <div class="highlightValue">${escapeHtml(item.value)}</div>
         </div>
-
-      </article>
+      </div>
     `;
-
   }).join("");
 }
 
@@ -2423,6 +2416,11 @@ function renderAllDetails(raw){
   }
 
   box.style.display="block";
+
+  // Keep All details collapsed until the user taps the arrow.
+  const header=box.querySelector(".extraAccordionHeader");
+  if(header)header.setAttribute("aria-expanded","false");
+  container.hidden=true;
 
   container.innerHTML=
     sections.map(section=>`
