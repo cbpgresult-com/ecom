@@ -2204,145 +2204,88 @@ function getHighlights(data){
 ========================================================= */
 
 function normalizeDetailGroups(raw){
-
   raw=parseJSON(raw,raw);
-
   if(!raw) return [];
 
-  /*
-    Supports:
+  const textValue=value=>{
+    if(value==null) return "";
+    if(typeof value==="string" || typeof value==="number" || typeof value==="boolean") return String(value);
+    try{return JSON.stringify(value);}catch{return String(value);}
+  };
 
-    {
-      "Body and Design Features":{
-        "Body Material":"Plastic",
-        "Frame Material":"TR90"
-      }
-    }
-
-    OR
-
-    [
-      {
-        "title":"Body and Design Features",
-        "items":[
-          {"label":"Body Material","value":"Plastic"}
-        ]
-      }
-    ]
+  /* Admin format:
+     [
+       {
+         title:"Body and Design Features",
+         rows:[
+           {key:"Body Material",value:"Plastic"},
+           {key:"Frame Material",value:"TR90"}
+         ]
+       }
+     ]
   */
-
   if(Array.isArray(raw)){
-
     return raw.map(group=>{
+      if(!group || typeof group!=="object") return {title:"",items:[]};
 
-      if(
-        group &&
-        typeof group==="object" &&
-        Array.isArray(group.items)
-      ){
+      const title=group.title || group.name || "";
 
-        return {
-          title:
-            group.title ||
-            group.name ||
-            "",
-          items:
-            group.items
-              .map(x=>({
-                label:
-                  x.label ||
-                  x.name ||
-                  x.key ||
-                  "",
-                value:
-                  x.value ||
-                  x.text ||
-                  ""
-              }))
-              .filter(x=>
-                cleanPart(x.label) ||
-                cleanPart(x.value)
-              )
-        };
-
-      }
-
-      if(group && typeof group==="object"){
-
-        const title=
-          group.title ||
-          group.name ||
-          "";
-
-        const copy={...group};
-
-        delete copy.title;
-        delete copy.name;
-
+      if(Array.isArray(group.rows)){
         return {
           title,
-          items:
-            Object.entries(copy)
-              .map(([label,value])=>({
-                label,
-                value
-              }))
+          items:group.rows.map(row=>({
+            label:row?.key || row?.label || row?.name || "",
+            value:textValue(row?.value ?? row?.text ?? row?.content ?? "")
+          })).filter(x=>cleanPart(x.label)||cleanPart(x.value))
         };
       }
 
-      return {
-        title:"",
-        items:[]
-      };
+      if(Array.isArray(group.items)){
+        return {
+          title,
+          items:group.items.map(row=>({
+            label:row?.key || row?.label || row?.name || row?.title || "",
+            value:textValue(row?.value ?? row?.text ?? row?.content ?? "")
+          })).filter(x=>cleanPart(x.label)||cleanPart(x.value))
+        };
+      }
 
+      const copy={...group};
+      delete copy.title;
+      delete copy.name;
+      delete copy.rows;
+      delete copy.items;
+
+      return {
+        title,
+        items:Object.entries(copy).map(([label,value])=>({
+          label,
+          value:textValue(value)
+        })).filter(x=>cleanPart(x.label)||cleanPart(x.value))
+      };
     }).filter(x=>x.items.length);
   }
 
   if(typeof raw==="object"){
-
-    const groups=[];
-
-    for(const [groupTitle,value] of Object.entries(raw)){
-
-      if(
-        value &&
-        typeof value==="object" &&
-        !Array.isArray(value)
-      ){
-
-        groups.push({
+    return Object.entries(raw).map(([groupTitle,value])=>{
+      if(value && typeof value==="object" && !Array.isArray(value)){
+        return {
           title:groupTitle,
-          items:
-            Object.entries(value)
-              .map(([label,val])=>({
-                label,
-                value:val
-              }))
-              .filter(x=>
-                cleanPart(x.label) ||
-                cleanPart(x.value)
-              )
-        });
-
-      }else{
-
-        groups.push({
-          title:"",
-          items:[{
-            label:groupTitle,
-            value
-          }]
-        });
-
+          items:Object.entries(value).map(([label,val])=>({
+            label,
+            value:textValue(val)
+          })).filter(x=>cleanPart(x.label)||cleanPart(x.value))
+        };
       }
-    }
-
-    return groups.filter(x=>x.items.length);
+      return {
+        title:"",
+        items:[{label:groupTitle,value:textValue(value)}]
+      };
+    }).filter(x=>x.items.length);
   }
 
   return [];
 }
-
 
 /* =========================================================
    RENDER HIGHLIGHTS
