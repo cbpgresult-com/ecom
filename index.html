@@ -1389,6 +1389,8 @@ supabaseClient.auth.onAuthStateChange(
 
 async function loadProducts(){
 
+  document.body.classList.remove("products-ready");
+
   const loading =
     document.getElementById("loading");
 
@@ -1434,6 +1436,8 @@ async function loadProducts(){
     noProducts.innerHTML =
       "<h2>Products load nahi ho paaye</h2>";
 
+    document.body.classList.add("products-ready");
+
     return;
 
   }
@@ -1444,6 +1448,8 @@ async function loadProducts(){
     noProducts.classList.remove(
       "hidden"
     );
+
+    document.body.classList.add("products-ready");
 
     return;
 
@@ -1459,6 +1465,8 @@ async function loadProducts(){
 
     }
   );
+
+  document.body.classList.add("products-ready");
 
 }
 
