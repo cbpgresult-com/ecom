@@ -671,127 +671,10 @@ main{
     grid-template-columns:repeat(3,1fr);
   }
 }
-
-/* ================= MOBILE PAGE NAV LOADER ================= */
-#pageNavLoader{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  z-index:9999999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-}
-#pageNavLoader.show{
-  display:flex;
-}
-#pageNavLoader .nav-loader-header{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:58px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 15px;
-  background:#fff;
-  border-bottom:1px solid #eee;
-}
-#pageNavLoader .nav-left{
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
-#pageNavLoader .nav-back{
-  width:25px;
-  height:25px;
-  display:block;
-}
-#pageNavLoader .nav-actions{
-  display:flex;
-  align-items:center;
-  gap:22px;
-}
-#pageNavLoader .nav-actions svg{
-  width:23px;
-  height:23px;
-  display:block;
-}
-#pageNavLoader .nav-cart{
-  position:relative;
-}
-#pageNavLoader .nav-cart-badge{
-  position:absolute;
-  top:-9px;
-  right:-10px;
-  min-width:17px;
-  height:17px;
-  padding:0 4px;
-  border-radius:99px;
-  background:#ef4444;
-  color:#fff;
-  border:2px solid #fff;
-  font:800 9px/13px Arial,sans-serif;
-  text-align:center;
-  display:none;
-}
-#pageNavLoader .nav-cart-badge.show{
-  display:block;
-}
-#pageNavLoader .spinner{
-  width:42px;
-  height:42px;
-  border:4px solid #e5e7eb;
-  border-top-color:#6d28d9;
-  border-radius:50%;
-  animation:pageLoaderSpin .75s linear infinite;
-}
-@keyframes pageLoaderSpin{
-  to{transform:rotate(360deg)}
-}
-@media(min-width:701px){
-  #pageNavLoader{
-    display:none!important;
-  }
-}
-
 </style>
 </head>
 
 <body>
-
-<!-- ================= MOBILE NAVIGATION LOADER ================= -->
-<div id="pageNavLoader" aria-hidden="true">
-  <div class="nav-loader-header">
-    <div class="nav-left">
-      <svg class="nav-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M19 12H5"></path>
-        <path d="m12 19-7-7 7-7"></path>
-      </svg>
-    </div>
-
-    <div class="nav-actions">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-        <circle cx="11" cy="11" r="7"></circle>
-        <path d="m20 20-4-4"></path>
-      </svg>
-
-      <div class="nav-cart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-          <circle cx="9" cy="20" r="1"></circle>
-          <circle cx="18" cy="20" r="1"></circle>
-          <path d="M3 4h2l2.4 11.5h10.8L21 8H6"></path>
-        </svg>
-        <span id="pageNavCartBadge" class="nav-cart-badge"></span>
-      </div>
-    </div>
-  </div>
-
-  <div class="spinner" aria-label="Loading"></div>
-</div>
-
 
 <!-- ================= HEADER ================= -->
 
@@ -1504,52 +1387,6 @@ function getMainImage(product){
    PRODUCT CARD
 ========================================================= */
 
-
-/* =========================================================
-   MOBILE PRODUCT NAVIGATION LOADER
-   No artificial delay. It only displays the loader and then
-   immediately navigates to the real product page.
-========================================================= */
-function showProductNavigationLoader(productId){
-  const loader = document.getElementById("pageNavLoader");
-
-  if(!productId){
-    return;
-  }
-
-  if(loader && window.innerWidth <= 700){
-    const sourceBadge = document.getElementById("cartCount");
-    const targetBadge = document.getElementById("pageNavCartBadge");
-
-    if(sourceBadge && targetBadge){
-      const value = sourceBadge.textContent.trim();
-
-      if(value){
-        targetBadge.textContent = value;
-        targetBadge.classList.add("show");
-      }else{
-        targetBadge.textContent = "";
-        targetBadge.classList.remove("show");
-      }
-    }
-
-    loader.classList.add("show");
-    loader.setAttribute("aria-hidden","false");
-    document.body.style.overflow = "hidden";
-  }
-
-  /*
-    IMPORTANT:
-    Direct navigation. No 120ms timeout and no waiting loop.
-    The product.html page has its own real loader while
-    Supabase loads the selected product.
-  */
-  window.location.assign(
-    "product.html?id=" + encodeURIComponent(productId)
-  );
-}
-
-
 function createProductCard(product){
 
   const card =
@@ -1677,9 +1514,23 @@ function createProductCard(product){
     "click",
     function(){
 
-      if(product.id){
-        showProductNavigationLoader(product.id);
-      }
+      if(!product.id) return;
+
+      /*
+        Do NOT put a blocking overlay on index.html.
+        The product page owns the real loader. This guarantees
+        desktop and mobile navigation both happen immediately.
+      */
+      try{
+        sessionStorage.setItem(
+          "mystore_product_navigation",
+          "1"
+        );
+      }catch(e){}
+
+      window.location.href =
+        "product.html?id=" +
+        encodeURIComponent(product.id);
 
     }
   );
