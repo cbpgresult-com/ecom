@@ -271,8 +271,8 @@ a{text-decoration:none;color:inherit}
   min-height:24px;
   padding:4px 8px;
   border-radius:5px;
-  background:#e8f7ee;
-  color:#15803d;
+  background:#15803d;
+  color:#fff;
   font-weight:800;
   font-size:12px;
   margin-left:0;
@@ -293,17 +293,20 @@ a{text-decoration:none;color:inherit}
 }
 
 .orderDiscountBadge{
-  width:18px;
-  height:18px;
-  flex:0 0 18px;
-  border-radius:4px;
-  background:#16813f;
+  min-width:28px;
+  height:20px;
+  padding:0 5px;
+  flex:0 0 auto;
+  border-radius:5px;
+  background:#15803d;
   color:#fff;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  font-size:11px;
+  font-size:10px;
+  line-height:1;
   font-weight:900;
+  letter-spacing:-.1px;
 }
 
 .orderDiscountBar strong{
@@ -1080,7 +1083,7 @@ a{text-decoration:none;color:inherit}
     grid-column:auto;
     grid-row:auto;
     width:100%;
-    padding:0;
+    padding:0 16px;
   }
 
   .main{
@@ -1554,8 +1557,8 @@ class="detailsPanel">
 </div>
 
 <div class="orderDiscountBar">
-<span class="orderDiscountBadge">%</span>
-<span><strong>35% off</strong> applied for you</span>
+<span id="orderDiscountBadge" class="orderDiscountBadge">35%</span>
+<span><strong id="orderDiscountText">35% off</strong> applied for you</span>
 </div>
 
 </div>
@@ -3156,6 +3159,20 @@ function render(){
     "off"
   ).textContent=
     ORDER_DISCOUNT_PERCENT+"% OFF";
+
+  const orderDiscountBadge =
+    document.getElementById("orderDiscountBadge");
+  if(orderDiscountBadge){
+    orderDiscountBadge.textContent =
+      ORDER_DISCOUNT_PERCENT + "%";
+  }
+
+  const orderDiscountText =
+    document.getElementById("orderDiscountText");
+  if(orderDiscountText){
+    orderDiscountText.textContent =
+      ORDER_DISCOUNT_PERCENT + "% off";
+  }
 
   document.getElementById(
     "description"
