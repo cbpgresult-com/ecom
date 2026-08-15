@@ -461,15 +461,90 @@ main{
 /* ================= LOADING ================= */
 
 .loading{
+  padding:0;
   width:100%;
-  min-height:300px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:40px 0;
-  color:#555;
-  font-size:16px;
-  font-weight:500;
+  color:transparent;
+}
+
+.skeleton-grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+.skeleton-card{
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+
+.skeleton{
+  position:relative;
+  overflow:hidden;
+  background:#e9edf2;
+  border-radius:8px;
+}
+
+.skeleton::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.65),
+    transparent
+  );
+  animation:skeletonShimmer 1.15s infinite;
+}
+
+@keyframes skeletonShimmer{
+  100%{
+    transform:translateX(100%);
+  }
+}
+
+.skeleton-image{
+  width:100%;
+  height:220px;
+  border-radius:0;
+}
+
+.skeleton-info{
+  padding:12px;
+}
+
+.skeleton-rating{
+  width:42px;
+  height:18px;
+  margin-bottom:10px;
+  border-radius:5px;
+}
+
+.skeleton-title{
+  width:92%;
+  height:13px;
+  margin-bottom:7px;
+}
+
+.skeleton-title.short{
+  width:65%;
+}
+
+.skeleton-price{
+  width:72px;
+  height:21px;
+  margin-top:11px;
+}
+
+.skeleton-delivery{
+  width:125px;
+  height:11px;
+  margin-top:11px;
 }
 
 .no-products{
@@ -772,33 +847,10 @@ main{
   to{transform:rotate(360deg)}
 }
 
-#uiLoading{
-  position:fixed;
-  inset:0;
-  z-index:2147483646;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#fff;
-  color:#222;
-  font-size:16px;
-  font-weight:600;
-}
-
-#uiLoading.hide{
-  display:none;
-}
-
 </style>
 </head>
 
 <body>
-
-<!-- ================= UI LOADING =================
-     Separate from product skeleton.
-     Shows only "Loading" in the center until the page UI is ready.
-================================================= -->
-<div id="uiLoading" aria-live="polite">Loading</div>
 
 <div id="productNavLoader" aria-hidden="true">
   <div class="nav-head">
@@ -1155,8 +1207,16 @@ main{
   </div>
 
   <div id="loading" class="loading" aria-label="Loading products">
-    Loading
-  </div>
+    <div class="skeleton-grid">
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-rating"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-title short"></div>
+          <div class="skeleton skeleton-price"></div>
+          <div class="skeleton skeleton-delivery"></div>
+        </div>
       </div>
 
       <div class="skeleton-card">
@@ -1979,36 +2039,6 @@ async function logoutUser(){
   window.location.reload();
 
 }
-
-
-/* =========================================================
-   UI LOADING
-   Separate from the product skeleton.
-========================================================= */
-
-(function(){
-
-  function hideUILoading(){
-    const uiLoading =
-      document.getElementById("uiLoading");
-
-    if(uiLoading){
-      uiLoading.classList.add("hide");
-      uiLoading.setAttribute("aria-hidden","true");
-    }
-  }
-
-  if(document.readyState === "loading"){
-    document.addEventListener(
-      "DOMContentLoaded",
-      hideUILoading,
-      {once:true}
-    );
-  }else{
-    requestAnimationFrame(hideUILoading);
-  }
-
-})();
 
 
 /* =========================================================
