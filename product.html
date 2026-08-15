@@ -377,6 +377,25 @@ a{
 
 /* VERY SMALL PHONES */
 
+/* Mobile: hide gallery preview/next arrow controls */
+@media(max-width:900px){
+  .preview,
+  .preview-btn,
+  .preview-arrow,
+  .next,
+  .next-btn,
+  .next-arrow,
+  .prev,
+  .prev-btn,
+  .prev-arrow,
+  [class*="preview"],
+  [class*="Preview"],
+  [class*="arrow"],
+  [class*="Arrow"]{
+    display:none !important;
+  }
+}
+
 @media(max-width:380px){
 
   .main{
@@ -384,11 +403,11 @@ a{
   }
 
   .title{
-    font-size:18px;
+    font-size:17px;
   }
 
   .price{
-    font-size:26px;
+    font-size:24px;
   }
 
   .thumb{
