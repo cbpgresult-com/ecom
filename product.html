@@ -1203,128 +1203,36 @@ a{text-decoration:none;color:inherit}
   }
 }
 
-/* ================= MOBILE PRODUCT LOADER HEADER ================= */
-.mobileProductLoader{
-  position:fixed;
-  inset:0;
-  z-index:999999;
-  background:#f5f6f8;
-  display:none;
-  flex-direction:column;
-}
-.mobileProductLoaderHeader{
-  height:76px;
-  flex:0 0 76px;
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  display:flex;
-  align-items:center;
-  padding:0 16px;
-  gap:14px;
-}
-.mobileLoaderBack{
-  width:32px;
-  height:32px;
-  border:0;
-  background:transparent;
-  padding:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.mobileLoaderBack svg{
-  width:27px;
-  height:27px;
-  stroke:#111;
-}
-.mobileLoaderLogo{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  font-size:20px;
-  font-weight:800;
-  color:#2874f0;
-  white-space:nowrap;
-}
-.mobileLoaderLogoIcon{
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  background:#2874f0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.mobileLoaderLogoIcon svg{
-  width:21px;
-  height:21px;
-  stroke:#fff;
-}
-.mobileLoaderSpacer{flex:1}
-.mobileLoaderAction{
-  width:36px;
-  height:36px;
-  border:0;
-  background:transparent;
-  padding:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-.mobileLoaderAction svg{
-  width:25px;
-  height:25px;
-  stroke:#111;
-}
-.mobileLoaderCartBadge{
-  position:absolute;
-  top:-1px;
-  right:-1px;
-  min-width:16px;
-  height:16px;
-  padding:0 4px;
-  border-radius:10px;
-  background:#e53935;
-  color:#fff;
-  font-size:9px;
-  font-weight:800;
-  line-height:16px;
-  text-align:center;
-}
-.mobileLoaderCenter{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.mobileLoaderSpinner{
-  width:48px;
-  height:48px;
-  border:4px solid #dfe7f5;
-  border-top-color:#2874f0;
-  border-radius:50%;
-  animation:mobileProductSpin .75s linear infinite;
-}
-@keyframes mobileProductSpin{to{transform:rotate(360deg)}}
+/* ================= MOBILE PRODUCT HEADER + REAL LOADING ================= */
+.mobileProductHeader,.mobileProductLoading{display:none}
 @media(max-width:900px){
-  #loading{
-    position:fixed !important;
-    inset:0 !important;
-    z-index:999998 !important;
-    min-height:100vh !important;
-    width:100vw !important;
-    border-radius:0 !important;
-    background:#f5f6f8 !important;
-    display:flex !important;
-    align-items:stretch !important;
-    justify-content:stretch !important;
-  }
-  .mobileProductLoader{display:flex;}
-  #loading > b{display:none !important;}
-}
-@media(min-width:901px){
-  .mobileProductLoader{display:none !important;}
+.mobileProductHeader{position:sticky;top:0;z-index:99999;height:62px;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 10px;align-items:center;gap:8px}
+.mobileProductHeader.show{display:flex}
+.mobileProductHeader .mpBack{width:38px;height:38px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 38px}
+.mobileProductHeader .mpBack svg{width:25px;height:25px}
+.mobileProductLogo{font-size:20px;font-weight:900;color:#6d28d9;white-space:nowrap;flex:0 0 auto}
+.mobileProductSearch{height:42px;flex:1 1 auto;min-width:0;border:2px solid #d7e9ff;border-radius:12px;background:#f8fbff;display:flex;align-items:center;padding:0 10px;gap:8px}
+.mobileProductSearch svg{width:20px;height:20px;flex:0 0 20px;color:#111}
+.mobileProductSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px;color:#222;padding:0}
+.mobileProductSearch input::placeholder{color:#777}
+.mobileProductCart{width:42px;height:42px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;position:relative;padding:0;flex:0 0 42px}
+.mobileProductCart svg{width:25px;height:25px}
+.mobileProductCartBadge{position:absolute;top:1px;right:-1px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#ef4444;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1}
+.mobileProductCartBadge.show{display:flex}
+.mobileProductLoading{position:fixed;inset:0;z-index:100000;background:#f5f6f8;display:flex;flex-direction:column}
+.mobileProductLoading.hide{display:none}
+.mobileProductLoadingHeader{height:62px;min-height:62px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:10px;padding:0 10px}
+.mobileProductLoadingHeader .mpBack{width:38px;height:38px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 38px}
+.mobileProductLoadingHeader .mpBack svg{width:25px;height:25px}
+.mobileProductLoadingLogo{font-size:20px;font-weight:900;color:#6d28d9;white-space:nowrap}
+.mobileProductLoadingSpacer{flex:1}
+.mobileProductLoadingAction{width:40px;height:40px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;position:relative}
+.mobileProductLoadingAction svg{width:24px;height:24px}
+.mobileProductLoadingBadge{position:absolute;top:0;right:-1px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#ef4444;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center}
+.mobileProductLoadingBadge.show{display:flex}
+.mobileProductLoadingCenter{flex:1;display:flex;align-items:center;justify-content:center}
+.mobileProductLoadingSpinner{width:48px;height:48px;border:4px solid #dbeafe;border-top-color:#2874f0;border-radius:50%;animation:productPageSpin .75s linear infinite}
+@keyframes productPageSpin{to{transform:rotate(360deg)}}
 }
 
 </style>
@@ -1332,64 +1240,30 @@ a{text-decoration:none;color:inherit}
 
 <body>
 
+<!-- ================= MOBILE PRODUCT LOADING ================= -->
+<div id="mobileProductLoading" class="mobileProductLoading">
+  <div class="mobileProductLoadingHeader">
+    <button class="mpBack" type="button" aria-label="Back" onclick="productGoBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+    <div class="mobileProductLoadingLogo">MyStore</div><div class="mobileProductLoadingSpacer"></div>
+    <button class="mobileProductLoadingAction" type="button" aria-label="Search" onclick="productGoSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+    <button class="mobileProductLoadingAction" type="button" aria-label="Cart" onclick="productGoCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 11.5h10.8L21 8H6"/></svg><span id="mobileProductLoadingBadge" class="mobileProductLoadingBadge"></span></button>
+  </div>
+  <div class="mobileProductLoadingCenter"><div class="mobileProductLoadingSpinner" aria-label="Loading"></div></div>
+</div>
+<!-- ================= MOBILE PRODUCT HEADER ================= -->
+<header id="mobileProductHeader" class="mobileProductHeader">
+  <button class="mpBack" type="button" aria-label="Back" onclick="productGoBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+  <div class="mobileProductLogo">MyStore</div>
+  <div class="mobileProductSearch" role="button" tabindex="0" onclick="productGoSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="mobileProductSearchInput" type="text" readonly placeholder="Search for Products, Brands and More"></div>
+  <button class="mobileProductCart" type="button" aria-label="Cart" onclick="productGoCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 11.5h10.8L21 8H6"/></svg><span id="mobileProductCartBadge" class="mobileProductCartBadge"></span></button>
+</header>
+
+
 <main class="page">
 
 <div id="loading"
 style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-items:center;justify-content:center">
-
-  <div class="mobileProductLoader">
-
-    <div class="mobileProductLoaderHeader">
-
-      <button class="mobileLoaderBack" type="button"
-        onclick="history.length>1 ? history.back() : (window.location.href='index.html')"
-        aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-          <path d="M19 12H5"></path>
-          <path d="m12 19-7-7 7-7"></path>
-        </svg>
-      </button>
-
-      <div class="mobileLoaderLogo" aria-label="MyStore">
-        <span class="mobileLoaderLogoIcon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
-            <path d="M4 9h16l-1 11H5L4 9Z"></path>
-            <path d="M7 9a5 5 0 0 1 10 0"></path>
-            <path d="M9 13h6"></path>
-          </svg>
-        </span>
-        <span>MyStore</span>
-      </div>
-
-      <div class="mobileLoaderSpacer"></div>
-
-      <button class="mobileLoaderAction" type="button"
-        onclick="window.location.href='index.html'" aria-label="Search">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="m20 20-4-4"></path>
-        </svg>
-      </button>
-
-      <button class="mobileLoaderAction" type="button"
-        onclick="window.location.href='cart.html'" aria-label="Cart">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
-          <path d="M3 4h2l2.2 11h10.9l2-8H6"></path>
-          <circle cx="9" cy="19" r="1.5"></circle>
-          <circle cx="18" cy="19" r="1.5"></circle>
-        </svg>
-        <span class="mobileLoaderCartBadge" id="mobileLoaderCartBadge">0</span>
-      </button>
-
-    </div>
-
-    <div class="mobileLoaderCenter">
-      <div class="mobileLoaderSpinner" aria-label="Loading"></div>
-    </div>
-
-  </div>
-
-  <b>Loading product...</b>
+<b>Loading product...</b>
 </div>
 
 <section id="product" class="product">
@@ -3463,6 +3337,8 @@ function render(){
 
 
   updateCart();
+
+  showMobileProductLoadedHeader();
 }
 
 
@@ -3750,6 +3626,8 @@ async function updateCart(){
     if(cartBadge)
       cartBadge.textContent="0";
 
+    setMobileProductCartBadge("");
+
     return;
   }
 
@@ -3776,14 +3654,16 @@ async function updateCart(){
 
   if(cartBadge){
 
-    cartBadge.textContent=
-      (data||[])
-        .reduce(
-          (s,x)=>
-            s+
-            (Number(x.qty)||0),
-          0
-        );
+    const total=(data||[])
+      .reduce(
+        (s,x)=>
+          s+
+          (Number(x.qty)||0),
+        0
+      );
+
+    cartBadge.textContent=total;
+    setMobileProductCartBadge(total);
   }
 }
 
@@ -3874,9 +3754,22 @@ window.addEventListener(
 );
 
 
+
+/* =========================================================
+   MOBILE PRODUCT HEADER / NAVIGATION
+========================================================= */
+function productGoBack(){if(history.length>1){history.back()}else{location.href="index.html"}}
+function productGoSearch(){location.href="index.html"}
+function productGoCart(){location.href="cart.html"}
+function setMobileProductCartBadge(value){const text=String(value||"").trim();[document.getElementById("mobileProductLoadingBadge"),document.getElementById("mobileProductCartBadge")].forEach(badge=>{if(!badge)return;if(text&&text!=="0"){badge.textContent=Number(text)>99?"99+":text;badge.classList.add("show")}else{badge.textContent="";badge.classList.remove("show")}})}
+function updateMobileProductHeader(){const input=document.getElementById("mobileProductSearchInput");if(input&&product)input.value=product.title||"";const source=document.getElementById("mobileProductLoadingBadge");if(source&&source.textContent.trim())setMobileProductCartBadge(source.textContent.trim())}
+function showMobileProductLoadedHeader(){const loading=document.getElementById("mobileProductLoading");const header=document.getElementById("mobileProductHeader");if(window.innerWidth<=900){if(loading)loading.classList.add("hide");if(header)header.classList.add("show");document.body.style.overflow="";updateMobileProductHeader()}}
+
 /* =========================================================
    START
 ========================================================= */
+
+if(window.innerWidth<=900){document.body.style.overflow="hidden";}
 
 load();
 
