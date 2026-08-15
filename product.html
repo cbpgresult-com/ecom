@@ -1646,15 +1646,6 @@ let product=null;
 let qty=1;
 let currentIndex=0;
 
-const cameFromIndexLoader =
-  Boolean(
-    new URLSearchParams(
-      window.location.search
-    ).get("navt")
-  );
-
-
-
 const money=n=>
 "₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
 
@@ -2765,28 +2756,6 @@ function showDetailsTab(type,button){
 /* =========================================================
    LOAD PRODUCT
 ========================================================= */
-
-async function hideInitialProductLoader(){
-
-  if(!cameFromIndexLoader) return;
-
-  const loading =
-    document.getElementById(
-      "mobileProductLoading"
-    );
-
-  if(loading){
-    loading.classList.add("hide");
-    loading.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-  }
-
-  document.body.style.overflow = "";
-
-}
-
 
 async function load(){
 
