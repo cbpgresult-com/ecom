@@ -740,6 +740,49 @@ th{
   color:#777;
   margin-top:7px
 }
+
+.description-editor textarea{
+  width:100%;
+  min-height:190px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:12px;
+  outline:0;
+  resize:vertical;
+  font:inherit;
+  font-size:12px;
+  line-height:1.6
+}
+.description-editor textarea:focus{
+  border-color:#111
+}
+
+.manufacturer-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+.manufacturer-field{
+  display:flex;
+  flex-direction:column;
+  gap:6px
+}
+.manufacturer-field label{
+  font-size:11px;
+  font-weight:900
+}
+.manufacturer-field input{
+  height:42px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:0 11px;
+  outline:0;
+  font-size:12px
+}
+.manufacturer-field input:focus{
+  border-color:#111
+}
+
 .save-details{
   margin-top:16px;
   display:flex;
@@ -847,6 +890,7 @@ th{
   .details-box{padding:15px}
   .details-tabs{overflow:auto}
   .details-tab{white-space:nowrap}
+  .manufacturer-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -1547,22 +1591,13 @@ th{
             </strong>
 
             <span id="detailsSummary">
-              Product Highlights & All Details
+              Product Highlights, Description, Manufacturer Info & All Details
             </span>
 
           </button>
 
         </div>
 
-
-        <!-- DESCRIPTION -->
-        <div class="field full">
-
-          <label>Description</label>
-
-          <textarea id="description"></textarea>
-
-        </div>
 
       </div>
 
@@ -1610,7 +1645,7 @@ th{
         </h2>
 
         <div class="details-summary">
-          Highlights aur All Details yahin se add/edit karein.
+          Highlights, Description, Manufacturer Info aur All Details yahin se add/edit karein.
         </div>
 
       </div>
@@ -1634,6 +1669,22 @@ th{
         onclick="detailsTab('highlights',this)"
       >
         Product Highlights
+      </button>
+
+      <button
+        type="button"
+        class="details-tab"
+        onclick="detailsTab('description',this)"
+      >
+        Description
+      </button>
+
+      <button
+        type="button"
+        class="details-tab"
+        onclick="detailsTab('manufacturer',this)"
+      >
+        Manufacturer Info
       </button>
 
       <button
@@ -1681,6 +1732,88 @@ th{
         id="highlightList"
         class="detail-list"
       ></div>
+
+    </div>
+
+
+    <!-- DESCRIPTION -->
+    <div
+      id="descriptionPanel"
+      class="detail-panel"
+    >
+
+      <div class="detail-toolbar">
+        <h3>Description</h3>
+      </div>
+
+      <div class="json-note">
+        Product page par dikhne wali description yahin se add/edit karein.
+      </div>
+
+      <div class="description-editor">
+        <textarea
+          id="detailsDescription"
+          placeholder="Product ki detailed description yahan likhein..."
+          oninput="detailsDraft.description=this.value"
+        ></textarea>
+      </div>
+
+    </div>
+
+
+    <!-- MANUFACTURER INFO -->
+    <div
+      id="manufacturerPanel"
+      class="detail-panel"
+    >
+
+      <div class="detail-toolbar">
+        <h3>Manufacturer Information</h3>
+      </div>
+
+      <div class="json-note">
+        Manufacturer, Packer, Importer aur product origin ki information yahan add/edit karein.
+      </div>
+
+      <div class="manufacturer-grid">
+
+        <div class="manufacturer-field">
+          <label>Manufacturer</label>
+          <input id="manufacturer" placeholder="Manufacturer name"
+            oninput="detailsDraft.manufacturer_info.manufacturer=this.value">
+        </div>
+
+        <div class="manufacturer-field">
+          <label>Packer</label>
+          <input id="packer" placeholder="Packer name"
+            oninput="detailsDraft.manufacturer_info.packer=this.value">
+        </div>
+
+        <div class="manufacturer-field">
+          <label>Importer</label>
+          <input id="importer" placeholder="Importer name"
+            oninput="detailsDraft.manufacturer_info.importer=this.value">
+        </div>
+
+        <div class="manufacturer-field">
+          <label>Country of Origin</label>
+          <input id="countryOfOrigin" placeholder="India"
+            oninput="detailsDraft.manufacturer_info.country_of_origin=this.value">
+        </div>
+
+        <div class="manufacturer-field">
+          <label>Generic Name</label>
+          <input id="genericName" placeholder="Generic product name"
+            oninput="detailsDraft.manufacturer_info.generic_name=this.value">
+        </div>
+
+        <div class="manufacturer-field">
+          <label>Customer Care</label>
+          <input id="customerCare" placeholder="Phone / Email"
+            oninput="detailsDraft.manufacturer_info.customer_care=this.value">
+        </div>
+
+      </div>
 
     </div>
 
@@ -2324,6 +2457,15 @@ function openAdd(){
 
   detailsDraft = {
     highlights: [],
+    description: "",
+    manufacturer_info: {
+      manufacturer: "",
+      packer: "",
+      importer: "",
+      country_of_origin: "",
+      generic_name: "",
+      customer_care: ""
+    },
     all_details: []
   };
 
@@ -2408,7 +2550,7 @@ function openAdd(){
 
 
   $("detailsSummary").textContent =
-    "Product Highlights & All Details";
+    "Product Highlights, Description, Manufacturer Info & All Details";
 
 
   addImageLink("");
@@ -2535,6 +2677,14 @@ function edit(id){
         p.highlights
       ),
 
+    description:
+      p.description || "",
+
+    manufacturer_info:
+      normalizeManufacturerInfo(
+        p.manufacturer_info
+      ),
+
     all_details:
       normalizeAllDetails(
         p.all_details
@@ -2612,9 +2762,6 @@ function edit(id){
   if(!extraImages.length)
     addImageLink("");
 
-
-  $("description").value =
-    p.description || "";
 
 
   $("formError").style.display =
@@ -2947,6 +3094,41 @@ function normalizeAllDetails(x){
    RENDER DETAILS EDITOR
 ========================================================= */
 
+function normalizeManufacturerInfo(v){
+
+  let x = v;
+
+  if(typeof x === "string"){
+    try{
+      x = JSON.parse(x);
+    }catch{
+      x = {
+        manufacturer: x,
+        packer: "",
+        importer: "",
+        country_of_origin: "",
+        generic_name: "",
+        customer_care: ""
+      };
+    }
+  }
+
+  x = x && typeof x === "object" && !Array.isArray(x)
+    ? x
+    : {};
+
+  return {
+    manufacturer: String(x.manufacturer ?? ""),
+    packer: String(x.packer ?? ""),
+    importer: String(x.importer ?? ""),
+    country_of_origin: String(x.country_of_origin ?? ""),
+    generic_name: String(x.generic_name ?? ""),
+    customer_care: String(x.customer_care ?? "")
+  };
+
+}
+
+
 function renderDetailsEditor(){
 
   const hl =
@@ -2958,6 +3140,42 @@ function renderDetailsEditor(){
 
   if(!hl || !groups)
     return;
+
+
+  detailsDraft.description =
+    String(detailsDraft.description ?? "");
+
+  detailsDraft.manufacturer_info =
+    normalizeManufacturerInfo(
+      detailsDraft.manufacturer_info
+    );
+
+  const desc =
+    $("detailsDescription");
+
+  if(desc)
+    desc.value =
+      detailsDraft.description;
+
+  const manufacturerData =
+    detailsDraft.manufacturer_info;
+
+  const manufacturerFields = {
+    manufacturer: "manufacturer",
+    packer: "packer",
+    importer: "importer",
+    country_of_origin: "countryOfOrigin",
+    generic_name: "genericName",
+    customer_care: "customerCare"
+  };
+
+  Object.entries(manufacturerFields)
+    .forEach(([key,id]) => {
+      const el = $(id);
+      if(el)
+        el.value =
+          manufacturerData[key] || "";
+    });
 
 
   /* =========================
@@ -3158,8 +3376,26 @@ function renderDetailsEditor(){
 `;
 
 
+  const hasDescription =
+    Boolean(
+      String(detailsDraft.description || "").trim()
+    );
+
+  const mi =
+    normalizeManufacturerInfo(
+      detailsDraft.manufacturer_info
+    );
+
+  const hasManufacturer =
+    Object.values(mi)
+      .some(v => String(v || "").trim());
+
   $("detailsSummary").textContent =
     `${detailsDraft.highlights.length} highlights · ${
+      hasDescription ? "Description added" : "No description"
+    } · ${
+      hasManufacturer ? "Manufacturer info added" : "No manufacturer info"
+    } · ${
       detailsDraft.all_details.reduce(
         (n,g) =>
           n + g.rows.length,
@@ -3262,6 +3498,22 @@ function detailsTab(which,btn){
     );
 
 
+  $("descriptionPanel")
+    .classList
+    .toggle(
+      "active",
+      which === "description"
+    );
+
+
+  $("manufacturerPanel")
+    .classList
+    .toggle(
+      "active",
+      which === "manufacturer"
+    );
+
+
   $("allDetailsPanel")
     .classList
     .toggle(
@@ -3281,6 +3533,20 @@ function saveDetailsDraft(){
   detailsDraft.highlights =
     normalizeHighlights(
       detailsDraft.highlights
+    );
+
+
+  detailsDraft.description =
+    String(
+      $("detailsDescription")?.value ??
+      detailsDraft.description ??
+      ""
+    ).trim();
+
+
+  detailsDraft.manufacturer_info =
+    normalizeManufacturerInfo(
+      detailsDraft.manufacturer_info
     );
 
 
@@ -3476,9 +3742,15 @@ async function save(e){
       slugify(name),
 
     description:
-      $("description")
-        .value
-        .trim(),
+      String(
+        detailsDraft.description || ""
+      ).trim(),
+
+
+    manufacturer_info:
+      normalizeManufacturerInfo(
+        detailsDraft.manufacturer_info
+      ),
 
 
     category:
