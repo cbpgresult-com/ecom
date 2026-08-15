@@ -272,6 +272,7 @@ function render(){
 
 function openAdd(){
  editing=null;
+ detailsDraft={highlights:[],all_details:[]};
  $("modalTitle").textContent="Add Product";
  $("saveBtn").textContent="Save Product";
  $("pid").value="";
@@ -293,6 +294,7 @@ function openAdd(){
  $("imageCollapseBtn").textContent="⌃";
  $("imageCollapseBtn").setAttribute("aria-expanded","true");
  addImageLink("");
+ renderDetailsEditor();
  $("modal").classList.add("show");
 }
 
@@ -317,6 +319,8 @@ function edit(id){
  extraImages.forEach(url=>addImageLink(typeof url==="string"?url:(url?.url||url?.src||url?.image||"")));
  if(!extraImages.length)addImageLink("");
  $("description").value=p.description||"";
+ detailsDraft={highlights:normalizeHighlights(p.highlights),all_details:normalizeAllDetails(p.all_details)};
+ renderDetailsEditor();
  $("formError").style.display="none";preview();$("modal").classList.add("show");
 }
 
@@ -405,7 +409,7 @@ async function save(e){
   return_enabled:$("returnEnabled").checked,return_days:$("returnEnabled").checked?(Number($("returnDays").value)||10):10,
   cod_enabled:$("codEnabled").checked,assured_enabled:$("assuredEnabled").checked,
   main_image:$("mainImage").value.trim(),images,
-  badge:$("badge").value.trim(),is_active:$("active").value==="true",updated_at:new Date().toISOString()
+  badge:$("badge").value.trim(),is_active:$("active").value==="true",highlights:normalizeHighlights(detailsDraft.highlights),all_details:normalizeAllDetails(detailsDraft.all_details),updated_at:new Date().toISOString()
  };
 
  const btn=$("saveBtn");btn.disabled=true;
