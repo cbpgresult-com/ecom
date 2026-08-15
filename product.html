@@ -1586,6 +1586,38 @@ a{text-decoration:none;color:inherit}
 }
 @keyframes desktopProductSpin{to{transform:rotate(360deg)}}
 @media(max-width:900px){#desktopProductPageLoader{display:none!important}}
+
+:root{
+  --violet:#6d28d9;
+  --violet2:#7c3aed;
+  --light-violet:#f3e8ff;
+  --green:#dcfce7;
+  --green-dark:#15803d;
+  --white:#fff;
+  --text:#171717;
+  --muted:#737373;
+  --border:#e5e7eb;
+  --bg:#f7f7fb;
+}
+
+/* Exact Index header: cart must remain visible on laptop/desktop */
+@media(min-width:901px){
+  #desktopIndexHeader .header{
+    display:flex !important;
+    align-items:center !important;
+  }
+
+  #desktopIndexHeader .cart-btn{
+    display:flex !important;
+    flex:0 0 auto !important;
+    visibility:visible !important;
+    opacity:1 !important;
+  }
+
+  #desktopIndexHeader .logo{
+    color:var(--violet) !important;
+  }
+}
 </style>
 </head>
 
@@ -2247,6 +2279,203 @@ window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
+
+
+/* =========================================================
+   ACCOUNT
+========================================================= */
+
+const accountBtn =
+  document.getElementById("accountBtn");
+
+const accountMenu =
+  document.getElementById("accountMenu");
+
+const accountName =
+  document.getElementById("accountName");
+
+const loggedOutMenu =
+  document.getElementById("loggedOutMenu");
+
+const loggedInMenu =
+  document.getElementById("loggedInMenu");
+
+const welcomeName =
+  document.getElementById("welcomeName");
+
+
+accountBtn.addEventListener("click", function(e){
+
+  e.stopPropagation();
+
+  accountMenu.classList.toggle("show");
+
+  accountBtn.classList.toggle(
+    "open",
+    accountMenu.classList.contains("show")
+  );
+
+});
+
+
+document.addEventListener("click",function(e){
+
+  if(!document.getElementById("accountArea").contains(e.target)){
+
+    accountMenu.classList.remove("show");
+
+    accountBtn.classList.remove("open");
+
+  }
+
+});
+
+
+/* =========================================================
+   GET FIRST NAME
+========================================================= */
+
+function getFirstName(fullName){
+
+  if(!fullName) return "User";
+
+  fullName =
+    String(fullName).trim();
+
+  return fullName
+    .split(/\s+/)[0];
+
+}
+
+
+/* =========================================================
+   LOAD LOGIN STATE
+========================================================= */
+
+async function loadAccount(){
+
+  try{
+
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
+
+
+    if(!user){
+
+      /* NOT LOGGED IN */
+
+      accountName.textContent =
+        "Login";
+
+      loggedOutMenu.style.display =
+        "block";
+
+      loggedInMenu.style.display =
+        "none";
+
+      return;
+
+    }
+
+
+    /* LOGGED IN */
+
+    let firstName = "";
+
+
+    /*
+      accounts table:
+      id
+      email
+      full_name
+      mobile
+    */
+
+    const {
+      data:account
+    } =
+    await supabaseClient
+      .from("accounts")
+      .select("full_name")
+      .eq("id",user.id)
+      .maybeSingle();
+
+
+    if(account && account.full_name){
+
+      firstName =
+        getFirstName(account.full_name);
+
+    }
+
+
+    /* fallback */
+
+    if(!firstName && user.user_metadata){
+
+      firstName =
+        getFirstName(
+          user.user_metadata.full_name ||
+          user.user_metadata.name ||
+          user.email
+        );
+
+    }
+
+
+    if(!firstName){
+
+      firstName = "User";
+
+    }
+
+
+    accountName.textContent =
+      firstName;
+
+    welcomeName.textContent =
+      "Welcome, " + firstName + "!";
+
+
+    loggedOutMenu.style.display =
+      "none";
+
+    loggedInMenu.style.display =
+      "block";
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Account error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  function(){
+
+    setTimeout(
+      loadAccount,
+      100
+    );
+
+  }
+);
+
 
 
 /* =========================================================
@@ -4754,6 +4983,45 @@ window.addEventListener(
 if(window.innerWidth<=900){document.body.style.overflow="hidden";}
 
 load();
+
+
+/* =========================================================
+   PRODUCT DESKTOP HEADER SEARCH
+   ========================================================= */
+(function(){
+  const input=document.getElementById("searchInput");
+  if(!input || input.dataset.realIndexSearch==="1") return;
+
+  input.dataset.realIndexSearch="1";
+
+  function openSearch(){
+    const q=input.value.trim();
+    if(!q) return;
+    window.location.href="index.html?search="+encodeURIComponent(q);
+  }
+
+  input.addEventListener("keydown",function(e){
+    if(e.key==="Enter"){
+      e.preventDefault();
+      openSearch();
+    }
+  });
+
+  const icon=document.querySelector("#desktopIndexHeader .search-icon");
+  if(icon){
+    icon.style.cursor="pointer";
+    icon.addEventListener("click",openSearch);
+  }
+})();
+
+
+/* =========================================================
+   REAL INDEX HEADER INITIALIZATION ON PRODUCT PAGE
+   ========================================================= */
+if(window.innerWidth > 900){
+  try{ loadAccount(); }catch(e){ console.error(e); }
+  try{ loadCartCount(); }catch(e){ console.error(e); }
+}
 
 </script>
 
