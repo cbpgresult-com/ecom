@@ -44,7 +44,7 @@ a{text-decoration:none;color:inherit}
   border-right:1px solid #eee
 }
 
-/* --- image slider --- */
+/* IMAGE SLIDER */
 
 .main{
   height:550px;
@@ -80,9 +80,7 @@ a{text-decoration:none;color:inherit}
   scrollbar-width:none
 }
 
-.slider::-webkit-scrollbar{
-  display:none
-}
+.slider::-webkit-scrollbar{display:none}
 
 .slide{
   flex:0 0 100%;
@@ -176,7 +174,7 @@ a{text-decoration:none;color:inherit}
   transition:width .2s,background .2s
 }
 
-/* --- info --- */
+/* INFO */
 
 .info{
   padding:38px 42px;
@@ -269,7 +267,7 @@ a{text-decoration:none;color:inherit}
   gap:6px
 }
 
-/* Qty */
+/* QTY */
 
 .qtyrow{
   display:flex;
@@ -305,7 +303,7 @@ a{text-decoration:none;color:inherit}
   font-size:12px
 }
 
-/* Customize */
+/* CUSTOMIZE */
 
 #customizeWrap{
   display:none;
@@ -318,13 +316,13 @@ a{text-decoration:none;color:inherit}
   width:125px;
   height:34px;
   border:1px solid #ddd;
-  border-radius:9px;
-  padding:0 10px;
+  border-radius:8px;
+  padding:0 9px;
   outline:none;
   background:#fff
 }
 
-/* Delivery */
+/* DELIVERY */
 
 .deliveryDetails{
   margin-top:24px
@@ -418,7 +416,7 @@ a{text-decoration:none;color:inherit}
   font-weight:800
 }
 
-/* Features */
+/* FEATURES */
 
 .features{
   display:grid;
@@ -496,7 +494,7 @@ a{text-decoration:none;color:inherit}
   color:#1a1a1a
 }
 
-/* Details */
+/* DETAILS */
 
 .details{
   margin-top:18px;
@@ -531,8 +529,6 @@ a{text-decoration:none;color:inherit}
   line-height:1.8
 }
 
-/* Toast */
-
 .toast{
   position:fixed;
   left:50%;
@@ -554,7 +550,7 @@ a{text-decoration:none;color:inherit}
   transform:translate(-50%,0)
 }
 
-/* Mobile */
+/* MOBILE */
 
 @media(max-width:900px){
 
@@ -564,10 +560,10 @@ a{text-decoration:none;color:inherit}
     min-width:0
   }
 
-  #customizeInput{
+  #customizeWrap input{
     width:100%!important;
     max-width:135px;
-    height:34px!important
+    height:32px!important
   }
 
   #customizeWrap label{
@@ -751,6 +747,8 @@ style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-it
 
 <div class="grid">
 
+<!-- GALLERY -->
+
 <div class="gallery">
 
 <div class="main">
@@ -777,6 +775,7 @@ aria-label="Next image">›</button>
 
 </div>
 
+<!-- PRODUCT INFO -->
 
 <div class="info">
 
@@ -790,15 +789,11 @@ aria-label="Next image">›</button>
 </div>
 
 <div class="pricebox">
-
 <span id="price" class="price"></span>
 <br>
-
 <span id="mrp" class="mrp"></span>
 <span id="off" class="off"></span>
-
 </div>
-
 
 <!-- DELIVERY DETAILS -->
 
@@ -816,21 +811,17 @@ id="deliveryAddressRow"
 role="button"
 tabindex="0"
 onclick="openAddressSelector()"
-onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()"
->
+onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
 
 <div class="deliveryIcon">⌖</div>
 
-<div
-id="deliveryAddressText"
-class="deliveryAddressText">
+<div id="deliveryAddressText" class="deliveryAddressText">
 Add delivery address
 </div>
 
 <div class="deliveryArrow">›</div>
 
 </div>
-
 
 <div class="deliveryDate">
 
@@ -841,7 +832,6 @@ Delivery by …
 </div>
 
 </div>
-
 
 <div class="deliverySeller">
 
@@ -865,13 +855,13 @@ See other sellers
 
 </div>
 
+<!-- DESCRIPTION -->
 
 <div id="description" class="desc"></div>
 
 <div id="stock" class="stock"></div>
 
-
-<!-- QTY -->
+<!-- QTY + CUSTOMIZE -->
 
 <div class="qtyrow">
 
@@ -887,17 +877,10 @@ Qty.
 
 </div>
 
-
-<!-- CUSTOMIZE -->
-
-<div
-id="customizeWrap"
-style="display:none;align-items:center;gap:7px;margin-left:4px;"
->
+<div id="customizeWrap">
 
 <label
-for="customizeInput"
-style="font-size:12px;font-weight:800;white-space:nowrap;">
+for="customizeInput">
 Customize
 </label>
 
@@ -905,18 +888,15 @@ Customize
 id="customizeInput"
 type="text"
 maxlength="100"
-placeholder="Name / Text"
->
+placeholder="Name / Text">
 
 </div>
 
 </div>
-
 
 <!-- FEATURES -->
 
 <div id="features" class="features"></div>
-
 
 <!-- CTA -->
 
@@ -937,11 +917,9 @@ onclick="buyNow()">
 </div>
 
 </div>
-
 </div>
 
 </section>
-
 
 <section
 id="details"
@@ -970,67 +948,73 @@ Delivery & Returns
 
 </div>
 
-<div
-id="content"
-class="content">
-</div>
+<div id="content" class="content"></div>
 
 </section>
 
 </main>
 
-
 <div id="toast" class="toast"></div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
+/* =========================================================
+   SUPABASE
+   ========================================================= */
 
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmxlIiwicmVmIjoiYnN6b2p2aGl0c29hbWhrc3lqdWwiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4NjU5NjQ5MywiZXhwIjoyMTAyMTcyNDkzfQ.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+const SUPABASE_URL =
+"https://bszojvhitsoamhksyjul.supabase.co";
 
-const supabaseClient=
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFja2tzLnN1cGFiaW5zLmNvbSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+const supabaseClient =
 window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
-let product=null;
-let qty=1;
-let currentIndex=0;
 
+/* =========================================================
+   GLOBAL
+   ========================================================= */
 
-const money=n=>
-"₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
+let product = null;
+let qty = 1;
+let currentIndex = 0;
 
+const money = n =>
+"₹" +
+Math.round(Number(n)||0)
+.toLocaleString("en-IN");
 
-const id=()=>
+const id = () =>
 new URLSearchParams(location.search).get("id");
 
-
 function v(o,ks,d=""){
-for(const k of ks)
+for(const k of ks){
 if(o[k]!=null && o[k]!=="")
 return o[k];
-return d
+}
+return d;
 }
 
-
 function num(v){
-const m=String(v??"")
+const m =
+String(v??"")
 .match(/[0-9,]+(?:\.[0-9]+)?/);
 
 return m
-?Number(m[0].replace(/,/g,""))
-:0
+? Number(m[0].replace(/,/g,""))
+:0;
 }
-
 
 function toast(x){
 
-const t=document.getElementById("toast");
+const t =
+document.getElementById("toast");
 
 t.textContent=x;
 
@@ -1038,17 +1022,17 @@ t.classList.add("show");
 
 clearTimeout(window.tt);
 
-window.tt=setTimeout(
+window.tt =
+setTimeout(
 ()=>t.classList.remove("show"),
 2200
 );
-
 }
-
 
 function escapeHtml(value){
 
-const s=String(value??"");
+const s =
+String(value??"");
 
 return s.replace(
 /[&<>"']/g,
@@ -1068,91 +1052,59 @@ c=>({
    SAVED ADDRESS
    ========================================================= */
 
-function addressObjectToText(x){
+function getSavedAddress(){
 
-if(!x) return "";
-
-if(typeof x==="string"){
-
-const text=x.trim();
-
-if(!text) return "";
-
-return text;
-}
-
-if(typeof x!=="object") return "";
-
-
-/* Nested address object */
-
-if(x.address && typeof x.address==="object"){
-
-const nested=addressObjectToText(x.address);
-
-if(nested) return nested;
-
-}
-
-
-/* Common full-address fields */
-
-const directFields=[
-
-"x.address",
-
-"full_address",
-"fullAddress",
-"formatted_address",
-"formattedAddress",
-"display_address",
-"displayAddress",
-"delivery_address",
+const keys = [
+"selectedAddress",
+"savedAddress",
 "deliveryAddress",
-"address_text",
-"addressText"
-
+"currentAddress",
+"userAddress",
+"address"
 ];
 
+for(const key of keys){
 
-for(const key of directFields){
+try{
 
-const value=key.includes(".")
-?null
-:x[key];
+const raw =
+localStorage.getItem(key);
 
-if(value!=null && String(value).trim()){
+if(!raw) continue;
 
-return String(value).trim();
+let x=raw;
+
+try{
+x=JSON.parse(raw);
+}catch{}
+
+if(typeof x==="string" && x.trim()){
+
+return x.trim();
 
 }
 
-}
-
-
-/* Build address from individual fields */
+if(x && typeof x==="object"){
 
 const parts=[
 
+x.address,
+x.full_address,
+x.fullAddress,
+
+x.formatted_address,
+x.formattedAddress,
+
+x.addressLine,
+x.address_line,
+
+x.house,
 x.house_no,
-x.houseNo,
-x.house_number,
-
-x.building,
-x.building_name,
-x.buildingName,
-
-x.street,
-x.street_name,
-x.streetName,
-
-x.road,
+x.houseNumber,
 
 x.area,
 x.locality,
-x.nearby,
-
-x.landmark,
+x.colony,
 
 x.city,
 x.district,
@@ -1160,254 +1112,57 @@ x.district,
 x.state,
 
 x.pincode,
-x.pin,
-x.zip,
-x.zipcode
+x.pin
 
 ]
 .filter(
 v=>v!=null &&
-String(v).trim()!==""
+String(v).trim()
 )
 .map(
 v=>String(v).trim()
 );
 
-
 if(parts.length){
 
-return [...new Set(parts)].join(", ");
+return [
+...new Set(parts)
+].join(", ");
 
 }
 
-return "";
-
 }
 
-
-/*
-   First check known localStorage/sessionStorage keys.
-*/
-
-function getSavedAddress(){
-
-const keys=[
-
-"selectedAddress",
-"selected_address",
-
-"savedAddress",
-"saved_address",
-
-"deliveryAddress",
-"delivery_address",
-
-"currentAddress",
-"current_address",
-
-"userAddress",
-"user_address",
-
-"address",
-
-"checkoutAddress",
-"checkout_address",
-
-"selectedDeliveryAddress",
-"selected_delivery_address"
-
-];
-
-
-/* localStorage */
-
-for(const key of keys){
-
-try{
-
-const raw=localStorage.getItem(key);
-
-if(!raw) continue;
-
-let value=raw;
-
-try{
-value=JSON.parse(raw);
 }catch{}
 
-const result=addressObjectToText(value);
-
-if(result) return result;
-
-}catch(e){}
-
 }
 
-
-/* sessionStorage */
-
-for(const key of keys){
-
-try{
-
-const raw=sessionStorage.getItem(key);
-
-if(!raw) continue;
-
-let value=raw;
-
-try{
-value=JSON.parse(raw);
-}catch{}
-
-const result=addressObjectToText(value);
-
-if(result) return result;
-
-}catch(e){}
-
-}
-
-
-/*
-   Extra fallback:
-   Search all localStorage values for address-like objects.
-*/
-
-try{
-
-for(let i=0;i<localStorage.length;i++){
-
-const key=localStorage.key(i);
-
-if(!key) continue;
-
-const raw=localStorage.getItem(key);
-
-if(!raw) continue;
-
-let value=raw;
-
-try{
-value=JSON.parse(raw);
-}catch{}
-
-if(
-value &&
-typeof value==="object"
-){
-
-const result=addressObjectToText(value);
-
-if(
-result &&
-(
-value.city ||
-value.state ||
-value.pincode ||
-value.pin ||
-value.locality ||
-value.area ||
-value.address
-)
-){
-
-return result;
-
-}
-
-}
-
-}
-
-}catch(e){}
-
-
-/*
-   Extra fallback for sessionStorage
-*/
-
-try{
-
-for(let i=0;i<sessionStorage.length;i++){
-
-const key=sessionStorage.key(i);
-
-if(!key) continue;
-
-const raw=sessionStorage.getItem(key);
-
-if(!raw) continue;
-
-let value=raw;
-
-try{
-value=JSON.parse(raw);
-}catch{}
-
-if(
-value &&
-typeof value==="object"
-){
-
-const result=addressObjectToText(value);
-
-if(
-result &&
-(
-value.city ||
-value.state ||
-value.pincode ||
-value.pin ||
-value.locality ||
-value.area ||
-value.address
-)
-){
-
-return result;
-
-}
-
-}
-
-}
-
-}catch(e){}
-
-
-/* No saved address */
-
-return "";
+return "Add delivery address";
 
 }
 
 
 /* =========================================================
-   ADDRESS SELECTOR
+   ADDRESS OPEN
    ========================================================= */
 
 function openAddressSelector(){
 
 try{
 
-const target=
-localStorage.getItem("addressSelectorUrl");
+const target =
+localStorage.getItem(
+"addressSelectorUrl"
+);
 
 if(target){
 
 location.href=target;
-
 return;
 
 }
 
-}catch(e){}
-
-
-/*
-   Existing checkout flow remains same.
-*/
+}catch{}
 
 location.href="/ecom/checkout.html";
 
@@ -1416,6 +1171,7 @@ location.href="/ecom/checkout.html";
 
 /* =========================================================
    DELIVERY DATE
+   TODAY + 5 DAYS
    ========================================================= */
 
 function getDeliveryDate(){
@@ -1424,11 +1180,9 @@ const d=new Date();
 
 d.setHours(0,0,0,0);
 
-/*
-   5 days after today
-*/
-
-d.setDate(d.getDate()+5);
+d.setDate(
+d.getDate()+5
+);
 
 return d.toLocaleDateString(
 "en-IN",
@@ -1442,48 +1196,30 @@ weekday:"short"
 }
 
 
-/* =========================================================
-   DELIVERY CARD
-   ========================================================= */
-
 function renderDeliveryDetails(){
 
-const address=
+const address =
 document.getElementById(
 "deliveryAddressText"
 );
 
-const date=
+const date =
 document.getElementById(
 "deliveryDateText"
 );
 
-
-const savedAddress=
-getSavedAddress();
-
-
 if(address){
 
-if(savedAddress){
-
-address.textContent=
-savedAddress;
-
-}else{
-
-address.textContent=
-"Add delivery address";
+address.textContent =
+getSavedAddress();
 
 }
-
-}
-
 
 if(date){
 
-date.textContent=
-"Delivery by "+getDeliveryDate();
+date.textContent =
+"Delivery by "+
+getDeliveryDate();
 
 }
 
@@ -1499,26 +1235,27 @@ async function load(){
 try{
 
 if(!id())
-throw Error("Product ID missing");
-
+throw Error(
+"Product ID missing"
+);
 
 const {
 data,
 error
-}=
+} =
 await supabaseClient
 .from("products")
 .select("*")
 .eq("id",id())
 .single();
 
-
 if(error)
 throw error;
 
 
-let gallery=[];
+/* IMAGES */
 
+let gallery=[];
 
 if(Array.isArray(data.images)){
 
@@ -1532,7 +1269,7 @@ typeof data.images==="string"
 
 try{
 
-const parsed=
+const parsed =
 JSON.parse(data.images);
 
 if(Array.isArray(parsed))
@@ -1542,21 +1279,21 @@ gallery=parsed;
 
 }
 
-
-gallery=
+gallery =
 gallery
 .map(
-x=>
-typeof x==="string"
+x=>typeof x==="string"
 ?x
-:(x?.url||x?.src||x?.image||"")
+:(x?.url ||
+x?.src ||
+x?.image ||
+"")
 )
 .filter(Boolean);
 
-
-const primary=
-data.main_image||
-gallery[0]||
+const primary =
+data.main_image ||
+gallery[0] ||
 v(
 data,
 [
@@ -1568,21 +1305,23 @@ data,
 ""
 );
 
-
-const images=[
+const images =
+[
 primary,
 ...gallery.filter(
 x=>x!==primary
 )
-].filter(Boolean);
+]
+.filter(Boolean);
 
+
+/* PRODUCT */
 
 product={
 
 id:data.id,
 
-title:
-v(
+title:v(
 data,
 [
 "name",
@@ -1714,17 +1453,18 @@ data.assured_enabled===undefined
 
 };
 
-
 render();
 
+}
 
-}catch(e){
+catch(e){
 
 console.error(e);
 
 document.getElementById(
 "loading"
 ).innerHTML=
+
 "<div style='text-align:center'>"+
 "<h2>Product not found</h2>"+
 "<p>"+e.message+"</p>"+
@@ -1742,7 +1482,6 @@ document.getElementById(
 function render(){
 
 renderDeliveryDetails();
-
 
 document.getElementById(
 "loading"
@@ -1770,13 +1509,15 @@ money(product.price);
 
 
 /*
-   Buy button price changes with quantity
+ IMPORTANT:
+ BUY BUTTON PAR PRODUCT PRICE HI RAHEGA.
+ QTY BADHNE PAR BUTTON PRICE NAHI BADHEGA.
 */
 
 document.getElementById(
 "buyPrice"
 ).textContent=
-money(product.price*qty);
+money(product.price);
 
 
 document.getElementById(
@@ -1843,20 +1584,19 @@ product.stock+
 "✕ Out of Stock";
 
 
-/* Customize */
+/* CUSTOMIZE */
 
-const customizeWrap=
+const customizeWrap =
 document.getElementById(
 "customizeWrap"
 );
 
 if(customizeWrap){
 
-customizeWrap.style.display=
+customizeWrap.style.display =
 product.customize_enabled
 ?"flex"
 :"none";
-
 
 if(!product.customize_enabled){
 
@@ -1869,79 +1609,74 @@ document.getElementById(
 }
 
 
-/* Features */
+/* FEATURES */
 
-const features=
+const features =
 document.getElementById(
 "features"
 );
 
 if(features){
 
-const returnText=
+const returnText =
 product.return_enabled
 ?
-product.return_days+"-Day Return"
+product.return_days+
+"-Day Return"
 :
 "No Return";
 
+let html="";
 
-features.innerHTML=
-
+html +=
 `<div class="feature">
 <div class="featureIcon">↩</div>
 <b>${returnText}</b>
-</div>`
+</div>`;
 
-+
+if(product.cod_enabled){
 
-(
-product.cod_enabled
-?
+html +=
 `<div class="feature">
 <div class="featureIcon">▣</div>
 <b>Cash on Delivery</b>
-</div>`
-:""
-)
+</div>`;
 
-+
+}
 
-(
-product.assured_enabled
-?
+if(product.assured_enabled){
+
+html +=
 `<div class="feature">
 <div class="featureIcon">✓</div>
 <b>Trikunt Assured</b>
-</div>`
-:""
-);
+</div>`;
 
+}
 
-const count=
+features.innerHTML=html;
+
+const count =
 1+
 (product.cod_enabled?1:0)+
 (product.assured_enabled?1:0);
 
-
-features.style.gridTemplateColumns=
+features.style.gridTemplateColumns =
 "repeat("+count+",1fr)";
 
 }
 
 
-/* Images */
+/* IMAGES */
 
 currentIndex=0;
 
-
-const slider=
+const slider =
 document.getElementById(
 "slider"
 );
 
-
-slider.innerHTML=
+slider.innerHTML =
 product.images
 .map(
 (url,i)=>
@@ -1963,15 +1698,12 @@ Image unavailable
 )
 .join("");
 
-
 slider.scrollLeft=0;
-
 
 slider.removeEventListener(
 "scroll",
 onSliderScroll
 );
-
 
 slider.addEventListener(
 "scroll",
@@ -1980,64 +1712,52 @@ onSliderScroll,
 );
 
 
-/* Dots */
+/* DOTS */
 
-const dots=
+const dots =
 document.getElementById(
 "dots"
 );
 
-
-const multi=
+const multi =
 product.images.length>1;
 
-
-dots.innerHTML=
+dots.innerHTML =
 multi
 ?
-product.images
-.map(
+product.images.map(
 (_,i)=>
-
 `<button
 type="button"
 class="dot ${i===0?"active":""}"
 onclick="goToImage(${i})"
 aria-label="Go to image ${i+1}">
 </button>`
-
-)
-.join("")
+).join("")
 :"";
 
-
-dots.style.display=
-multi
-?"flex"
-:"none";
-
+dots.style.display =
+multi?"flex":"none";
 
 document
 .querySelectorAll(".navBtn")
 .forEach(
 b=>
 b.style.display=
-multi
-?""
-:"none"
+multi?"":"none"
 );
-
 
 updateNavState();
 
 
-content.innerHTML=
+/* DETAILS */
+
+content.innerHTML =
 "<h3>"+
 product.title+
 "</h3><p>"+
 product.description+
 "</p>";
-
 
 updateCart();
 
@@ -2045,35 +1765,33 @@ updateCart();
 
 
 /* =========================================================
-   IMAGE SLIDER
+   SLIDER
    ========================================================= */
 
 function onSliderScroll(){
 
-const slider=
+const slider =
 document.getElementById(
 "slider"
 );
 
-const w=
+const w =
 slider.clientWidth||1;
 
-const idx=
+const idx =
 Math.round(
 slider.scrollLeft/w
 );
-
 
 if(idx!==currentIndex){
 
 currentIndex=idx;
 
-product.image=
-product.images[currentIndex]||
+product.image =
+product.images[currentIndex] ||
 product.image;
 
 updateDots();
-
 updateNavState();
 
 }
@@ -2084,9 +1802,7 @@ updateNavState();
 function updateDots(){
 
 document
-.querySelectorAll(
-"#dots .dot"
-)
+.querySelectorAll("#dots .dot")
 .forEach(
 (d,i)=>
 d.classList.toggle(
@@ -2100,29 +1816,23 @@ i===currentIndex
 
 function updateNavState(){
 
-const prev=
+const prev =
 document.querySelector(
 ".prevBtn"
 );
 
-const next=
+const next =
 document.querySelector(
 ".nextBtn"
 );
 
-
-if(
-!prev||
-!next||
-!product
-)
+if(!prev||!next||!product)
 return;
 
-
-prev.disabled=
+prev.disabled =
 currentIndex<=0;
 
-next.disabled=
+next.disabled =
 currentIndex>=
 product.images.length-1;
 
@@ -2131,13 +1841,12 @@ product.images.length-1;
 
 function goToImage(i){
 
-const slider=
+const slider =
 document.getElementById(
 "slider"
 );
 
-
-currentIndex=
+currentIndex =
 Math.max(
 0,
 Math.min(
@@ -2146,11 +1855,9 @@ i
 )
 );
 
-
-product.image=
-product.images[currentIndex]||
+product.image =
+product.images[currentIndex] ||
 product.image;
-
 
 slider.scrollTo({
 left:
@@ -2159,9 +1866,7 @@ slider.clientWidth,
 behavior:"smooth"
 });
 
-
 updateDots();
-
 updateNavState();
 
 }
@@ -2191,7 +1896,7 @@ currentIndex+1
 
 function changeQty(n){
 
-qty=
+qty =
 Math.max(
 1,
 Math.min(
@@ -2200,23 +1905,19 @@ qty+n
 )
 );
 
-
 document.getElementById(
 "qty"
-).textContent=
-qty;
+).textContent=qty;
 
 
 /*
-   Buy button price updates.
+ BUY BUTTON PRICE FIXED
 */
 
 document.getElementById(
 "buyPrice"
 ).textContent=
-money(
-product.price*qty
-);
+money(product.price);
 
 }
 
@@ -2229,7 +1930,7 @@ async function getUser(){
 
 const {
 data
-}=
+} =
 await supabaseClient
 .auth
 .getSession();
@@ -2248,14 +1949,14 @@ async function addToCart(){
 if(!product)
 return;
 
-
-const user=
+const user =
 await getUser();
-
 
 if(!user){
 
-toast("Please login first");
+toast(
+"Please login first"
+);
 
 setTimeout(
 ()=>
@@ -2272,7 +1973,7 @@ return;
 const {
 data:old,
 error:readError
-}=
+} =
 await supabaseClient
 .from("cart_items")
 .select("id,qty")
@@ -2290,22 +1991,20 @@ return;
 }
 
 
-const newQty=
+const newQty =
 (old?.qty||0)+qty;
 
 
-const customizeInput=
+const customizeInput =
 document.getElementById(
 "customizeInput"
 );
 
 
-const customizeText=
+const customizeText =
 product.customize_enabled
 ?
-(
-customizeInput?.value||""
-).trim()
+(customizeInput?.value||"").trim()
 :"";
 
 
@@ -2325,7 +2024,8 @@ mrp:product.mrp,
 
 qty:newQty,
 
-customize_text:customizeText,
+customize_text:
+customizeText,
 
 updated_at:
 new Date().toISOString()
@@ -2335,7 +2035,7 @@ new Date().toISOString()
 
 const {
 error
-}=
+} =
 await supabaseClient
 .from("cart_items")
 .upsert(
@@ -2355,7 +2055,6 @@ return;
 
 }
 
-
 updateCart();
 
 toast("✓ Added to Cart");
@@ -2364,18 +2063,17 @@ toast("✓ Added to Cart");
 
 
 /* =========================================================
-   CART BADGE
+   CART COUNT
    ========================================================= */
 
 async function updateCart(){
 
-const user=
+const user =
 await getUser();
-
 
 if(!user){
 
-const cartBadge=
+const cartBadge =
 document.getElementById(
 "cartCount"
 );
@@ -2391,7 +2089,7 @@ return;
 const {
 data,
 error
-}=
+} =
 await supabaseClient
 .from("cart_items")
 .select("qty")
@@ -2407,15 +2105,14 @@ return;
 }
 
 
-const cartBadge=
+const cartBadge =
 document.getElementById(
 "cartCount"
 );
 
-
 if(cartBadge){
 
-cartBadge.textContent=
+cartBadge.textContent =
 (data||[])
 .reduce(
 (s,x)=>
@@ -2437,14 +2134,14 @@ async function buyNow(){
 if(!product)
 return;
 
-
-const user=
+const user =
 await getUser();
-
 
 if(!user){
 
-toast("Please login first");
+toast(
+"Please login first"
+);
 
 setTimeout(
 ()=>
@@ -2458,18 +2155,16 @@ return;
 }
 
 
-const customizeInput=
+const customizeInput =
 document.getElementById(
 "customizeInput"
 );
 
 
-const customizeText=
+const customizeText =
 product.customize_enabled
 ?
-(
-customizeInput?.value||""
-).trim()
+(customizeInput?.value||"").trim()
 :"";
 
 
@@ -2484,7 +2179,8 @@ price:product.price,
 mrp:product.mrp,
 qty:qty,
 product_id:product.id,
-customize_text:customizeText
+customize_text:
+customizeText
 }]
 )
 );
@@ -2508,11 +2204,10 @@ document
 x=>x.classList.remove("active")
 );
 
-
 b.classList.add("active");
 
 
-content.innerHTML=
+content.innerHTML =
 
 type==="about"
 
@@ -2533,13 +2228,20 @@ type==="specs"
 "<p><b>Category:</b> "+
 (product.category||"—")+
 "</p>"+
+
 "<p><b>Rating:</b> ★ "+
 product.rating+
 "</p>"+
+
 "<p><b>Product ID:</b> "+
 product.id+
 "</p>"+
-"<p><b>Payment:</b> COD available</p>"
+
+"<p><b>Payment:</b> "+
+(product.cod_enabled
+?"COD available"
+:"COD unavailable")+
+"</p>"
 
 :
 
@@ -2558,7 +2260,7 @@ product.return_days+"-Day Return"
 
 
 /* =========================================================
-   RESIZE
+   EVENTS
    ========================================================= */
 
 window.addEventListener(
@@ -2569,32 +2271,15 @@ goToImage(currentIndex);
 }
 );
 
-
-/*
-   Address changes from another tab/page
-*/
-
 window.addEventListener(
 "storage",
 renderDeliveryDetails
 );
 
 
-/*
-   When page becomes visible again,
-   refresh saved address.
-*/
-
-document.addEventListener(
-"visibilitychange",
-()=>{
-if(!document.hidden)
-renderDeliveryDetails();
-}
-);
-
-
-/* START */
+/* =========================================================
+   START
+   ========================================================= */
 
 load();
 
