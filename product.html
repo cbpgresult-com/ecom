@@ -2976,11 +2976,28 @@ async function load(){
 
     console.error(e);
 
+    const mobileLoading =
+      document.getElementById("mobileProductLoading");
+
+    const mobileHeader =
+      document.getElementById("mobileProductHeader");
+
+    if(mobileLoading){
+      mobileLoading.classList.add("hide");
+      mobileLoading.setAttribute("aria-hidden","true");
+    }
+
+    if(mobileHeader){
+      mobileHeader.classList.remove("show");
+    }
+
+    document.body.style.overflow="";
+
     document.getElementById(
       "loading"
     ).innerHTML=`
 
-      <div style="text-align:center">
+      <div style="text-align:center;padding:24px">
 
         <h2>Product not found</h2>
 
@@ -3516,8 +3533,8 @@ async function addToCart(){
     toast("Please login first");
 
     setTimeout(
-      ()=>
-        navigateWithProductLoader("/ecom/account.html");
+      () =>
+        navigateWithProductLoader("/ecom/account.html"),
       800
     );
 
@@ -3681,8 +3698,8 @@ async function buyNow(){
     toast("Please login first");
 
     setTimeout(
-      ()=>
-        navigateWithProductLoader("/ecom/account.html");
+      () =>
+        navigateWithProductLoader("/ecom/account.html"),
       800
     );
 
