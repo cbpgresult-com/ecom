@@ -2757,7 +2757,52 @@ function showDetailsTab(type,button){
    LOAD PRODUCT
 ========================================================= */
 
-async function load(){
+async function syncProductLoaderAnimation(){
+
+  const loading =
+    document.getElementById(
+      "mobileProductLoading"
+    );
+
+  if(!loading) return;
+
+  const spinner =
+    loading.querySelector(
+      ".mobileProductLoadingSpinner"
+    );
+
+  if(!spinner) return;
+
+  const startedAt =
+    Number(
+      new URLSearchParams(
+        window.location.search
+      ).get("navt")
+    );
+
+  if(
+    !Number.isFinite(startedAt) ||
+    startedAt <= 0
+  ){
+    return;
+  }
+
+  const duration = 750;
+  const elapsed =
+    Math.max(
+      0,
+      Date.now() - startedAt
+    );
+
+  const phase =
+    elapsed % duration;
+
+  spinner.style.animationDelay =
+    (-phase) + "ms";
+}
+
+
+function load(){
 
   try{
 
