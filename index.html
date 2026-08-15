@@ -672,148 +672,62 @@ main{
   }
 }
 
-/* =========================================================
-   MOBILE PRODUCT CLICK LOADER
-   Shown on pointerdown BEFORE the product-card click navigates.
-   No timeout / requestAnimationFrame / artificial delay.
-========================================================= */
 #indexProductLoading{
-  position:fixed;
-  inset:0;
-  z-index:2147483647;
-  background:#f5f6f8;
-  display:none;
-  flex-direction:column;
-  pointer-events:none;
+  position:fixed;inset:0;z-index:2147483647;background:#f5f6f8;
+  display:none;flex-direction:column;pointer-events:none;
 }
-#indexProductLoading.show{
-  display:flex;
+#indexProductLoading.show{display:flex}
+#indexProductLoading .indexLoadingHeader{
+  height:62px;min-height:62px;background:#fff;border-bottom:1px solid #e5e7eb;
+  display:flex;align-items:center;gap:10px;padding:0 10px;
 }
-#indexProductLoading .indexProductLoadingHeader{
-  height:62px;
-  min-height:62px;
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:0 10px;
+#indexProductLoading .indexLoadingIcon{
+  width:40px;height:40px;border:0;background:transparent;display:flex;
+  align-items:center;justify-content:center;padding:0;
 }
-#indexProductLoading .indexProductLoadingBack{
-  width:38px;
-  height:38px;
-  border:0;
-  background:transparent;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-  flex:0 0 38px;
+#indexProductLoading .indexLoadingIcon svg{width:25px;height:25px}
+#indexProductLoading .indexLoadingSpacer{flex:1}
+#indexProductLoading .indexLoadingCenter{
+  flex:1;display:flex;align-items:center;justify-content:center;
 }
-#indexProductLoading .indexProductLoadingBack svg{
-  width:25px;
-  height:25px;
+#indexProductLoading .indexLoadingSpinner{
+  width:48px;height:48px;border:4px solid #dbeafe;border-top-color:#2874f0;
+  border-radius:50%;animation:indexProductSpin .75s linear infinite;
 }
-#indexProductLoading .indexProductLoadingSpacer{
-  flex:1;
-}
-#indexProductLoading .indexProductLoadingAction{
-  width:40px;
-  height:40px;
-  border:0;
-  background:transparent;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-  position:relative;
-}
-#indexProductLoading .indexProductLoadingAction svg{
-  width:24px;
-  height:24px;
-}
-#indexProductLoading .indexProductLoadingCenter{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-#indexProductLoading .indexProductLoadingSpinner{
-  width:48px;
-  height:48px;
-  border:4px solid #dbeafe;
-  border-top-color:#2874f0;
-  border-radius:50%;
-  animation:indexProductSpin .75s linear infinite;
-}
-@keyframes indexProductSpin{
-  to{transform:rotate(360deg)}
-}
-@media(min-width:701px){
-  #indexProductLoading{
-    display:none!important;
-  }
-}
-
-
-/* Product grid: clicking/tapping must not show a hover/pressed flash */
-.product-card,
-.product-card:hover,
-.product-card:active,
-.product-card:focus,
-.product-card:focus-visible{
+@keyframes indexProductSpin{to{transform:rotate(360deg)}}
+.product-card{ -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+.product-card:hover,.product-card:active,.product-card:focus,.product-card:focus-visible{
   -webkit-tap-highlight-color:transparent;
 }
-
-@media (hover:hover){
-  .product-card:active{
-    transform:none !important;
-  }
-}
-
-
-.product-card{
-  -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
-}
+@media(hover:hover){.product-card:active{transform:none!important}}
+@media(min-width:901px){#indexProductLoading{display:none!important}}
 
 </style>
 </head>
 
 <body>
 
-
-<!-- ================= MOBILE PRODUCT CLICK LOADING ================= -->
 <div id="indexProductLoading" aria-hidden="true">
-  <div class="indexProductLoadingHeader">
-    <button class="indexProductLoadingBack" type="button" tabindex="-1" aria-hidden="true">
+  <div class="indexLoadingHeader">
+    <button class="indexLoadingIcon" type="button" tabindex="-1" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-        <path d="M19 12H5"></path>
-        <path d="m12 19-7-7 7-7"></path>
+        <path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path>
       </svg>
     </button>
-
-    <div class="indexProductLoadingSpacer"></div>
-
-    <button class="indexProductLoadingAction" type="button" tabindex="-1" aria-hidden="true">
+    <div class="indexLoadingSpacer"></div>
+    <button class="indexLoadingIcon" type="button" tabindex="-1" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-        <circle cx="11" cy="11" r="7"></circle>
-        <path d="m20 20-4-4"></path>
+        <circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path>
       </svg>
     </button>
-
-    <button class="indexProductLoadingAction" type="button" tabindex="-1" aria-hidden="true">
+    <button class="indexLoadingIcon" type="button" tabindex="-1" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-        <circle cx="9" cy="20" r="1"></circle>
-        <circle cx="18" cy="20" r="1"></circle>
+        <circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle>
         <path d="M3 4h2l2.4 11.5h10.8L21 8H6"></path>
       </svg>
     </button>
   </div>
-
-  <div class="indexProductLoadingCenter">
-    <div class="indexProductLoadingSpinner" aria-label="Loading"></div>
-  </div>
+  <div class="indexLoadingCenter"><div class="indexLoadingSpinner"></div></div>
 </div>
 
 
@@ -1524,6 +1438,23 @@ function getMainImage(product){
 }
 
 
+
+let productNavigationStarted = false;
+
+document.addEventListener("pointerdown",function(event){
+  if(window.innerWidth > 900) return;
+
+  const card = event.target.closest(".product-card");
+  if(!card) return;
+
+  const loader = document.getElementById("indexProductLoading");
+  if(!loader) return;
+
+  productNavigationStarted = true;
+  loader.classList.add("show");
+  loader.setAttribute("aria-hidden","false");
+},true);
+
 /* =========================================================
    PRODUCT CARD
 ========================================================= */
@@ -1657,15 +1588,15 @@ function createProductCard(product){
 
       if(!product.id) return;
 
-      const startedAt =
-        productNavigationStartedAt ||
-        Date.now();
-
-      window.location.href =
+      /*
+        Do NOT put a blocking overlay on index.html.
+        The product page owns the real loader. This guarantees
+        desktop and mobile navigation both happen immediately.
+      */
+window.location.href =
         "product.html?id=" +
         encodeURIComponent(product.id) +
-        "&navt=" +
-        encodeURIComponent(startedAt);
+        (productNavigationStarted ? "&navt=1" : "");
 
     }
   );
@@ -1874,53 +1805,6 @@ function goAccount(){
   );
 
 }
-
-
-
-let productNavigationStartedAt = 0;
-
-function showIndexProductLoader(){
-
-  const loader =
-    document.getElementById("indexProductLoading");
-
-  if(!loader) return;
-
-  productNavigationStartedAt = Date.now();
-
-  loader.classList.add("show");
-  loader.setAttribute("aria-hidden","false");
-
-}
-
-/* =========================================================
-   PRODUCT CARD LOADER — POINTERDOWN
-   pointerdown fires before click, allowing the loader to paint
-   before the browser starts navigation. There is NO delay.
-========================================================= */
-document.addEventListener(
-  "pointerdown",
-  function(e){
-
-    if(window.innerWidth > 700) return;
-
-    const card =
-      e.target.closest(".product-card");
-
-    if(!card) return;
-
-    const loader =
-      document.getElementById(
-        "indexProductLoading"
-      );
-
-    if(!loader) return;
-
-    showIndexProductLoader();
-
-  },
-  true
-);
 
 
 /* =========================================================
