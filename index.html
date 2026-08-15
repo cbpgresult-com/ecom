@@ -1765,6 +1765,85 @@ loadCartCount();
 loadProducts();
 
 
+
+/* =========================================================
+   SEARCH QUERY FROM PRODUCT PAGE
+========================================================= */
+(function(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const query =
+    (params.get("search") || "")
+      .trim()
+      .toLowerCase();
+
+  if(!query) return;
+
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
+  if(input){
+    input.value =
+      params.get("search") || "";
+  }
+
+  function applySearch(){
+
+    document
+      .querySelectorAll(".product-card")
+      .forEach(card => {
+
+        const title =
+          card
+            .querySelector(".product-name")
+            ?.textContent
+            .toLowerCase() || "";
+
+        card.style.display =
+          title.includes(query)
+            ? ""
+            : "none";
+
+      });
+
+  }
+
+  /*
+    Products are loaded asynchronously, so wait until cards exist.
+  */
+  let tries = 0;
+
+  const timer =
+    setInterval(
+      function(){
+
+        if(
+          document.querySelector(
+            ".product-card"
+          )
+        ){
+
+          clearInterval(timer);
+          applySearch();
+
+        }
+
+        if(++tries > 100){
+          clearInterval(timer);
+        }
+
+      },
+      50
+    );
+
+})();
+
 </script>
 
 </body>
