@@ -1203,14 +1203,6 @@ a{text-decoration:none;color:inherit}
   }
 }
 
-
-/* When arriving from index product-grid navigation, do NOT create a
-   second loader. The index page owns the transition loader. */
-@media(max-width:900px){
-  html.fromIndexNavigation #mobileProductLoading,html.fromIndexNavigation #loading{
-    display:none !important;
-  }
-
 /* ================= MOBILE PRODUCT HEADER + REAL LOADING ================= */
 .mobileProductHeader,.mobileProductLoading{display:none}
 @media(max-width:900px){
@@ -1243,19 +1235,11 @@ a{text-decoration:none;color:inherit}
 @keyframes productPageSpin{to{transform:rotate(360deg)}}
 }
 
+/* MOBILE: hide old Loading product block */
+@media(max-width:900px){
+  #loading{display:none!important;}
+}
 </style>
-
-<script>
-(function(){
-  try{
-    const params = new URLSearchParams(window.location.search);
-    if(params.get("navt")){
-      document.documentElement.classList.add("fromIndexNavigation");
-    }
-  }catch(e){}
-})();
-</script>
-
 </head>
 
 <body>
@@ -1665,15 +1649,6 @@ SUPABASE_KEY
 let product=null;
 let qty=1;
 let currentIndex=0;
-
-const cameFromIndexLoader =
-  Boolean(
-    new URLSearchParams(
-      window.location.search
-    ).get("navt")
-  );
-
-
 
 const money=n=>
 "₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
@@ -2786,36 +2761,6 @@ function showDetailsTab(type,button){
    LOAD PRODUCT
 ========================================================= */
 
-async function hideInitialProductLoader(){
-
-  /*
-    When coming from index, screenshot-1 loader MUST stay visible
-    until render() finishes. The normal "Loading product..." block
-    is hidden by CSS, so there is no intermediate loader.
-  */
-  if(cameFromIndexLoader){
-    const loading =
-      document.getElementById(
-        "mobileProductLoading"
-      );
-
-    if(loading){
-      loading.classList.remove("hide");
-      loading.setAttribute(
-        "aria-hidden",
-        "false"
-      );
-    }
-
-    document.body.style.overflow =
-      "hidden";
-
-    return;
-  }
-
-}
-
-
 async function load(){
 
   try{
@@ -3412,7 +3357,7 @@ function render(){
 
   updateCart();
 
-  showMobileProductLoadedHeader();
+  revealProductWhenReady();
 }
 
 
@@ -3837,6 +3782,80 @@ function productGoSearch(){navigateWithProductLoader("index.html")}
 function productGoCart(){navigateWithProductLoader("cart.html")}
 function setMobileProductCartBadge(value){const text=String(value||"").trim();[document.getElementById("mobileProductLoadingBadge"),document.getElementById("mobileProductCartBadge")].forEach(badge=>{if(!badge)return;if(text&&text!=="0"){badge.textContent=Number(text)>99?"99+":text;badge.classList.add("show")}else{badge.textContent="";badge.classList.remove("show")}})}
 function updateMobileProductHeader(){const input=document.getElementById("mobileProductSearchInput");if(input&&product)input.value=product.title||"";const source=document.getElementById("mobileProductLoadingBadge");if(source&&source.textContent.trim())setMobileProductCartBadge(source.textContent.trim())}
+
+/* =========================================================
+   REAL LOADER -> PRODUCT REVEAL
+   Keeps the real full-screen loader until the product is
+   actually ready to paint. No white intermediate frame.
+========================================================= */
+async function revealProductWhenReady(){
+
+  const loading =
+    document.getElementById("mobileProductLoading");
+
+  const header =
+    document.getElementById("mobileProductHeader");
+
+  const productBox =
+    document.getElementById("product");
+
+  if(window.innerWidth > 900) return;
+
+  const firstImage =
+    productBox?.querySelector(".slide img");
+
+  if(firstImage){
+
+    try{
+
+      if(
+        !firstImage.complete ||
+        firstImage.naturalWidth === 0
+      ){
+
+        if(typeof firstImage.decode === "function"){
+
+          await firstImage.decode().catch(()=>{});
+
+        }else{
+
+          await new Promise(resolve=>{
+
+            const done=()=>{
+              firstImage.removeEventListener("load",done);
+              firstImage.removeEventListener("error",done);
+              resolve();
+            };
+
+            firstImage.addEventListener("load",done,{once:true});
+            firstImage.addEventListener("error",done,{once:true});
+          });
+
+        }
+      }
+
+    }catch(e){}
+  }
+
+  await new Promise(resolve =>
+    requestAnimationFrame(() =>
+      requestAnimationFrame(resolve)
+    )
+  );
+
+  if(loading){
+    loading.classList.add("hide");
+    loading.setAttribute("aria-hidden","true");
+  }
+
+  if(header){
+    header.classList.add("show");
+  }
+
+  document.body.style.overflow="";
+  updateMobileProductHeader();
+}
+
 function showMobileProductLoadedHeader(){const loading=document.getElementById("mobileProductLoading");const header=document.getElementById("mobileProductHeader");if(window.innerWidth<=900){if(loading)loading.classList.add("hide");if(header)header.classList.add("show");document.body.style.overflow="";updateMobileProductHeader()}}
 
 /* =========================================================
