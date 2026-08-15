@@ -475,6 +475,64 @@ main{
   display:none;
 }
 
+
+/* ================= DESKTOP FOOTER ================= */
+.site-footer{
+  display:block;
+  width:100%;
+  margin-top:30px;
+  background:#171717;
+  color:#fff;
+  border-top:1px solid #2d2d2d;
+}
+.site-footer-inner{
+  width:90%;
+  max-width:1250px;
+  margin:auto;
+  padding:36px 0 24px;
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr 1fr;
+  gap:34px;
+}
+.footer-brand{
+  font-size:24px;
+  font-weight:900;
+  color:#fff;
+  margin-bottom:10px;
+}
+.footer-text{
+  color:#bdbdbd;
+  font-size:13px;
+  line-height:1.7;
+  max-width:330px;
+}
+.footer-title{
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:13px;
+}
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+.footer-links a{
+  color:#cfcfcf;
+  font-size:12px;
+  text-decoration:none;
+}
+.footer-links a:hover{color:#fff}
+.footer-bottom{
+  border-top:1px solid #303030;
+  padding:14px 5%;
+  text-align:center;
+  color:#999;
+  font-size:11px;
+}
+@media(max-width:700px){
+  .site-footer{display:none}
+}
+
 /* ================= MOBILE BOTTOM NAV ================= */
 
 .bottom-nav{
@@ -671,60 +729,7 @@ main{
     grid-template-columns:repeat(3,1fr);
   }
 }
-
-
-/* ================= FOOTER ================= */
-.site-footer{
-  display:block !important;
-  width:100%;
-  clear:both;
-  margin-top:50px;
-  background:#111;
-  color:#fff;
-  padding:42px 5% 20px;
-}
-.site-footer-inner{
-  width:min(1400px,100%);
-  margin:auto;
-}
-.site-footer-grid{
-  display:grid;
-  grid-template-columns:2fr 1fr 1fr 1fr;
-  gap:35px;
-}
-.site-footer h3{
-  margin:0 0 14px;
-  font-size:20px;
-}
-.site-footer h4{
-  margin:0 0 13px;
-  font-size:13px;
-}
-.site-footer p,.site-footer a{
-  color:#aaa;
-  font-size:12px;
-  line-height:1.8;
-}
-.site-footer a{display:block}
-.site-footer a:hover{color:#fff}
-.site-footer-bottom{
-  margin-top:30px;
-  padding-top:17px;
-  border-top:1px solid #292929;
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  color:#888;
-  font-size:11px;
-}
-@media(max-width:700px){
-  /* Index mobile: footer hidden. Product page has its own footer. */
-  .site-footer{display:none !important}
-}
-
 </style>
-
-<script src="/ecom/footer.js"></script>
 </head>
 
 <body>
@@ -1066,6 +1071,47 @@ main{
 </main>
 
 
+<!-- ================= DESKTOP FOOTER ================= -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <div class="footer-brand">MyStore</div>
+      <div class="footer-text">
+        Your trusted online shopping destination for quality products,
+        great prices and reliable delivery.
+      </div>
+    </div>
+    <div>
+      <div class="footer-title">About</div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="index.html">Products</a>
+        <a href="categories.html">Categories</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-title">Customer Policy</div>
+      <div class="footer-links">
+        <a href="#">Returns</a>
+        <a href="#">Shipping</a>
+        <a href="#">Cancellation</a>
+        <a href="#">Terms & Conditions</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-title">Help</div>
+      <div class="footer-links">
+        <a href="#">Customer Care</a>
+        <a href="#">Payments</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Contact Us</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 MyStore. All rights reserved.</div>
+</footer>
+
+
 <!-- ================= MOBILE BOTTOM NAV ================= -->
 
 <nav class="bottom-nav">
@@ -1116,6 +1162,8 @@ main{
   </button>
 
 </nav>
+
+
 <script>
 
 /* =========================================
