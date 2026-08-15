@@ -97,6 +97,8 @@ button{cursor:pointer}
     <div style="display:flex;align-items:center;gap:6px;margin-left:8px;">
       <label for="previewId" style="font-size:10px;font-weight:800;color:#64748b;">Product ID</label>
       <input id="previewId" value="2" inputmode="numeric" title="Product ID used by product.html" style="width:54px;height:28px;border:1px solid #d1d5db;border-radius:7px;padding:0 7px;font-size:11px;outline:none;">
+      <input id="siteUrl" type="url" placeholder="Paste website/page link…" title="Open a live website/page URL" style="width:220px;max-width:28vw;height:28px;border:1px solid #d1d5db;border-radius:7px;padding:0 8px;font-size:11px;outline:none;">
+      <button type="button" class="tab" onclick="openSiteUrl()">🌐 Open Link</button>
     </div>
     <div class="tabs">
       <button id="tabPreview" class="tab active" onclick="showPreview()">Preview</button>
@@ -201,6 +203,35 @@ function basicStaticCheck(code){
   if(/<img\b/i.test(clean) && !/<img[^>]+alt\s*=/i.test(clean)) addIssue("warn","Images without alt text detected","Not a runtime error, but useful for accessibility.");
 }
 
+function openSiteUrl(){
+  const input=document.getElementById("siteUrl");
+  const url=(input?.value||"").trim();
+  if(!url){
+    alert("Website/page link paste karo.");
+    return;
+  }
+  let finalUrl=url;
+  if(!/^https?:\/\//i.test(finalUrl)) finalUrl="https://"+finalUrl;
+  try{
+    const u=new URL(finalUrl);
+    if(!/^https?:$/.test(u.protocol)) throw new Error("Only http/https links are supported.");
+    const frame=document.getElementById("preview");
+    const wrap=document.getElementById("previewWrap");
+    if(!frame)return;
+    frame.removeAttribute("srcdoc");
+    frame.src=finalUrl;
+    wrap?.classList.add("desktop-mode");
+    wrap?.classList.remove("mobile-mode");
+    document.getElementById("desktopViewBtn")?.classList.add("active");
+    document.getElementById("mobileViewBtn")?.classList.remove("active");
+    const issues=document.getElementById("issueList");
+    if(issues){
+      issues.innerHTML='<div class="issue info"><div class="icon">🌐</div><div><b>Live link opened</b><small>'+escapeHtml(finalUrl)+'</small></div></div>';
+    }
+  }catch(e){
+    alert("Invalid website link.");
+  }
+}
 function setPreviewView(mode){
   const wrap=document.getElementById("previewWrap");
   const frame=document.getElementById("preview");
@@ -408,6 +439,15 @@ window.addEventListener("load",()=>{
   if(saved) codeEl.value=saved;
 });
 codeEl.addEventListener("input",()=>localStorage.setItem("mystore_checker_code",codeEl.value));
+const siteUrlEl=document.getElementById("siteUrl");
+if(siteUrlEl){
+  siteUrlEl.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){
+      e.preventDefault();
+      openSiteUrl();
+    }
+  });
+}
 const previewIdEl=document.getElementById("previewId");
 if(previewIdEl){
   previewIdEl.addEventListener("change",()=>{
