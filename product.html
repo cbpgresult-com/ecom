@@ -99,7 +99,7 @@
   <div class="deliveryCard">
     <div class="deliveryAddress" id="deliveryAddressRow" role="button" tabindex="0" onclick="openAddressSelector()" onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
       <div class="deliveryIcon">⌖</div>
-      <div id="deliveryAddressText" class="deliveryAddressText">Select delivery address</div>
+      <div id="deliveryAddressText" class="deliveryAddressText">Add delivery address</div>
       <div class="deliveryArrow">›</div>
     </div>
     <div class="deliveryDate">
@@ -143,151 +143,198 @@ function toast(x){const t=document.getElementById("toast");t.textContent=x;t.cla
 function escapeHtml(value){const s=String(value??"");return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
 
 
+function cleanPart(v){
+  return v==null ? "" : String(v).trim();
+}
+
+function uniqueParts(arr){
+  const out=[];
+  for(const x of arr){
+    const s=cleanPart(x);
+    if(s && !out.some(y=>y.toLowerCase()===s.toLowerCase())) out.push(s);
+  }
+  return out;
+}
+
 function formatSavedAddress(a){
   if(!a) return "";
+  if(typeof a === "string") return a.trim();
 
-  // Current-location address: show exactly like the requested Flipkart-style card.
-  // Example:
-  // Uttar Pradesh, 226002
-  // 7MR2QXW3+XXX
-  const isCurrent = a.isCurrentLocation === true ||
-                    a.is_current_location === true ||
-                    String(a.type||'').toLowerCase() === 'current location';
+  // Accept both camelCase and snake_case because the checkout/account
+  // page may save either form.
+  const village = cleanPart(a.village || a.locality || a.area || a.town || a.place || "");
+  const district = cleanPart(a.district || a.district_name || "");
+  const city = cleanPart(a.city || a.city_name || "");
+  const state = cleanPart(a.state || a.state_name || "");
+  const pincode = cleanPart(a.pincode || a.pin || a.postal_code || a.postcode || "");
+  const plus = cleanPart(a.plus_code || a.plusCode || a.pluscode || a.plus_code_address || "");
 
-  if(isCurrent){
-    // Flipkart-style location display: Village, District / State, Pincode
-    // Plus Code is shown on a separate line when available.
-    const village=a.village||a.locality||a.area||a.city||'';
-    const district=a.district||a.city||'';
-    const line1=[village,district]
-      .filter(v=>v!=null && String(v).trim())
-      .map(v=>String(v).trim())
-      .filter((v,i,arr)=>arr.indexOf(v)===i)
-      .join(", ");
-    const line2=[a.state,a.pincode]
-      .filter(v=>v!=null && String(v).trim())
-      .map(v=>String(v).trim())
-      .filter((v,i,arr)=>arr.indexOf(v)===i)
-      .join(", ");
-    const plus=String(a.plus_code||a.plusCode||'').trim();
-    const lines=[line1,line2,plus].filter(Boolean);
-    return lines.length ? lines.join("\n") : "Add delivery address";
-  }
+  // If a formatted address was explicitly saved, use it only as a fallback.
+  const direct = cleanPart(a.full_address || a.fullAddress || a.formatted_address || a.formattedAddress);
 
-  const parts=[a.village,a.district,a.city,a.state,a.pincode]
-    .filter(v=>v!=null && String(v).trim())
-    .map(v=>String(v).trim());
-  return [...new Set(parts)].join(", ");
+  // Requested card layout:
+  // Village, District
+  // State, Pincode
+  // Plus Code
+  const first = uniqueParts([village, district]).join(", ");
+  const second = uniqueParts([state, pincode]).join(", ");
+  const lines = [first, second, plus].filter(Boolean);
+
+  if(lines.length) return lines.join("\n");
+
+  // Older saved-address records may only contain city/state/pincode.
+  const fallback = uniqueParts([city, state, pincode]).join(", ");
+  return fallback || direct;
 }
 
 function addressCacheKey(userId){
-  return "mystore_delivery_address_cache_v2_" + String(userId||"guest");
+  return "mystore_delivery_address_cache_v3_" + String(userId || "guest");
 }
 
-function saveAddressCache(userId,address){
-  if(!userId || !address) return;
+function cacheAddress(userId, addressObject, formatted){
   try{
-    localStorage.setItem(addressCacheKey(userId),JSON.stringify({
-      savedAt:Date.now(),
-      address:address
-    }));
-  }catch(e){
-    console.warn("Address cache save error:",e);
-  }
+    const payload = {
+      savedAt: Date.now(),
+      text: formatted || formatSavedAddress(addressObject),
+      data: addressObject || null
+    };
+    localStorage.setItem(addressCacheKey(userId), JSON.stringify(payload));
+  }catch(e){ console.warn("Address cache error", e); }
 }
 
-function getAddressCache(userId){
-  if(!userId) return "";
+function readCachedAddress(userId){
   try{
     const raw=localStorage.getItem(addressCacheKey(userId));
     if(!raw) return "";
-    const parsed=JSON.parse(raw);
-    return parsed?.address ? String(parsed.address) : "";
-  }catch(e){
-    return "";
+    const x=JSON.parse(raw);
+    return cleanPart(x?.text) || formatSavedAddress(x?.data);
+  }catch(e){ return ""; }
+}
+
+function paintAddress(text){
+  const el=document.getElementById("deliveryAddressText");
+  if(!el) return;
+  const value=cleanPart(text);
+  if(!value){
+    el.textContent="Add delivery address";
+    return;
   }
+  el.innerHTML=escapeHtml(value).replace(/\n/g,"<br>");
 }
 
-function showCachedAddressImmediately(){
-  const address=document.getElementById("deliveryAddressText");
-  if(!address) return;
-
-  // Never show a fake loading state when a cached address exists.
-  try{
-    const sessionResult=supabaseClient.auth.getSession();
-    Promise.resolve(sessionResult).then(({data})=>{
-      const userId=data?.session?.user?.id;
-      const cached=getAddressCache(userId);
-      if(cached) address.innerHTML=escapeHtml(cached).replace(/\n/g,"<br>");
-    }).catch(()=>{});
-  }catch(e){}
+function looksLikeAddressObject(x){
+  if(!x || typeof x!=='object' || Array.isArray(x)) return false;
+  const keys=Object.keys(x).map(k=>k.toLowerCase());
+  return keys.some(k=>[
+    "village","district","state","pincode","pin","postal_code","plus_code",
+    "full_address","fulladdress","formatted_address","address","locality"
+  ].includes(k));
 }
 
-async function getSavedAddress(){
+function scanLocalStorageForAddress(){
+  // First check the common keys used by the checkout/account pages.
+  const preferred=[
+    "selectedAddress","selected_address","savedAddress","saved_address",
+    "savedAddresses","saved_addresses","deliveryAddress","delivery_address",
+    "currentAddress","current_address","userAddress","user_address","address","addresses"
+  ];
+
+  const keys=[];
+  for(const k of preferred) if(!keys.includes(k)) keys.push(k);
   try{
-    const {data:sessionData,error:sessionError}=await supabaseClient.auth.getSession();
-    if(!sessionError && sessionData?.session?.user){
-      const userId=sessionData.session.user.id;
-
-      // First use the local cache so the card is instant.
-      const cached=getAddressCache(userId);
-      if(cached){
-        const address=document.getElementById("deliveryAddressText");
-        if(address) address.innerHTML=escapeHtml(cached).replace(/\n/g,"<br>");
-      }
-
-      // Refresh silently from Supabase in the background.
-      const {data,error}=await supabaseClient
-        .from("saved_addresses")
-        .select("id,name,phone,pincode,state,city,district,village,house,road,plus_code,type,is_current_location,created_at")
-        .eq("user_id",userId)
-        .order("created_at",{ascending:false})
-        .limit(1)
-        .maybeSingle();
-
-      if(!error && data){
-        const text=formatSavedAddress(data);
-        if(text){
-          saveAddressCache(userId,text);
-          return text;
-        }
-      }
-
-      if(cached) return cached;
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k && !keys.includes(k)) keys.push(k);
     }
-  }catch(e){
-    console.warn("Saved address load error:",e);
-  }
+  }catch(e){}
 
-  // Fallback: older/local saved-address data, if present.
-  const keys=["selectedAddress","savedAddress","deliveryAddress","currentAddress","userAddress","address"];
   for(const key of keys){
     try{
       const raw=localStorage.getItem(key);
       if(!raw) continue;
-      let x=raw;
-      try{x=JSON.parse(raw)}catch{}
+      let value;
+      try{ value=JSON.parse(raw); }catch{ value=raw; }
 
-      if(typeof x === "string" && x.trim()) return x.trim();
+      const candidates=[];
+      if(Array.isArray(value)) candidates.push(...value);
+      else candidates.push(value);
 
-      if(Array.isArray(x)){
-        const selected=x.find(a=>a?.selected===true || a?.isSelected===true) || x[0];
-        const text=formatSavedAddress(selected);
-        if(text) return text;
+      for(const item of candidates){
+        if(typeof item==='string'){
+          const t=item.trim();
+          if(t && /(\d{5,6}|uttar|pradesh|district|village|plus)/i.test(t)) return t;
+        }else if(looksLikeAddressObject(item)){
+          const t=formatSavedAddress(item);
+          if(t) return t;
+        }
       }
+    }catch(e){}
+  }
+  return "";
+}
 
-      if(x && typeof x === "object"){
-        const direct=x.full_address||x.fullAddress||x.formatted_address||x.formattedAddress;
-        if(direct && String(direct).trim()) return String(direct).trim();
-        const text=formatSavedAddress(x);
-        if(text) return text;
+async function getCurrentUser(){
+  try{
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error) return null;
+    return data?.session?.user || null;
+  }catch(e){ return null; }
+}
+
+async function readAddressTable(table,userId){
+  try{
+    const {data,error}=await supabaseClient
+      .from(table)
+      .select("*")
+      .eq("user_id",userId)
+      .order("created_at",{ascending:false})
+      .limit(20);
+    if(error || !Array.isArray(data) || !data.length) return null;
+
+    // Prefer a selected/current address; otherwise use newest saved address.
+    const preferred=data.find(a=>
+      a?.is_current_location===true || a?.isCurrentLocation===true ||
+      a?.is_current===true || a?.selected===true || a?.is_selected===true ||
+      String(a?.type||"").toLowerCase().includes("current")
+    ) || data[0];
+
+    const text=formatSavedAddress(preferred);
+    if(text) return {data:preferred,text};
+  }catch(e){
+    // Some projects use a different table name. Ignore that table and try the next one.
+  }
+  return null;
+}
+
+async function loadDeliveryAddress(){
+  const user=await getCurrentUser();
+
+  // 1. Paint cache immediately. No address-loading flash.
+  if(user){
+    const cached=readCachedAddress(user.id);
+    if(cached) paintAddress(cached);
+  }
+
+  // 2. LocalStorage fallback immediately, even before Supabase responds.
+  const local=scanLocalStorageForAddress();
+  if(local && (!user || !readCachedAddress(user.id))) paintAddress(local);
+
+  // 3. Refresh silently from whichever address table exists.
+  if(user){
+    const tables=["saved_addresses","addresses","user_addresses","delivery_addresses"];
+    for(const table of tables){
+      const result=await readAddressTable(table,user.id);
+      if(result){
+        cacheAddress(user.id,result.data,result.text);
+        paintAddress(result.text);
+        return;
       }
-    }catch(e){
-      console.warn("Local address read error:",key,e);
     }
   }
 
-  return "Add delivery address";
+  // If nothing was found, keep the normal Add delivery address state.
+  const current=document.getElementById("deliveryAddressText");
+  if(current && !current.textContent.trim()) current.textContent="Add delivery address";
 }
 
 function openAddressSelector(){
@@ -306,26 +353,9 @@ function getDeliveryDate(){
 }
 
 async function renderDeliveryDetails(){
-  const address=document.getElementById("deliveryAddressText");
   const date=document.getElementById("deliveryDateText");
-
   if(date) date.textContent="Delivery by "+getDeliveryDate();
-
-  // Keep the cached value visible while Supabase refreshes silently.
-  let cached="";
-  try{
-    const {data}=await supabaseClient.auth.getSession();
-    cached=getAddressCache(data?.session?.user?.id);
-  }catch(e){}
-
-  if(address && cached){
-    address.innerHTML=escapeHtml(cached).replace(/\n/g,"<br>");
-  }
-
-  const savedAddress=await getSavedAddress();
-  if(address){
-    address.innerHTML=escapeHtml(savedAddress).replace(/\n/g,"<br>");
-  }
+  await loadDeliveryAddress();
 }
 
 async function load(){
@@ -439,7 +469,6 @@ function tab(type,b){
 window.addEventListener("resize",()=>{if(product)goToImage(currentIndex)});
    window.addEventListener("storage",()=>renderDeliveryDetails());
 window.addEventListener("focus",()=>renderDeliveryDetails());
-showCachedAddressImmediately();
 load();
 </script>
 </body>
