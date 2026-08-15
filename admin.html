@@ -324,6 +324,7 @@ function addImageLink(value=""){
  updateImagePreview();
 }
 
+function parseJSON(x,d=[]){if(Array.isArray(x))return x;if(typeof x!=="string"||!x.trim())return d;try{const y=JSON.parse(x);return y??d}catch{return d}}
 function normalizeHighlights(x){
   if(!Array.isArray(x)) return [];
   return x.map(v=>({icon:String(v?.icon||"✓"),label:String(v?.label||""),value:String(v?.value||""),color:String(v?.color||"#111111")})).filter(v=>v.label||v.value);
