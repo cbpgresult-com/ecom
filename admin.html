@@ -278,7 +278,21 @@ th{
 .sub{
   font-size:10px;
   color:#888;
-  margin-top:3px
+  margin-top:3px;
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  flex-wrap:wrap
+}
+.product-time{
+  font-size:11px;
+  color:#aaa;
+  font-weight:500;
+  white-space:nowrap;
+}
+.product-time .time-label{
+  font-weight:700;
+  color:#999;
 }
 .pill{
   display:inline-block;
@@ -2265,6 +2279,69 @@ function categories(){
 }
 
 
+function productDateTime(value){
+  if(!value)
+    return "";
+
+  const d = new Date(value);
+
+  if(Number.isNaN(d.getTime()))
+    return "";
+
+  return d.toLocaleString(
+    "en-IN",
+    {
+      day:"2-digit",
+      month:"short",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit",
+      second:"2-digit",
+      hour12:true
+    }
+  );
+}
+
+function productTimeInfo(p){
+  const created =
+    p.created_at
+      ? new Date(p.created_at).getTime()
+      : NaN;
+
+  const updated =
+    p.updated_at
+      ? new Date(p.updated_at).getTime()
+      : NaN;
+
+  /*
+    New:
+      created_at exists and updated_at is missing,
+      or both are effectively the same timestamp.
+
+    Updated:
+      updated_at is genuinely later than created_at.
+  */
+  if(
+    Number.isFinite(updated) &&
+    (
+      !Number.isFinite(created) ||
+      updated > created + 1000
+    )
+  ){
+    return {
+      label:"Updated",
+      value:productDateTime(p.updated_at)
+    };
+  }
+
+  return {
+    label:"New",
+    value:productDateTime(
+      p.created_at || p.updated_at
+    )
+  };
+}
+
 function render(){
 
   const q =
@@ -2347,11 +2424,26 @@ function render(){
 </div>
 
 <div class="sub">
-  ${esc(p.brand || "")}
+  <span>
+    ${esc(p.brand || "")}
+    ${
+      p.badge
+        ? " • " + esc(p.badge)
+        : ""
+    }
+  </span>
   ${
-    p.badge
-      ? "• " + esc(p.badge)
-      : ""
+    (() => {
+      const ti = productTimeInfo(p);
+      return ti.value
+        ? `
+          <span class="product-time">
+            ${esc(ti.label)}
+            <span class="time-label">${esc(ti.value)}</span>
+          </span>
+        `
+        : "";
+    })()
   }
 </div>
 
