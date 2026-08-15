@@ -101,6 +101,10 @@
         <div class="field"><label>Stock Quantity *</label><input id="stock" type="number" min="0" step="1" value="0" required></div>
         <div class="field"><label>Status</label><select id="active"><option value="true">Active</option><option value="false">Inactive</option></select></div>
         <div class="field full"><div class="customize-toggle"><div class="customize-toggle-info">Customize <small>Product page par Quantity ke paas customization box dikhaye.</small></div><label class="switch"><input id="customizeEnabled" type="checkbox"><span class="slider"></span></label></div></div>
+        <div class="field full"><div class="customize-toggle"><div class="customize-toggle-info">Return <small>ON par Product page par return days dikhenge. OFF par "No Return" dikhega.</small></div><label class="switch"><input id="returnEnabled" type="checkbox" onchange="returnToggleChanged()"><span class="slider"></span></label></div></div>
+        <div class="field" id="returnDaysField"><label>Return Days</label><input id="returnDays" type="number" min="1" max="365" step="1" value="10" placeholder="10"></div>
+        <div class="field"><div class="customize-toggle" style="height:100%"><div class="customize-toggle-info">Cash on Delivery <small>Product page par COD card.</small></div><label class="switch"><input id="codEnabled" type="checkbox"><span class="slider"></span></label></div></div>
+        <div class="field full"><div class="customize-toggle"><div class="customize-toggle-info">Trikunt Assured <small>Product page par assurance card.</small></div><label class="switch"><input id="assuredEnabled" type="checkbox"><span class="slider"></span></label></div></div>
         <div class="field full"><label>Main Image URL *</label><input id="mainImage" required oninput="preview()"></div>
         <div class="field full"><div id="preview" class="preview">Image preview</div></div>
         <div class="field full">
@@ -252,6 +256,14 @@ function openAdd(){
  $("pid").value="";
  document.querySelectorAll("#modal input:not([type=hidden]),#modal textarea").forEach(x=>x.value="");
  $("active").value="true";
+ $("stockStatus").value="stock";
+ $("stock").value="0";
+ $("customizeEnabled").checked=false;
+ $("returnEnabled").checked=true;
+ $("returnDays").value="10";
+ $("codEnabled").checked=true;
+ $("assuredEnabled").checked=true;
+ returnToggleChanged();
  $("preview").textContent="Image preview";
  $("formError").style.display="none";
  $("imageLinks").innerHTML="";
@@ -271,7 +283,7 @@ function edit(id){
  $("modalTitle").textContent="Edit Product";
  $("saveBtn").textContent="Update Product";
  $("name").value=p.name||"";$("slug").value=p.slug||"";$("brand").value=p.brand||"";$("category").value=p.category||"";$("badge").value=p.badge||"";
- $("price").value=p.price??"";$("mrp").value=p.mrp??"";$("stockStatus").value=p.stock_status||"stock";$("stock").value=p.stock??0;$("customizeEnabled").checked=Boolean(p.customize_enabled);$("active").value=String(p.is_active!==false);
+ $("price").value=p.price??"";$("mrp").value=p.mrp??"";$("stockStatus").value=p.stock_status||"stock";$("stock").value=p.stock??0;$("customizeEnabled").checked=Boolean(p.customize_enabled);$("returnEnabled").checked=p.return_enabled!==false;$("returnDays").value=p.return_days??10;$("codEnabled").checked=p.cod_enabled!==false;$("assuredEnabled").checked=p.assured_enabled!==false;returnToggleChanged();$("active").value=String(p.is_active!==false);
  $("mainImage").value=p.main_image||"";
  $("imageLinks").innerHTML="";
  $("imageLinksWrap").classList.remove("collapsed");
@@ -338,6 +350,12 @@ function stockStatusChanged(){
   stock.required=true;
 }
 
+function returnToggleChanged(){
+  const on=$("returnEnabled").checked;
+  $("returnDaysField").style.display=on?"flex":"none";
+  $("returnDays").required=on;
+}
+
 function slugify(x){return String(x).toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")}
 
 async function save(e){
@@ -352,7 +370,10 @@ async function save(e){
  const payload={
   name,slug:$("slug").value.trim()||slugify(name),description:$("description").value.trim(),
   category:$("category").value.trim(),brand:$("brand").value.trim(),price,mrp:mrp||null,
-  stock,stock_status:stockStatus,customize_enabled:$("customizeEnabled").checked,main_image:$("mainImage").value.trim(),images,
+  stock,stock_status:stockStatus,customize_enabled:$("customizeEnabled").checked,
+  return_enabled:$("returnEnabled").checked,return_days:$("returnEnabled").checked?(Number($("returnDays").value)||10):10,
+  cod_enabled:$("codEnabled").checked,assured_enabled:$("assuredEnabled").checked,
+  main_image:$("mainImage").value.trim(),images,
   badge:$("badge").value.trim(),is_active:$("active").value==="true",updated_at:new Date().toISOString()
  };
 
