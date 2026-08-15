@@ -38,6 +38,7 @@ a{text-decoration:none;color:inherit}
   display:grid;
   grid-template-columns:1.05fr .95fr;
   min-height:650px;
+  align-items:start;
 }
 
 .gallery{
@@ -255,10 +256,7 @@ a{text-decoration:none;color:inherit}
 }
 
 .desc{
-  color:#4b5563;
-  font-size:14px;
-  line-height:1.75;
-  margin-top:20px;
+  display:none!important;
 }
 
 .stock{
@@ -515,6 +513,20 @@ a{text-decoration:none;color:inherit}
   margin-top:25px;
   width:100%;
   background:#fff;
+  grid-column:1;
+  grid-row:2;
+  padding:0 28px 28px;
+}
+
+/* Laptop/Desktop: details below the image on the left. */
+.gallery{
+  grid-column:1;
+  grid-row:1;
+}
+
+.info{
+  grid-column:2;
+  grid-row:1 / span 2;
 }
 
 /* main section */
@@ -964,12 +976,31 @@ a{text-decoration:none;color:inherit}
 
   .grid{
     grid-template-columns:1fr;
+    display:flex;
+    flex-direction:column;
   }
 
   .gallery{
+    order:1;
     padding:9px 0;
     border-right:0;
     border-bottom:1px solid #eee;
+    width:100%;
+  }
+
+  .info{
+    order:2;
+    grid-column:auto;
+    grid-row:auto;
+    width:100%;
+  }
+
+  .productSections{
+    order:3;
+    grid-column:auto;
+    grid-row:auto;
+    width:100%;
+    padding:0;
   }
 
   .main{
@@ -1197,138 +1228,6 @@ aria-label="Next image">›</button>
 
 </div>
 
-<!-- ================= PRODUCT INFO ================= -->
-
-<div class="info">
-
-<span id="tag" class="tag">BESTSELLER</span>
-
-<h1 id="title" class="title"></h1>
-
-<div class="rating">
-<span id="rating" class="rate"></span>
-<span id="reviews" class="reviews"></span>
-</div>
-
-<div class="pricebox">
-<span id="price" class="price"></span>
-<br>
-<span id="mrp" class="mrp"></span>
-<span id="off" class="off"></span>
-</div>
-
-<div id="deliveryDetails" class="deliveryDetails">
-
-<div class="deliveryTitle">
-Delivery details
-</div>
-
-<div class="deliveryCard">
-
-<div class="deliveryAddress"
-id="deliveryAddressRow"
-role="button"
-tabindex="0"
-onclick="openAddressSelector()"
-onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
-
-<div class="deliveryIcon">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
-<path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z"/>
-<circle cx="12" cy="9" r="2.4"/>
-</svg>
-</div>
-
-<div id="deliveryAddressText"
-class="deliveryAddressText">
-Add delivery address
-</div>
-
-<div class="deliveryArrow">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-<path d="m9 18 6-6-6-6"/>
-</svg>
-</div>
-
-</div>
-
-<div class="deliveryDate">
-
-<div class="deliveryIcon">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-<path d="M3 7h11v10H3z"/>
-<path d="M14 10h4l3 3v4h-7z"/>
-<circle cx="7" cy="18" r="2"/>
-<circle cx="18" cy="18" r="2"/>
-<path d="M5 10h6M16 13h4"/>
-</svg>
-</div>
-
-<div id="deliveryDateText">
-Delivery by …
-</div>
-
-</div>
-
-<div class="deliverySeller">
-
-<div class="sellerMain">
-
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-<path d="M4 10h16v10H4z"/>
-<path d="m3 10 2-5h14l2 5"/>
-<path d="M8 10v2a2 2 0 0 0 4 0v-2a2 2 0 0 0 4 0v-2"/>
-</svg>
-
-<span>Fulfilled by MyStore</span>
-
-</div>
-
-<div class="sellerSub">
-Trusted seller · Quality checked
-</div>
-
-<a class="sellerLink" href="/ecom/index.html">
-See other sellers <span>›</span>
-</a>
-
-</div>
-
-</div>
-</div>
-
-<div id="description" class="desc"></div>
-
-<div id="stock" class="stock"></div>
-
-<div class="qtyrow">
-
-Qty.
-
-<div class="qty">
-<button onclick="changeQty(-1)">−</button>
-<span id="qty">1</span>
-<button onclick="changeQty(1)">+</button>
-</div>
-
-<div id="customizeWrap">
-
-<label for="customizeInput"
-style="font-size:12px;font-weight:800;white-space:nowrap;">
-Customize
-</label>
-
-<input id="customizeInput"
-type="text"
-maxlength="100"
-placeholder="Name / Text">
-
-</div>
-
-</div>
-
-<div id="features" class="features"></div>
-
 <!-- =====================================================
      PRODUCT HIGHLIGHTS + ALL DETAILS
 ===================================================== -->
@@ -1467,6 +1366,140 @@ class="detailsPanel">
 </section>
 
 </div>
+
+
+
+<!-- ================= PRODUCT INFO ================= -->
+
+<div class="info">
+
+<span id="tag" class="tag">BESTSELLER</span>
+
+<h1 id="title" class="title"></h1>
+
+<div class="rating">
+<span id="rating" class="rate"></span>
+<span id="reviews" class="reviews"></span>
+</div>
+
+<div class="pricebox">
+<span id="price" class="price"></span>
+<br>
+<span id="mrp" class="mrp"></span>
+<span id="off" class="off"></span>
+</div>
+
+<div id="deliveryDetails" class="deliveryDetails">
+
+<div class="deliveryTitle">
+Delivery details
+</div>
+
+<div class="deliveryCard">
+
+<div class="deliveryAddress"
+id="deliveryAddressRow"
+role="button"
+tabindex="0"
+onclick="openAddressSelector()"
+onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
+
+<div class="deliveryIcon">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
+<path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z"/>
+<circle cx="12" cy="9" r="2.4"/>
+</svg>
+</div>
+
+<div id="deliveryAddressText"
+class="deliveryAddressText">
+Add delivery address
+</div>
+
+<div class="deliveryArrow">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="m9 18 6-6-6-6"/>
+</svg>
+</div>
+
+</div>
+
+<div class="deliveryDate">
+
+<div class="deliveryIcon">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+<path d="M3 7h11v10H3z"/>
+<path d="M14 10h4l3 3v4h-7z"/>
+<circle cx="7" cy="18" r="2"/>
+<circle cx="18" cy="18" r="2"/>
+<path d="M5 10h6M16 13h4"/>
+</svg>
+</div>
+
+<div id="deliveryDateText">
+Delivery by …
+</div>
+
+</div>
+
+<div class="deliverySeller">
+
+<div class="sellerMain">
+
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+<path d="M4 10h16v10H4z"/>
+<path d="m3 10 2-5h14l2 5"/>
+<path d="M8 10v2a2 2 0 0 0 4 0v-2a2 2 0 0 0 4 0v-2"/>
+</svg>
+
+<span>Fulfilled by MyStore</span>
+
+</div>
+
+<div class="sellerSub">
+Trusted seller · Quality checked
+</div>
+
+<a class="sellerLink" href="/ecom/index.html">
+See other sellers <span>›</span>
+</a>
+
+</div>
+
+</div>
+</div>
+
+<div id="description" class="desc"></div>
+
+<div id="stock" class="stock"></div>
+
+<div class="qtyrow">
+
+Qty.
+
+<div class="qty">
+<button onclick="changeQty(-1)">−</button>
+<span id="qty">1</span>
+<button onclick="changeQty(1)">+</button>
+</div>
+
+<div id="customizeWrap">
+
+<label for="customizeInput"
+style="font-size:12px;font-weight:800;white-space:nowrap;">
+Customize
+</label>
+
+<input id="customizeInput"
+type="text"
+maxlength="100"
+placeholder="Name / Text">
+
+</div>
+
+</div>
+
+<div id="features" class="features"></div>
 
 <!-- ================= CTA ================= -->
 
@@ -2558,10 +2591,23 @@ function renderManufacturer(data){
 
   }
 
+  /*
+    IMPORTANT:
+    Sirf wahi manufacturer fields dikhane hain
+    jo admin me actually bhare gaye hain.
+    Empty fields ko product page par bilkul mat dikhana.
+  */
+  items = items
+    .map(item => ({
+      label: String(item.label ?? "").trim(),
+      value: String(item.value ?? "").trim()
+    }))
+    .filter(item => item.value);
+
   if(!items.length){
 
     box.innerHTML=
-      "<div style='color:#777;font-size:13px'>No manufacturer information available.</div>";
+      "<div style='color:#777;font-size:13px'>No</div>";
 
     return;
   }
@@ -2589,7 +2635,6 @@ function renderManufacturer(data){
     </div>
 
   `;
-}
 
 
 /* =========================================================
@@ -3188,11 +3233,11 @@ function render(){
   renderManufacturer(product.raw);
 
 
-  /* keep both sections collapsed initially */
+  /* Product Highlights open by default; All Details closed. */
 
   document
     .getElementById("highlightsSection")
-    .classList.remove("open");
+    .classList.add("open");
 
   document
     .getElementById("allDetailsSection")
