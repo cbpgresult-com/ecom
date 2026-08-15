@@ -1240,18 +1240,49 @@ a{text-decoration:none;color:inherit}
   #loading{display:none!important;}
 }
 
+
 /* =========================================================
-   PRODUCT PAGE — NO INITIAL LOADER
-   Only Screenshot-2 normal header is shown.
+   PRODUCT PAGE FIRST PAINT LOADER
+   The same real loader remains visible until the product
+   UI and images are ready. No white gap.
 ========================================================= */
-#mobileProductLoading,
-#loading{
-  display:none !important;
+@media(max-width:900px){
+  #mobileProductLoading{
+    display:flex;
+  }
+
+  #mobileProductHeader{
+    display:none;
+  }
+
+  #loading{
+    display:none !important;
+  }
 }
-#mobileProductHeader{
-  display:flex !important;
-  opacity:1 !important;
-  visibility:visible !important;
+
+
+.mobileProductSearch{
+  cursor:text;
+}
+.mobileProductSearchButton{
+  width:22px;
+  height:22px;
+  flex:0 0 22px;
+  border:0;
+  padding:0;
+  margin:0;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.mobileProductSearchButton svg{
+  width:20px;
+  height:20px;
+}
+.mobileProductSearch input{
+  cursor:text;
 }
 
 </style>
@@ -1272,7 +1303,27 @@ a{text-decoration:none;color:inherit}
 <!-- ================= MOBILE PRODUCT HEADER ================= -->
 <header id="mobileProductHeader" class="mobileProductHeader">
   <button class="mpBack" type="button" aria-label="Back" onclick="productGoBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-  <div class="mobileProductSearch" role="button" tabindex="0" onclick="productGoSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="mobileProductSearchInput" type="text" readonly placeholder="Search for Products, Brands and More"></div>
+  <div class="mobileProductSearch">
+    <button
+      id="mobileProductSearchButton"
+      type="button"
+      aria-label="Search"
+      onclick="focusProductSearch()"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="m20 20-4-4"/>
+      </svg>
+    </button>
+    <input
+      id="mobileProductSearchInput"
+      type="search"
+      autocomplete="off"
+      enterkeyhint="search"
+      placeholder="Search for Products, Brands and More"
+      onkeydown="handleProductSearchKey(event)"
+    >
+  </div>
   <button class="mobileProductCart" type="button" aria-label="Cart" onclick="productGoCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 11.5h10.8L21 8H6"/></svg><span id="mobileProductCartBadge" class="mobileProductCartBadge"></span></button>
 </header>
 
@@ -3796,6 +3847,60 @@ function productGoBack(){
 function productGoSearch(){navigateWithProductLoader("index.html")}
 function productGoCart(){navigateWithProductLoader("cart.html")}
 function setMobileProductCartBadge(value){const text=String(value||"").trim();[document.getElementById("mobileProductLoadingBadge"),document.getElementById("mobileProductCartBadge")].forEach(badge=>{if(!badge)return;if(text&&text!=="0"){badge.textContent=Number(text)>99?"99+":text;badge.classList.add("show")}else{badge.textContent="";badge.classList.remove("show")}})}
+
+/* =========================================================
+   PRODUCT HEADER SEARCH — SEARCH ONLY
+========================================================= */
+function focusProductSearch(){
+
+  const input =
+    document.getElementById(
+      "mobileProductSearchInput"
+    );
+
+  if(input){
+
+    input.focus();
+
+    try{
+      input.select();
+    }catch(e){}
+
+  }
+
+}
+
+function handleProductSearchKey(
+  event
+){
+
+  if(
+    event.key !==
+    "Enter"
+  ){
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const value =
+    event.currentTarget.value
+      .trim();
+
+  if(!value){
+    return;
+  }
+
+  window.location.assign(
+    "index.html?search=" +
+    encodeURIComponent(
+      value
+    )
+  );
+
+}
+
 function updateMobileProductHeader(){const input=document.getElementById("mobileProductSearchInput");if(input&&product)input.value=product.title||"";const source=document.getElementById("mobileProductLoadingBadge");if(source&&source.textContent.trim())setMobileProductCartBadge(source.textContent.trim())}
 
 /* =========================================================
@@ -3806,70 +3911,135 @@ function updateMobileProductHeader(){const input=document.getElementById("mobile
 async function revealProductWhenReady(){
 
   const loading =
-    document.getElementById("mobileProductLoading");
+    document.getElementById(
+      "mobileProductLoading"
+    );
 
   const header =
-    document.getElementById("mobileProductHeader");
+    document.getElementById(
+      "mobileProductHeader"
+    );
 
   const productBox =
-    document.getElementById("product");
+    document.getElementById(
+      "product"
+    );
 
-  if(window.innerWidth > 900) return;
-
-  const firstImage =
-    productBox?.querySelector(".slide img");
-
-  if(firstImage){
-
-    try{
-
-      if(
-        !firstImage.complete ||
-        firstImage.naturalWidth === 0
-      ){
-
-        if(typeof firstImage.decode === "function"){
-
-          await firstImage.decode().catch(()=>{});
-
-        }else{
-
-          await new Promise(resolve=>{
-
-            const done=()=>{
-              firstImage.removeEventListener("load",done);
-              firstImage.removeEventListener("error",done);
-              resolve();
-            };
-
-            firstImage.addEventListener("load",done,{once:true});
-            firstImage.addEventListener("error",done,{once:true});
-          });
-
-        }
-      }
-
-    }catch(e){}
+  if(
+    window.innerWidth > 900
+  ){
+    return;
   }
 
-  await new Promise(resolve =>
-    requestAnimationFrame(() =>
-      requestAnimationFrame(resolve)
+  /*
+    Wait for EVERY product image that is part of the initial
+    page, not only the first image.
+  */
+  const images =
+    productBox
+      ? Array.from(
+          productBox.querySelectorAll(
+            "img"
+          )
+        )
+      : [];
+
+  await Promise.all(
+    images.map(
+      async img => {
+
+        try{
+
+          if(
+            img.complete &&
+            img.naturalWidth > 0
+          ){
+            return;
+          }
+
+          if(
+            typeof img.decode ===
+            "function"
+          ){
+
+            await img.decode().catch(
+              () => {}
+            );
+
+            return;
+          }
+
+          await new Promise(
+            resolve => {
+
+              const done =
+                () => resolve();
+
+              img.addEventListener(
+                "load",
+                done,
+                {once:true}
+              );
+
+              img.addEventListener(
+                "error",
+                done,
+                {once:true}
+              );
+
+            }
+          );
+
+        }catch(e){}
+
+      }
     )
   );
 
-  if(loading){
-    loading.classList.add("hide");
-    loading.setAttribute("aria-hidden","true");
-  }
+  /*
+    Let the browser finish layout + paint while the real
+    loader is still covering the page.
+  */
+  await new Promise(
+    resolve =>
+      requestAnimationFrame(
+        () =>
+          requestAnimationFrame(
+            resolve
+          )
+      )
+  );
 
+  /*
+    Reveal header and hide loader in the same frame.
+    No intermediate white screen.
+  */
   if(header){
-    header.classList.add("show");
+    header.classList.add(
+      "show"
+    );
   }
 
-  document.body.style.overflow="";
+  document.body.style.overflow =
+    "";
+
   updateMobileProductHeader();
+
+  if(loading){
+
+    loading.classList.add(
+      "hide"
+    );
+
+    loading.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+  }
+
 }
+
 
 function showMobileProductLoadedHeader(){const loading=document.getElementById("mobileProductLoading");const header=document.getElementById("mobileProductHeader");if(window.innerWidth<=900){if(loading)loading.classList.add("hide");if(header)header.classList.add("show");document.body.style.overflow="";updateMobileProductHeader()}}
 
@@ -4048,11 +4218,9 @@ function updateMobileProductHeader(){
 
   if(
     input &&
-    product
+    document.activeElement !== input
   ){
-
-    input.value =
-      product.title || "";
+    input.value = "";
   }
 
   const source =
