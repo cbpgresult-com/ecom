@@ -6,8 +6,8 @@
 <title>Product | MyStore</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#111}button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
-.top{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:20px;padding:0 5%;position:sticky;top:0;z-index:20}.logo{font-size:25px;font-weight:800}.search{height:44px;flex:1;max-width:850px;border:1px solid #ddd;border-radius:12px;padding:0 15px;background:#f8f8f8}.cart{margin-left:auto;background:#111;color:#fff;border:0;border-radius:12px;height:44px;padding:0 17px;font-weight:800}.badge{background:#fff;color:#111;border-radius:20px;padding:4px 7px;margin-left:4px}
-.page{width:min(1450px,100%);margin:auto;padding:22px 4%}.back{display:inline-block;background:#fff;border:1px solid #ddd;border-radius:11px;padding:12px 15px;font-weight:800;font-size:13px;margin-bottom:15px}
+
+.page{width:min(1450px,100%);margin:auto;padding:22px 4%}
 .product{display:none;background:#fff;border:1px solid #e5e7eb;border-radius:24px;overflow:hidden;box-shadow:0 12px 40px #0000000d}.grid{display:grid;grid-template-columns:1.05fr .95fr;min-height:650px}.gallery{padding:28px;background:linear-gradient(145deg,#fff,#f1f3f5);border-right:1px solid #eee}
 
 /* --- image slider --- */
@@ -29,7 +29,11 @@
 
 .info{padding:38px 42px;display:flex;flex-direction:column}.tag{align-self:flex-start;background:#111;color:#fff;border-radius:7px;padding:6px 9px;font-size:10px;font-weight:800;letter-spacing:.3px}.title{font-size:29px;line-height:1.3;margin:14px 0 0;font-weight:700;color:#1a1a1a}.rating{display:flex;gap:9px;align-items:center;margin-top:15px}.rate{background:#15803d;color:#fff;padding:4px 8px;border-radius:5px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:3px}.reviews{color:#6b7280;font-size:12px}.pricebox{margin-top:24px;padding-bottom:20px;border-bottom:1px solid #eee}.price{font-size:33px;font-weight:800;letter-spacing:-.5px}.mrp{text-decoration:line-through;color:#888;font-size:14px}.off{color:#15803d;font-weight:800;font-size:13px;margin-left:8px}.desc{color:#4b5563;font-size:14px;line-height:1.75;margin-top:20px}.stock{color:#15803d;font-weight:800;font-size:13px;margin-top:16px;display:flex;align-items:center;gap:6px}.qtyrow{display:flex;align-items:center;gap:12px;margin-top:20px;font-size:13px;font-weight:800}.qty{display:flex;border:1px solid #ddd;border-radius:10px;overflow:hidden;height:40px}.qty button{width:40px;border:0;background:#f7f7f7}.qty span{width:42px;display:flex;align-items:center;justify-content:center}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px}.feature{text-align:center;border:1px solid #eee;border-radius:11px;background:#fafafa;padding:11px 4px;font-size:9px;color:#555}.feature b{display:block;color:#111;font-size:10px;margin-bottom:3px}.cta{display:grid;grid-template-columns:1fr 1.2fr;gap:10px;margin-top:auto;padding-top:24px}.add,.buy{height:56px;border-radius:13px;font-weight:800;font-size:14px;transition:transform .12s,box-shadow .12s}.add{background:#fff;border:1.5px solid #111}.add:active,.buy:active{transform:scale(.98)}.buy{background:linear-gradient(135deg,#ffb000,#ff8900);border:0;box-shadow:0 8px 20px #ff89004d;color:#1a1a1a}.details{margin-top:18px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;overflow:hidden}.tabs{display:flex;border-bottom:1px solid #eee}.tab{border:0;background:#fff;padding:17px 21px;font-weight:800;color:#777}.tab.active{color:#111;border-bottom:2px solid #111}.content{padding:22px;color:#4b5563;font-size:13px;line-height:1.8}.toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;background:#111;color:#fff;padding:13px 17px;border-radius:11px;font-size:12px;font-weight:800;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:900px){
-.top{height:62px;padding:0 12px;gap:10px}.logo{font-size:20px}.search{display:none}.cart{height:40px}.page{padding:12px 9px 90px}.product{border-radius:17px}.grid{grid-template-columns:1fr}.gallery{padding:9px 0;border-right:0;border-bottom:1px solid #eee}
+#customizeWrap{margin-left:0!important;flex:1;min-width:0}
+#customizeWrap input{width:100%!important;max-width:145px;height:36px!important}
+#customizeWrap label{font-size:11px!important}
+
+.page{padding:12px 9px 90px}.product{border-radius:17px}.grid{grid-template-columns:1fr}.gallery{padding:9px 0;border-right:0;border-bottom:1px solid #eee}
 .main{height:340px;border:0;background:transparent;border-radius:0;box-shadow:none}
 .slide img{padding:10px}
 .navBtn{display:none!important}
@@ -38,13 +42,7 @@
 </style>
 </head>
 <body>
-<header class="top">
-<a class="logo" href="/ecom/">MyStore</a>
-<input class="search" id="search" placeholder="Search products...">
-<button class="cart" onclick="location.href='/ecom/cart.html'">🛒 Cart <span class="badge" id="cartCount">0</span></button>
-</header>
 <main class="page">
-<a class="back" href="javascript:history.back()">← Back</a>
 <div id="loading" style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-items:center;justify-content:center"><b>Loading product...</b></div>
 <section id="product" class="product">
 <div class="grid">
@@ -63,7 +61,15 @@
 <div class="rating"><span id="rating" class="rate"></span><span id="reviews" class="reviews"></span></div>
 <div class="pricebox"><span id="price" class="price"></span><br><span id="mrp" class="mrp"></span><span id="off" class="off"></span></div>
 <div id="description" class="desc"></div><div id="stock" class="stock"></div>
-<div class="qtyrow">Quantity <div class="qty"><button onclick="changeQty(-1)">−</button><span id="qty">1</span><button onclick="changeQty(1)">+</button></div></div>
+<div class="qtyrow">
+Qty.
+<div class="qty"><button onclick="changeQty(-1)">−</button><span id="qty">1</span><button onclick="changeQty(1)">+</button></div>
+<div id="customizeWrap" style="display:none;align-items:center;gap:7px;margin-left:4px;">
+  <label for="customizeInput" style="font-size:12px;font-weight:800;white-space:nowrap;">Customize</label>
+  <input id="customizeInput" type="text" maxlength="100" placeholder="Name / Text"
+    style="width:125px;height:40px;border:1px solid #ddd;border-radius:10px;padding:0 10px;outline:none;background:#fff;">
+</div>
+</div>
 <div class="features"><div class="feature"><b>🚚 Fast Delivery</b>Quick dispatch</div><div class="feature"><b>🔒 Secure</b>Safe checkout</div><div class="feature"><b>✓ Genuine</b>Quality assured</div></div>
 <div class="cta"><button class="add" onclick="addToCart()">🛒 Add to Cart</button><button class="buy" onclick="buyNow()">⚡ Buy at <span id="buyPrice"></span></button></div>
 </div></div></section>
@@ -88,7 +94,7 @@ async function load(){
   if(!id())throw Error("Product ID missing");
   const {data,error}=await supabaseClient.from("products").select("*").eq("id",id()).single();
   if(error)throw error;
-  let gallery=[]; if(Array.isArray(data.images)) gallery=data.images; else if(typeof data.images==="string"){try{const parsed=JSON.parse(data.images);if(Array.isArray(parsed))gallery=parsed}catch{}} gallery=gallery.map(x=>typeof x==="string"?x:(x?.url||x?.src||x?.image||"")).filter(Boolean); const primary=data.main_image||gallery[0]||v(data,["image","image_url","thumbnail","product_image"],""); const images=[primary,...gallery.filter(x=>x!==primary)].filter(Boolean); product={id:data.id,title:v(data,["name","title","product_name"],"Product"),image:primary,images:images.length?images:[""],price:num(v(data,["price","selling_price","sale_price"],149))||149,mrp:num(v(data,["mrp","original_price","old_price"],999))||999,description:v(data,["description","short_description","details"],"Premium quality product."),rating:v(data,["rating","avg_rating"],4.5),reviews:v(data,["review_count","reviews"],128),stock:Number(v(data,["stock","inventory","available_stock"],50)),badge:v(data,["badge","label"],"BESTSELLER"),category:v(data,["category","category_name"],"")};
+  let gallery=[]; if(Array.isArray(data.images)) gallery=data.images; else if(typeof data.images==="string"){try{const parsed=JSON.parse(data.images);if(Array.isArray(parsed))gallery=parsed}catch{}} gallery=gallery.map(x=>typeof x==="string"?x:(x?.url||x?.src||x?.image||"")).filter(Boolean); const primary=data.main_image||gallery[0]||v(data,["image","image_url","thumbnail","product_image"],""); const images=[primary,...gallery.filter(x=>x!==primary)].filter(Boolean); product={id:data.id,title:v(data,["name","title","product_name"],"Product"),image:primary,images:images.length?images:[""],price:num(v(data,["price","selling_price","sale_price"],149))||149,mrp:num(v(data,["mrp","original_price","old_price"],999))||999,description:v(data,["description","short_description","details"],"Premium quality product."),rating:v(data,["rating","avg_rating"],4.5),reviews:v(data,["review_count","reviews"],128),stock:Number(v(data,["stock","inventory","available_stock"],50)),badge:v(data,["badge","label"],"BESTSELLER"),category:v(data,["category","category_name"],""),customize_enabled:Boolean(data.customize_enabled)};
   render();
  }catch(e){console.error(e);document.getElementById("loading").innerHTML="<div style='text-align:center'><h2>Product not found</h2><p>"+e.message+"</p></div>"}
 }
@@ -96,6 +102,11 @@ async function load(){
 function render(){
  document.getElementById("loading").style.display="none";document.getElementById("product").style.display="block";document.getElementById("details").style.display="block";
  document.getElementById("title").textContent=product.title;document.getElementById("price").textContent=money(product.price);document.getElementById("buyPrice").textContent=money(product.price*qty);document.getElementById("mrp").textContent=product.mrp?money(product.mrp):"";document.getElementById("off").textContent=product.mrp>product.price?Math.max(0,Math.round((1-product.price/product.mrp)*100))+"% OFF":"";document.getElementById("description").textContent=product.description;document.getElementById("rating").textContent="★ "+product.rating;document.getElementById("reviews").textContent=product.reviews+" reviews";document.getElementById("tag").textContent=product.badge;document.getElementById("badge").textContent=product.badge;document.getElementById("stock").textContent=product.stock>0?"✓ In Stock ("+product.stock+" available)":"✕ Out of Stock";
+const customizeWrap=document.getElementById("customizeWrap");
+if(customizeWrap){
+  customizeWrap.style.display=product.customize_enabled?"flex":"none";
+  if(!product.customize_enabled) document.getElementById("customizeInput").value="";
+}
 
  currentIndex=0;
  const slider=document.getElementById("slider");
@@ -147,23 +158,27 @@ async function addToCart(){
  const {data:old,error:readError}=await supabaseClient.from("cart_items").select("id,qty").eq("user_id",user.id).eq("product_id",product.id).maybeSingle();
  if(readError){toast(readError.message);return}
  const newQty=(old?.qty||0)+qty;
- const row={user_id:user.id,product_id:product.id,title:product.title,image:product.image,price:product.price,mrp:product.mrp,qty:newQty,updated_at:new Date().toISOString()};
+ const customizeInput=document.getElementById("customizeInput");
+const customizeText=product.customize_enabled?(customizeInput?.value||"").trim():"";
+const row={user_id:user.id,product_id:product.id,title:product.title,image:product.image,price:product.price,mrp:product.mrp,qty:newQty,customize_text:customizeText,updated_at:new Date().toISOString()};
  const {error}=await supabaseClient.from("cart_items").upsert(row,{onConflict:"user_id,product_id"});
  if(error){toast(error.message);return}
  updateCart();toast("✓ Added to Cart");
 }
 async function updateCart(){
  const user=await getUser();
- if(!user){cartCount.textContent="0";return}
+ if(!user){const cartBadge=document.getElementById("cartCount");if(cartBadge)cartBadge.textContent="0";return}
  const {data,error}=await supabaseClient.from("cart_items").select("qty").eq("user_id",user.id);
  if(error){console.error(error);return}
- cartCount.textContent=(data||[]).reduce((s,x)=>s+(Number(x.qty)||0),0);
+ const cartBadge=document.getElementById("cartCount");if(cartBadge)cartBadge.textContent=(data||[]).reduce((s,x)=>s+(Number(x.qty)||0),0);
 }
 async function buyNow(){
  if(!product)return;
  const user=await getUser();
  if(!user){toast("Please login first");setTimeout(()=>location.href="/ecom/account.html",800);return}
- sessionStorage.setItem("checkoutItems",JSON.stringify([{id:product.id,title:product.title,image:product.image,price:product.price,mrp:product.mrp,qty:qty,product_id:product.id}]));
+ const customizeInput=document.getElementById("customizeInput");
+const customizeText=product.customize_enabled?(customizeInput?.value||"").trim():"";
+sessionStorage.setItem("checkoutItems",JSON.stringify([{id:product.id,title:product.title,image:product.image,price:product.price,mrp:product.mrp,qty:qty,product_id:product.id,customize_text:customizeText}]));
  location.href="/ecom/checkout.html?mode=buy";
 }
 function tab(type,b){
