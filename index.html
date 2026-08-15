@@ -777,6 +777,21 @@ main{
   }
 }
 
+@media(min-width:901px){
+  /* Laptop/Desktop: during product navigation show ONLY the real spinner.
+     Mobile loader/header remains completely unchanged. */
+  #productNavLoader .nav-head{
+    display:none;
+  }
+  #productNavLoader{
+    background:#fff;
+  }
+  #productNavLoader .nav-body{
+    align-items:center;
+    justify-content:center;
+  }
+}
+
 @media(min-width:701px){
   .mobile-only{
     display:none;
@@ -1802,12 +1817,6 @@ function createProductCard(product){
         );
       }
 
-
-      /*
-        Do NOT put a blocking overlay on index.html.
-        The product page owns the real loader. This guarantees
-        desktop and mobile navigation both happen immediately.
-      */
       try{
         sessionStorage.setItem(
           "mystore_product_navigation",
@@ -1815,9 +1824,21 @@ function createProductCard(product){
         );
       }catch(e){}
 
-      window.location.href =
+      const productUrl =
         "product.html?id=" +
         encodeURIComponent(product.id);
+
+      /* Laptop/Desktop: let the browser paint the real spinner
+         before changing page. Mobile behavior is unchanged. */
+      if(window.innerWidth > 900){
+        requestAnimationFrame(()=>{
+          requestAnimationFrame(()=>{
+            window.location.href = productUrl;
+          });
+        });
+      }else{
+        window.location.href = productUrl;
+      }
 
     }
   );
