@@ -2304,18 +2304,22 @@ const welcomeName =
   document.getElementById("welcomeName");
 
 
-accountBtn.addEventListener("click", function(e){
+if(accountBtn && accountMenu){
 
-  e.stopPropagation();
+  accountBtn.addEventListener("click", function(e){
 
-  accountMenu.classList.toggle("show");
+    e.stopPropagation();
 
-  accountBtn.classList.toggle(
-    "open",
-    accountMenu.classList.contains("show")
-  );
+    accountMenu.classList.toggle("show");
 
-});
+    accountBtn.classList.toggle(
+      "open",
+      accountMenu.classList.contains("show")
+    );
+
+  });
+
+}
 
 
 document.addEventListener("click",function(e){
@@ -2477,6 +2481,60 @@ supabaseClient.auth.onAuthStateChange(
 );
 
 
+
+/* =========================================================
+   EXACT INDEX HEADER NAVIGATION
+========================================================= */
+
+function goLogin(){
+
+  window.location.href =
+    "login.html";
+
+}
+
+function goSignup(){
+
+  window.location.href =
+    "signup.html";
+
+}
+
+function goProfile(){
+
+  window.location.href =
+    "profile.html";
+
+}
+
+function goOrders(){
+
+  window.location.href =
+    "orders.html";
+
+}
+
+function goAddresses(){
+
+  window.location.href =
+    "saved-addresses.html";
+
+}
+
+function goCart(){
+
+  window.location.href =
+    "cart.html";
+
+}
+
+async function logoutUser(){
+
+  await supabaseClient.auth.signOut();
+
+  window.location.reload();
+
+}
 
 /* =========================================================
    GLOBAL
@@ -4512,7 +4570,7 @@ async function updateCart(){
   }=
     await supabaseClient
       .from("cart_items")
-      .select("qty")
+      .select("id, quantity")
       .eq("user_id",user.id);
 
   if(error){
@@ -5037,7 +5095,7 @@ async function loadCartCount(){
     let total = 0;
 
     (data || []).forEach(item => {
-      total += Number(item.qty || 0);
+      total += Number(item.quantity || 0);
     });
 
     if(total > 0){
@@ -5154,6 +5212,32 @@ if(window.innerWidth > 900){
 
 }
 
+
+/* =========================================================
+   PRODUCT HEADER AUTH REFRESH — SAME AS INDEX
+========================================================= */
+if(typeof supabaseClient !== "undefined"){
+  supabaseClient.auth.onAuthStateChange(function(){
+    setTimeout(function(){
+      if(typeof loadAccount === "function") loadAccount();
+      if(typeof loadCartCount === "function") loadCartCount();
+    }, 50);
+  });
+}
+
+
+/* =========================================================
+   PRODUCT HEADER CART CLICK
+========================================================= */
+document.addEventListener("DOMContentLoaded", function(){
+  const cartButton = document.querySelector("#desktopIndexHeader .cart-btn");
+  if(cartButton && !cartButton.dataset.productCartBound){
+    cartButton.dataset.productCartBound = "1";
+    cartButton.addEventListener("click", function(){
+      window.location.href = "cart.html";
+    });
+  }
+});
 </script>
 
 </body>
