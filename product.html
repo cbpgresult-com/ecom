@@ -1203,6 +1203,14 @@ a{text-decoration:none;color:inherit}
   }
 }
 
+
+/* When arriving from index product-grid navigation, do NOT create a
+   second loader. The index page owns the transition loader. */
+@media(max-width:900px){
+  html.fromIndexNavigation #mobileProductLoading,html.fromIndexNavigation #loading{
+    display:none !important;
+  }
+
 /* ================= MOBILE PRODUCT HEADER + REAL LOADING ================= */
 .mobileProductHeader,.mobileProductLoading{display:none}
 @media(max-width:900px){
@@ -1236,6 +1244,18 @@ a{text-decoration:none;color:inherit}
 }
 
 </style>
+
+<script>
+(function(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    if(params.get("navt")){
+      document.documentElement.classList.add("fromIndexNavigation");
+    }
+  }catch(e){}
+})();
+</script>
+
 </head>
 
 <body>
@@ -2768,22 +2788,30 @@ function showDetailsTab(type,button){
 
 async function hideInitialProductLoader(){
 
-  if(!cameFromIndexLoader) return;
+  /*
+    When coming from index, screenshot-1 loader MUST stay visible
+    until render() finishes. The normal "Loading product..." block
+    is hidden by CSS, so there is no intermediate loader.
+  */
+  if(cameFromIndexLoader){
+    const loading =
+      document.getElementById(
+        "mobileProductLoading"
+      );
 
-  const loading =
-    document.getElementById(
-      "mobileProductLoading"
-    );
+    if(loading){
+      loading.classList.remove("hide");
+      loading.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+    }
 
-  if(loading){
-    loading.classList.add("hide");
-    loading.setAttribute(
-      "aria-hidden",
-      "true"
-    );
+    document.body.style.overflow =
+      "hidden";
+
+    return;
   }
-
-  document.body.style.overflow = "";
 
 }
 
