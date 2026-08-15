@@ -671,96 +671,10 @@ main{
     grid-template-columns:repeat(3,1fr);
   }
 }
-
-/* =========================================================
-   SAFE PRODUCT NAVIGATION LOADER
-   ONLY .product-card can trigger this.
-========================================================= */
-#indexProductLoading{
-  position:fixed;
-  inset:0;
-  z-index:2147483647;
-  display:none;
-  flex-direction:column;
-  background:#f5f6f8;
-  pointer-events:none;
-}
-#indexProductLoading.show{display:flex}
-#indexProductLoading .navLoaderHeader{
-  height:62px;
-  min-height:62px;
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  display:flex;
-  align-items:center;
-  padding:0 10px;
-}
-#indexProductLoading .navLoaderSide{
-  width:42px;
-  height:42px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-#indexProductLoading .navLoaderSide svg{
-  width:24px;
-  height:24px;
-}
-#indexProductLoading .navLoaderSpacer{flex:1}
-#indexProductLoading .navLoaderBody{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-#indexProductLoading .navLoaderSpinner{
-  width:48px;
-  height:48px;
-  border:4px solid #dbeafe;
-  border-top-color:#2874f0;
-  border-radius:50%;
-  animation:safeProductSpin .75s linear infinite;
-}
-@keyframes safeProductSpin{
-  to{transform:rotate(360deg)}
-}
-.product-card{
-  -webkit-tap-highlight-color:transparent;
-}
-
 </style>
 </head>
 
 <body>
-
-<div id="indexProductLoading" aria-hidden="true">
-  <div class="navLoaderHeader">
-    <div class="navLoaderSide">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-        <path d="M19 12H5"></path>
-        <path d="m12 19-7-7 7-7"></path>
-      </svg>
-    </div>
-    <div class="navLoaderSpacer"></div>
-    <div class="navLoaderSide">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-        <circle cx="11" cy="11" r="7"></circle>
-        <path d="m20 20-4-4"></path>
-      </svg>
-    </div>
-    <div class="navLoaderSide">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-        <circle cx="9" cy="20" r="1"></circle>
-        <circle cx="18" cy="20" r="1"></circle>
-        <path d="M3 4h2l2.4 11.5h10.8L21 8H6"></path>
-      </svg>
-    </div>
-  </div>
-  <div class="navLoaderBody">
-    <div class="navLoaderSpinner"></div>
-  </div>
-</div>
-
 
 <!-- ================= HEADER ================= -->
 
@@ -1851,51 +1765,6 @@ loadCartCount();
 loadProducts();
 
 
-</script>
-
-
-<script>
-/* =========================================================
-   SAFE PRODUCT GRID LOADER
-   - ONLY a real .product-card triggers it
-   - normal index touches never trigger it
-   - no timeout / no artificial delay
-========================================================= */
-(function(){
-
-  let productLoaderShown = false;
-
-  document.addEventListener(
-    "pointerdown",
-    function(event){
-
-      const card =
-        event.target.closest &&
-        event.target.closest(".product-card");
-
-      if(!card) return;
-      if(productLoaderShown) return;
-
-      productLoaderShown = true;
-
-      const loader =
-        document.getElementById(
-          "indexProductLoading"
-        );
-
-      if(!loader) return;
-
-      loader.classList.add("show");
-      loader.setAttribute(
-        "aria-hidden",
-        "false"
-      );
-
-    },
-    true
-  );
-
-})();
 </script>
 
 </body>
