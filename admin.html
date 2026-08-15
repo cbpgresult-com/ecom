@@ -294,6 +294,56 @@ th{
   font-weight:700;
   color:#999;
 }
+.modal-time-box{
+  margin:0 0 18px;
+  padding:12px 14px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  background:#fafafa;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.modal-time-status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:52px;
+  padding:6px 9px;
+  border-radius:7px;
+  background:#111;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+}
+.modal-time-status.updated{
+  background:#2563eb;
+}
+.modal-time-caption{
+  font-size:11px;
+  color:#777;
+  font-weight:600;
+  margin-right:2px;
+}
+.modal-time-input{
+  flex:1;
+  min-width:250px;
+  height:38px;
+  padding:0 10px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  background:#fff;
+  color:#111;
+  font-size:13px;
+  font-weight:700;
+}
+.modal-time-note{
+  width:100%;
+  margin-top:-3px;
+  font-size:10px;
+  color:#888;
+}
 .pill{
   display:inline-block;
   padding:5px 8px;
@@ -906,6 +956,18 @@ th{
   .details-tab{white-space:nowrap}
   .manufacturer-grid{grid-template-columns:1fr}
 }
+
+@media (max-width:700px){
+  .modal-time-box{
+    align-items:flex-start;
+  }
+  .modal-time-input{
+    width:100%;
+    min-width:0;
+    flex-basis:100%;
+  }
+}
+
 </style>
 </head>
 
@@ -1171,6 +1233,43 @@ th{
       >
         ×
       </button>
+
+    </div>
+
+
+    <div
+      id="modalTimeBox"
+      class="modal-time-box"
+      style="display:none"
+    >
+
+      <span
+        id="modalTimeStatus"
+        class="modal-time-status"
+      >
+        New
+      </span>
+
+      <span
+        id="modalTimeCaption"
+        class="modal-time-caption"
+      >
+        Date &amp; Time
+      </span>
+
+      <input
+        id="modalProductDateTime"
+        class="modal-time-input"
+        type="datetime-local"
+        step="1"
+      >
+
+      <div
+        id="modalTimeNote"
+        class="modal-time-note"
+      >
+        Product ka actual saved date/time. Seconds ke saath change kar sakte ho.
+      </div>
 
     </div>
 
@@ -2533,6 +2632,127 @@ ${
 }
 
 
+/* =========================================================
+   PRODUCT DATE/TIME — EDITABLE REAL TIMESTAMP
+========================================================= */
+
+function pad2(n){
+  return String(n).padStart(2,"0");
+}
+
+function isoToDateTimeLocal(value){
+
+  if(!value)
+    return "";
+
+  const d = new Date(value);
+
+  if(Number.isNaN(d.getTime()))
+    return "";
+
+  return (
+    d.getFullYear() + "-" +
+    pad2(d.getMonth() + 1) + "-" +
+    pad2(d.getDate()) + "T" +
+    pad2(d.getHours()) + ":" +
+    pad2(d.getMinutes()) + ":" +
+    pad2(d.getSeconds())
+  );
+}
+
+function dateTimeLocalToISO(value){
+
+  if(!value)
+    return "";
+
+  const d = new Date(value);
+
+  if(Number.isNaN(d.getTime()))
+    return "";
+
+  return d.toISOString();
+}
+
+function nowDateTimeLocal(){
+
+  const d = new Date();
+
+  return (
+    d.getFullYear() + "-" +
+    pad2(d.getMonth() + 1) + "-" +
+    pad2(d.getDate()) + "T" +
+    pad2(d.getHours()) + ":" +
+    pad2(d.getMinutes()) + ":" +
+    pad2(d.getSeconds())
+  );
+}
+
+function setupModalProductDateTime(mode, product){
+
+  const box =
+    $("modalTimeBox");
+
+  const status =
+    $("modalTimeStatus");
+
+  const input =
+    $("modalProductDateTime");
+
+  const caption =
+    $("modalTimeCaption");
+
+  if(!box || !status || !input)
+    return;
+
+  box.style.display = "flex";
+
+  if(mode === "updated"){
+
+    status.textContent = "Updated";
+    status.classList.add("updated");
+    caption.textContent =
+      "Last Updated Date & Time";
+
+    input.value =
+      isoToDateTimeLocal(
+        product && product.updated_at
+          ? product.updated_at
+          : (
+              product && product.created_at
+                ? product.created_at
+                : new Date().toISOString()
+            )
+      );
+
+  }else{
+
+    status.textContent = "New";
+    status.classList.remove("updated");
+    caption.textContent =
+      "Created Date & Time";
+
+    input.value =
+      isoToDateTimeLocal(
+        product && product.created_at
+          ? product.created_at
+          : new Date().toISOString()
+      );
+
+  }
+
+}
+
+function hideModalProductDateTime(){
+
+  const box =
+    $("modalTimeBox");
+
+  if(box)
+    box.style.display = "none";
+
+}
+
+
 /* =========================
    ADD PRODUCT
 ========================= */
@@ -2567,6 +2787,11 @@ function openAdd(){
 
   $("saveBtn").textContent =
     "Save Product";
+
+  setupModalProductDateTime(
+    "new",
+    null
+  );
 
   $("pid").value = "";
 
@@ -2661,6 +2886,8 @@ function closeModal(){
     .classList
     .remove("show");
 
+  hideModalProductDateTime();
+
 }
 
 
@@ -2689,6 +2916,11 @@ function edit(id){
 
   $("saveBtn").textContent =
     "Update Product";
+
+  setupModalProductDateTime(
+    "updated",
+    p
+  );
 
 
   $("pid").value =
@@ -3934,14 +4166,42 @@ async function save(e){
     */
 
     all_details:
-      detailsDraft.all_details,
-
-
-    updated_at:
-      new Date()
-        .toISOString()
+      detailsDraft.all_details
 
   };
+
+  const selectedDateTime =
+    $("modalProductDateTime")
+      ? $("modalProductDateTime").value
+      : "";
+
+  const selectedISO =
+    dateTimeLocalToISO(
+      selectedDateTime
+    );
+
+  if(!selectedISO){
+
+    errorBox(
+      $("formError"),
+      "Date & Time valid hona chahiye."
+    );
+
+    return;
+
+  }
+
+  if(editing){
+
+    payload.updated_at =
+      selectedISO;
+
+  }else{
+
+    payload.created_at =
+      selectedISO;
+
+  }
 
 
   console.log(
