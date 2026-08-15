@@ -1620,12 +1620,8 @@ a{text-decoration:none;color:inherit}
     user-select:none;
   }
 
-  /* Prevent the Login -> user-name flash while Supabase auth is loading. */
+  /* Cached account name is rendered immediately; no hidden/blank flash. */
   #desktopIndexHeader #accountName{
-    visibility:hidden;
-  }
-
-  #desktopIndexHeader #accountName.account-ready{
     visibility:visible;
   }
 }
@@ -1674,6 +1670,20 @@ a{text-decoration:none;color:inherit}
       </svg>
 
       <span id="accountName">Login</span>
+
+      <script>
+      /* Paint the cached account name immediately, before the browser can
+         show a Login -> name transition. localStorage survives normal
+         reloads and is only absent on a first/cleared browser state. */
+      (function(){
+        try{
+          var cachedName = localStorage.getItem("mystore_cached_account_name");
+          if(cachedName && cachedName.trim()){
+            document.getElementById("accountName").textContent = cachedName;
+          }
+        }catch(e){}
+      })();
+      </script>
 
       <svg class="arrow"
         viewBox="0 0 24 24"
@@ -2377,6 +2387,37 @@ function getFirstName(fullName){
 
 
 /* =========================================================
+   CACHED ACCOUNT NAME
+========================================================= */
+
+const ACCOUNT_NAME_CACHE_KEY =
+  "mystore_cached_account_name";
+
+function saveCachedAccountName(name){
+
+  try{
+    if(name && String(name).trim()){
+      localStorage.setItem(
+        ACCOUNT_NAME_CACHE_KEY,
+        String(name).trim()
+      );
+    }
+  }catch(e){}
+
+}
+
+function clearCachedAccountName(){
+
+  try{
+    localStorage.removeItem(
+      ACCOUNT_NAME_CACHE_KEY
+    );
+  }catch(e){}
+
+}
+
+
+/* =========================================================
    LOAD LOGIN STATE
 ========================================================= */
 
@@ -2396,6 +2437,7 @@ async function loadAccount(){
 
       /* NOT LOGGED IN */
 
+      clearCachedAccountName();
       accountName.textContent =
         "Login";
       accountName.classList.add("account-ready");
@@ -2463,6 +2505,8 @@ async function loadAccount(){
     }
 
 
+    saveCachedAccountName(firstName);
+
     accountName.textContent =
       firstName;
     accountName.classList.add("account-ready");
@@ -2486,7 +2530,17 @@ async function loadAccount(){
       error
     );
 
-    accountName.textContent = "Login";
+    try{
+      const cachedName =
+        localStorage.getItem(ACCOUNT_NAME_CACHE_KEY);
+
+      if(!cachedName){
+        accountName.textContent = "Login";
+      }
+    }catch(e){
+      accountName.textContent = "Login";
+    }
+
     accountName.classList.add("account-ready");
 
   }
@@ -2499,7 +2553,11 @@ async function loadAccount(){
 ========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
-  function(){
+  function(event, session){
+
+    if(event === "SIGNED_OUT" || !session){
+      clearCachedAccountName();
+    }
 
     setTimeout(
       loadAccount,
@@ -5247,7 +5305,10 @@ if(window.innerWidth > 900){
    PRODUCT HEADER AUTH REFRESH — SAME AS INDEX
 ========================================================= */
 if(typeof supabaseClient !== "undefined"){
-  supabaseClient.auth.onAuthStateChange(function(){
+  supabaseClient.auth.onAuthStateChange(function(event, session){
+    if(event === "SIGNED_OUT" || !session){
+      clearCachedAccountName();
+    }
     setTimeout(function(){
       if(typeof loadAccount === "function") loadAccount();
       if(typeof loadCartCount === "function") loadCartCount();
