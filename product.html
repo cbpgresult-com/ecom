@@ -80,7 +80,9 @@ a{text-decoration:none;color:inherit}
   scrollbar-width:none
 }
 
-.slider::-webkit-scrollbar{display:none}
+.slider::-webkit-scrollbar{
+  display:none
+}
 
 .slide{
   flex:0 0 100%;
@@ -267,7 +269,7 @@ a{text-decoration:none;color:inherit}
   gap:6px
 }
 
-/* QTY */
+/* QUANTITY */
 
 .qtyrow{
   display:flex;
@@ -301,25 +303,6 @@ a{text-decoration:none;color:inherit}
   align-items:center;
   justify-content:center;
   font-size:12px
-}
-
-/* CUSTOMIZE */
-
-#customizeWrap{
-  display:none;
-  align-items:center;
-  gap:7px;
-  margin-left:4px
-}
-
-#customizeInput{
-  width:125px;
-  height:34px;
-  border:1px solid #ddd;
-  border-radius:8px;
-  padding:0 9px;
-  outline:none;
-  background:#fff
 }
 
 /* DELIVERY */
@@ -460,7 +443,7 @@ a{text-decoration:none;color:inherit}
   margin:0
 }
 
-/* CTA */
+/* BUTTONS */
 
 .cta{
   display:grid;
@@ -554,182 +537,183 @@ a{text-decoration:none;color:inherit}
 
 @media(max-width:900px){
 
-  #customizeWrap{
-    margin-left:0!important;
-    flex:1;
-    min-width:0
-  }
+#customizeWrap{
+  margin-left:0!important;
+  flex:1;
+  min-width:0
+}
 
-  #customizeWrap input{
-    width:100%!important;
-    max-width:135px;
-    height:32px!important
-  }
+#customizeWrap input{
+  width:100%!important;
+  max-width:135px;
+  height:34px!important
+}
 
-  #customizeWrap label{
-    font-size:10px!important
-  }
+#customizeWrap label{
+  font-size:10px!important
+}
 
-  .qtyrow{
-    gap:6px;
-    margin-top:12px;
-    font-size:11px;
-    min-height:32px
-  }
+.qtyrow{
+  gap:6px;
+  margin-top:12px;
+  font-size:11px;
+  min-height:32px
+}
 
-  .qty{
-    height:32px;
-    border-radius:8px
-  }
+.qty{
+  height:32px;
+  border-radius:8px
+}
 
-  .qty button{
-    width:29px;
-    font-size:12px
-  }
+.qty button{
+  width:29px;
+  font-size:12px
+}
 
-  .qty span{
-    width:30px;
-    font-size:11px
-  }
+.qty span{
+  width:30px;
+  font-size:11px
+}
 
-  .deliveryDetails{
-    margin-top:18px
-  }
+.deliveryDetails{
+  margin-top:18px
+}
 
-  .deliveryTitle{
-    font-size:15px;
-    margin-bottom:8px
-  }
+.deliveryTitle{
+  font-size:15px;
+  margin-bottom:8px
+}
 
-  .deliveryAddress{
-    padding:10px 10px;
-    font-size:10px;
-    min-height:42px
-  }
+.deliveryAddress{
+  padding:10px 10px;
+  font-size:10px;
+  min-height:42px
+}
 
-  .deliveryDate{
-    padding:9px 10px;
-    font-size:10px
-  }
+.deliveryDate{
+  padding:9px 10px;
+  font-size:10px
+}
 
-  .deliverySeller{
-    padding:9px 10px
-  }
+.deliverySeller{
+  padding:9px 10px
+}
 
-  .sellerMain{
-    font-size:10px
-  }
+.sellerMain{
+  font-size:10px
+}
 
-  .sellerSub{
-    font-size:8.5px
-  }
+.sellerSub{
+  font-size:8.5px
+}
 
-  .sellerLink{
-    font-size:9px;
-    margin-top:4px
-  }
+.sellerLink{
+  font-size:9px;
+  margin-top:4px
+}
 
-  .features{
-    gap:6px;
-    margin-top:16px
-  }
+.features{
+  gap:6px;
+  margin-top:16px
+}
 
-  .feature{
-    min-height:64px;
-    padding:8px 3px
-  }
+.feature{
+  min-height:64px;
+  padding:8px 3px
+}
 
-  .featureIcon{
-    width:23px;
-    height:23px;
-    font-size:12px;
-    margin-bottom:4px
-  }
+.featureIcon{
+  width:23px;
+  height:23px;
+  font-size:12px;
+  margin-bottom:4px
+}
 
-  .feature b{
-    font-size:8.5px
-  }
+.feature b{
+  font-size:8.5px
+}
 
-  .page{
-    padding:12px 9px 90px
-  }
+.page{
+  padding:12px 9px 90px
+}
 
-  .product{
-    border-radius:17px
-  }
+.product{
+  border-radius:17px
+}
 
-  .grid{
-    grid-template-columns:1fr
-  }
+.grid{
+  grid-template-columns:1fr
+}
 
-  .gallery{
-    padding:9px 0;
-    border-right:0;
-    border-bottom:1px solid #eee
-  }
+.gallery{
+  padding:9px 0;
+  border-right:0;
+  border-bottom:1px solid #eee
+}
 
-  .main{
-    height:340px;
-    border:0;
-    background:transparent;
-    border-radius:0;
-    box-shadow:none
-  }
+.main{
+  height:340px;
+  border:0;
+  background:transparent;
+  border-radius:0;
+  box-shadow:none
+}
 
-  .slide img{
-    padding:10px
-  }
+.slide img{
+  padding:10px
+}
 
-  .navBtn{
-    display:none!important
-  }
+.navBtn{
+  display:none!important
+}
 
-  .info{
-    padding:20px 16px
-  }
+.info{
+  padding:20px 16px
+}
 
-  .title{
-    font-size:19px;
-    line-height:1.35;
-    margin-top:10px
-  }
+.title{
+  font-size:19px;
+  line-height:1.35;
+  margin-top:10px
+}
 
-  .price{
-    font-size:26px
-  }
+.price{
+  font-size:26px
+}
 
-  .mrp{
-    font-size:12px
-  }
+.mrp{
+  font-size:12px
+}
 
-  .off{
-    font-size:12px
-  }
+.off{
+  font-size:12px
+}
 
-  .rate{
-    font-size:11px
-  }
+.rate{
+  font-size:11px
+}
 
-  .reviews{
-    font-size:11px
-  }
+.reviews{
+  font-size:11px
+}
 
-  .cta{
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    z-index:50;
-    background:#fff;
-    padding:9px 10px calc(9px + env(safe-area-inset-bottom));
-    margin:0;
-    border-top:1px solid #ddd;
-    box-shadow:0 -6px 20px #0000000f
-  }
+.cta{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:50;
+  background:#fff;
+  padding:9px 10px calc(9px + env(safe-area-inset-bottom));
+  margin:0;
+  border-top:1px solid #ddd;
+  box-shadow:0 -6px 20px #0000000f
+}
 
-  .add,.buy{
-    height:51px
-  }
+.add,.buy{
+  height:51px
+}
+
 }
 </style>
 </head>
@@ -815,7 +799,9 @@ onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
 
 <div class="deliveryIcon">⌖</div>
 
-<div id="deliveryAddressText" class="deliveryAddressText">
+<div
+id="deliveryAddressText"
+class="deliveryAddressText">
 Add delivery address
 </div>
 
@@ -855,13 +841,11 @@ See other sellers
 
 </div>
 
-<!-- DESCRIPTION -->
-
 <div id="description" class="desc"></div>
 
 <div id="stock" class="stock"></div>
 
-<!-- QTY + CUSTOMIZE -->
+<!-- QUANTITY -->
 
 <div class="qtyrow">
 
@@ -877,10 +861,13 @@ Qty.
 
 </div>
 
-<div id="customizeWrap">
+<div
+id="customizeWrap"
+style="display:none;align-items:center;gap:7px;margin-left:4px;">
 
 <label
-for="customizeInput">
+for="customizeInput"
+style="font-size:12px;font-weight:800;white-space:nowrap;">
 Customize
 </label>
 
@@ -888,7 +875,8 @@ Customize
 id="customizeInput"
 type="text"
 maxlength="100"
-placeholder="Name / Text">
+placeholder="Name / Text"
+style="width:125px;height:40px;border:1px solid #ddd;border-radius:10px;padding:0 10px;outline:none;background:#fff;">
 
 </div>
 
@@ -898,7 +886,9 @@ placeholder="Name / Text">
 
 <div id="features" class="features"></div>
 
-<!-- CTA -->
+<!-- NO BIS NOTICE HERE -->
+
+<!-- ACTION BUTTONS -->
 
 <div class="cta">
 
@@ -917,6 +907,7 @@ onclick="buyNow()">
 </div>
 
 </div>
+
 </div>
 
 </section>
@@ -948,7 +939,10 @@ Delivery & Returns
 
 </div>
 
-<div id="content" class="content"></div>
+<div
+id="content"
+class="content">
+</div>
 
 </section>
 
@@ -962,13 +956,14 @@ Delivery & Returns
 
 /* =========================================================
    SUPABASE
-   ========================================================= */
+   SAME URL + SAME ANON KEY
+========================================================= */
 
 const SUPABASE_URL =
 "https://bszojvhitsoamhksyjul.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_YLxllWRMVI3IN8AQS-uJSw_wV9zNqe5";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -976,21 +971,19 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
+let product=null;
+let qty=1;
+let currentIndex=0;
+
 
 /* =========================================================
-   GLOBAL
-   ========================================================= */
+   HELPERS
+========================================================= */
 
-let product = null;
-let qty = 1;
-let currentIndex = 0;
+const money=n =>
+"₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
 
-const money = n =>
-"₹" +
-Math.round(Number(n)||0)
-.toLocaleString("en-IN");
-
-const id = () =>
+const id=() =>
 new URLSearchParams(location.search).get("id");
 
 function v(o,ks,d=""){
@@ -1002,19 +995,17 @@ return d;
 }
 
 function num(v){
-const m =
-String(v??"")
+const m=String(v??"")
 .match(/[0-9,]+(?:\.[0-9]+)?/);
 
 return m
-? Number(m[0].replace(/,/g,""))
+?Number(m[0].replace(/,/g,""))
 :0;
 }
 
 function toast(x){
 
-const t =
-document.getElementById("toast");
+const t=document.getElementById("toast");
 
 t.textContent=x;
 
@@ -1022,17 +1013,16 @@ t.classList.add("show");
 
 clearTimeout(window.tt);
 
-window.tt =
-setTimeout(
+window.tt=setTimeout(
 ()=>t.classList.remove("show"),
 2200
 );
+
 }
 
 function escapeHtml(value){
 
-const s =
-String(value??"");
+const s=String(value??"");
 
 return s.replace(
 /[&<>"']/g,
@@ -1049,12 +1039,12 @@ c=>({
 
 
 /* =========================================================
-   SAVED ADDRESS
-   ========================================================= */
+   GET SAVED ADDRESS
+========================================================= */
 
 function getSavedAddress(){
 
-const keys = [
+const keys=[
 "selectedAddress",
 "savedAddress",
 "deliveryAddress",
@@ -1067,8 +1057,7 @@ for(const key of keys){
 
 try{
 
-const raw =
-localStorage.getItem(key);
+const raw=localStorage.getItem(key);
 
 if(!raw) continue;
 
@@ -1078,47 +1067,46 @@ try{
 x=JSON.parse(raw);
 }catch{}
 
-if(typeof x==="string" && x.trim()){
+if(
+typeof x==="string" &&
+x.trim()
+){
 
 return x.trim();
 
 }
 
-if(x && typeof x==="object"){
+if(
+x &&
+typeof x==="object"
+){
 
 const parts=[
 
 x.address,
 x.full_address,
 x.fullAddress,
-
 x.formatted_address,
 x.formattedAddress,
 
 x.addressLine,
 x.address_line,
 
-x.house,
-x.house_no,
-x.houseNumber,
-
 x.area,
 x.locality,
-x.colony,
-
 x.city,
-x.district,
-
 x.state,
 
 x.pincode,
 x.pin
 
 ]
+
 .filter(
 v=>v!=null &&
 String(v).trim()
 )
+
 .map(
 v=>String(v).trim()
 );
@@ -1133,9 +1121,18 @@ return [
 
 }
 
-}catch{}
+}catch(e){
+
+console.log(
+"Address read error:",
+e
+);
 
 }
+
+}
+
+/* NO ADDRESS */
 
 return "Add delivery address";
 
@@ -1143,8 +1140,8 @@ return "Add delivery address";
 
 
 /* =========================================================
-   ADDRESS OPEN
-   ========================================================= */
+   OPEN ADDRESS SELECTOR
+========================================================= */
 
 function openAddressSelector(){
 
@@ -1171,8 +1168,8 @@ location.href="/ecom/checkout.html";
 
 /* =========================================================
    DELIVERY DATE
-   TODAY + 5 DAYS
-   ========================================================= */
+   5 DAYS AFTER TODAY
+========================================================= */
 
 function getDeliveryDate(){
 
@@ -1195,6 +1192,10 @@ weekday:"short"
 
 }
 
+
+/* =========================================================
+   RENDER DELIVERY CARD
+========================================================= */
 
 function renderDeliveryDetails(){
 
@@ -1228,7 +1229,7 @@ getDeliveryDate();
 
 /* =========================================================
    LOAD PRODUCT
-   ========================================================= */
+========================================================= */
 
 async function load(){
 
@@ -1257,12 +1258,13 @@ throw error;
 
 let gallery=[];
 
-if(Array.isArray(data.images)){
+if(
+Array.isArray(data.images)
+){
 
 gallery=data.images;
 
 }
-
 else if(
 typeof data.images==="string"
 ){
@@ -1284,9 +1286,9 @@ gallery
 .map(
 x=>typeof x==="string"
 ?x
-:(x?.url ||
-x?.src ||
-x?.image ||
+:(x?.url||
+x?.src||
+x?.image||
 "")
 )
 .filter(Boolean);
@@ -1305,8 +1307,7 @@ data,
 ""
 );
 
-const images =
-[
+const images=[
 primary,
 ...gallery.filter(
 x=>x!==primary
@@ -1315,7 +1316,7 @@ x=>x!==primary
 .filter(Boolean);
 
 
-/* PRODUCT */
+/* PRODUCT OBJECT */
 
 product={
 
@@ -1455,9 +1456,7 @@ data.assured_enabled===undefined
 
 render();
 
-}
-
-catch(e){
+}catch(e){
 
 console.error(e);
 
@@ -1467,7 +1466,7 @@ document.getElementById(
 
 "<div style='text-align:center'>"+
 "<h2>Product not found</h2>"+
-"<p>"+e.message+"</p>"+
+"<p>"+escapeHtml(e.message)+"</p>"+
 "</div>";
 
 }
@@ -1477,11 +1476,16 @@ document.getElementById(
 
 /* =========================================================
    RENDER
-   ========================================================= */
+========================================================= */
 
 function render(){
 
+/* DELIVERY */
+
 renderDeliveryDetails();
+
+
+/* SHOW PAGE */
 
 document.getElementById(
 "loading"
@@ -1496,29 +1500,22 @@ document.getElementById(
 ).style.display="block";
 
 
+/* BASIC INFO */
+
 document.getElementById(
 "title"
 ).textContent=
 product.title;
-
 
 document.getElementById(
 "price"
 ).textContent=
 money(product.price);
 
-
-/*
- IMPORTANT:
- BUY BUTTON PAR PRODUCT PRICE HI RAHEGA.
- QTY BADHNE PAR BUTTON PRICE NAHI BADHEGA.
-*/
-
 document.getElementById(
 "buyPrice"
 ).textContent=
-money(product.price);
-
+money(product.price*qty);
 
 document.getElementById(
 "mrp"
@@ -1527,13 +1524,11 @@ product.mrp
 ?money(product.mrp)
 :"";
 
-
 document.getElementById(
 "off"
 ).textContent=
 product.mrp>product.price
-?
-Math.max(
+?Math.max(
 0,
 Math.round(
 (1-product.price/product.mrp)*100
@@ -1541,47 +1536,39 @@ Math.round(
 )+"% OFF"
 :"";
 
-
 document.getElementById(
 "description"
 ).textContent=
 product.description;
-
 
 document.getElementById(
 "rating"
 ).textContent=
 "★ "+product.rating;
 
-
 document.getElementById(
 "reviews"
 ).textContent=
 product.reviews+" reviews";
-
 
 document.getElementById(
 "tag"
 ).textContent=
 product.badge;
 
-
 document.getElementById(
 "badge"
 ).textContent=
 product.badge;
 
-
 document.getElementById(
 "stock"
 ).textContent=
 product.stock>0
-?
-"✓ In Stock ("+
+?"✓ In Stock ("+
 product.stock+
 " available)"
-:
-"✕ Out of Stock";
+:"✕ Out of Stock";
 
 
 /* CUSTOMIZE */
@@ -1620,41 +1607,40 @@ if(features){
 
 const returnText =
 product.return_enabled
-?
-product.return_days+
+?product.return_days+
 "-Day Return"
-:
-"No Return";
+:"No Return";
 
-let html="";
+features.innerHTML=
 
-html +=
 `<div class="feature">
 <div class="featureIcon">↩</div>
 <b>${returnText}</b>
-</div>`;
+</div>`
 
-if(product.cod_enabled){
++
 
-html +=
+(
+product.cod_enabled
+?
 `<div class="feature">
 <div class="featureIcon">▣</div>
 <b>Cash on Delivery</b>
-</div>`;
+</div>`
+:""
+)
 
-}
++
 
-if(product.assured_enabled){
-
-html +=
+(
+product.assured_enabled
+?
 `<div class="feature">
 <div class="featureIcon">✓</div>
 <b>Trikunt Assured</b>
-</div>`;
-
-}
-
-features.innerHTML=html;
+</div>`
+:""
+);
 
 const count =
 1+
@@ -1667,7 +1653,7 @@ features.style.gridTemplateColumns =
 }
 
 
-/* IMAGES */
+/* IMAGE SLIDER */
 
 currentIndex=0;
 
@@ -1680,13 +1666,12 @@ slider.innerHTML =
 product.images
 .map(
 (url,i)=>
-
 `<div class="slide">
 
 <img
 src="${escapeHtml(url)}"
 alt="${escapeHtml(product.title)}"
-loading="${i===0?"eager":"lazy"}"
+loading="${i===0?'eager':'lazy'}"
 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
 
 <div class="imgFallback">
@@ -1694,7 +1679,6 @@ Image unavailable
 </div>
 
 </div>`
-
 )
 .join("");
 
@@ -1708,7 +1692,9 @@ onSliderScroll
 slider.addEventListener(
 "scroll",
 onSliderScroll,
-{passive:true}
+{
+passive:true
+}
 );
 
 
@@ -1725,7 +1711,8 @@ product.images.length>1;
 dots.innerHTML =
 multi
 ?
-product.images.map(
+product.images
+.map(
 (_,i)=>
 `<button
 type="button"
@@ -1733,17 +1720,19 @@ class="dot ${i===0?"active":""}"
 onclick="goToImage(${i})"
 aria-label="Go to image ${i+1}">
 </button>`
-).join("")
+)
+.join("")
 :"";
 
 dots.style.display =
-multi?"flex":"none";
+multi
+?"flex"
+:"none";
 
 document
 .querySelectorAll(".navBtn")
 .forEach(
-b=>
-b.style.display=
+b=>b.style.display=
 multi?"":"none"
 );
 
@@ -1754,10 +1743,13 @@ updateNavState();
 
 content.innerHTML =
 "<h3>"+
-product.title+
+escapeHtml(product.title)+
 "</h3><p>"+
-product.description+
+escapeHtml(product.description)+
 "</p>";
+
+
+/* CART */
 
 updateCart();
 
@@ -1766,7 +1758,7 @@ updateCart();
 
 /* =========================================================
    SLIDER
-   ========================================================= */
+========================================================= */
 
 function onSliderScroll(){
 
@@ -1792,17 +1784,19 @@ product.images[currentIndex] ||
 product.image;
 
 updateDots();
+
 updateNavState();
 
 }
 
 }
 
-
 function updateDots(){
 
 document
-.querySelectorAll("#dots .dot")
+.querySelectorAll(
+"#dots .dot"
+)
 .forEach(
 (d,i)=>
 d.classList.toggle(
@@ -1812,7 +1806,6 @@ i===currentIndex
 );
 
 }
-
 
 function updateNavState(){
 
@@ -1838,7 +1831,6 @@ product.images.length-1;
 
 }
 
-
 function goToImage(i){
 
 const slider =
@@ -1860,17 +1852,20 @@ product.images[currentIndex] ||
 product.image;
 
 slider.scrollTo({
+
 left:
 currentIndex*
 slider.clientWidth,
+
 behavior:"smooth"
+
 });
 
 updateDots();
+
 updateNavState();
 
 }
-
 
 function prevImage(){
 
@@ -1879,7 +1874,6 @@ currentIndex-1
 );
 
 }
-
 
 function nextImage(){
 
@@ -1892,12 +1886,11 @@ currentIndex+1
 
 /* =========================================================
    QUANTITY
-   ========================================================= */
+========================================================= */
 
 function changeQty(n){
 
-qty =
-Math.max(
+qty=Math.max(
 1,
 Math.min(
 product.stock||99,
@@ -1909,22 +1902,19 @@ document.getElementById(
 "qty"
 ).textContent=qty;
 
-
-/*
- BUY BUTTON PRICE FIXED
-*/
-
 document.getElementById(
 "buyPrice"
 ).textContent=
-money(product.price);
+money(
+product.price*qty
+);
 
 }
 
 
 /* =========================================================
    USER
-   ========================================================= */
+========================================================= */
 
 async function getUser(){
 
@@ -1942,7 +1932,7 @@ return data.session?.user||null;
 
 /* =========================================================
    ADD TO CART
-   ========================================================= */
+========================================================= */
 
 async function addToCart(){
 
@@ -1959,8 +1949,7 @@ toast(
 );
 
 setTimeout(
-()=>
-location.href=
+()=>location.href=
 "/ecom/account.html",
 800
 );
@@ -1981,10 +1970,11 @@ await supabaseClient
 .eq("product_id",product.id)
 .maybeSingle();
 
-
 if(readError){
 
-toast(readError.message);
+toast(
+readError.message
+);
 
 return;
 
@@ -2000,11 +1990,9 @@ document.getElementById(
 "customizeInput"
 );
 
-
 const customizeText =
 product.customize_enabled
-?
-(customizeInput?.value||"").trim()
+?(customizeInput?.value||"").trim()
 :"";
 
 
@@ -2046,7 +2034,6 @@ onConflict:
 }
 );
 
-
 if(error){
 
 toast(error.message);
@@ -2057,14 +2044,16 @@ return;
 
 updateCart();
 
-toast("✓ Added to Cart");
+toast(
+"✓ Added to Cart"
+);
 
 }
 
 
 /* =========================================================
-   CART COUNT
-   ========================================================= */
+   CART BADGE
+========================================================= */
 
 async function updateCart(){
 
@@ -2085,7 +2074,6 @@ return;
 
 }
 
-
 const {
 data,
 error
@@ -2095,7 +2083,6 @@ await supabaseClient
 .select("qty")
 .eq("user_id",user.id);
 
-
 if(error){
 
 console.error(error);
@@ -2103,7 +2090,6 @@ console.error(error);
 return;
 
 }
-
 
 const cartBadge =
 document.getElementById(
@@ -2116,7 +2102,8 @@ cartBadge.textContent =
 (data||[])
 .reduce(
 (s,x)=>
-s+(Number(x.qty)||0),
+s+
+(Number(x.qty)||0),
 0
 );
 
@@ -2127,7 +2114,7 @@ s+(Number(x.qty)||0),
 
 /* =========================================================
    BUY NOW
-   ========================================================= */
+========================================================= */
 
 async function buyNow(){
 
@@ -2144,8 +2131,7 @@ toast(
 );
 
 setTimeout(
-()=>
-location.href=
+()=>location.href=
 "/ecom/account.html",
 800
 );
@@ -2160,18 +2146,16 @@ document.getElementById(
 "customizeInput"
 );
 
-
 const customizeText =
 product.customize_enabled
-?
-(customizeInput?.value||"").trim()
+?(customizeInput?.value||"").trim()
 :"";
 
 
 sessionStorage.setItem(
 "checkoutItems",
-JSON.stringify(
-[{
+JSON.stringify([
+{
 id:product.id,
 title:product.title,
 image:product.image,
@@ -2181,10 +2165,9 @@ qty:qty,
 product_id:product.id,
 customize_text:
 customizeText
-}]
-)
+}
+])
 );
-
 
 location.href=
 "/ecom/checkout.html?mode=buy";
@@ -2194,7 +2177,7 @@ location.href=
 
 /* =========================================================
    TABS
-   ========================================================= */
+========================================================= */
 
 function tab(type,b){
 
@@ -2207,61 +2190,60 @@ x=>x.classList.remove("active")
 b.classList.add("active");
 
 
-content.innerHTML =
+if(type==="about"){
 
-type==="about"
-
-?
-
+content.innerHTML=
 "<h3>"+
-product.title+
+escapeHtml(product.title)+
 "</h3><p>"+
-product.description+
-"</p>"
+escapeHtml(product.description)+
+"</p>";
 
-:
+}
 
-type==="specs"
+else if(type==="specs"){
 
-?
+content.innerHTML=
 
 "<p><b>Category:</b> "+
-(product.category||"—")+
+escapeHtml(product.category||"—")+
 "</p>"+
 
 "<p><b>Rating:</b> ★ "+
-product.rating+
+escapeHtml(product.rating)+
 "</p>"+
 
 "<p><b>Product ID:</b> "+
-product.id+
+escapeHtml(product.id)+
 "</p>"+
 
-"<p><b>Payment:</b> "+
-(product.cod_enabled
-?"COD available"
-:"COD unavailable")+
-"</p>"
+"<p><b>Payment:</b> COD available</p>";
 
-:
+}
+
+else{
+
+content.innerHTML=
 
 "<p><b>Delivery:</b> Dispatch after order confirmation.</p>"+
+
 "<p><b>Returns:</b> "+
 (
 product.return_enabled
-?
-product.return_days+"-Day Return"
-:
-"No Return"
+?product.return_days+
+"-Day Return"
+:"No Return"
 )+
 "</p>";
+
+}
 
 }
 
 
 /* =========================================================
    EVENTS
-   ========================================================= */
+========================================================= */
 
 window.addEventListener(
 "resize",
@@ -2271,15 +2253,31 @@ goToImage(currentIndex);
 }
 );
 
+
+/*
+   Checkout/address page se localStorage
+   change hone par card turant update hoga.
+*/
+
 window.addEventListener(
 "storage",
 renderDeliveryDetails
 );
 
 
-/* =========================================================
-   START
-   ========================================================= */
+/*
+   Same tab mein address save hone ke baad
+   product page visible ho to manually refresh
+   ke bina bhi update karne ke liye.
+*/
+
+window.addEventListener(
+"focus",
+renderDeliveryDetails
+);
+
+
+/* START */
 
 load();
 
