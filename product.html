@@ -8,15 +8,8 @@
 <style>
 *{box-sizing:border-box}
 
-html,body{
-  width:100%;
-  max-width:100%;
-  margin:0;
-  padding:0;
-  overflow-x:hidden;
-}
-
 body{
+  margin:0;
   font-family:Arial,Helvetica,sans-serif;
   background:#f5f6f8;
   color:#111;
@@ -243,46 +236,24 @@ a{text-decoration:none;color:inherit}
   border-bottom:1px solid #eee;
 }
 
-.priceLine{
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:9px;
-}
-
 .price{
   font-size:33px;
   font-weight:800;
   letter-spacing:-.5px;
-  color:#222;
 }
 
 .mrp{
   text-decoration:line-through;
-  color:#777;
-  font-size:18px;
-  font-weight:500;
+  color:#888;
+  font-size:14px;
 }
 
 .off{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:24px;
-  padding:4px 8px;
-  border-radius:5px;
-  background:#15803d;
-  color:#fff;
+  color:#15803d;
   font-weight:800;
-  font-size:12px;
-  margin-left:0;
-  white-space:nowrap;
+  font-size:13px;
+  margin-left:8px;
 }
-
-
-
-
-
 
 .desc{
   display:none!important;
@@ -1012,19 +983,11 @@ a{text-decoration:none;color:inherit}
   }
 
   .page{
-    width:100%;
-    max-width:100%;
-    margin:0;
-    padding:0 0 90px;
+    padding:12px 9px 90px;
   }
 
   .product{
-    width:100%;
-    max-width:100%;
-    margin:0;
-    border-radius:0;
-    border-left:0;
-    border-right:0;
+    border-radius:17px;
   }
 
   .grid{
@@ -1053,7 +1016,7 @@ a{text-decoration:none;color:inherit}
     grid-column:auto;
     grid-row:auto;
     width:100%;
-    padding:0 16px;
+    padding:0;
   }
 
   .main{
@@ -1086,21 +1049,13 @@ a{text-decoration:none;color:inherit}
     font-size:26px;
   }
 
-  .priceLine{
-    gap:7px;
-  }
-
   .mrp{
-    font-size:14px;
+    font-size:12px;
   }
 
   .off{
-    font-size:11px;
-    min-height:23px;
-    padding:3px 7px;
+    font-size:12px;
   }
-
-
 
   .rate{
     font-size:11px;
@@ -1515,15 +1470,10 @@ class="detailsPanel">
 </div>
 
 <div class="pricebox">
-
-<div class="priceLine">
 <span id="price" class="price"></span>
+<br>
 <span id="mrp" class="mrp"></span>
-<span id="off" class="off">35% OFF</span>
-</div>
-
-
-
+<span id="off" class="off"></span>
 </div>
 
 <div id="deliveryDetails" class="deliveryDetails">
@@ -2237,13 +2187,13 @@ function openAddressSelector(){
       );
 
     if(target){
-      window.location.assign(target);
+      navigateWithProductLoader(target);
       return;
     }
 
   }catch{}
 
-  window.location.assign("/ecom/checkout.html");
+  navigateWithProductLoader("/ecom/checkout.html");
 }
 
 function getDeliveryDate(){
@@ -3117,29 +3067,17 @@ function render(){
       ? money(product.mrp)
       : "";
 
-  /* REAL PRODUCT DISCOUNT: calculate only from MRP and selling price.
-     Example: MRP 1000, price 650 => 35% OFF.
-     If selling price is equal to or above MRP, there is no discount badge. */
-  const actualDiscountPercent =
-    product.mrp > product.price
-      ? Math.round(
-          ((product.mrp - product.price) / product.mrp) * 100
-        )
-      : 0;
-
-  const discountBadge =
-    document.getElementById("off");
-
-  if(discountBadge){
-    if(actualDiscountPercent > 0){
-      discountBadge.textContent =
-        actualDiscountPercent + "% OFF";
-      discountBadge.style.display = "inline-flex";
-    }else{
-      discountBadge.textContent = "";
-      discountBadge.style.display = "none";
-    }
-  }
+  document.getElementById(
+    "off"
+  ).textContent=
+    product.mrp>product.price
+      ? Math.max(
+          0,
+          Math.round(
+            (1-product.price/product.mrp)*100
+          )
+        )+"% OFF"
+      : "";
 
   document.getElementById(
     "description"
@@ -3616,7 +3554,7 @@ async function addToCart(){
 
     setTimeout(
       () =>
-        window.location.assign("/ecom/account.html"),
+        navigateWithProductLoader("/ecom/account.html"),
       800
     );
 
@@ -3781,7 +3719,7 @@ async function buyNow(){
 
     setTimeout(
       () =>
-        window.location.assign("/ecom/account.html"),
+        navigateWithProductLoader("/ecom/account.html"),
       800
     );
 
@@ -3817,9 +3755,7 @@ async function buyNow(){
     ])
   );
 
-  /* Open checkout directly. The old loader helper was not defined
-     on this page, so Buy Now could silently fail with a ReferenceError. */
-  window.location.assign("/ecom/checkout.html?mode=buy");
+  navigateWithProductLoader("/ecom/checkout.html?mode=buy");
 }
 
 
