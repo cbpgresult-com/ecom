@@ -1618,55 +1618,6 @@ a{text-decoration:none;color:inherit}
     color:var(--violet) !important;
   }
 }
-
-@media(min-width:901px){
-
-  body:not(.product-page-fully-ready)
-    #desktopIndexHeader{
-      visibility:hidden !important;
-    }
-
-}
-
-
-/* =========================================================
-   DESKTOP INDEX CART BADGE
-========================================================= */
-@media(min-width:901px){
-
-  #desktopIndexHeader .cart-btn{
-    position:relative !important;
-  }
-
-  #desktopIndexHeader #cartCount{
-    position:absolute !important;
-    top:-7px !important;
-    right:-7px !important;
-    min-width:19px !important;
-    height:19px !important;
-    padding:0 5px !important;
-    border-radius:999px !important;
-    background:#ef4444 !important;
-    color:#fff !important;
-    border:2px solid #fff !important;
-    font-size:11px !important;
-    font-weight:800 !important;
-    line-height:15px !important;
-    text-align:center !important;
-    display:none !important;
-    z-index:9999 !important;
-    box-sizing:border-box !important;
-    pointer-events:none !important;
-  }
-
-  #desktopIndexHeader #cartCount.show{
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-  }
-
-}
-
 </style>
 </head>
 
@@ -3704,113 +3655,6 @@ function showDetailsTab(type,button){
    LOAD PRODUCT
 ========================================================= */
 
-
-/* =========================================================
-   DESKTOP PRODUCT PAGE — FULLY READY
-   The loader is removed ONLY after:
-   1) product data has loaded
-   2) product DOM has rendered
-   3) all product images have finished
-   4) account + cart header state has finished
-   5) browser has painted the complete page
-   Mobile is intentionally untouched.
-========================================================= */
-async function finishDesktopProductPage(){
-
-  if(window.innerWidth <= 900){
-    return;
-  }
-
-  try{
-
-    if(typeof loadAccount === "function"){
-      await loadAccount();
-    }
-
-    if(typeof loadCartCount === "function"){
-      await loadCartCount();
-    }
-
-    const images =
-      Array.from(
-        document.querySelectorAll(
-          "#desktopIndexHeader ~ *, #productPage img, .product-page img, img"
-        )
-      );
-
-    await Promise.all(
-      images.map(function(img){
-
-        if(img.complete){
-          return Promise.resolve();
-        }
-
-        return new Promise(function(resolve){
-
-          img.addEventListener(
-            "load",
-            resolve,
-            {once:true}
-          );
-
-          img.addEventListener(
-            "error",
-            resolve,
-            {once:true}
-          );
-
-        });
-
-      })
-    );
-
-    /* Two paint frames prevent any partial product/header flash. */
-    await new Promise(function(resolve){
-      requestAnimationFrame(function(){
-        requestAnimationFrame(resolve);
-      });
-    });
-
-  }catch(error){
-
-    console.error(
-      "Desktop product ready:",
-      error
-    );
-
-  }
-
-  const loader =
-    document.getElementById(
-      "desktopProductPageLoader"
-    );
-
-  if(loader){
-
-  }
-  if(loader){
-
-    loader.classList.add("hide");
-
-    loader.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
-  }
-
-
-  document.documentElement.classList.add(
-    "product-page-fully-ready"
-  );
-
-  document.body.classList.add(
-    "product-page-fully-ready"
-  );
-
-}
-
-
 async function load(){
 
   try{
@@ -4025,10 +3869,6 @@ async function load(){
     };
 
     render();
-
-    if(window.innerWidth > 900){
-      await finishDesktopProductPage();
-    }
 
   }catch(e){
 
@@ -4423,7 +4263,13 @@ function render(){
 
   updateCart();
 
-  
+  if(window.innerWidth > 900){
+    const loader = document.getElementById("desktopProductPageLoader");
+    if(loader){
+      loader.classList.add("hide");
+      loader.setAttribute("aria-hidden","true");
+    }
+  }
 
   showMobileProductLoadedHeader();
 }
@@ -4688,7 +4534,7 @@ async function addToCart(){
   }
 
   updateCart();
-
+  loadCartCount();
 
   toast("✓ Added to Cart");
 }
@@ -5212,13 +5058,12 @@ async function loadCartCount(){
 
   try{
 
-    const result =
-      await supabaseClient.auth.getUser();
-
-    const user =
-      result &&
-      result.data &&
-      result.data.user;
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
 
     if(!user){
 
@@ -5228,40 +5073,35 @@ async function loadCartCount(){
 
     }
 
-    const response =
-      await supabaseClient
-        .from("cart_items")
-        .select("quantity")
-        .eq("user_id", user.id);
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
+      .from("cart_items")
+      .select("qty")
+      .eq("user_id",user.id);
 
-    if(response.error){
-      console.error(
-        "Product header cart count:",
-        response.error
-      );
+    if(error){
+
+      console.error("Cart count:",error);
 
       badge.textContent = "";
       badge.classList.remove("show");
       return;
+
     }
 
     let total = 0;
 
-    (response.data || []).forEach(function(item){
-
-      total += Math.max(
-        0,
-        Number(item.quantity || 0)
-      );
-
+    (data || []).forEach(item => {
+      total += Number(item.quantity || 0);
     });
 
     if(total > 0){
 
       badge.textContent =
-        total > 99
-          ? "99+"
-          : String(total);
+        total > 99 ? "99+" : String(total);
 
       badge.classList.add("show");
 
@@ -5274,10 +5114,7 @@ async function loadCartCount(){
 
   }catch(error){
 
-    console.error(
-      "Product header cart count:",
-      error
-    );
+    console.error("Cart count:",error);
 
     badge.textContent = "";
     badge.classList.remove("show");
@@ -5285,6 +5122,7 @@ async function loadCartCount(){
   }
 
 }
+
 supabaseClient.auth.onAuthStateChange(
   function(){
 
