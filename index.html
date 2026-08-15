@@ -461,9 +461,90 @@ main{
 /* ================= LOADING ================= */
 
 .loading{
-  padding:50px;
-  text-align:center;
-  color:#777;
+  padding:0;
+  width:100%;
+  color:transparent;
+}
+
+.skeleton-grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+.skeleton-card{
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+
+.skeleton{
+  position:relative;
+  overflow:hidden;
+  background:#e9edf2;
+  border-radius:8px;
+}
+
+.skeleton::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.65),
+    transparent
+  );
+  animation:skeletonShimmer 1.15s infinite;
+}
+
+@keyframes skeletonShimmer{
+  100%{
+    transform:translateX(100%);
+  }
+}
+
+.skeleton-image{
+  width:100%;
+  height:220px;
+  border-radius:0;
+}
+
+.skeleton-info{
+  padding:12px;
+}
+
+.skeleton-rating{
+  width:42px;
+  height:18px;
+  margin-bottom:10px;
+  border-radius:5px;
+}
+
+.skeleton-title{
+  width:92%;
+  height:13px;
+  margin-bottom:7px;
+}
+
+.skeleton-title.short{
+  width:65%;
+}
+
+.skeleton-price{
+  width:72px;
+  height:21px;
+  margin-top:11px;
+}
+
+.skeleton-delivery{
+  width:125px;
+  height:11px;
+  margin-top:11px;
 }
 
 .no-products{
@@ -569,6 +650,42 @@ main{
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:10px;
     padding-bottom:20px;
+  }
+
+  .skeleton-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+
+  .skeleton-image{
+    height:175px;
+  }
+
+  .skeleton-info{
+    padding:9px;
+  }
+
+  .skeleton-rating{
+    width:36px;
+    height:15px;
+    margin-bottom:8px;
+  }
+
+  .skeleton-title{
+    height:11px;
+    margin-bottom:6px;
+  }
+
+  .skeleton-price{
+    width:62px;
+    height:17px;
+    margin-top:9px;
+  }
+
+  .skeleton-delivery{
+    width:100px;
+    height:9px;
+    margin-top:9px;
   }
 
   .product-image-box{
@@ -1089,8 +1206,74 @@ main{
 
   </div>
 
-  <div id="loading" class="loading">
-    Loading products...
+  <div id="loading" class="loading" aria-label="Loading products">
+    <div class="skeleton-grid">
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-rating"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-title short"></div>
+          <div class="skeleton skeleton-price"></div>
+          <div class="skeleton skeleton-delivery"></div>
+        </div>
+      </div>
+
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-rating"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-title short"></div>
+          <div class="skeleton skeleton-price"></div>
+          <div class="skeleton skeleton-delivery"></div>
+        </div>
+      </div>
+
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-rating"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-title short"></div>
+          <div class="skeleton skeleton-price"></div>
+          <div class="skeleton skeleton-delivery"></div>
+        </div>
+      </div>
+
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-rating"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-title short"></div>
+          <div class="skeleton skeleton-price"></div>
+          <div class="skeleton skeleton-delivery"></div>
+        </div>
+      </div>
+
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-rating"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-title short"></div>
+          <div class="skeleton skeleton-price"></div>
+          <div class="skeleton skeleton-delivery"></div>
+        </div>
+      </div>
+
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-rating"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-title short"></div>
+          <div class="skeleton skeleton-price"></div>
+          <div class="skeleton skeleton-delivery"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <section id="productGrid" class="product-grid"></section>
