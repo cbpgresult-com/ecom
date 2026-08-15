@@ -1239,6 +1239,21 @@ a{text-decoration:none;color:inherit}
 @media(max-width:900px){
   #loading{display:none!important;}
 }
+
+/* =========================================================
+   PRODUCT PAGE — NO INITIAL LOADER
+   Only Screenshot-2 normal header is shown.
+========================================================= */
+#mobileProductLoading,
+#loading{
+  display:none !important;
+}
+#mobileProductHeader{
+  display:flex !important;
+  opacity:1 !important;
+  visibility:visible !important;
+}
+
 </style>
 </head>
 
@@ -3909,8 +3924,7 @@ function showProductNavigationLoader(){
       "false"
     );
 
-    document.body.style.overflow =
-      "hidden";
+    
   }
 }
 
@@ -4218,7 +4232,7 @@ window.addEventListener(
    START
 ========================================================= */
 
-if(window.innerWidth<=900){document.body.style.overflow="hidden";}
+if(window.innerWidth<=900){}
 
 load();
 
