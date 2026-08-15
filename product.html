@@ -1646,6 +1646,15 @@ let product=null;
 let qty=1;
 let currentIndex=0;
 
+const cameFromIndexLoader =
+  Boolean(
+    new URLSearchParams(
+      window.location.search
+    ).get("navt")
+  );
+
+
+
 const money=n=>
 "₹"+Math.round(Number(n)||0).toLocaleString("en-IN");
 
@@ -2757,48 +2766,25 @@ function showDetailsTab(type,button){
    LOAD PRODUCT
 ========================================================= */
 
-async function syncProductLoaderAnimation(){
+async function hideInitialProductLoader(){
+
+  if(!cameFromIndexLoader) return;
 
   const loading =
     document.getElementById(
       "mobileProductLoading"
     );
 
-  if(!loading) return;
-
-  const spinner =
-    loading.querySelector(
-      ".mobileProductLoadingSpinner"
+  if(loading){
+    loading.classList.add("hide");
+    loading.setAttribute(
+      "aria-hidden",
+      "true"
     );
-
-  if(!spinner) return;
-
-  const startedAt =
-    Number(
-      new URLSearchParams(
-        window.location.search
-      ).get("navt")
-    );
-
-  if(
-    !Number.isFinite(startedAt) ||
-    startedAt <= 0
-  ){
-    return;
   }
 
-  const duration = 750;
-  const elapsed =
-    Math.max(
-      0,
-      Date.now() - startedAt
-    );
+  document.body.style.overflow = "";
 
-  const phase =
-    elapsed % duration;
-
-  spinner.style.animationDelay =
-    (-phase) + "ms";
 }
 
 
