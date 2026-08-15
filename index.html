@@ -344,6 +344,45 @@ main{
 }
 
 
+
+/* =========================================================
+   SEARCH QUERY FROM PRODUCT PAGE
+========================================================= */
+(function(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const query =
+    params.get("search");
+
+  if(!query){
+    return;
+  }
+
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
+  if(!input){
+    return;
+  }
+
+  input.value =
+    query;
+
+  input.dispatchEvent(
+    new Event(
+      "input",
+      {bubbles:true}
+    )
+  );
+
+})();
+
 /* =========================================================
    PRODUCT CARD ONLY — REAL NAVIGATION LOADER
 ========================================================= */
