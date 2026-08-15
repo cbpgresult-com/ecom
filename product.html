@@ -2237,13 +2237,13 @@ function openAddressSelector(){
       );
 
     if(target){
-      window.location.assign(target);
+      navigateFromProductPage(target);
       return;
     }
 
   }catch{}
 
-  window.location.assign("/ecom/checkout.html");
+  navigateFromProductPage("/ecom/checkout.html");
 }
 
 function getDeliveryDate(){
@@ -3616,7 +3616,7 @@ async function addToCart(){
 
     setTimeout(
       () =>
-        window.location.assign("/ecom/account.html"),
+        navigateFromProductPage("/ecom/account.html"),
       800
     );
 
@@ -3781,7 +3781,7 @@ async function buyNow(){
 
     setTimeout(
       () =>
-        window.location.assign("/ecom/account.html"),
+        navigateFromProductPage("/ecom/account.html"),
       800
     );
 
@@ -3819,7 +3819,7 @@ async function buyNow(){
 
   /* Open checkout directly. The old loader helper was not defined
      on this page, so Buy Now could silently fail with a ReferenceError. */
-  window.location.assign("/ecom/checkout.html?mode=buy");
+  navigateFromProductPage("/ecom/checkout.html?mode=buy");
 }
 
 
@@ -3888,14 +3888,77 @@ function handleProductSearchKey(event){
     return;
   }
 
-  window.location.assign(
+  navigateFromProductPage(
     "index.html?search=" +
     encodeURIComponent(value)
   );
 
 }
 
+/* =========================================================
+   PRODUCT PAGE -> ANY PAGE NAVIGATION LOADER
+   Reuses the same Screenshot-1 mobile product loader/header.
+   The loader belongs only to this product page; destination pages
+   (especially checkout) render their own headers normally.
+========================================================= */
+let productNavigationStarted=false;
+
+function showProductNavigationLoader(){
+
+  if(window.innerWidth > 900){
+    return;
+  }
+
+  if(productNavigationStarted){
+    return;
+  }
+
+  productNavigationStarted=true;
+
+  const loading=
+    document.getElementById(
+      "mobileProductLoading"
+    );
+
+  const header=
+    document.getElementById(
+      "mobileProductHeader"
+    );
+
+  if(header){
+    header.classList.remove("show");
+  }
+
+  if(loading){
+    loading.classList.remove("hide");
+    loading.setAttribute("aria-hidden","false");
+  }
+
+  document.body.style.overflow="hidden";
+}
+
+function navigateFromProductPage(url){
+
+  if(!url) return;
+
+  showProductNavigationLoader();
+
+  /*
+    Give the browser one paint opportunity so the Screenshot-1
+    loader + top header is actually visible before navigation.
+    This prevents the loader from being skipped/flashed for only
+    a few milliseconds.
+  */
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      window.location.assign(url);
+    });
+  });
+}
+
 function productGoBack(){
+
+  showProductNavigationLoader();
 
   if(window.history.length > 1){
     window.history.back();
@@ -3912,7 +3975,7 @@ function productGoSearch(){
 }
 
 function productGoCart(){
-  window.location.assign(
+  navigateFromProductPage(
     "cart.html"
   );
 }
@@ -4108,7 +4171,7 @@ document.addEventListener(
     }
 
     event.preventDefault();
-    window.location.assign(
+    navigateFromProductPage(
       url.href
     );
 
