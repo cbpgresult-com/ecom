@@ -2005,11 +2005,11 @@ body{padding:0 !important;margin:0 !important;}
         }
       }
 
-      fillSummary(selectedAddress);
-
       /* One button does both jobs:
-         save address + continue to Order. */
-      ckShowPanel(2);
+         save address + continue to Order.
+         fillSummary() already opens Step 2, so do not push a duplicate
+         history entry here. */
+      fillSummary(selectedAddress);
 
     }catch(error){
       console.error('SAVE & CONTINUE ERROR:',error);
@@ -2311,24 +2311,50 @@ body{padding:0 !important;margin:0 !important;}
         return;
       }
 
-      ckShowPanel(1);
-
       try{
         await loadSavedAddresses();
 
         /* Account Name + Mobile are available before either manual or GPS mode. */
         autofillAccountContact(false);
 
-        renderSavedAddresses();
-        /*
-          Saved address list dikhao.
-          User "Deliver Here" click karke address select karega.
-        */
+        if(savedAddresses.length > 0){
+          /*
+            Saved address available:
+            - Keep Step 1 as the first checkout history state.
+            - Automatically select the latest saved address.
+            - Open Order Summary directly.
+            - Because Step 1 exists in history, Back from Order Summary
+              still returns to Address, just like the normal checkout flow.
+          */
+          ckShowPanel(1);
+          selectedAddress = savedAddresses[0];
+
+          if(selectedAddress.isCurrentLocation || selectedAddress.type === 'current location'){
+            selectedAddress.city='';
+            selectedAddress.road='';
+            selectedAddress.village=selectedAddress.village||'';
+            selectedAddress.plus_code=selectedAddress.plus_code||'';
+            selectedAddress.map_link=selectedAddress.map_link||'';
+            selectedAddress.latitude=selectedAddress.latitude;
+            selectedAddress.longitude=selectedAddress.longitude;
+            selectedAddress.location_row_id=selectedAddress.location_row_id||null;
+            selectedAddress.isCurrentLocation=true;
+          }
+
+          /* fillSummary() opens Step 2 and creates exactly one Step 2 history entry. */
+          fillSummary(selectedAddress);
+
+        }else{
+          /* No saved address: normal Address Step opens. */
+          ckShowPanel(1);
+          renderSavedAddresses();
+        }
       }catch(addressError){
         console.error('ADDRESS LOAD ERROR:',addressError);
         /* Address loading is non-fatal: show the new-address form. */
         el('ckSavedAddrSection').style.display='none';
         el('ckAddressFormSection').style.display='block';
+        ckShowPanel(1);
       }
 
     }catch(error){
