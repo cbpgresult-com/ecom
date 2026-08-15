@@ -236,6 +236,13 @@ a{text-decoration:none;color:inherit}
   border-bottom:1px solid #eee;
 }
 
+.priceRow{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
 .price{
   font-size:33px;
   font-weight:800;
@@ -245,14 +252,45 @@ a{text-decoration:none;color:inherit}
 .mrp{
   text-decoration:line-through;
   color:#888;
-  font-size:14px;
+  font-size:18px;
+  font-weight:500;
 }
 
 .off{
-  color:#15803d;
+  display:none!important;
+}
+
+.appliedDiscount{
+  margin-top:10px;
+  width:100%;
+  min-height:32px;
+  padding:7px 10px;
+  background:#e9fbf1;
+  color:#333;
+  font-size:14px;
+  line-height:18px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  border-radius:0;
+}
+
+.appliedDiscount .discountIcon{
+  width:18px;
+  height:18px;
+  flex:0 0 18px;
+  border-radius:50%;
+  background:#079447;
+  color:#fff;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:900;
+}
+
+.appliedDiscount b{
   font-weight:800;
-  font-size:13px;
-  margin-left:8px;
 }
 
 .desc{
@@ -1057,16 +1095,23 @@ a{text-decoration:none;color:inherit}
     margin-top:10px;
   }
 
+  .priceRow{
+    gap:8px;
+  }
+
   .price{
     font-size:26px;
   }
 
   .mrp{
-    font-size:12px;
+    font-size:16px;
   }
 
-  .off{
-    font-size:12px;
+  .appliedDiscount{
+    margin-top:9px;
+    min-height:32px;
+    padding:7px 10px;
+    font-size:14px;
   }
 
   .rate{
@@ -1411,10 +1456,17 @@ class="detailsPanel">
 </div>
 
 <div class="pricebox">
+
+<div class="priceRow">
 <span id="price" class="price"></span>
-<br>
 <span id="mrp" class="mrp"></span>
-<span id="off" class="off"></span>
+</div>
+
+<div class="appliedDiscount">
+<span class="discountIcon">%</span>
+<span><b>₹35 off</b> applied for you</span>
+</div>
+
 </div>
 
 <div id="deliveryDetails" class="deliveryDetails">
@@ -2990,18 +3042,6 @@ function render(){
   ).textContent=
     product.mrp
       ? money(product.mrp)
-      : "";
-
-  document.getElementById(
-    "off"
-  ).textContent=
-    product.mrp>product.price
-      ? Math.max(
-          0,
-          Math.round(
-            (1-product.price/product.mrp)*100
-          )
-        )+"% OFF"
       : "";
 
   document.getElementById(
