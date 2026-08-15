@@ -254,24 +254,48 @@ a{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:8px;
-  margin-top:22px;
+  margin-top:18px;
 }
 
 .feature{
+  min-width:0;
   text-align:center;
-  border:1px solid #e8e1ff;
+  border:1px solid #eeeeee;
   border-radius:11px;
-  background:#fbfaff;
-  padding:11px 4px;
+  background:#fff;
+  padding:10px 4px 9px;
   font-size:9px;
   color:#555;
+  box-sizing:border-box;
+}
+
+.feature-icon{
+  width:22px;
+  height:22px;
+  margin:0 auto 5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:7px;
+  background:#f5f7fb;
+  font-size:13px;
+  font-weight:900;
 }
 
 .feature b{
   display:block;
-  color:#111;
-  font-size:10px;
+  color:#202020;
+  font-size:9px;
+  line-height:1.2;
   margin-bottom:3px;
+  white-space:normal;
+}
+
+.feature small{
+  display:block;
+  color:#777;
+  font-size:8px;
+  line-height:1.2;
 }
 
 .cta{
@@ -402,16 +426,18 @@ a{
 
 /* ===== MOBILE COMPACT QTY / DELIVERY FEATURES ===== */
 @media(max-width:900px){
-  .qtyrow{gap:6px;margin-top:12px;font-size:12px;flex-wrap:nowrap}
-  .qty{height:34px;border-radius:8px}
-  .qty button{width:32px;font-size:13px}
-  .qty span{width:34px;font-size:12px}
-  .customize-row{gap:6px;margin-top:9px}
-  .customize-input{height:34px;font-size:12px;padding:0 9px}
-  .customize-label{font-size:11px}
-  .features{gap:6px;margin-top:16px}
-  .feature{padding:9px 3px;font-size:8px;border-radius:9px}
-  .feature b{font-size:9px;margin-bottom:2px}
+  .qtyrow{gap:5px;margin-top:10px;font-size:11px;flex-wrap:nowrap;line-height:1}
+  .qty{height:32px;border-radius:8px}
+  .qty button{width:30px;font-size:12px}
+  .qty span{width:32px;font-size:11px}
+  .customize-row{gap:6px;margin-top:8px}
+  .customize-input{height:32px;font-size:11px;padding:0 8px}
+  .customize-label{font-size:10px}
+  .features{gap:6px;margin-top:14px}
+  .feature{padding:8px 2px 7px;font-size:7px;border-radius:9px}
+  .feature-icon{width:20px;height:20px;font-size:11px;margin-bottom:4px;border-radius:6px}
+  .feature b{font-size:8px;margin-bottom:2px}
+  .feature small{font-size:7px}
 }
 </style>
 </head>
@@ -1080,9 +1106,35 @@ function render(){
   /* DELIVERY / RETURN FEATURES */
   const features=document.getElementById("deliveryFeatures");
   const cards=[];
-  cards.push(`<div class="feature"><b>↩ ${product.returnEnabled ? product.returnDays+"-Day Return" : "No Return"}</b>${product.returnEnabled ? "Easy returns" : "Not returnable"}</div>`);
-  if(product.codEnabled) cards.push(`<div class="feature"><b>▣ Cash on Delivery</b>Available</div>`);
-  if(product.assuredEnabled) cards.push(`<div class="feature"><b>✓ Trikunt Assured</b>Quality assured</div>`);
+
+  cards.push(`
+    <div class="feature">
+      <span class="feature-icon return-icon">↩</span>
+      <b>${product.returnEnabled ? product.returnDays+"-Day Return" : "No Return"}</b>
+      <small>${product.returnEnabled ? "Easy returns" : "Not returnable"}</small>
+    </div>
+  `);
+
+  if(product.codEnabled){
+    cards.push(`
+      <div class="feature">
+        <span class="feature-icon cod-icon">▣</span>
+        <b>Cash on Delivery</b>
+        <small>Available</small>
+      </div>
+    `);
+  }
+
+  if(product.assuredEnabled){
+    cards.push(`
+      <div class="feature">
+        <span class="feature-icon assured-icon">✓</span>
+        <b>Trikunt Assured</b>
+        <small>Quality assured</small>
+      </div>
+    `);
+  }
+
   features.innerHTML=cards.join("");
 
 
