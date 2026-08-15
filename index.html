@@ -755,6 +755,28 @@ main{
   }
 }
 
+
+/* Product grid: clicking/tapping must not show a hover/pressed flash */
+.product-card,
+.product-card:hover,
+.product-card:active,
+.product-card:focus,
+.product-card:focus-visible{
+  -webkit-tap-highlight-color:transparent;
+}
+
+@media (hover:hover){
+  .product-card:active{
+    transform:none !important;
+  }
+}
+
+
+.product-card{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
 </style>
 </head>
 
