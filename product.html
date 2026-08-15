@@ -1562,7 +1562,11 @@ a{text-decoration:none;color:inherit}
 }
 
 
-
+/* Laptop/Desktop: hold
+<div id="desktopProductPageLoader" aria-hidden="false">
+  <div class="desktop-product-spinner" aria-label="Loading"></div>
+</div>
+ the page behind a real loader until product is ready */
 #desktopProductPageLoader{
   position:fixed;
   inset:0;
@@ -1573,7 +1577,14 @@ a{text-decoration:none;color:inherit}
   justify-content:center;
 }
 #desktopProductPageLoader.hide{display:none}
+#desktopProductPageLoader .desktop-product-spinner{
+  width:48px;height:48px;
+  border:4px solid #dbeafe;
+  border-top-color:#2874f0;
+  border-radius:50%;
+  animation:desktopProductSpin .75s linear infinite;
 }
+@keyframes desktopProductSpin{to{transform:rotate(360deg)}}
 @media(max-width:900px){#desktopProductPageLoader{display:none!important}}
 
 :root{
@@ -1607,306 +1618,6 @@ a{text-decoration:none;color:inherit}
     color:var(--violet) !important;
   }
 }
-
-/* =========================================================
-   DESKTOP PRODUCT PAGE — REAL SKELETON LOADER
-   ========================================================= */
-#desktopProductPageLoader{
-  position:fixed;
-  inset:0;
-  z-index:2147483647;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
-
-#desktopProductPageLoader.hide{
-  display:none;
-}
-
-.product-skeleton{
-  width:min(1240px,92vw);
-  height:620px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:55px;
-  padding:28px;
-  box-sizing:border-box;
-}
-
-.sk{
-  position:relative;
-  overflow:hidden;
-  background:#edf0f3;
-  border-radius:10px;
-}
-
-.sk::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  transform:translateX(-100%);
-  background:linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,.65) 45%,
-    rgba(255,255,255,.9) 50%,
-    transparent 65%
-  );
-  animation:productSkeletonShimmer 1.25s infinite;
-}
-
-@keyframes productSkeletonShimmer{
-  100%{transform:translateX(100%)}
-}
-
-.product-skeleton-left{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-}
-
-.product-skeleton-image{
-  width:min(520px,100%);
-  height:470px;
-  border-radius:16px;
-}
-
-.product-skeleton-dots{
-  width:120px;
-  height:12px;
-  margin-top:18px;
-  border-radius:20px;
-}
-
-.product-skeleton-right{
-  padding-top:10px;
-}
-
-.product-skeleton-badge{
-  width:105px;
-  height:28px;
-  border-radius:7px;
-  margin-bottom:20px;
-}
-
-.product-skeleton-title{
-  width:88%;
-  height:32px;
-  border-radius:8px;
-  margin-bottom:10px;
-}
-
-.product-skeleton-title2{
-  width:68%;
-  height:32px;
-  border-radius:8px;
-  margin-bottom:28px;
-}
-
-.product-skeleton-rating{
-  width:105px;
-  height:25px;
-  border-radius:7px;
-  margin-bottom:35px;
-}
-
-.product-skeleton-price{
-  width:235px;
-  height:38px;
-  border-radius:8px;
-  margin-bottom:28px;
-}
-
-.product-skeleton-line{
-  width:100%;
-  height:1px;
-  margin-bottom:28px;
-  background:#e5e7eb;
-  position:relative;
-  overflow:hidden;
-}
-
-.product-skeleton-section-title{
-  width:180px;
-  height:25px;
-  border-radius:7px;
-  margin-bottom:18px;
-}
-
-.product-skeleton-box{
-  width:100%;
-  height:175px;
-  border-radius:14px;
-}
-
-@media(max-width:900px){
-  #desktopProductPageLoader{
-    display:none!important;
-  }
-}
-
-/* Cart badge is invisible when cart is empty; JS adds .show only for > 0. */
-.cart-number:not(.show){
-  display:none !important;
-}
-
-
-
-/* =========================================================
-   FINAL DESKTOP PRODUCT SKELETON
-========================================================= */
-#desktopProductPageLoader{
-  position:fixed;
-  inset:0;
-  z-index:2147483647;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
-
-#desktopProductPageLoader.hide{
-  display:none !important;
-}
-
-.product-skeleton{
-  width:min(1240px,92vw);
-  min-height:620px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:55px;
-  padding:28px;
-  box-sizing:border-box;
-}
-
-.sk{
-  position:relative;
-  overflow:hidden;
-  background:#edf0f3;
-  border-radius:10px;
-}
-
-.sk::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  transform:translateX(-100%);
-  background:linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,.65) 45%,
-    rgba(255,255,255,.9) 50%,
-    transparent 65%
-  );
-  animation:productSkeletonShimmer 1.25s infinite;
-}
-
-@keyframes productSkeletonShimmer{
-  100%{transform:translateX(100%)}
-}
-
-.product-skeleton-left{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-}
-
-.product-skeleton-image{
-  width:min(520px,100%);
-  height:470px;
-  border-radius:16px;
-}
-
-.product-skeleton-dots{
-  width:120px;
-  height:12px;
-  margin-top:18px;
-  border-radius:20px;
-}
-
-.product-skeleton-right{
-  padding-top:10px;
-}
-
-.product-skeleton-badge{
-  width:105px;
-  height:28px;
-  border-radius:7px;
-  margin-bottom:20px;
-}
-
-.product-skeleton-title{
-  width:88%;
-  height:32px;
-  border-radius:8px;
-  margin-bottom:10px;
-}
-
-.product-skeleton-title2{
-  width:68%;
-  height:32px;
-  border-radius:8px;
-  margin-bottom:28px;
-}
-
-.product-skeleton-rating{
-  width:105px;
-  height:25px;
-  border-radius:7px;
-  margin-bottom:35px;
-}
-
-.product-skeleton-price{
-  width:235px;
-  height:38px;
-  border-radius:8px;
-  margin-bottom:28px;
-}
-
-.product-skeleton-line{
-  width:100%;
-  height:1px;
-  margin-bottom:28px;
-  background:#e5e7eb;
-}
-
-.product-skeleton-section-title{
-  width:180px;
-  height:25px;
-  border-radius:7px;
-  margin-bottom:18px;
-}
-
-.product-skeleton-box{
-  width:100%;
-  height:175px;
-  border-radius:14px;
-}
-
-@media(max-width:900px){
-  #desktopProductPageLoader{
-    display:none !important;
-  }
-}
-
-@media(min-width:901px){
-  #loading{
-    display:none !important;
-  }
-}
-
-
-/* Do not flash Login/Pawan while Supabase auth state is resolving. */
-.account-btn.account-loading #accountName{
-  visibility:hidden;
-}
-
 </style>
 </head>
 
@@ -1939,7 +1650,7 @@ a{text-decoration:none;color:inherit}
   <!-- DESKTOP ACCOUNT -->
   <div class="header-account" id="accountArea">
 
-    <button class="account-btn account-loading" id="accountBtn">
+    <button class="account-btn" id="accountBtn">
 
       <svg class="account-icon"
         viewBox="0 0 24 24"
@@ -2140,40 +1851,11 @@ a{text-decoration:none;color:inherit}
 
     Cart
 
-    <span class="cart-number" id="cartCount"></span>
+    <span class="cart-number" id="cartCount">0</span>
 
   </button>
 
 </header>
-</div>
-
-
-<!-- ================= DESKTOP PRODUCT SKELETON LOADER ================= -->
-<div id="desktopProductPageLoader" aria-hidden="false">
-  <div class="product-skeleton">
-
-    <div class="product-skeleton-left">
-      <div class="sk product-skeleton-image"></div>
-      <div class="sk product-skeleton-dots"></div>
-    </div>
-
-    <div class="product-skeleton-right">
-      <div class="sk product-skeleton-badge"></div>
-
-      <div class="sk product-skeleton-title"></div>
-      <div class="sk product-skeleton-title2"></div>
-
-      <div class="sk product-skeleton-rating"></div>
-
-      <div class="sk product-skeleton-price"></div>
-
-      <div class="product-skeleton-line"></div>
-
-      <div class="sk product-skeleton-section-title"></div>
-      <div class="sk product-skeleton-box"></div>
-    </div>
-
-  </div>
 </div>
 
 <!-- ================= MOBILE PRODUCT LOADING ================= -->
@@ -2693,8 +2375,6 @@ async function loadAccount(){
       accountName.textContent =
         "Login";
 
-      accountBtn.classList.remove("account-loading");
-
       loggedOutMenu.style.display =
         "block";
 
@@ -2761,8 +2441,6 @@ async function loadAccount(){
     accountName.textContent =
       firstName;
 
-    accountBtn.classList.remove("account-loading");
-
     welcomeName.textContent =
       "Welcome, " + firstName + "!";
 
@@ -2781,9 +2459,6 @@ async function loadAccount(){
       "Account error:",
       error
     );
-
-    accountName.textContent = "Login";
-    accountBtn.classList.remove("account-loading");
 
   }
 
@@ -4235,114 +3910,6 @@ async function load(){
 
 
 /* =========================================================
-   DESKTOP LOADER — HIDE ONLY AFTER PRODUCT IS REALLY READY
-========================================================= */
-
-async function waitForDesktopProductReady(){
-
-  if(window.innerWidth <= 900){
-    return;
-  }
-
-  const loader =
-    document.getElementById(
-      "desktopProductPageLoader"
-    );
-
-  if(!loader){
-    return;
-  }
-
-  try{
-
-    const images =
-      Array.from(
-        document.querySelectorAll(
-          "#product img"
-        )
-      );
-
-    await Promise.all(
-      images.map(
-        img => {
-
-          if(img.complete){
-
-            if(
-              typeof img.decode === "function"
-            ){
-
-              return img.decode()
-                .catch(() => {});
-
-            }
-
-            return Promise.resolve();
-
-          }
-
-          return new Promise(resolve => {
-
-            const done = () => {
-              img.removeEventListener(
-                "load",
-                done
-              );
-              img.removeEventListener(
-                "error",
-                done
-              );
-              resolve();
-            };
-
-            img.addEventListener(
-              "load",
-              done,
-              {once:true}
-            );
-
-            img.addEventListener(
-              "error",
-              done,
-              {once:true}
-            );
-
-          });
-
-        }
-      )
-    );
-
-    // Give the browser two paint frames to finish layout/rendering.
-    await new Promise(
-      resolve =>
-        requestAnimationFrame(
-          () =>
-            requestAnimationFrame(
-              resolve
-            )
-        )
-    );
-
-  }catch(error){
-
-    console.warn(
-      "Product readiness check:",
-      error
-    );
-
-  }
-
-  loader.classList.add("hide");
-  loader.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-
-}
-
-
-/* =========================================================
    RENDER
 ========================================================= */
 
@@ -4697,7 +4264,11 @@ function render(){
   updateCart();
 
   if(window.innerWidth > 900){
-    waitForDesktopProductReady();
+    const loader = document.getElementById("desktopProductPageLoader");
+    if(loader){
+      loader.classList.add("hide");
+      loader.setAttribute("aria-hidden","true");
+    }
   }
 
   showMobileProductLoadedHeader();
@@ -4985,10 +4556,8 @@ async function updateCart(){
         "cartCount"
       );
 
-    if(cartBadge){
-      cartBadge.textContent="";
-      cartBadge.classList.remove("show");
-    }
+    if(cartBadge)
+      cartBadge.textContent="0";
 
     setMobileProductCartBadge("");
 
@@ -5021,7 +4590,8 @@ async function updateCart(){
     const total=(data||[])
       .reduce(
         (s,x)=>
-          s + Number(x.quantity || 0),
+          s+
+          (Number(x.qty)||0),
         0
       );
 
@@ -5476,7 +5046,7 @@ load();
 
 
 /* =========================================================
-   FINAL REAL CART BADGE — PRODUCT PAGE
+   INDEX-STYLE CART COUNT — PRODUCT PAGE
 ========================================================= */
 
 async function loadCartCount(){
@@ -5486,10 +5056,6 @@ async function loadCartCount(){
 
   if(!badge) return;
 
-  // Never show a fake 0/old value while the real count is loading.
-  badge.textContent = "";
-  badge.classList.remove("show");
-
   try{
 
     const {
@@ -5497,34 +5063,40 @@ async function loadCartCount(){
         user
       }
     } =
-      await supabaseClient.auth.getUser();
+    await supabaseClient.auth.getUser();
 
     if(!user){
-      setMobileProductCartBadge("");
+
+      badge.textContent = "";
+      badge.classList.remove("show");
       return;
+
     }
 
     const {
       data,
       error
     } =
-      await supabaseClient
-        .from("cart_items")
-        .select("id, quantity")
-        .eq("user_id", user.id);
+    await supabaseClient
+      .from("cart_items")
+      .select("qty")
+      .eq("user_id",user.id);
 
     if(error){
-      console.error("Cart count:", error);
-      setMobileProductCartBadge("");
+
+      console.error("Cart count:",error);
+
+      badge.textContent = "";
+      badge.classList.remove("show");
       return;
+
     }
 
-    const total =
-      (data || []).reduce(
-        (sum, item) =>
-          sum + Number(item.quantity || 0),
-        0
-      );
+    let total = 0;
+
+    (data || []).forEach(item => {
+      total += Number(item.quantity || 0);
+    });
 
     if(total > 0){
 
@@ -5540,16 +5112,12 @@ async function loadCartCount(){
 
     }
 
-    setMobileProductCartBadge(total);
-
   }catch(error){
 
-    console.error("Cart count:", error);
+    console.error("Cart count:",error);
 
     badge.textContent = "";
     badge.classList.remove("show");
-
-    setMobileProductCartBadge("");
 
   }
 
@@ -5670,64 +5238,6 @@ document.addEventListener("DOMContentLoaded", function(){
     });
   }
 });
-
-/* =========================================================
-   PRODUCT HEADER HOME CLICK — SAME AS INDEX
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", function(){
-
-  if(window.innerWidth <= 900) return;
-
-  const logo =
-    document.querySelector(
-      "#desktopIndexHeader .logo"
-    );
-
-  if(!logo || logo.dataset.homeBound==="1") return;
-
-  logo.dataset.homeBound="1";
-  logo.style.cursor="pointer";
-
-  logo.addEventListener("click", function(){
-    window.location.href="index.html";
-  });
-
-});
-
-
-/* =========================================================
-   FINAL CART BADGE FOCUS REFRESH
-========================================================= */
-window.addEventListener(
-  "focus",
-  function(){
-    if(typeof loadCartCount === "function"){
-      loadCartCount();
-    }
-  }
-);
-
-/* =========================================================
-   FINAL AUTH REFRESH
-========================================================= */
-if(typeof supabaseClient !== "undefined"){
-  supabaseClient.auth.onAuthStateChange(
-    function(){
-      setTimeout(
-        function(){
-          if(typeof loadAccount === "function"){
-            loadAccount();
-          }
-          if(typeof loadCartCount === "function"){
-            loadCartCount();
-          }
-        },
-        50
-      );
-    }
-  );
-}
-
 </script>
 
 </body>
