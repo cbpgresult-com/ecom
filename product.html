@@ -33,7 +33,7 @@
 .deliveryCard{border-radius:14px;overflow:hidden;border:1px solid #ececec;background:#fff}
 .deliveryAddress{display:flex;align-items:center;cursor:pointer;gap:10px;background:#f2f7ff;padding:12px 13px;font-size:12px;font-weight:600;min-height:48px}
 .deliveryIcon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex:0 0 24px;font-size:17px}
-.deliveryAddressText{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#30343b}
+.deliveryAddressText{flex:1;min-width:0;white-space:normal;overflow:hidden;text-overflow:ellipsis;color:#30343b;line-height:1.35}
 .deliveryArrow{font-size:20px;color:#777;line-height:1}
 .deliveryDate{display:flex;align-items:center;gap:10px;padding:11px 13px;background:#f7f7f7;border-top:1px solid #eee;font-size:12px;font-weight:800}
 .deliverySeller{padding:12px 13px;background:#f7f7f7;border-top:1px solid #eee}
@@ -145,26 +145,101 @@ function escapeHtml(value){const s=String(value??"");return s.replace(/[&<>"']/g
 
 function formatSavedAddress(a){
   if(!a) return "";
-  const parts=[
-    a.house,
-    a.road,
-    a.city,
-    a.state,
-    a.pincode
-  ].filter(v=>v!=null && String(v).trim()).map(v=>String(v).trim());
+
+  // Current-location address: show exactly like the requested Flipkart-style card.
+  // Example:
+  // Uttar Pradesh, 226002
+  // 7MR2QXW3+XXX
+  const isCurrent = a.isCurrentLocation === true ||
+                    a.is_current_location === true ||
+                    String(a.type||'').toLowerCase() === 'current location';
+
+  if(isCurrent){
+    // Flipkart-style location display: Village, District / State, Pincode
+    // Plus Code is shown on a separate line when available.
+    const village=a.village||a.locality||a.area||a.city||'';
+    const district=a.district||a.city||'';
+    const line1=[village,district]
+      .filter(v=>v!=null && String(v).trim())
+      .map(v=>String(v).trim())
+      .filter((v,i,arr)=>arr.indexOf(v)===i)
+      .join(", ");
+    const line2=[a.state,a.pincode]
+      .filter(v=>v!=null && String(v).trim())
+      .map(v=>String(v).trim())
+      .filter((v,i,arr)=>arr.indexOf(v)===i)
+      .join(", ");
+    const plus=String(a.plus_code||a.plusCode||'').trim();
+    const lines=[line1,line2,plus].filter(Boolean);
+    return lines.length ? lines.join("\n") : "Add delivery address";
+  }
+
+  const parts=[a.village,a.district,a.city,a.state,a.pincode]
+    .filter(v=>v!=null && String(v).trim())
+    .map(v=>String(v).trim());
   return [...new Set(parts)].join(", ");
 }
 
+function addressCacheKey(userId){
+  return "mystore_delivery_address_cache_v2_" + String(userId||"guest");
+}
+
+function saveAddressCache(userId,address){
+  if(!userId || !address) return;
+  try{
+    localStorage.setItem(addressCacheKey(userId),JSON.stringify({
+      savedAt:Date.now(),
+      address:address
+    }));
+  }catch(e){
+    console.warn("Address cache save error:",e);
+  }
+}
+
+function getAddressCache(userId){
+  if(!userId) return "";
+  try{
+    const raw=localStorage.getItem(addressCacheKey(userId));
+    if(!raw) return "";
+    const parsed=JSON.parse(raw);
+    return parsed?.address ? String(parsed.address) : "";
+  }catch(e){
+    return "";
+  }
+}
+
+function showCachedAddressImmediately(){
+  const address=document.getElementById("deliveryAddressText");
+  if(!address) return;
+
+  // Never show a fake loading state when a cached address exists.
+  try{
+    const sessionResult=supabaseClient.auth.getSession();
+    Promise.resolve(sessionResult).then(({data})=>{
+      const userId=data?.session?.user?.id;
+      const cached=getAddressCache(userId);
+      if(cached) address.innerHTML=escapeHtml(cached).replace(/\n/g,"<br>");
+    }).catch(()=>{});
+  }catch(e){}
+}
+
 async function getSavedAddress(){
-  // Account/Checkout dono isi Supabase saved_addresses table ko use karte hain.
   try{
     const {data:sessionData,error:sessionError}=await supabaseClient.auth.getSession();
     if(!sessionError && sessionData?.session?.user){
       const userId=sessionData.session.user.id;
 
+      // First use the local cache so the card is instant.
+      const cached=getAddressCache(userId);
+      if(cached){
+        const address=document.getElementById("deliveryAddressText");
+        if(address) address.innerHTML=escapeHtml(cached).replace(/\n/g,"<br>");
+      }
+
+      // Refresh silently from Supabase in the background.
       const {data,error}=await supabaseClient
         .from("saved_addresses")
-        .select("id,name,phone,pincode,state,city,house,road,type,created_at")
+        .select("id,name,phone,pincode,state,city,district,village,house,road,plus_code,type,is_current_location,created_at")
         .eq("user_id",userId)
         .order("created_at",{ascending:false})
         .limit(1)
@@ -172,8 +247,13 @@ async function getSavedAddress(){
 
       if(!error && data){
         const text=formatSavedAddress(data);
-        if(text) return text;
+        if(text){
+          saveAddressCache(userId,text);
+          return text;
+        }
       }
+
+      if(cached) return cached;
     }
   }catch(e){
     console.warn("Saved address load error:",e);
@@ -229,11 +309,23 @@ async function renderDeliveryDetails(){
   const address=document.getElementById("deliveryAddressText");
   const date=document.getElementById("deliveryDateText");
 
-  if(address) address.textContent="Loading address...";
   if(date) date.textContent="Delivery by "+getDeliveryDate();
 
+  // Keep the cached value visible while Supabase refreshes silently.
+  let cached="";
+  try{
+    const {data}=await supabaseClient.auth.getSession();
+    cached=getAddressCache(data?.session?.user?.id);
+  }catch(e){}
+
+  if(address && cached){
+    address.innerHTML=escapeHtml(cached).replace(/\n/g,"<br>");
+  }
+
   const savedAddress=await getSavedAddress();
-  if(address) address.textContent=savedAddress;
+  if(address){
+    address.innerHTML=escapeHtml(savedAddress).replace(/\n/g,"<br>");
+  }
 }
 
 async function load(){
@@ -347,6 +439,7 @@ function tab(type,b){
 window.addEventListener("resize",()=>{if(product)goToImage(currentIndex)});
    window.addEventListener("storage",()=>renderDeliveryDetails());
 window.addEventListener("focus",()=>renderDeliveryDetails());
+showCachedAddressImmediately();
 load();
 </script>
 </body>
