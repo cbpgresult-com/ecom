@@ -2,6 +2,9 @@
 SUPABASE saved_addresses CURRENT LOCATION COLUMNS REQUIRED:
 
 ALTER TABLE public.saved_addresses
+ADD COLUMN IF NOT EXISTS district text;
+
+ALTER TABLE public.saved_addresses
 ADD COLUMN IF NOT EXISTS village text;
 
 ALTER TABLE public.saved_addresses
@@ -1043,6 +1046,7 @@ body{padding:0 !important;margin:0 !important;}
       phone:a.phone || '',
       pincode:a.pincode || '',
       state:a.state || '',
+      district:a.district || '',
 
       /* Current Location has its own Village + Plus Code fields. */
       city:a.city || '',
@@ -1078,6 +1082,36 @@ body{padding:0 !important;margin:0 !important;}
     }
 
     savedAddresses=(res.data||[]).map(mapAddress);
+
+    /*
+      Compatibility for old saved addresses:
+      Purane rows me district column blank ho sakta hai. Pincode se district
+      fetch karke memory me fill kar dete hain. New saves DB me district
+      directly store karenge.
+    */
+    await Promise.all(savedAddresses.map(async function(a){
+      if(!a.district && a.pincode){
+        try{
+          var info=await lookupPincodeDetails(a.pincode);
+          if(info && info.district){
+            a.district=info.district;
+
+            /* Best-effort DB backfill for this user's old address. */
+            if(a.id){
+              var upd=await window.__MY_STORE_SUPABASE__
+                .from('saved_addresses')
+                .update({district:info.district})
+                .eq('id',a.id)
+                .eq('user_id',currentUser.id);
+
+              if(upd.error) console.warn('District backfill failed:',upd.error);
+            }
+          }
+        }catch(e){
+          console.warn('Old address district lookup failed:',e);
+        }
+      }
+    }));
   }
 
   function renderSavedAddresses(){
@@ -1097,8 +1131,8 @@ body{padding:0 !important;margin:0 !important;}
 
     list.innerHTML=savedAddresses.map(function(a){
       var addr=a.isCurrentLocation
-        ? [a.village,a.state,a.pincode].filter(Boolean).join(', ')
-        : [a.house,a.road,a.city,a.state,a.pincode].filter(Boolean).join(', ');
+        ? [a.village,a.district,a.state,a.pincode].filter(Boolean).join(', ')
+        : [a.house,a.road,a.city,a.district,a.state,a.pincode].filter(Boolean).join(', ');
 
       var plus=a.isCurrentLocation && a.plus_code
         ? '<br><span style="font-size:12px;color:#52695d;">Plus Code: '+escapeHtml(a.plus_code)+'</span>'
@@ -1125,8 +1159,8 @@ body{padding:0 !important;margin:0 !important;}
     setText('ckSummaryName',addr.name);
     setText('ckSummaryTag',(addr.type||'home').toUpperCase());
     var summaryParts=addr.isCurrentLocation
-      ? [addr.village,addr.state,addr.pincode,addr.plus_code,'Phone: '+addr.phone]
-      : [addr.house,addr.road,addr.city,addr.state,addr.pincode,'Phone: '+addr.phone];
+      ? [addr.village,addr.district,addr.state,addr.pincode,addr.plus_code,'Phone: '+addr.phone]
+      : [addr.house,addr.road,addr.city,addr.district,addr.state,addr.pincode,'Phone: '+addr.phone];
 
     setText('ckSummaryAddr',summaryParts.filter(Boolean).join(', '));
     renderProducts();
@@ -1758,8 +1792,11 @@ body{padding:0 !important;margin:0 !important;}
       id:null,name:p.name,phone:p.phone,
       pincode:currentLocationData.pincode||'',
       state:currentLocationData.state||'',
+      district:currentLocationData.district||'',
       city:'',
-      house:'',road:currentLocationData.plus_code||'',
+      village:(el('ckCity')?.value||'').trim(),
+      house:'',road:'',
+      plus_code:currentLocationData.plus_code||'',
       type:'current location',map_link:currentLocationData.map_link,
       latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
       isCurrentLocation:true,location_row_id:currentLocationRowId
@@ -1852,6 +1889,7 @@ body{padding:0 !important;margin:0 !important;}
       phone:phone,
       pincode:gpsMode ? (currentLocationData.pincode||'') : (el('ckPincode')?.value||'').trim(),
       state:gpsMode ? (currentLocationData.state||'') : (el('ckState')?.value||'').trim(),
+      district:gpsMode ? (currentLocationData.district||'') : (el('ckDistrict')?.value||'').trim(),
       city:gpsMode ? '' : village,
       village:gpsMode ? village : '',
       house:'',
@@ -1875,6 +1913,7 @@ body{padding:0 !important;margin:0 !important;}
 
         pincode:addr.pincode,
         state:addr.state,
+        district:addr.district || '',
 
         /* Manual addresses keep the old fields. */
         city:gpsMode ? null : addr.city,
@@ -1913,6 +1952,7 @@ body{padding:0 !important;margin:0 !important;}
       if(gpsMode){
         selectedAddress.city='';
         selectedAddress.road='';
+        selectedAddress.district=addr.district||'';
         selectedAddress.village=addr.village||'';
         selectedAddress.plus_code=addr.plus_code||'';
         selectedAddress.map_link=addr.map_link||'';
@@ -2096,9 +2136,12 @@ body{padding:0 !important;margin:0 !important;}
         phone:selectedAddress.phone || '',
         pincode:selectedAddress.pincode || '',
         state:selectedAddress.state || '',
+        district:selectedAddress.district || '',
         city:selectedAddress.city || '',
+        village:selectedAddress.village || '',
         house:selectedAddress.house || '',
         road:selectedAddress.road || '',
+        plus_code:selectedAddress.plus_code || '',
         type:selectedAddress.type || 'home',
         map_link:selectedAddress.map_link || '',
         latitude:selectedAddress.latitude || null,
