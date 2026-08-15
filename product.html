@@ -1564,8 +1564,33 @@ a{text-decoration:none;color:inherit}
 
 /* Laptop/Desktop: hold
 <div id="desktopProductPageLoader" aria-hidden="false">
-  <div class="desktop-product-spinner" aria-label="Loading"></div>
+  <div class="product-skeleton">
+
+    <div class="product-skeleton-left">
+      <div class="sk product-skeleton-image"></div>
+      <div class="sk product-skeleton-dots"></div>
+    </div>
+
+    <div class="product-skeleton-right">
+      <div class="sk product-skeleton-badge"></div>
+
+      <div class="sk product-skeleton-title"></div>
+      <div class="sk product-skeleton-title2"></div>
+
+      <div class="sk product-skeleton-rating"></div>
+
+      <div class="sk product-skeleton-price"></div>
+
+      <div class="product-skeleton-line"></div>
+
+      <div class="sk product-skeleton-section-title"></div>
+      <div class="sk product-skeleton-box"></div>
+    </div>
+
+  </div>
 </div>
+
+
  the page behind a real loader until product is ready */
 #desktopProductPageLoader{
   position:fixed;
@@ -1616,6 +1641,147 @@ a{text-decoration:none;color:inherit}
 
   #desktopIndexHeader .logo{
     color:var(--violet) !important;
+  }
+}
+
+/* =========================================================
+   DESKTOP PRODUCT PAGE — REAL SKELETON LOADER
+   ========================================================= */
+#desktopProductPageLoader{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+#desktopProductPageLoader.hide{
+  display:none;
+}
+
+.product-skeleton{
+  width:min(1240px,92vw);
+  height:620px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:55px;
+  padding:28px;
+  box-sizing:border-box;
+}
+
+.sk{
+  position:relative;
+  overflow:hidden;
+  background:#edf0f3;
+  border-radius:10px;
+}
+
+.sk::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,.65) 45%,
+    rgba(255,255,255,.9) 50%,
+    transparent 65%
+  );
+  animation:productSkeletonShimmer 1.25s infinite;
+}
+
+@keyframes productSkeletonShimmer{
+  100%{transform:translateX(100%)}
+}
+
+.product-skeleton-left{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.product-skeleton-image{
+  width:min(520px,100%);
+  height:470px;
+  border-radius:16px;
+}
+
+.product-skeleton-dots{
+  width:120px;
+  height:12px;
+  margin-top:18px;
+  border-radius:20px;
+}
+
+.product-skeleton-right{
+  padding-top:10px;
+}
+
+.product-skeleton-badge{
+  width:105px;
+  height:28px;
+  border-radius:7px;
+  margin-bottom:20px;
+}
+
+.product-skeleton-title{
+  width:88%;
+  height:32px;
+  border-radius:8px;
+  margin-bottom:10px;
+}
+
+.product-skeleton-title2{
+  width:68%;
+  height:32px;
+  border-radius:8px;
+  margin-bottom:28px;
+}
+
+.product-skeleton-rating{
+  width:105px;
+  height:25px;
+  border-radius:7px;
+  margin-bottom:35px;
+}
+
+.product-skeleton-price{
+  width:235px;
+  height:38px;
+  border-radius:8px;
+  margin-bottom:28px;
+}
+
+.product-skeleton-line{
+  width:100%;
+  height:1px;
+  margin-bottom:28px;
+  background:#e5e7eb;
+  position:relative;
+  overflow:hidden;
+}
+
+.product-skeleton-section-title{
+  width:180px;
+  height:25px;
+  border-radius:7px;
+  margin-bottom:18px;
+}
+
+.product-skeleton-box{
+  width:100%;
+  height:175px;
+  border-radius:14px;
+}
+
+@media(max-width:900px){
+  #desktopProductPageLoader{
+    display:none!important;
   }
 }
 </style>
@@ -5238,6 +5404,30 @@ document.addEventListener("DOMContentLoaded", function(){
     });
   }
 });
+
+/* =========================================================
+   PRODUCT HEADER HOME CLICK — SAME AS INDEX
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", function(){
+
+  if(window.innerWidth <= 900) return;
+
+  const logo =
+    document.querySelector(
+      "#desktopIndexHeader .logo"
+    );
+
+  if(!logo || logo.dataset.homeBound==="1") return;
+
+  logo.dataset.homeBound="1";
+  logo.style.cursor="pointer";
+
+  logo.addEventListener("click", function(){
+    window.location.href="index.html";
+  });
+
+});
+
 </script>
 
 </body>
