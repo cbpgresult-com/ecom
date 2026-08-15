@@ -343,67 +343,1130 @@ main{
   background:white;
 }
 
+/* ================= PRODUCT GRID ================= */
+
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  padding-bottom:50px;
+}
+
+.product-card{
+  background:white;
+  border:1px solid #e8e8e8;
+  border-radius:14px;
+  overflow:hidden;
+  transition:.2s;
+  cursor:pointer;
+  min-width:0;
+}
+
+.product-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 25px rgba(0,0,0,.09);
+}
+
+.product-image-box{
+  height:250px;
+  background:#fafafa;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.product-image{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:10px;
+  display:block;
+}
+
+.discount{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:var(--green);
+  color:var(--green-dark);
+  padding:6px 8px;
+  border-radius:7px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.product-info{
+  padding:12px;
+}
+
+.rating{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  background:var(--green);
+  color:#166534;
+  padding:4px 7px;
+  border-radius:6px;
+  font-size:11px;
+  margin-bottom:8px;
+}
+
+.product-name{
+  font-size:14px;
+  font-weight:500;
+  line-height:1.35;
+  color:#333;
+
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+
+  min-height:38px;
+}
+
+.price-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:9px;
+}
+
+.price{
+  font-size:20px;
+  font-weight:800;
+}
+
+.mrp{
+  font-size:11px;
+  color:#999;
+  text-decoration:line-through;
+}
+
+.off{
+  font-size:11px;
+  color:var(--green-dark);
+  font-weight:700;
+}
+
+.delivery{
+  color:#15803d;
+  font-size:11px;
+  margin-top:10px;
+  font-weight:600;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+  padding:50px;
+  text-align:center;
+  color:#777;
+}
+
+.no-products{
+  text-align:center;
+  padding:60px;
+}
+
+.hidden{
+  display:none;
+}
+
+/* ================= MOBILE BOTTOM NAV ================= */
+
+.bottom-nav{
+  display:none;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+  body{
+    padding-bottom:72px;
+  }
+
+  .header{
+    height:auto;
+    min-height:112px;
+    padding:10px 12px;
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "logo"
+      "search";
+    gap:10px;
+    position:sticky;
+    top:0;
+  }
+
+  .logo{
+    grid-area:logo;
+    font-size:23px;
+  }
+
+  .search{
+    grid-area:search;
+  }
+
+  .search input{
+    height:42px;
+    font-size:14px;
+  }
+
+  /* Cart is intentionally removed from mobile header.
+     Cart remains available in the fixed bottom navigation. */
+  .cart-btn{
+    display:none;
+  }
+
+  .header-account{
+    display:none;
+  }
+
+  .categories{
+    height:76px;
+    padding:0 10px;
+    gap:20px;
+  }
+
+  .category{
+    min-width:58px;
+    font-size:11px;
+  }
+
+  .category-icon{
+    width:36px;
+    height:36px;
+  }
+
+  main{
+    width:calc(100% - 20px);
+  }
+
+  .product-heading{
+    margin:20px 0 12px;
+    align-items:center;
+  }
+
+  .product-heading h1{
+    font-size:20px;
+  }
+
+  .product-heading p{
+    font-size:11px;
+  }
+
+  #sortSelect{
+    font-size:11px;
+    padding:8px;
+  }
+
+  .product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    padding-bottom:20px;
+  }
+
+  .product-image-box{
+    height:175px;
+  }
+
+  .product-image{
+    padding:8px;
+  }
+
+  .product-info{
+    padding:9px;
+  }
+
+  .product-name{
+    font-size:12px;
+    line-height:1.3;
+    min-height:31px;
+  }
+
+  .price{
+    font-size:16px;
+  }
+
+  .mrp,
+  .off{
+    font-size:9px;
+  }
+
+  .delivery{
+    font-size:9px;
+  }
+
+  .rating{
+    font-size:9px;
+    padding:3px 5px;
+  }
+
+  .discount{
+    top:7px;
+    left:7px;
+    font-size:9px;
+    padding:5px 6px;
+  }
+
+  /* fixed bottom nav */
+  .bottom-nav{
+    position:fixed;
+    display:flex;
+    left:0;
+    right:0;
+    bottom:0;
+    height:68px;
+    background:#fff;
+    border-top:1px solid #ddd;
+    z-index:99999;
+    box-shadow:0 -5px 20px rgba(0,0,0,.08);
+    justify-content:space-around;
+    align-items:center;
+  }
+
+  .bottom-item{
+    flex:1;
+    height:100%;
+    border:0;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    color:#666;
+    font-size:10px;
+    cursor:pointer;
+  }
+
+  .bottom-item svg{
+    width:23px;
+    height:23px;
+  }
+
+  .bottom-item.active{
+    color:var(--violet);
+    font-weight:700;
+  }
+
+  .bottom-item.active svg{
+    stroke:var(--violet);
+  }
+}
+
+@media(min-width:701px){
+  .mobile-only{
+    display:none;
+  }
+}
+
+@media(min-width:701px) and (max-width:1000px){
+  .product-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+/* =========================================================
+   SAFE PRODUCT NAVIGATION LOADER
+   ONLY .product-card can trigger this.
+========================================================= */
+#indexProductLoading{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  display:none;
+  flex-direction:column;
+  background:#f5f6f8;
+  pointer-events:none;
+}
+#indexProductLoading.show{display:flex}
+#indexProductLoading .navLoaderHeader{
+  height:62px;
+  min-height:62px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+}
+#indexProductLoading .navLoaderSide{
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#indexProductLoading .navLoaderSide svg{
+  width:24px;
+  height:24px;
+}
+#indexProductLoading .navLoaderSpacer{flex:1}
+#indexProductLoading .navLoaderBody{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#indexProductLoading .navLoaderSpinner{
+  width:48px;
+  height:48px;
+  border:4px solid #dbeafe;
+  border-top-color:#2874f0;
+  border-radius:50%;
+  animation:safeProductSpin .75s linear infinite;
+}
+@keyframes safeProductSpin{
+  to{transform:rotate(360deg)}
+}
+.product-card{
+  -webkit-tap-highlight-color:transparent;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="indexProductLoading" aria-hidden="true">
+  <div class="navLoaderHeader">
+    <div class="navLoaderSide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <path d="M19 12H5"></path>
+        <path d="m12 19-7-7 7-7"></path>
+      </svg>
+    </div>
+    <div class="navLoaderSpacer"></div>
+    <div class="navLoaderSide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-4-4"></path>
+      </svg>
+    </div>
+    <div class="navLoaderSide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <circle cx="9" cy="20" r="1"></circle>
+        <circle cx="18" cy="20" r="1"></circle>
+        <path d="M3 4h2l2.4 11.5h10.8L21 8H6"></path>
+      </svg>
+    </div>
+  </div>
+  <div class="navLoaderBody">
+    <div class="navLoaderSpinner"></div>
+  </div>
+</div>
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+  <div class="logo">MyStore</div>
+
+  <div class="search">
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Search for Products, Brands and More"
+    >
+
+    <svg class="search-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2">
+      <circle cx="11" cy="11" r="7"></circle>
+      <path d="m20 20-4-4"></path>
+    </svg>
+  </div>
+
+  <!-- DESKTOP ACCOUNT -->
+  <div class="header-account" id="accountArea">
+
+    <button class="account-btn" id="accountBtn">
+
+      <svg class="account-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8">
+        <circle cx="12" cy="8" r="3.5"></circle>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"></path>
+        <circle cx="12" cy="12" r="10"></circle>
+      </svg>
+
+      <span id="accountName">Login</span>
+
+      <svg class="arrow"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2">
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+
+    </button>
+
+
+    <!-- ACCOUNT DROPDOWN -->
+
+    <div class="account-menu" id="accountMenu">
+
+      <div id="loggedOutMenu">
+
+        <div class="account-top">
+
+          <div class="new-customer">
+            <span>New customer?</span>
+            <span class="signup" onclick="goSignup()">Sign Up</span>
+          </div>
+
+        </div>
+
+        <div class="account-divider"></div>
+
+        <div class="menu-item" onclick="goLogin()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+          </svg>
+          My Profile
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/>
+            <path d="m8 12 2.5 2.5L16 9"/>
+          </svg>
+          MyStore Plus Zone
+        </div>
+
+        <div class="menu-item" onclick="goOrders()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m4 7 8-4 8 4-8 4z"/>
+            <path d="M4 7v10l8 4 8-4V7"/>
+            <path d="M12 11v10"/>
+          </svg>
+          Orders
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m20 12-8 8-8-8 8-8z"/>
+            <path d="M9 12h6"/>
+          </svg>
+          Wishlist
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <rect x="3" y="4" width="18" height="16" rx="2"/>
+            <path d="M7 8h10M7 12h10M7 16h6"/>
+          </svg>
+          Become a Seller
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M12 3v18M3 8h18M3 16h18"/>
+          </svg>
+          Rewards
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M20 12a8 8 0 0 1-16 0"/>
+            <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
+            <path d="M4 12h3M17 12h3"/>
+          </svg>
+          Gift Cards
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          Notification Preferences
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M8 10a4 4 0 0 1 8 0v2a4 4 0 0 1-8 0z"/>
+            <path d="M8 12H5M19 12h-3"/>
+          </svg>
+          24×7 Customer Care
+        </div>
+
+      </div>
+
+
+      <!-- LOGGED IN -->
+
+      <div id="loggedInMenu" style="display:none">
+
+        <div class="account-top">
+          <strong id="welcomeName">Welcome</strong>
+        </div>
+
+        <div class="account-divider"></div>
+
+        <div class="menu-item" onclick="goProfile()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+          </svg>
+          My Profile
+        </div>
+
+        <div class="menu-item" onclick="goOrders()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="m4 7 8-4 8 4-8 4z"/>
+            <path d="M4 7v10l8 4 8-4V7"/>
+            <path d="M12 11v10"/>
+          </svg>
+          Orders
+        </div>
+
+        <div class="menu-item" onclick="goAddresses()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          Saved Addresses
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M20 8a5 5 0 0 0-8-4 5 5 0 0 0-8 4c0 5 8 11 8 11s8-6 8-11z"/>
+          </svg>
+          Wishlist
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          Notifications
+        </div>
+
+        <div class="account-divider"></div>
+
+        <div class="menu-item logout" onclick="logoutUser()">
+          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M10 17l5-5-5-5"/>
+            <path d="M15 12H3"/>
+            <path d="M21 3v18"/>
+          </svg>
+          Logout
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <button class="cart-btn" onclick="goCart()">
+
+    <svg class="cart-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8">
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="18" cy="20" r="1"/>
+      <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+    </svg>
+
+    Cart
+
+    <span class="cart-number" id="cartCount">0</span>
+
+  </button>
+
+</header>
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<div class="categories">
+
+  <button class="category active">
+    <span class="category-icon">🏠</span>
+    For You
+  </button>
+
+  <button class="category">
+    <span class="category-icon">👕</span>
+    Fashion
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📱</span>
+    Mobiles
+  </button>
+
+  <button class="category">
+    <span class="category-icon">💻</span>
+    Electronics
+  </button>
+
+  <button class="category">
+    <span class="category-icon">💄</span>
+    Beauty
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🏠</span>
+    Home
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📺</span>
+    Appliances
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🎮</span>
+    Toys
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🍔</span>
+    Food
+  </button>
+
+  <button class="category">
+    <span class="category-icon">⚽</span>
+    Sports
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🛋️</span>
+    Furniture
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📚</span>
+    Books
+  </button>
+
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<main>
+
+  <div class="top-space"></div>
+
+  <div class="product-heading">
+
+    <div>
+      <h1>Suggested For You</h1>
+      <p>Discover products you'll love.</p>
+    </div>
+
+    <select id="sortSelect">
+      <option value="popular">Popular</option>
+      <option value="low">Price: Low to High</option>
+      <option value="high">Price: High to Low</option>
+      <option value="new">Newest</option>
+    </select>
+
+  </div>
+
+  <div id="loading" class="loading">
+    Loading products...
+  </div>
+
+  <section id="productGrid" class="product-grid"></section>
+
+  <div id="noProducts" class="no-products hidden">
+    <h2>No products found</h2>
+    <p>Try another search.</p>
+  </div>
+
+</main>
+
+
+<!-- ================= MOBILE BOTTOM NAV ================= -->
+
+<nav class="bottom-nav">
+
+  <button class="bottom-item active" onclick="goHome()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m3 11 9-8 9 8"/>
+      <path d="M5 10v10h14V10"/>
+      <path d="M9 20v-6h6v6"/>
+    </svg>
+    Home
+  </button>
+
+  <button class="bottom-item" onclick="goCategories()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="4" y="4" width="6" height="6" rx="1"/>
+      <rect x="14" y="4" width="6" height="6" rx="1"/>
+      <rect x="4" y="14" width="6" height="6" rx="1"/>
+      <rect x="14" y="14" width="6" height="6" rx="1"/>
+    </svg>
+    Categories
+  </button>
+
+  <button class="bottom-item" onclick="goAccount()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="8" r="3.5"/>
+      <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+    </svg>
+    Account
+  </button>
+
+  <button class="bottom-item" onclick="goOrders()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m4 7 8-4 8 4-8 4z"/>
+      <path d="M4 7v10l8 4 8-4V7"/>
+      <path d="M12 11v10"/>
+    </svg>
+    Orders
+  </button>
+
+  <button class="bottom-item" onclick="goCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="18" cy="20" r="1"/>
+      <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+    </svg>
+    Cart
+  </button>
+
+</nav>
+
+
+<script>
+
+/* =========================================
+   SUPABASE CONFIG
+========================================= */
+
+const SUPABASE_URL =
+    "https://bszojvhitsoamhksyjul.supabase.co";
+
+const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
 /* =========================================================
-   SEARCH QUERY FROM PRODUCT PAGE
+   ACCOUNT
 ========================================================= */
-(function(){
 
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
+const accountBtn =
+  document.getElementById("accountBtn");
 
-  const query =
-    params.get("search");
+const accountMenu =
+  document.getElementById("accountMenu");
 
-  if(!query){
-    return;
-  }
+const accountName =
+  document.getElementById("accountName");
 
-  const input =
-    document.getElementById(
-      "searchInput"
-    );
+const loggedOutMenu =
+  document.getElementById("loggedOutMenu");
 
-  if(!input){
-    return;
-  }
+const loggedInMenu =
+  document.getElementById("loggedInMenu");
 
-  input.value =
-    query;
+const welcomeName =
+  document.getElementById("welcomeName");
 
-  input.dispatchEvent(
-    new Event(
-      "input",
-      {bubbles:true}
-    )
+
+accountBtn.addEventListener("click", function(e){
+
+  e.stopPropagation();
+
+  accountMenu.classList.toggle("show");
+
+  accountBtn.classList.toggle(
+    "open",
+    accountMenu.classList.contains("show")
   );
 
-})();
+});
+
+
+document.addEventListener("click",function(e){
+
+  if(!document.getElementById("accountArea").contains(e.target)){
+
+    accountMenu.classList.remove("show");
+
+    accountBtn.classList.remove("open");
+
+  }
+
+});
+
 
 /* =========================================================
-   PRODUCT CARD ONLY — REAL NAVIGATION LOADER
+   GET FIRST NAME
 ========================================================= */
-let productNavigationStarted = false;
 
-document.addEventListener("click", function(event){
+function getFirstName(fullName){
 
-  const card = event.target.closest(".product-card");
-  if(!card) return;
-  if(event.defaultPrevented) return;
+  if(!fullName) return "User";
 
-  const loader =
-    document.getElementById("indexProductLoading");
+  fullName =
+    String(fullName).trim();
 
-  if(!loader) return;
+  return fullName
+    .split(/\s+/)[0];
 
-  productNavigationStarted = true;
-  loader.classList.add("show");
-  loader.setAttribute("aria-hidden","false");
+}
 
-}, true);
+
+/* =========================================================
+   LOAD LOGIN STATE
+========================================================= */
+
+async function loadAccount(){
+
+  try{
+
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
+
+
+    if(!user){
+
+      /* NOT LOGGED IN */
+
+      accountName.textContent =
+        "Login";
+
+      loggedOutMenu.style.display =
+        "block";
+
+      loggedInMenu.style.display =
+        "none";
+
+      return;
+
+    }
+
+
+    /* LOGGED IN */
+
+    let firstName = "";
+
+
+    /*
+      accounts table:
+      id
+      email
+      full_name
+      mobile
+    */
+
+    const {
+      data:account
+    } =
+    await supabaseClient
+      .from("accounts")
+      .select("full_name")
+      .eq("id",user.id)
+      .maybeSingle();
+
+
+    if(account && account.full_name){
+
+      firstName =
+        getFirstName(account.full_name);
+
+    }
+
+
+    /* fallback */
+
+    if(!firstName && user.user_metadata){
+
+      firstName =
+        getFirstName(
+          user.user_metadata.full_name ||
+          user.user_metadata.name ||
+          user.email
+        );
+
+    }
+
+
+    if(!firstName){
+
+      firstName = "User";
+
+    }
+
+
+    accountName.textContent =
+      firstName;
+
+    welcomeName.textContent =
+      "Welcome, " + firstName + "!";
+
+
+    loggedOutMenu.style.display =
+      "none";
+
+    loggedInMenu.style.display =
+      "block";
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Account error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  function(){
+
+    setTimeout(
+      loadAccount,
+      100
+    );
+
+  }
+);
+
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+async function loadProducts(){
+
+  const loading =
+    document.getElementById("loading");
+
+  const grid =
+    document.getElementById("productGrid");
+
+  const noProducts =
+    document.getElementById("noProducts");
+
+
+  loading.style.display =
+    "block";
+
+  grid.innerHTML =
+    "";
+
+  noProducts.classList.add(
+    "hidden"
+  );
+
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("products")
+    .select("*");
+
+
+  loading.style.display =
+    "none";
+
+
+  if(error){
+
+    console.error(error);
+
+    noProducts.classList.remove(
+      "hidden"
+    );
+
+    noProducts.innerHTML =
+      "<h2>Products load nahi ho paaye</h2>";
+
+    return;
+
+  }
+
+
+  if(!data || data.length===0){
+
+    noProducts.classList.remove(
+      "hidden"
+    );
+
+    return;
+
+  }
+
+
+  data.forEach(
+    product => {
+
+      grid.appendChild(
+        createProductCard(product)
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   MAIN IMAGE
+========================================================= */
+
+function getMainImage(product){
+
+  /*
+    IMPORTANT:
+    Main image first priority.
+  */
+
+  return (
+    product.image ||
+    product.image_url ||
+    product.main_image ||
+    product.thumbnail ||
+    product.images?.[0] ||
+    ""
+  );
+
+}
 
 
 /* =========================================================
@@ -544,10 +1607,16 @@ function createProductCard(product){
         The product page owns the real loader. This guarantees
         desktop and mobile navigation both happen immediately.
       */
-window.location.href =
+      try{
+        sessionStorage.setItem(
+          "mystore_product_navigation",
+          "1"
+        );
+      }catch(e){}
+
+      window.location.href =
         "product.html?id=" +
-        encodeURIComponent(product.id) +
-        (productNavigationStarted ? "&navt=1" : "");
+        encodeURIComponent(product.id);
 
     }
   );
@@ -782,6 +1851,51 @@ loadCartCount();
 loadProducts();
 
 
+</script>
+
+
+<script>
+/* =========================================================
+   SAFE PRODUCT GRID LOADER
+   - ONLY a real .product-card triggers it
+   - normal index touches never trigger it
+   - no timeout / no artificial delay
+========================================================= */
+(function(){
+
+  let productLoaderShown = false;
+
+  document.addEventListener(
+    "pointerdown",
+    function(event){
+
+      const card =
+        event.target.closest &&
+        event.target.closest(".product-card");
+
+      if(!card) return;
+      if(productLoaderShown) return;
+
+      productLoaderShown = true;
+
+      const loader =
+        document.getElementById(
+          "indexProductLoading"
+        );
+
+      if(!loader) return;
+
+      loader.classList.add("show");
+      loader.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+
+    },
+    true
+  );
+
+})();
 </script>
 
 </body>
