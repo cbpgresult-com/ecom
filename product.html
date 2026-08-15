@@ -4476,6 +4476,7 @@ async function addToCart(){
   }
 
   updateCart();
+  loadCartCount();
 
   toast("✓ Added to Cart");
 }
@@ -4985,33 +4986,161 @@ if(window.innerWidth<=900){document.body.style.overflow="hidden";}
 load();
 
 
-/* =========================================================
-   PRODUCT DESKTOP HEADER SEARCH
-   ========================================================= */
-(function(){
-  const input=document.getElementById("searchInput");
-  if(!input || input.dataset.realIndexSearch==="1") return;
 
-  input.dataset.realIndexSearch="1";
+/* =========================================================
+   INDEX-STYLE CART COUNT — PRODUCT PAGE
+========================================================= */
+
+async function loadCartCount(){
+
+  const badge =
+    document.getElementById("cartCount");
+
+  if(!badge) return;
+
+  try{
+
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
+
+    if(!user){
+
+      badge.textContent = "";
+      badge.classList.remove("show");
+      return;
+
+    }
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
+      .from("cart_items")
+      .select("qty")
+      .eq("user_id",user.id);
+
+    if(error){
+
+      console.error("Cart count:",error);
+
+      badge.textContent = "";
+      badge.classList.remove("show");
+      return;
+
+    }
+
+    let total = 0;
+
+    (data || []).forEach(item => {
+      total += Number(item.qty || 0);
+    });
+
+    if(total > 0){
+
+      badge.textContent =
+        total > 99 ? "99+" : String(total);
+
+      badge.classList.add("show");
+
+    }else{
+
+      badge.textContent = "";
+      badge.classList.remove("show");
+
+    }
+
+  }catch(error){
+
+    console.error("Cart count:",error);
+
+    badge.textContent = "";
+    badge.classList.remove("show");
+
+  }
+
+}
+
+supabaseClient.auth.onAuthStateChange(
+  function(){
+
+    setTimeout(
+      loadCartCount,
+      100
+    );
+
+  }
+);
+
+
+/* =========================================================
+   INDEX-STYLE DESKTOP HEADER SEARCH
+========================================================= */
+(function(){
+
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
+  if(
+    !input ||
+    input.dataset.realIndexSearch === "1"
+  ){
+    return;
+  }
+
+  input.dataset.realIndexSearch =
+    "1";
 
   function openSearch(){
-    const q=input.value.trim();
-    if(!q) return;
-    window.location.href="index.html?search="+encodeURIComponent(q);
+
+    const value =
+      input.value.trim();
+
+    if(!value) return;
+
+    window.location.href =
+      "index.html?search=" +
+      encodeURIComponent(value);
+
   }
 
-  input.addEventListener("keydown",function(e){
-    if(e.key==="Enter"){
-      e.preventDefault();
-      openSearch();
+  input.addEventListener(
+    "keydown",
+    function(e){
+
+      if(e.key === "Enter"){
+
+        e.preventDefault();
+        openSearch();
+
+      }
+
     }
-  });
+  );
 
-  const icon=document.querySelector("#desktopIndexHeader .search-icon");
+  const icon =
+    document.querySelector(
+      "#desktopIndexHeader .search-icon"
+    );
+
   if(icon){
-    icon.style.cursor="pointer";
-    icon.addEventListener("click",openSearch);
+
+    icon.style.cursor =
+      "pointer";
+
+    icon.addEventListener(
+      "click",
+      openSearch
+    );
+
   }
+
 })();
 
 
@@ -5019,8 +5148,10 @@ load();
    REAL INDEX HEADER INITIALIZATION ON PRODUCT PAGE
    ========================================================= */
 if(window.innerWidth > 900){
-  try{ loadAccount(); }catch(e){ console.error(e); }
-  try{ loadCartCount(); }catch(e){ console.error(e); }
+
+  loadAccount();
+  loadCartCount();
+
 }
 
 </script>
