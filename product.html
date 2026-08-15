@@ -1316,43 +1316,6 @@ a{text-decoration:none;color:inherit}
   position:relative;
 }
 
-.account-btn.open .arrow{
-  transform:rotate(180deg);
-}
-
-.account-menu{
-  position:absolute;
-  right:0;
-  top:53px;
-  width:310px;
-  background:#fff;
-  border-radius:14px;
-  box-shadow:0 12px 35px rgba(0,0,0,.20);
-  border:1px solid #ddd;
-  overflow:hidden;
-  display:none;
-  z-index:2000;
-}
-
-.account-menu.show{
-  display:block;
-  animation:menuIn .16s ease;
-}
-
-@keyframes menuIn{
-  from{opacity:0;transform:translateY(-5px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-.account-top{padding:18px 20px 10px}
-.new-customer{display:flex;justify-content:space-between;align-items:center;font-size:15px}
-.signup{color:#2563eb;font-weight:700;cursor:pointer}
-.account-divider{height:1px;background:#eee;margin:8px 0}
-.menu-item{height:47px;display:flex;align-items:center;gap:14px;padding:0 20px;cursor:pointer;font-size:15px}
-.menu-item:hover{background:#f7f7f7;color:var(--violet)}
-.menu-svg{width:20px;height:20px;flex:none}
-.logout{color:#dc2626}
-
 .account-btn{
   border:0;
   background:#fff;
@@ -1599,10 +1562,11 @@ a{text-decoration:none;color:inherit}
 }
 
 
-
-/* =========================================================
-   DESKTOP PRODUCT PAGE INITIAL LOADER
-   ========================================================= */
+/* Laptop/Desktop: hold
+<div id="desktopProductPageLoader" aria-hidden="false">
+  <div class="desktop-product-spinner" aria-label="Loading"></div>
+</div>
+ the page behind a real loader until product is ready */
 #desktopProductPageLoader{
   position:fixed;
   inset:0;
@@ -1614,8 +1578,7 @@ a{text-decoration:none;color:inherit}
 }
 #desktopProductPageLoader.hide{display:none}
 #desktopProductPageLoader .desktop-product-spinner{
-  width:48px;
-  height:48px;
+  width:48px;height:48px;
   border:4px solid #dbeafe;
   border-top-color:#2874f0;
   border-radius:50%;
@@ -1627,14 +1590,9 @@ a{text-decoration:none;color:inherit}
 </head>
 
 <body>
-<div id="desktopProductPageLoader" aria-hidden="false">
-  <div class="desktop-product-spinner" aria-label="Loading"></div>
-</div>
-
 
 <!-- ================= HEADER ================= -->
 
-<!-- ================= REAL INDEX DESKTOP HEADER ================= -->
 <div id="desktopIndexHeader">
 <header class="header">
 
@@ -2290,125 +2248,6 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-
-/* =========================================================
-   REAL INDEX DESKTOP HEADER BEHAVIOR
-   ========================================================= */
-
-const productHeaderAccountBtn=document.getElementById("accountBtn");
-const productHeaderAccountMenu=document.getElementById("accountMenu");
-const productHeaderAccountName=document.getElementById("accountName");
-const productHeaderLoggedOutMenu=document.getElementById("loggedOutMenu");
-const productHeaderLoggedInMenu=document.getElementById("loggedInMenu");
-const productHeaderWelcomeName=document.getElementById("welcomeName");
-
-if(productHeaderAccountBtn && productHeaderAccountMenu){
-  productHeaderAccountBtn.addEventListener("click",function(e){
-    e.stopPropagation();
-    productHeaderAccountMenu.classList.toggle("show");
-    productHeaderAccountBtn.classList.toggle(
-      "open",
-      productHeaderAccountMenu.classList.contains("show")
-    );
-  });
-
-  document.addEventListener("click",function(e){
-    const area=document.getElementById("accountArea");
-    if(area && !area.contains(e.target)){
-      productHeaderAccountMenu.classList.remove("show");
-      productHeaderAccountBtn.classList.remove("open");
-    }
-  });
-}
-
-function productHeaderFirstName(name){
-  if(!name) return "User";
-  return String(name).trim().split(/\s+/)[0];
-}
-
-async function loadProductHeaderAccount(){
-  if(!productHeaderAccountName) return;
-
-  try{
-    const {data:{user}}=await supabaseClient.auth.getUser();
-
-    if(!user){
-      productHeaderAccountName.textContent="Login";
-      if(productHeaderLoggedOutMenu) productHeaderLoggedOutMenu.style.display="block";
-      if(productHeaderLoggedInMenu) productHeaderLoggedInMenu.style.display="none";
-      return;
-    }
-
-    let firstName="";
-
-    const {data:account}=await supabaseClient
-      .from("accounts")
-      .select("full_name")
-      .eq("id",user.id)
-      .maybeSingle();
-
-    if(account && account.full_name)
-      firstName=productHeaderFirstName(account.full_name);
-
-    if(!firstName && user.user_metadata)
-      firstName=productHeaderFirstName(
-        user.user_metadata.full_name ||
-        user.user_metadata.name ||
-        user.email
-      );
-
-    if(!firstName) firstName="User";
-
-    productHeaderAccountName.textContent=firstName;
-    if(productHeaderWelcomeName)
-      productHeaderWelcomeName.textContent="Welcome, "+firstName+"!";
-
-    if(productHeaderLoggedOutMenu) productHeaderLoggedOutMenu.style.display="none";
-    if(productHeaderLoggedInMenu) productHeaderLoggedInMenu.style.display="block";
-
-  }catch(error){
-    console.error("Product header account error:",error);
-  }
-}
-
-function goLogin(){window.location.href="login.html";}
-function goSignup(){window.location.href="signup.html";}
-function goProfile(){window.location.href="profile.html";}
-function goAddresses(){window.location.href="saved-addresses.html";}
-function goOrders(){window.location.href="orders.html";}
-function goCart(){window.location.href="cart.html";}
-
-async function logoutUser(){
-  await supabaseClient.auth.signOut();
-  window.location.reload();
-}
-
-function setupProductHeaderSearch(){
-  const input=document.getElementById("searchInput");
-  if(!input || input.dataset.productSearchReady==="1") return;
-
-  input.dataset.productSearchReady="1";
-
-  const runSearch=()=>{
-    const value=input.value.trim();
-    if(value){
-      window.location.href="index.html?search="+encodeURIComponent(value);
-    }
-  };
-
-  input.addEventListener("keydown",function(e){
-    if(e.key==="Enter"){
-      e.preventDefault();
-      runSearch();
-    }
-  });
-
-  const icon=input.parentElement?.querySelector(".search-icon");
-  if(icon){
-    icon.style.cursor="pointer";
-    icon.addEventListener("click",runSearch);
-  }
-}
 
 /* =========================================================
    GLOBAL
@@ -4138,13 +3977,11 @@ function render(){
   updateCart();
 
   if(window.innerWidth > 900){
-    const desktopLoader=document.getElementById("desktopProductPageLoader");
-    if(desktopLoader){
-      desktopLoader.classList.add("hide");
-      desktopLoader.setAttribute("aria-hidden","true");
+    const loader = document.getElementById("desktopProductPageLoader");
+    if(loader){
+      loader.classList.add("hide");
+      loader.setAttribute("aria-hidden","true");
     }
-    loadProductHeaderAccount();
-    setupProductHeaderSearch();
   }
 
   showMobileProductLoadedHeader();
@@ -4915,11 +4752,6 @@ window.addEventListener(
 ========================================================= */
 
 if(window.innerWidth<=900){document.body.style.overflow="hidden";}
-
-if(window.innerWidth > 900){
-  loadProductHeaderAccount();
-  setupProductHeaderSearch();
-}
 
 load();
 
