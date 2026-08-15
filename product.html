@@ -850,6 +850,11 @@ a{text-decoration:none;color:inherit}
 
 @media(max-width:900px){
 
+  body{
+    width:100%;
+    overflow-x:hidden;
+  }
+
   #customizeWrap{
     margin-left:0!important;
     flex:1;
@@ -982,28 +987,18 @@ a{text-decoration:none;color:inherit}
     font-size:8.5px;
   }
 
-  /* Full-width mobile product — no side gap */
   .page{
     width:100%;
-    max-width:100%;
-    padding:0 0 90px;
     margin:0;
+    padding:0 0 90px;
   }
 
   .product{
     width:100%;
-    max-width:100%;
     margin:0;
     border-radius:0;
     border-left:0;
     border-right:0;
-  }
-
-  body{
-    width:100%;
-    max-width:100%;
-    margin:0;
-    overflow-x:hidden;
   }
 
   .grid{
@@ -1032,7 +1027,8 @@ a{text-decoration:none;color:inherit}
     grid-column:auto;
     grid-row:auto;
     width:100%;
-    padding:0;
+    padding:0 16px 28px;
+    box-sizing:border-box;
   }
 
   .main{
