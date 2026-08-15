@@ -279,40 +279,10 @@ a{text-decoration:none;color:inherit}
   white-space:nowrap;
 }
 
-.orderDiscountBar{
-  margin-top:12px;
-  min-height:33px;
-  padding:0 10px;
-  background:#e8f8ef;
-  color:#303030;
-  display:flex;
-  align-items:center;
-  gap:7px;
-  border-radius:2px;
-  font-size:14px;
-}
 
-.orderDiscountBadge{
-  min-width:28px;
-  height:20px;
-  padding:0 5px;
-  flex:0 0 auto;
-  border-radius:5px;
-  background:#15803d;
-  color:#fff;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:10px;
-  line-height:1;
-  font-weight:900;
-  letter-spacing:-.1px;
-}
 
-.orderDiscountBar strong{
-  color:#222;
-  font-weight:800;
-}
+
+
 
 .desc{
   display:none!important;
@@ -1130,11 +1100,7 @@ a{text-decoration:none;color:inherit}
     padding:3px 7px;
   }
 
-  .orderDiscountBar{
-    margin-top:10px;
-    min-height:32px;
-    font-size:13px;
-  }
+
 
   .rate{
     font-size:11px;
@@ -1556,10 +1522,7 @@ class="detailsPanel">
 <span id="off" class="off">35% OFF</span>
 </div>
 
-<div class="orderDiscountBar">
-<span id="orderDiscountBadge" class="orderDiscountBadge">35%</span>
-<span><strong id="orderDiscountText">35% off</strong> applied for you</span>
-</div>
+
 
 </div>
 
@@ -1751,7 +1714,6 @@ SUPABASE_KEY
 
 let product=null;
 let qty=1;
-const ORDER_DISCOUNT_PERCENT=35;
 let currentIndex=0;
 
 const money=n=>
@@ -2275,13 +2237,13 @@ function openAddressSelector(){
       );
 
     if(target){
-      navigateWithProductLoader(target);
+      window.location.assign(target);
       return;
     }
 
   }catch{}
 
-  navigateWithProductLoader("/ecom/checkout.html");
+  window.location.assign("/ecom/checkout.html");
 }
 
 function getDeliveryDate(){
@@ -3155,23 +3117,28 @@ function render(){
       ? money(product.mrp)
       : "";
 
-  document.getElementById(
-    "off"
-  ).textContent=
-    ORDER_DISCOUNT_PERCENT+"% OFF";
+  /* REAL PRODUCT DISCOUNT: calculate only from MRP and selling price.
+     Example: MRP 1000, price 650 => 35% OFF.
+     If selling price is equal to or above MRP, there is no discount badge. */
+  const actualDiscountPercent =
+    product.mrp > product.price
+      ? Math.round(
+          ((product.mrp - product.price) / product.mrp) * 100
+        )
+      : 0;
 
-  const orderDiscountBadge =
-    document.getElementById("orderDiscountBadge");
-  if(orderDiscountBadge){
-    orderDiscountBadge.textContent =
-      ORDER_DISCOUNT_PERCENT + "%";
-  }
+  const discountBadge =
+    document.getElementById("off");
 
-  const orderDiscountText =
-    document.getElementById("orderDiscountText");
-  if(orderDiscountText){
-    orderDiscountText.textContent =
-      ORDER_DISCOUNT_PERCENT + "% off";
+  if(discountBadge){
+    if(actualDiscountPercent > 0){
+      discountBadge.textContent =
+        actualDiscountPercent + "% OFF";
+      discountBadge.style.display = "inline-flex";
+    }else{
+      discountBadge.textContent = "";
+      discountBadge.style.display = "none";
+    }
   }
 
   document.getElementById(
@@ -3649,7 +3616,7 @@ async function addToCart(){
 
     setTimeout(
       () =>
-        navigateWithProductLoader("/ecom/account.html"),
+        window.location.assign("/ecom/account.html"),
       800
     );
 
@@ -3814,7 +3781,7 @@ async function buyNow(){
 
     setTimeout(
       () =>
-        navigateWithProductLoader("/ecom/account.html"),
+        window.location.assign("/ecom/account.html"),
       800
     );
 
@@ -3850,7 +3817,9 @@ async function buyNow(){
     ])
   );
 
-  navigateWithProductLoader("/ecom/checkout.html?mode=buy");
+  /* Open checkout directly. The old loader helper was not defined
+     on this page, so Buy Now could silently fail with a ReferenceError. */
+  window.location.assign("/ecom/checkout.html?mode=buy");
 }
 
 
