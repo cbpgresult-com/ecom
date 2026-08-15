@@ -38,7 +38,6 @@ a{text-decoration:none;color:inherit}
   display:grid;
   grid-template-columns:1.05fr .95fr;
   min-height:650px;
-  align-items:start;
 }
 
 .gallery{
@@ -256,7 +255,10 @@ a{text-decoration:none;color:inherit}
 }
 
 .desc{
-  display:none!important;
+  color:#4b5563;
+  font-size:14px;
+  line-height:1.75;
+  margin-top:20px;
 }
 
 .stock{
@@ -438,8 +440,8 @@ a{text-decoration:none;color:inherit}
 
 .features{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:7px;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
   margin-top:22px;
 }
 
@@ -448,11 +450,10 @@ a{text-decoration:none;color:inherit}
   border:1px solid #e4e7eb;
   border-radius:15px;
   background:linear-gradient(180deg,#fff,#fbfcfd);
-  padding:8px 2px 7px;
-  font-size:8px;
-  min-width:0;
+  padding:11px 5px 10px;
+  font-size:9px;
   color:#69717c;
-  min-height:68px;
+  min-height:78px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -461,44 +462,29 @@ a{text-decoration:none;color:inherit}
 }
 
 .featureIcon{
-  width:26px;
-  height:26px;
-  border-radius:8px;
+  width:31px;
+  height:31px;
+  border-radius:10px;
   background:#f3f6fa;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin-bottom:5px;
+  margin-bottom:7px;
   color:#1d4ed8;
 }
 
 .featureIcon svg{
-  width:16px;
-  height:16px;
+  width:19px;
+  height:19px;
   stroke:currentColor;
 }
 
 .feature b{
   display:block;
   color:#20242b;
-  font-size:8px;
-  line-height:1.15;
+  font-size:9px;
+  line-height:1.2;
   margin:0;
-  white-space:nowrap;
-}
-
-/* Desktop: keep all 3 feature boxes in one row */
-@media(min-width:901px){
-  .features{
-    display:flex!important;
-    flex-wrap:nowrap!important;
-    gap:7px;
-  }
-  .features .feature{
-    flex:1 1 0!important;
-    width:0!important;
-    min-width:0!important;
-  }
 }
 
 /* ================= CUSTOMIZE ================= */
@@ -529,20 +515,6 @@ a{text-decoration:none;color:inherit}
   margin-top:25px;
   width:100%;
   background:#fff;
-  grid-column:1;
-  grid-row:2;
-  padding:0 28px 28px;
-}
-
-/* Laptop/Desktop: details below the image on the left. */
-.gallery{
-  grid-column:1;
-  grid-row:1;
-}
-
-.info{
-  grid-column:2;
-  grid-row:1 / span 2;
 }
 
 /* main section */
@@ -992,31 +964,12 @@ a{text-decoration:none;color:inherit}
 
   .grid{
     grid-template-columns:1fr;
-    display:flex;
-    flex-direction:column;
   }
 
   .gallery{
-    order:1;
     padding:9px 0;
     border-right:0;
     border-bottom:1px solid #eee;
-    width:100%;
-  }
-
-  .info{
-    order:2;
-    grid-column:auto;
-    grid-row:auto;
-    width:100%;
-  }
-
-  .productSections{
-    order:3;
-    grid-column:auto;
-    grid-row:auto;
-    width:100%;
-    padding:0;
   }
 
   .main{
@@ -1202,7 +1155,64 @@ a{text-decoration:none;color:inherit}
     font-size:12px;
   }
 }
+
+
+/* ================= FOOTER ================= */
+.mystore-footer{
+  margin-top:28px;
+  background:#111;
+  color:#fff;
+  border-radius:20px 20px 0 0;
+  padding:34px 5% 18px;
+}
+.mystore-footer-inner{
+  width:min(1450px,100%);
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr 1fr;
+  gap:28px;
+}
+.mystore-footer h3{
+  margin:0 0 12px;
+  font-size:22px;
+}
+.mystore-footer h4{
+  margin:0 0 12px;
+  font-size:13px;
+}
+.mystore-footer p,.mystore-footer a{
+  color:#bdbdbd;
+  font-size:12px;
+  line-height:1.8;
+}
+.mystore-footer a{display:block}
+.mystore-footer a:hover{color:#fff}
+.mystore-footer-bottom{
+  width:min(1450px,100%);
+  margin:24px auto 0;
+  padding-top:14px;
+  border-top:1px solid #333;
+  text-align:center;
+  color:#999;
+  font-size:11px;
+}
+@media(max-width:700px){
+  .mystore-footer{
+    margin-top:20px;
+    border-radius:16px 16px 0 0;
+    padding:26px 18px 14px;
+  }
+  .mystore-footer-inner{
+    grid-template-columns:1fr 1fr;
+    gap:22px 18px;
+  }
+  .mystore-footer-brand{grid-column:1/-1}
+  .mystore-footer h3{font-size:20px}
+}
+
 </style>
+
+<script src="/ecom/footer.js"></script>
 </head>
 
 <body>
@@ -1243,6 +1253,138 @@ aria-label="Next image">›</button>
 <div class="dots" id="dots"></div>
 
 </div>
+
+<!-- ================= PRODUCT INFO ================= -->
+
+<div class="info">
+
+<span id="tag" class="tag">BESTSELLER</span>
+
+<h1 id="title" class="title"></h1>
+
+<div class="rating">
+<span id="rating" class="rate"></span>
+<span id="reviews" class="reviews"></span>
+</div>
+
+<div class="pricebox">
+<span id="price" class="price"></span>
+<br>
+<span id="mrp" class="mrp"></span>
+<span id="off" class="off"></span>
+</div>
+
+<div id="deliveryDetails" class="deliveryDetails">
+
+<div class="deliveryTitle">
+Delivery details
+</div>
+
+<div class="deliveryCard">
+
+<div class="deliveryAddress"
+id="deliveryAddressRow"
+role="button"
+tabindex="0"
+onclick="openAddressSelector()"
+onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
+
+<div class="deliveryIcon">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
+<path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z"/>
+<circle cx="12" cy="9" r="2.4"/>
+</svg>
+</div>
+
+<div id="deliveryAddressText"
+class="deliveryAddressText">
+Add delivery address
+</div>
+
+<div class="deliveryArrow">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="m9 18 6-6-6-6"/>
+</svg>
+</div>
+
+</div>
+
+<div class="deliveryDate">
+
+<div class="deliveryIcon">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+<path d="M3 7h11v10H3z"/>
+<path d="M14 10h4l3 3v4h-7z"/>
+<circle cx="7" cy="18" r="2"/>
+<circle cx="18" cy="18" r="2"/>
+<path d="M5 10h6M16 13h4"/>
+</svg>
+</div>
+
+<div id="deliveryDateText">
+Delivery by …
+</div>
+
+</div>
+
+<div class="deliverySeller">
+
+<div class="sellerMain">
+
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+<path d="M4 10h16v10H4z"/>
+<path d="m3 10 2-5h14l2 5"/>
+<path d="M8 10v2a2 2 0 0 0 4 0v-2a2 2 0 0 0 4 0v-2"/>
+</svg>
+
+<span>Fulfilled by MyStore</span>
+
+</div>
+
+<div class="sellerSub">
+Trusted seller · Quality checked
+</div>
+
+<a class="sellerLink" href="/ecom/index.html">
+See other sellers <span>›</span>
+</a>
+
+</div>
+
+</div>
+</div>
+
+<div id="description" class="desc"></div>
+
+<div id="stock" class="stock"></div>
+
+<div class="qtyrow">
+
+Qty.
+
+<div class="qty">
+<button onclick="changeQty(-1)">−</button>
+<span id="qty">1</span>
+<button onclick="changeQty(1)">+</button>
+</div>
+
+<div id="customizeWrap">
+
+<label for="customizeInput"
+style="font-size:12px;font-weight:800;white-space:nowrap;">
+Customize
+</label>
+
+<input id="customizeInput"
+type="text"
+maxlength="100"
+placeholder="Name / Text">
+
+</div>
+
+</div>
+
+<div id="features" class="features"></div>
 
 <!-- =====================================================
      PRODUCT HIGHLIGHTS + ALL DETAILS
@@ -1382,140 +1524,6 @@ class="detailsPanel">
 </section>
 
 </div>
-
-
-
-<!-- ================= PRODUCT INFO ================= -->
-
-<div class="info">
-
-<span id="tag" class="tag">BESTSELLER</span>
-
-<h1 id="title" class="title"></h1>
-
-<div class="rating">
-<span id="rating" class="rate"></span>
-<span id="reviews" class="reviews"></span>
-</div>
-
-<div class="pricebox">
-<span id="price" class="price"></span>
-<br>
-<span id="mrp" class="mrp"></span>
-<span id="off" class="off"></span>
-</div>
-
-<div id="deliveryDetails" class="deliveryDetails">
-
-<div class="deliveryTitle">
-Delivery details
-</div>
-
-<div class="deliveryCard">
-
-<div class="deliveryAddress"
-id="deliveryAddressRow"
-role="button"
-tabindex="0"
-onclick="openAddressSelector()"
-onkeydown="if(event.key==='Enter'||event.key===' ')openAddressSelector()">
-
-<div class="deliveryIcon">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.9">
-<path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z"/>
-<circle cx="12" cy="9" r="2.4"/>
-</svg>
-</div>
-
-<div id="deliveryAddressText"
-class="deliveryAddressText">
-Add delivery address
-</div>
-
-<div class="deliveryArrow">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-<path d="m9 18 6-6-6-6"/>
-</svg>
-</div>
-
-</div>
-
-<div class="deliveryDate">
-
-<div class="deliveryIcon">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-<path d="M3 7h11v10H3z"/>
-<path d="M14 10h4l3 3v4h-7z"/>
-<circle cx="7" cy="18" r="2"/>
-<circle cx="18" cy="18" r="2"/>
-<path d="M5 10h6M16 13h4"/>
-</svg>
-</div>
-
-<div id="deliveryDateText">
-Delivery by …
-</div>
-
-</div>
-
-<div class="deliverySeller">
-
-<div class="sellerMain">
-
-<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-<path d="M4 10h16v10H4z"/>
-<path d="m3 10 2-5h14l2 5"/>
-<path d="M8 10v2a2 2 0 0 0 4 0v-2a2 2 0 0 0 4 0v-2"/>
-</svg>
-
-<span>Fulfilled by MyStore</span>
-
-</div>
-
-<div class="sellerSub">
-Trusted seller · Quality checked
-</div>
-
-<a class="sellerLink" href="/ecom/index.html">
-See other sellers <span>›</span>
-</a>
-
-</div>
-
-</div>
-</div>
-
-<div id="description" class="desc"></div>
-
-<div id="stock" class="stock"></div>
-
-<div class="qtyrow">
-
-Qty.
-
-<div class="qty">
-<button onclick="changeQty(-1)">−</button>
-<span id="qty">1</span>
-<button onclick="changeQty(1)">+</button>
-</div>
-
-<div id="customizeWrap">
-
-<label for="customizeInput"
-style="font-size:12px;font-weight:800;white-space:nowrap;">
-Customize
-</label>
-
-<input id="customizeInput"
-type="text"
-maxlength="100"
-placeholder="Name / Text">
-
-</div>
-
-</div>
-
-<div id="features" class="features"></div>
 
 <!-- ================= CTA ================= -->
 
@@ -2352,22 +2360,20 @@ function renderHighlights(data){
   const items=
     getHighlights(data);
 
-  /* Product Highlights section must always remain visible.
-     If no highlights were added from Admin, show a simple message
-     instead of hiding the whole section. */
-  document.getElementById(
-    "highlightsSection"
-  ).style.display="block";
-
   if(!items.length){
 
-    box.innerHTML=
-      `<div style="padding:18px 0;color:#777;font-size:13px">
-         No highlights available.
-       </div>`;
+    box.innerHTML="";
+
+    document.getElementById(
+      "highlightsSection"
+    ).style.display="none";
 
     return;
   }
+
+  document.getElementById(
+    "highlightsSection"
+  ).style.display="block";
 
   let html="";
 
@@ -2609,23 +2615,10 @@ function renderManufacturer(data){
 
   }
 
-  /*
-    IMPORTANT:
-    Sirf wahi manufacturer fields dikhane hain
-    jo admin me actually bhare gaye hain.
-    Empty fields ko product page par bilkul mat dikhana.
-  */
-  items = items
-    .map(item => ({
-      label: String(item.label ?? "").trim(),
-      value: String(item.value ?? "").trim()
-    }))
-    .filter(item => item.value);
-
   if(!items.length){
 
     box.innerHTML=
-      "<div style='color:#777;font-size:13px'>No</div>";
+      "<div style='color:#777;font-size:13px'>No manufacturer information available.</div>";
 
     return;
   }
@@ -3109,28 +3102,7 @@ function render(){
               <b>Cash on Delivery</b>
 
             </div>`
-          : `<div class="feature">
-
-              <div class="featureIcon">
-
-                <svg viewBox="0 0 24 24"
-                fill="none"
-                stroke-width="1.8">
-
-                  <rect x="3" y="6"
-                  width="18"
-                  height="12"
-                  rx="2"/>
-
-                  <path d="m9 10 6 4M15 10l-6 4"/>
-
-                </svg>
-
-              </div>
-
-              <b>No Cash on Delivery</b>
-
-            </div>`
+          : ""
       )+
 
       (
@@ -3273,11 +3245,11 @@ function render(){
   renderManufacturer(product.raw);
 
 
-  /* Product Highlights open by default; All Details closed. */
+  /* keep both sections collapsed initially */
 
   document
     .getElementById("highlightsSection")
-    .classList.add("open");
+    .classList.remove("open");
 
   document
     .getElementById("allDetailsSection")
@@ -3703,6 +3675,5 @@ window.addEventListener(
 load();
 
 </script>
-
 </body>
 </html>
