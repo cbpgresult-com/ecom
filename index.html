@@ -671,10 +671,97 @@ main{
     grid-template-columns:repeat(3,1fr);
   }
 }
+
+/* =========================================================
+   INSTANT PRODUCT CLICK LOADER
+   Appears on the same pointer event — no 1s delay.
+========================================================= */
+#indexInstantProductLoader{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  display:none;
+  flex-direction:column;
+  background:#f5f6f8;
+  pointer-events:none;
+}
+#indexInstantProductLoader.show{
+  display:flex;
+}
+#indexInstantProductLoader .instantLoaderHeader{
+  height:62px;
+  min-height:62px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+}
+#indexInstantProductLoader .instantSide{
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#indexInstantProductLoader .instantSide svg{
+  width:24px;
+  height:24px;
+}
+#indexInstantProductLoader .instantSpacer{
+  flex:1;
+}
+#indexInstantProductLoader .instantBody{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#indexInstantProductLoader .instantSpinner{
+  width:48px;
+  height:48px;
+  border:4px solid #dbeafe;
+  border-top-color:#2874f0;
+  border-radius:50%;
+  animation:instantProductSpin .75s linear infinite;
+}
+@keyframes instantProductSpin{
+  to{transform:rotate(360deg)}
+}
+
 </style>
 </head>
 
 <body>
+
+<div id="indexInstantProductLoader" aria-hidden="true">
+  <div class="instantLoaderHeader">
+    <div class="instantSide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <path d="M19 12H5"></path>
+        <path d="m12 19-7-7 7-7"></path>
+      </svg>
+    </div>
+    <div class="instantSpacer"></div>
+    <div class="instantSide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-4-4"></path>
+      </svg>
+    </div>
+    <div class="instantSide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <circle cx="9" cy="20" r="1"></circle>
+        <circle cx="18" cy="20" r="1"></circle>
+        <path d="M3 4h2l2.4 11.5h10.8L21 8H6"></path>
+      </svg>
+    </div>
+  </div>
+  <div class="instantBody">
+    <div class="instantSpinner"></div>
+  </div>
+</div>
+
 
 <!-- ================= HEADER ================= -->
 
@@ -1845,6 +1932,49 @@ loadProducts();
 })();
 
 </script>
+
+
+/* =========================================================
+   INSTANT PRODUCT GRID LOADER
+   Capture phase = loader starts before other click handlers.
+========================================================= */
+(function(){
+
+  let instantStarted = false;
+
+  document.addEventListener(
+    "pointerdown",
+    function(event){
+
+      if(window.innerWidth > 900) return;
+
+      const card =
+        event.target.closest &&
+        event.target.closest(".product-card");
+
+      if(!card) return;
+      if(instantStarted) return;
+
+      const loader =
+        document.getElementById(
+          "indexInstantProductLoader"
+        );
+
+      if(!loader) return;
+
+      instantStarted = true;
+
+      loader.classList.add("show");
+      loader.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+
+    },
+    true
+  );
+
+})();
 
 </body>
 </html>
