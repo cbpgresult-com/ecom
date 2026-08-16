@@ -3021,9 +3021,6 @@ function goCart(){
 
 async function logoutUser(){
 
-  /* Logout also resets the automatic Still Looking history. */
-  try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
-
   await supabaseClient.auth.signOut();
 
   window.location.reload();
@@ -5777,25 +5774,7 @@ if(typeof supabaseClient !== "undefined"){
     if(event === "SIGNED_OUT"){
       /* Clear the shared Index/Product header cache ONLY on real logout. */
       clearCachedAccountName();
-      /* Logout = fresh Still Looking journey next time. */
-      try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
     }
-
-    if(event === "SIGNED_IN" && session && session.user){
-      /*
-         Do not clear progress merely because Supabase restored the same
-         session and emitted SIGNED_IN. Clear only if a different account
-         has actually signed in.
-      */
-      try{
-        const existing = JSON.parse(localStorage.getItem("mystore_still_looking_v1") || "null");
-        const existingUserId = existing && existing.userId ? String(existing.userId) : "";
-        if(existingUserId && existingUserId !== String(session.user.id)){
-          localStorage.removeItem("mystore_still_looking_v1");
-        }
-      }catch(e){}
-    }
-
     setTimeout(function(){
       if(typeof loadAccount === "function") loadAccount();
       if(typeof loadCartCount === "function") loadCartCount();
@@ -5862,12 +5841,12 @@ function saveThisProductVisit(){
   data.userId=userId;
   let item=data.items.find(x=>String(x.id)===String(product.id));
   if(!item){
-    item={id:String(product.id),title:String(product.title||"Product"),image:String(product.image || (Array.isArray(product.images) ? product.images[0] : "") || ""),visits:0,totalMs:0,lastVisitedAt:0};
+    item={id:String(product.id),title:String(product.title||"Product"),image:String(product.image||""),visits:0,totalMs:0,lastVisitedAt:0};
     data.items.unshift(item);
   }
   /* Refresh automatic product information every time it is visited. */
   item.title=String(product.title||item.title||"Product");
-  item.image=String(product.image || (Array.isArray(product.images) ? product.images[0] : "") || item.image || "");
+  item.image=String(product.image||item.image||"");
   item.visits=Number(item.visits||0)+1;
   item.totalMs=Number(item.totalMs||0)+elapsed;
   item.lastVisitedAt=Date.now();
