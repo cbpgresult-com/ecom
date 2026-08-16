@@ -1560,7 +1560,7 @@ a{text-decoration:none;color:inherit}
 .mobileProductSearch input::placeholder{color:#777}
 .mobileProductCart{width:42px;height:42px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;position:relative;padding:0;flex:0 0 42px}
 .mobileProductCart svg{width:25px;height:25px}
-.mobileProductCartBadge{position:absolute;top:1px;right:-1px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#ef4444;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1}
+.mobileProductCartBadge{position:absolute;top:1px;right:-1px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#ff9800;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1}
 .mobileProductCartBadge.show{display:flex}
 .mobileProductLoading{position:fixed;inset:0;z-index:100000;background:#f5f6f8;display:flex;flex-direction:column}
 .mobileProductLoading.hide{display:none}
@@ -1571,7 +1571,7 @@ a{text-decoration:none;color:inherit}
 .mobileProductLoadingSpacer{flex:1}
 .mobileProductLoadingAction{width:40px;height:40px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;position:relative}
 .mobileProductLoadingAction svg{width:24px;height:24px}
-.mobileProductLoadingBadge{position:absolute;top:0;right:-1px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#ef4444;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center}
+.mobileProductLoadingBadge{position:absolute;top:0;right:-1px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#ff9800;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center}
 .mobileProductLoadingBadge.show{display:flex}
 .mobileProductLoadingCenter{flex:1;display:flex;align-items:center;justify-content:center}
 .mobileProductLoadingSpinner{width:48px;height:48px;border:4px solid #dbeafe;border-top-color:#2874f0;border-radius:50%;animation:productPageSpin .75s linear infinite}
@@ -1909,7 +1909,7 @@ a{text-decoration:none;color:inherit}
 .mobileProductSearchIcon{width:24px;height:28px;border:0;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;flex:0 0 24px}
 .mobileProductCart{width:38px;height:38px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;position:relative;flex:0 0 38px}
 .mobileProductCart svg{width:24px;height:24px}
-.mobileProductCartBadge{position:absolute;top:1px;right:-1px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#6d28d9;color:#fff;font-size:10px;line-height:16px;text-align:center;display:none}
+.mobileProductCartBadge{position:absolute;top:1px;right:-1px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#ff9800;color:#fff;font-size:10px;line-height:16px;text-align:center;display:none}
 .mobileProductCartBadge.show{display:block}
 }
 </style>
@@ -4388,7 +4388,7 @@ async function load(){
    RENDER
 ========================================================= */
 
-function render(){
+async function render(){
 
   renderDeliveryDetails();
 
@@ -4801,6 +4801,16 @@ function render(){
       loader.classList.add("hide");
       loader.setAttribute("aria-hidden","true");
     }
+  }
+
+  /*
+     Mobile: do not remove the real product loader until the cart
+     count request has completed. This prevents the 1–2 second
+     badge flash after the product page appears.
+     Desktop behavior remains unchanged.
+  */
+  if(window.innerWidth <= 900){
+    await loadCartCount();
   }
 
   showMobileProductLoadedHeader();
@@ -5602,6 +5612,9 @@ async function loadCartCount(){
 
       badge.textContent = "";
       badge.classList.remove("show");
+      if(window.innerWidth <= 900){
+        setMobileProductCartBadge("");
+      }
       return;
 
     }
@@ -5621,6 +5634,9 @@ async function loadCartCount(){
 
       badge.textContent = "";
       badge.classList.remove("show");
+      if(window.innerWidth <= 900){
+        setMobileProductCartBadge("");
+      }
       return;
 
     }
@@ -5647,6 +5663,15 @@ async function loadCartCount(){
       badge.textContent = "";
       badge.classList.remove("show");
 
+    }
+
+    /* Mobile header + mobile loader use the same loaded cart count. */
+    if(window.innerWidth <= 900){
+      setMobileProductCartBadge(
+        total > 0
+          ? (total > 99 ? "99+" : String(total))
+          : ""
+      );
     }
 
   }catch(error){
