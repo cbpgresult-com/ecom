@@ -1680,6 +1680,104 @@ a{text-decoration:none;color:inherit}
   }
 }
 
+
+
+/* =========================================================
+   RATINGS & REVIEWS CARD - ADDITION ONLY
+   Desktop: below Add to Cart / Buy buttons
+   Mobile: below All Details
+   Does not modify slider, highlights, details, cart or buy.
+========================================================= */
+.productRatingCard{
+  width:100%;
+  box-sizing:border-box;
+  border-top:1px solid #e5e7eb;
+  margin-top:18px;
+  padding:18px 0 4px;
+}
+.productRatingTitle{
+  margin:0 0 13px;
+  font-size:20px;
+  line-height:1.25;
+  font-weight:800;
+  color:#222;
+}
+.productRatingMain{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.productRatingNumber{
+  font-size:22px;
+  line-height:1;
+  font-weight:800;
+  color:#222;
+}
+.productRatingStar{
+  color:#16803a;
+  font-size:19px;
+  line-height:1;
+}
+.productRatingQuality{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 9px;
+  border-radius:5px;
+  background:#e8f7ef;
+  color:#16803a;
+  font-size:13px;
+  line-height:1;
+  font-weight:700;
+}
+.productRatingSub{
+  margin-top:9px;
+  color:#737373;
+  font-size:13px;
+  line-height:1.4;
+}
+.productRatingVerified{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  color:#707070;
+  font-weight:600;
+}
+.productRatingVerified::before{
+  content:"✓";
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#707070;
+  color:#fff;
+  font-size:9px;
+  line-height:1;
+  font-weight:800;
+}
+.ratingCardMobile{display:none;}
+@media(max-width:900px){
+  .ratingCardDesktop{display:none !important;}
+  .ratingCardMobile{display:block;}
+  .productRatingCard{
+    margin-top:0;
+    padding:18px 0 10px;
+  }
+  .productRatingTitle{
+    font-size:18px;
+    margin-bottom:13px;
+  }
+  .productRatingNumber{font-size:21px;}
+  .productRatingStar{font-size:18px;}
+  .productRatingQuality{
+    font-size:12px;
+    padding:5px 8px;
+  }
+  .productRatingSub{font-size:12px;}
+}
+
 </style>
 </head>
 
@@ -2146,8 +2244,25 @@ class="detailsPanel">
 
 </section>
 
+<!-- ================= MOBILE RATINGS & REVIEWS ================= -->
+<div class="productRatingCard ratingCardMobile">
+
+<h2 class="productRatingTitle">Ratings and reviews</h2>
+
+<div class="productRatingMain">
+<span id="mobileRatingNumber" class="productRatingNumber">4</span>
+<span class="productRatingStar">★</span>
+<span id="mobileRatingQuality" class="productRatingQuality">Good</span>
 </div>
 
+<div class="productRatingSub">
+based on <span id="mobileRatingCount">0</span> ratings by
+<span class="productRatingVerified">Verified Buyers</span>
+</div>
+
+</div>
+
+</div>
 
 
 <!-- ================= PRODUCT INFO ================= -->
@@ -2321,6 +2436,25 @@ Buy at <span id="buyPrice"></span>
 </button>
 
 </div>
+
+<!-- ================= DESKTOP RATINGS & REVIEWS ================= -->
+<div class="productRatingCard ratingCardDesktop">
+
+<h2 class="productRatingTitle">Ratings and reviews</h2>
+
+<div class="productRatingMain">
+<span id="desktopRatingNumber" class="productRatingNumber">4</span>
+<span class="productRatingStar">★</span>
+<span id="desktopRatingQuality" class="productRatingQuality">Good</span>
+</div>
+
+<div class="productRatingSub">
+based on <span id="desktopRatingCount">0</span> ratings by
+<span class="productRatingVerified">Verified Buyers</span>
+</div>
+
+</div>
+
 
 </div>
 
@@ -4162,6 +4296,54 @@ function render(){
     "reviews"
   ).textContent=
     product.reviews+" reviews";
+
+
+  /* ================= RATINGS & REVIEWS CARD ================= */
+  const ratingValue = Number(product.rating) || 0;
+  const ratingCount = Number(product.reviews) || 0;
+
+  let ratingQuality = "Good";
+  if(ratingValue >= 4.5){
+    ratingQuality = "Excellent";
+  }else if(ratingValue >= 4){
+    ratingQuality = "Good";
+  }else if(ratingValue >= 3){
+    ratingQuality = "Average";
+  }else{
+    ratingQuality = "Poor";
+  }
+
+  const desktopRatingNumber = document.getElementById("desktopRatingNumber");
+  const desktopRatingCount = document.getElementById("desktopRatingCount");
+  const desktopRatingQuality = document.getElementById("desktopRatingQuality");
+
+  if(desktopRatingNumber){
+    desktopRatingNumber.textContent = Number.isInteger(ratingValue)
+      ? ratingValue
+      : ratingValue.toFixed(1);
+  }
+  if(desktopRatingCount){
+    desktopRatingCount.textContent = ratingCount;
+  }
+  if(desktopRatingQuality){
+    desktopRatingQuality.textContent = ratingQuality;
+  }
+
+  const mobileRatingNumber = document.getElementById("mobileRatingNumber");
+  const mobileRatingCount = document.getElementById("mobileRatingCount");
+  const mobileRatingQuality = document.getElementById("mobileRatingQuality");
+
+  if(mobileRatingNumber){
+    mobileRatingNumber.textContent = Number.isInteger(ratingValue)
+      ? ratingValue
+      : ratingValue.toFixed(1);
+  }
+  if(mobileRatingCount){
+    mobileRatingCount.textContent = ratingCount;
+  }
+  if(mobileRatingQuality){
+    mobileRatingQuality.textContent = ratingQuality;
+  }
 
 
   document.getElementById(
