@@ -882,7 +882,7 @@ main{
 @media(max-width:700px){
  .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
  .hero-viewport{border-radius:14px}
- .hero-track{gap:0;transition:transform .22s cubic-bezier(.22,.61,.36,1)}
+ .hero-track{gap:0;transition:transform .38s cubic-bezier(.22,.61,.36,1)}
  .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
  .hero-arrow{display:none}
  .hero-dots{margin-top:6px}
@@ -2168,7 +2168,7 @@ function getHeroStepPx(){
 function applyHeroPosition(animate=true){
   const track=document.getElementById("heroTrack");if(!track)return;
   heroIndex=Math.max(0,Math.min(heroIndex,getHeroMaxIndex()));
-  track.style.transition=animate?(window.innerWidth<=700?"transform .22s cubic-bezier(.22,.61,.36,1)":"transform .38s cubic-bezier(.22,.61,.36,1)"):"none";
+  track.style.transition=animate?"transform .38s cubic-bezier(.22,.61,.36,1)":"none":"none";
   track.style.transform=`translate3d(-${heroIndex*getHeroStepPx()}px,0,0)`;
   document.querySelectorAll(".hero-dot").forEach((dot,i)=>dot.classList.toggle("active",i===heroIndex));
   updateHeroArrows();
@@ -2182,7 +2182,7 @@ function updateHeroArrows(){
 function goHeroSlide(index,userAction=false){if(!heroSlides.length)return;heroIndex=Math.max(0,Math.min(index,getHeroMaxIndex()));applyHeroPosition(true);if(userAction)restartHeroAutoSlide();}
 function nextHeroSlide(userAction=false){if(heroSlides.length<2)return;const max=getHeroMaxIndex();heroIndex=heroIndex>=max?0:heroIndex+1;applyHeroPosition(true);if(userAction)restartHeroAutoSlide();}
 function prevHeroSlide(){if(heroSlides.length<2)return;heroIndex=heroIndex<=0?getHeroMaxIndex():heroIndex-1;applyHeroPosition(true);restartHeroAutoSlide();}
-function startHeroAutoSlide(){stopHeroAutoSlide();if(window.innerWidth<=700&&heroSlides.length>1)heroTimer=setInterval(()=>nextHeroSlide(false),3200);}
+function startHeroAutoSlide(){stopHeroAutoSlide();if(heroSlides.length>1)heroTimer=setInterval(()=>nextHeroSlide(false),3200);}
 function stopHeroAutoSlide(){if(heroTimer){clearInterval(heroTimer);heroTimer=null;}}
 function restartHeroAutoSlide(){startHeroAutoSlide();}
 function setupHeroAutoSlide(){startHeroAutoSlide();}
