@@ -2435,25 +2435,49 @@ async function loadAccount(){
 
     if(!user){
 
-      /* NOT LOGGED IN
-         Keep the cached name during auth/session initialization.
-         The cache is cleared only by an explicit logout.
+      /*
+        IMPORTANT:
+        Do NOT clear the cached Index header name here.
+        During a normal page refresh Supabase can briefly return
+        no user while the session is being restored. The Index page
+        already uses the same localStorage key, so Product Page must
+        keep showing that same cached name until a REAL SIGNED_OUT
+        event happens.
       */
 
       const cachedName =
         localStorage.getItem(ACCOUNT_NAME_CACHE_KEY);
 
-      accountName.textContent =
-        (cachedName && cachedName.trim())
-          ? cachedName
-          : "Login";
-      accountName.classList.add("account-ready");
+      if(cachedName && cachedName.trim()){
 
-      loggedOutMenu.style.display =
-        "block";
+        accountName.textContent =
+          cachedName;
 
-      loggedInMenu.style.display =
-        "none";
+        accountName.classList.add("account-ready");
+
+        welcomeName.textContent =
+          "Welcome, " + cachedName + "!";
+
+        loggedOutMenu.style.display =
+          "none";
+
+        loggedInMenu.style.display =
+          "block";
+
+      }else{
+
+        accountName.textContent =
+          "Login";
+
+        accountName.classList.add("account-ready");
+
+        loggedOutMenu.style.display =
+          "block";
+
+        loggedInMenu.style.display =
+          "none";
+
+      }
 
       return;
 
@@ -2563,7 +2587,8 @@ supabaseClient.auth.onAuthStateChange(
   function(event, session){
 
     if(event === "SIGNED_OUT"){
-      /* Do not clear here. Cache is cleared only by logoutUser(). */
+      /* Clear the shared Index/Product header cache ONLY on real logout. */
+      clearCachedAccountName();
     }
 
     setTimeout(
@@ -2628,9 +2653,6 @@ function goCart(){
 }
 
 async function logoutUser(){
-
-  /* Explicit logout = clear cached account name */
-  clearCachedAccountName();
 
   await supabaseClient.auth.signOut();
 
@@ -5317,7 +5339,8 @@ if(window.innerWidth > 900){
 if(typeof supabaseClient !== "undefined"){
   supabaseClient.auth.onAuthStateChange(function(event, session){
     if(event === "SIGNED_OUT"){
-      /* Do not clear here. Cache is cleared only by logoutUser(). */
+      /* Clear the shared Index/Product header cache ONLY on real logout. */
+      clearCachedAccountName();
     }
     setTimeout(function(){
       if(typeof loadAccount === "function") loadAccount();
