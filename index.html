@@ -51,10 +51,17 @@ body{
 }
 
 .logo{
-  font-size:28px;
-  font-weight:900;
-  color:var(--violet);
+  display:flex;
+  align-items:center;
   white-space:nowrap;
+}
+
+.logo img{
+  height:46px;
+  width:auto;
+  max-width:220px;
+  display:block;
+  object-fit:contain;
 }
 
 .search{
@@ -622,7 +629,11 @@ main{
 
   .logo{
     grid-area:logo;
-    font-size:23px;
+  }
+
+  .logo img{
+    height:40px;
+    max-width:190px;
   }
 
   .search{
@@ -979,7 +990,9 @@ main{
 
 <header class="header">
 
-  <div class="logo">MyStore</div>
+  <div class="logo">
+    <img src="https://i.ibb.co/LXrSzbht/image.png">
+  </div>
 
   <div class="search">
     <input
