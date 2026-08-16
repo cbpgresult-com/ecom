@@ -5795,6 +5795,79 @@ document.addEventListener("DOMContentLoaded", function(){
     });
   }
 });
+
+
+/* =========================================================
+   AUTOMATIC PRODUCT VISIT TRACKING — ADDITION ONLY
+   Requirement:
+   - 3 different products visited
+   - one of those products visited a second time
+   - combined time of first + second visit for that same product >= 5s
+   - then Index can show the automatic recommendation banner
+========================================================= */
+const LOOKING_TRACK_KEY = "mystore_still_looking_v1";
+const LOOKING_TRACK_MIN_MS = 5000;
+let lookingVisitStartedAt = Date.now();
+let lookingVisitSaved = false;
+
+function readLookingTrack(){
+  try{
+    const raw=localStorage.getItem(LOOKING_TRACK_KEY);
+    const data=raw?JSON.parse(raw):null;
+    if(!data||typeof data!=="object") return {userId:"",items:[],qualified:false};
+    if(!Array.isArray(data.items)) data.items=[];
+    return data;
+  }catch(e){return {userId:"",items:[],qualified:false};}
+}
+function writeLookingTrack(data){
+  try{localStorage.setItem(LOOKING_TRACK_KEY,JSON.stringify(data));}catch(e){}
+}
+function currentTrackingUserId(){
+  try{
+    const cached=localStorage.getItem("mystore_account_cache_v1");
+    if(cached){const x=JSON.parse(cached);if(x&&x.userId)return String(x.userId);}
+  }catch(e){}
+  return "guest";
+}
+function saveThisProductVisit(){
+  if(lookingVisitSaved || !product || !product.id)return;
+  lookingVisitSaved=true;
+  const elapsed=Math.max(0,Date.now()-lookingVisitStartedAt);
+  const userId=currentTrackingUserId();
+  const data=readLookingTrack();
+  if(data.userId && data.userId!==userId && userId!=="guest"){
+    data.items=[];data.qualified=false;
+  }
+  data.userId=userId;
+  let item=data.items.find(x=>String(x.id)===String(product.id));
+  if(!item){
+    item={id:String(product.id),title:String(product.title||"Product"),image:String(product.image||""),visits:0,totalMs:0,lastVisitedAt:0};
+    data.items.unshift(item);
+  }
+  /* Refresh automatic product information every time it is visited. */
+  item.title=String(product.title||item.title||"Product");
+  item.image=String(product.image||item.image||"");
+  item.visits=Number(item.visits||0)+1;
+  item.totalMs=Number(item.totalMs||0)+elapsed;
+  item.lastVisitedAt=Date.now();
+
+  /* Latest viewed first; maximum 10 automatic recommendation items. */
+  data.items.sort((a,b)=>Number(b.lastVisitedAt||0)-Number(a.lastVisitedAt||0));
+  data.items=data.items.slice(0,10);
+
+  const uniqueCount=data.items.filter(x=>Number(x.visits||0)>0).length;
+  const repeatedQualified=data.items.some(x=>Number(x.visits||0)>=2 && Number(x.totalMs||0)>=LOOKING_TRACK_MIN_MS);
+  if(uniqueCount>=3 && repeatedQualified)data.qualified=true;
+  writeLookingTrack(data);
+}
+
+/* Save even when the user leaves with Back, another product, refresh, or tab close. */
+window.addEventListener("pagehide",saveThisProductVisit,{capture:true});
+window.addEventListener("beforeunload",saveThisProductVisit,{capture:true});
+document.addEventListener("visibilitychange",function(){
+  if(document.visibilityState==="hidden")saveThisProductVisit();
+});
+
 </script>
 
 </body>
