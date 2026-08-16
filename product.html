@@ -1259,22 +1259,6 @@ a{text-decoration:none;color:inherit}
   #desktopIndexHeader{display:none!important}
 }
 
-/* PRODUCT PAGE: keep desktop cart visible exactly like Index. */
-@media(min-width:901px){
-  #desktopIndexHeader .header{
-    display:flex !important;
-    align-items:center !important;
-  }
-  #desktopIndexHeader .cart-btn{
-    display:flex !important;
-    flex:0 0 auto !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    position:relative !important;
-    z-index:1001 !important;
-  }
-}
-
 /* ================= HEADER ================= */
 
 .header{
@@ -1332,43 +1316,6 @@ a{text-decoration:none;color:inherit}
   position:relative;
 }
 
-.account-btn.open .arrow{
-  transform:rotate(180deg);
-}
-
-.account-menu{
-  position:absolute;
-  right:0;
-  top:53px;
-  width:310px;
-  background:#fff;
-  border-radius:14px;
-  box-shadow:0 12px 35px rgba(0,0,0,.20);
-  border:1px solid #ddd;
-  overflow:hidden;
-  display:none;
-  z-index:2000;
-}
-
-.account-menu.show{
-  display:block;
-  animation:menuIn .16s ease;
-}
-
-@keyframes menuIn{
-  from{opacity:0;transform:translateY(-5px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-.account-top{padding:18px 20px 10px}
-.new-customer{display:flex;justify-content:space-between;align-items:center;font-size:15px}
-.signup{color:#2563eb;font-weight:700;cursor:pointer}
-.account-divider{height:1px;background:#eee;margin:8px 0}
-.menu-item{height:47px;display:flex;align-items:center;gap:14px;padding:0 20px;cursor:pointer;font-size:15px}
-.menu-item:hover{background:#f7f7f7;color:var(--violet)}
-.menu-svg{width:20px;height:20px;flex:none}
-.logout{color:#dc2626}
-
 .account-btn{
   border:0;
   background:#fff;
@@ -1410,16 +1357,11 @@ a{text-decoration:none;color:inherit}
   border-radius:12px;
   font-weight:700;
   cursor:pointer;
-  display:flex !important;
+  display:flex;
   align-items:center;
-  justify-content:center;
   gap:8px;
   white-space:nowrap;
   position:relative;
-  flex:0 0 auto;
-  visibility:visible !important;
-  opacity:1 !important;
-  z-index:1001;
 }
 
 .cart-icon{
@@ -1620,10 +1562,11 @@ a{text-decoration:none;color:inherit}
 }
 
 
-
-/* =========================================================
-   DESKTOP PRODUCT PAGE INITIAL LOADER
-   ========================================================= */
+/* Laptop/Desktop: hold
+<div id="desktopProductPageLoader" aria-hidden="false">
+  <div class="desktop-product-spinner" aria-label="Loading"></div>
+</div>
+ the page behind a real loader until product is ready */
 #desktopProductPageLoader{
   position:fixed;
   inset:0;
@@ -1635,8 +1578,7 @@ a{text-decoration:none;color:inherit}
 }
 #desktopProductPageLoader.hide{display:none}
 #desktopProductPageLoader .desktop-product-spinner{
-  width:48px;
-  height:48px;
+  width:48px;height:48px;
   border:4px solid #dbeafe;
   border-top-color:#2874f0;
   border-radius:50%;
@@ -1644,22 +1586,56 @@ a{text-decoration:none;color:inherit}
 }
 @keyframes desktopProductSpin{to{transform:rotate(360deg)}}
 @media(max-width:900px){#desktopProductPageLoader{display:none!important}}
+
+:root{
+  --violet:#6d28d9;
+  --violet2:#7c3aed;
+  --light-violet:#f3e8ff;
+  --green:#dcfce7;
+  --green-dark:#15803d;
+  --white:#fff;
+  --text:#171717;
+  --muted:#737373;
+  --border:#e5e7eb;
+  --bg:#f7f7fb;
+}
+
+/* Exact Index header: cart must remain visible on laptop/desktop */
+@media(min-width:901px){
+  #desktopIndexHeader .header{
+    display:flex !important;
+    align-items:center !important;
+  }
+
+  #desktopIndexHeader .cart-btn{
+    display:flex !important;
+    flex:0 0 auto !important;
+    visibility:visible !important;
+    opacity:1 !important;
+  }
+
+  #desktopIndexHeader .logo{
+    color:var(--violet) !important;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  /* Cached account name is rendered immediately; no hidden/blank flash. */
+  #desktopIndexHeader #accountName{
+    visibility:visible;
+  }
+}
 </style>
 </head>
 
 <body>
-<div id="desktopProductPageLoader" aria-hidden="false">
-  <div class="desktop-product-spinner" aria-label="Loading"></div>
-</div>
-
 
 <!-- ================= HEADER ================= -->
 
-<!-- ================= REAL INDEX DESKTOP HEADER ================= -->
 <div id="desktopIndexHeader">
 <header class="header">
 
-  <div class="logo">MyStore</div>
+  <div class="logo" id="desktopStoreLogo" role="button" tabindex="0" aria-label="Home" onclick="goHome()">MyStore</div>
 
   <div class="search">
     <input
@@ -1695,23 +1671,16 @@ a{text-decoration:none;color:inherit}
 
       <span id="accountName">Login</span>
 
-      <!-- Paint cached account name immediately so refresh never shows Login -> name flash. -->
       <script>
+      /* Paint the cached account name immediately, before the browser can
+         show a Login -> name transition. localStorage survives normal
+         reloads and is only absent on a first/cleared browser state. */
       (function(){
         try{
-          var cachedName = localStorage.getItem("mystore_account_cache_v1");
-          var firstName = "";
-          if(cachedName){
-            try{
-              var parsed = JSON.parse(cachedName);
-              firstName = parsed && parsed.firstName ? String(parsed.firstName).trim() : "";
-            }catch(e){}
+          var cachedName = localStorage.getItem("mystore_cached_account_name");
+          if(cachedName && cachedName.trim()){
+            document.getElementById("accountName").textContent = cachedName;
           }
-          if(!firstName){
-            var legacy = localStorage.getItem("mystore_cached_account_name");
-            if(legacy && legacy.trim()) firstName = legacy.trim();
-          }
-          if(firstName) document.getElementById("accountName").textContent = firstName;
         }catch(e){}
       })();
       </script>
@@ -2130,7 +2099,6 @@ class="detailsPanel">
 
 <div class="info">
 
-<span id="tag" class="tag">BESTSELLER</span>
 
 <h1 id="title" class="title"></h1>
 
@@ -2334,207 +2302,330 @@ SUPABASE_KEY
 
 
 /* =========================================================
-   REAL INDEX DESKTOP HEADER BEHAVIOR
-   ========================================================= */
-
-const productHeaderAccountBtn=document.getElementById("accountBtn");
-const productHeaderAccountMenu=document.getElementById("accountMenu");
-const productHeaderAccountName=document.getElementById("accountName");
-const productHeaderLoggedOutMenu=document.getElementById("loggedOutMenu");
-const productHeaderLoggedInMenu=document.getElementById("loggedInMenu");
-const productHeaderWelcomeName=document.getElementById("welcomeName");
-
-if(productHeaderAccountBtn && productHeaderAccountMenu){
-  productHeaderAccountBtn.addEventListener("click",function(e){
-    e.stopPropagation();
-    productHeaderAccountMenu.classList.toggle("show");
-    productHeaderAccountBtn.classList.toggle(
-      "open",
-      productHeaderAccountMenu.classList.contains("show")
-    );
-  });
-
-  document.addEventListener("click",function(e){
-    const area=document.getElementById("accountArea");
-    if(area && !area.contains(e.target)){
-      productHeaderAccountMenu.classList.remove("show");
-      productHeaderAccountBtn.classList.remove("open");
+   DESKTOP LOGO -> HOME
+========================================================= */
+const desktopStoreLogo = document.getElementById("desktopStoreLogo");
+if(desktopStoreLogo){
+  desktopStoreLogo.addEventListener("keydown", function(e){
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      goHome();
     }
   });
 }
 
-function productHeaderFirstName(name){
-  if(!name) return "User";
-  return String(name).trim().split(/\s+/)[0];
-}
 
 /* =========================================================
-   PRODUCT PAGE ACCOUNT NAME CACHE
-   Refresh par cached naam turant dikhega.
-   Cache sirf explicit logout par remove hoga.
+   ACCOUNT
 ========================================================= */
-const PRODUCT_ACCOUNT_CACHE_KEY="mystore_account_cache_v1";
-const PRODUCT_ACCOUNT_LEGACY_CACHE_KEY="mystore_cached_account_name";
 
-function readProductAccountCache(){
+const accountBtn =
+  document.getElementById("accountBtn");
+
+const accountMenu =
+  document.getElementById("accountMenu");
+
+const accountName =
+  document.getElementById("accountName");
+
+const loggedOutMenu =
+  document.getElementById("loggedOutMenu");
+
+const loggedInMenu =
+  document.getElementById("loggedInMenu");
+
+const welcomeName =
+  document.getElementById("welcomeName");
+
+
+if(accountBtn && accountMenu){
+
+  accountBtn.addEventListener("click", function(e){
+
+    e.stopPropagation();
+
+    accountMenu.classList.toggle("show");
+
+    accountBtn.classList.toggle(
+      "open",
+      accountMenu.classList.contains("show")
+    );
+
+  });
+
+}
+
+
+document.addEventListener("click",function(e){
+
+  if(!document.getElementById("accountArea").contains(e.target)){
+
+    accountMenu.classList.remove("show");
+
+    accountBtn.classList.remove("open");
+
+  }
+
+});
+
+
+/* =========================================================
+   GET FIRST NAME
+========================================================= */
+
+function getFirstName(fullName){
+
+  if(!fullName) return "User";
+
+  fullName =
+    String(fullName).trim();
+
+  return fullName
+    .split(/\s+/)[0];
+
+}
+
+
+/* =========================================================
+   CACHED ACCOUNT NAME
+========================================================= */
+
+const ACCOUNT_NAME_CACHE_KEY =
+  "mystore_cached_account_name";
+
+function saveCachedAccountName(name){
+
   try{
-    const raw=localStorage.getItem(PRODUCT_ACCOUNT_CACHE_KEY);
-    if(raw){
-      try{
-        const parsed=JSON.parse(raw);
-        if(parsed && parsed.firstName) return {
-          userId:parsed.userId||"",
-          firstName:String(parsed.firstName).trim()
-        };
-      }catch(e){}
+    if(name && String(name).trim()){
+      localStorage.setItem(
+        ACCOUNT_NAME_CACHE_KEY,
+        String(name).trim()
+      );
     }
-
-    const legacy=localStorage.getItem(PRODUCT_ACCOUNT_LEGACY_CACHE_KEY);
-    if(legacy && legacy.trim()) return {
-      userId:"",
-      firstName:legacy.trim()
-    };
   }catch(e){}
-  return null;
+
 }
 
-function writeProductAccountCache(userId,firstName){
-  try{
-    const name=String(firstName||"User").trim()||"User";
-    localStorage.setItem(PRODUCT_ACCOUNT_CACHE_KEY,JSON.stringify({
-      userId:userId||"",
-      firstName:name
-    }));
-    /* Keep the same simple cache key used by the index page too. */
-    localStorage.setItem(PRODUCT_ACCOUNT_LEGACY_CACHE_KEY,name);
-  }catch(e){}
-}
-
-function clearProductAccountCache(){
-  try{
-    localStorage.removeItem(PRODUCT_ACCOUNT_CACHE_KEY);
-    localStorage.removeItem(PRODUCT_ACCOUNT_LEGACY_CACHE_KEY);
-  }catch(e){}
-}
-
-function showCachedProductAccount(){
-  const cached=readProductAccountCache();
-  if(!cached || !cached.firstName) return false;
-
-  if(productHeaderAccountName)
-    productHeaderAccountName.textContent=cached.firstName;
-
-  if(productHeaderWelcomeName)
-    productHeaderWelcomeName.textContent="Welcome, "+cached.firstName+"!";
-
-  if(productHeaderLoggedOutMenu)
-    productHeaderLoggedOutMenu.style.display="none";
-
-  if(productHeaderLoggedInMenu)
-    productHeaderLoggedInMenu.style.display="block";
-
-  return true;
-}
-
-/* FIRST paint: cached name is shown before Supabase responds. */
-showCachedProductAccount();
-
-async function loadProductHeaderAccount(){
-  if(!productHeaderAccountName) return;
+function clearCachedAccountName(){
 
   try{
-    const {data:{user}}=await supabaseClient.auth.getUser();
+    localStorage.removeItem(
+      ACCOUNT_NAME_CACHE_KEY
+    );
+  }catch(e){}
+
+}
+
+
+/* =========================================================
+   LOAD LOGIN STATE
+========================================================= */
+
+async function loadAccount(){
+
+  try{
+
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
+
 
     if(!user){
-      /* Do not erase cache here. It is intentionally cleared only by explicit logout. */
-      if(!showCachedProductAccount()){
-        productHeaderAccountName.textContent="Login";
-        if(productHeaderLoggedOutMenu) productHeaderLoggedOutMenu.style.display="block";
-        if(productHeaderLoggedInMenu) productHeaderLoggedInMenu.style.display="none";
-      }
+
+      /* NOT LOGGED IN */
+
+      clearCachedAccountName();
+      accountName.textContent =
+        "Login";
+      accountName.classList.add("account-ready");
+
+      loggedOutMenu.style.display =
+        "block";
+
+      loggedInMenu.style.display =
+        "none";
+
       return;
+
     }
 
-    let firstName="";
 
-    const {data:account}=await supabaseClient
+    /* LOGGED IN */
+
+    let firstName = "";
+
+
+    /*
+      accounts table:
+      id
+      email
+      full_name
+      mobile
+    */
+
+    const {
+      data:account
+    } =
+    await supabaseClient
       .from("accounts")
       .select("full_name")
       .eq("id",user.id)
       .maybeSingle();
 
-    if(account && account.full_name)
-      firstName=productHeaderFirstName(account.full_name);
 
-    if(!firstName && user.user_metadata)
-      firstName=productHeaderFirstName(
-        user.user_metadata.full_name ||
-        user.user_metadata.name ||
-        user.email
-      );
+    if(account && account.full_name){
 
-    if(!firstName) firstName="User";
+      firstName =
+        getFirstName(account.full_name);
 
-    productHeaderAccountName.textContent=firstName;
-    if(productHeaderWelcomeName)
-      productHeaderWelcomeName.textContent="Welcome, "+firstName+"!";
-
-    if(productHeaderLoggedOutMenu) productHeaderLoggedOutMenu.style.display="none";
-    if(productHeaderLoggedInMenu) productHeaderLoggedInMenu.style.display="block";
-
-    /* Save the verified name so refresh can paint it immediately. */
-    writeProductAccountCache(user.id,firstName);
-
-  }catch(error){
-    /* Network/profile request fail ho to cached naam ko rehne do. */
-    if(!showCachedProductAccount()){
-      productHeaderAccountName.textContent="Login";
-      if(productHeaderLoggedOutMenu) productHeaderLoggedOutMenu.style.display="block";
-      if(productHeaderLoggedInMenu) productHeaderLoggedInMenu.style.display="none";
     }
-    console.error("Product header account error:",error);
+
+
+    /* fallback */
+
+    if(!firstName && user.user_metadata){
+
+      firstName =
+        getFirstName(
+          user.user_metadata.full_name ||
+          user.user_metadata.name ||
+          user.email
+        );
+
+    }
+
+
+    if(!firstName){
+
+      firstName = "User";
+
+    }
+
+
+    saveCachedAccountName(firstName);
+
+    accountName.textContent =
+      firstName;
+    accountName.classList.add("account-ready");
+
+    welcomeName.textContent =
+      "Welcome, " + firstName + "!";
+
+
+    loggedOutMenu.style.display =
+      "none";
+
+    loggedInMenu.style.display =
+      "block";
+
   }
+
+  catch(error){
+
+    console.error(
+      "Account error:",
+      error
+    );
+
+    try{
+      const cachedName =
+        localStorage.getItem(ACCOUNT_NAME_CACHE_KEY);
+
+      if(!cachedName){
+        accountName.textContent = "Login";
+      }
+    }catch(e){
+      accountName.textContent = "Login";
+    }
+
+    accountName.classList.add("account-ready");
+
+  }
+
 }
 
-function goLogin(){window.location.href="login.html";}
-function goSignup(){window.location.href="signup.html";}
-function goProfile(){window.location.href="profile.html";}
-function goAddresses(){window.location.href="saved-addresses.html";}
-function goOrders(){window.location.href="orders.html";}
-function goCart(){window.location.href="cart.html";}
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  function(event, session){
+
+    if(event === "SIGNED_OUT" || !session){
+      clearCachedAccountName();
+    }
+
+    setTimeout(
+      loadAccount,
+      100
+    );
+
+  }
+);
+
+
+
+/* =========================================================
+   EXACT INDEX HEADER NAVIGATION
+========================================================= */
+
+function goHome(){
+  window.location.href = "index.html";
+}
+
+
+function goLogin(){
+
+  window.location.href =
+    "login.html";
+
+}
+
+function goSignup(){
+
+  window.location.href =
+    "register.html";
+
+}
+
+function goProfile(){
+
+  window.location.href =
+    "account.html";
+
+}
+
+function goOrders(){
+
+  window.location.href =
+    "my-orders.html";
+
+}
+
+function goAddresses(){
+
+  window.location.href =
+    "saved-addresses.html";
+
+}
+
+function goCart(){
+
+  window.location.href =
+    "cart.html";
+
+}
 
 async function logoutUser(){
-  /* Explicit logout = remove cached name. */
-  clearProductAccountCache();
+
   await supabaseClient.auth.signOut();
+
   window.location.reload();
-}
 
-function setupProductHeaderSearch(){
-  const input=document.getElementById("searchInput");
-  if(!input || input.dataset.productSearchReady==="1") return;
-
-  input.dataset.productSearchReady="1";
-
-  const runSearch=()=>{
-    const value=input.value.trim();
-    if(value){
-      window.location.href="index.html?search="+encodeURIComponent(value);
-    }
-  };
-
-  input.addEventListener("keydown",function(e){
-    if(e.key==="Enter"){
-      e.preventDefault();
-      runSearch();
-    }
-  });
-
-  const icon=input.parentElement?.querySelector(".search-icon");
-  if(icon){
-    icon.style.cursor="pointer";
-    icon.addEventListener("click",runSearch);
-  }
 }
 
 /* =========================================================
@@ -3985,10 +4076,6 @@ function render(){
   ).textContent=
     product.reviews+" reviews";
 
-  document.getElementById(
-    "tag"
-  ).textContent=
-    product.badge;
 
   document.getElementById(
     "badge"
@@ -4265,13 +4352,11 @@ function render(){
   updateCart();
 
   if(window.innerWidth > 900){
-    const desktopLoader=document.getElementById("desktopProductPageLoader");
-    if(desktopLoader){
-      desktopLoader.classList.add("hide");
-      desktopLoader.setAttribute("aria-hidden","true");
+    const loader = document.getElementById("desktopProductPageLoader");
+    if(loader){
+      loader.classList.add("hide");
+      loader.setAttribute("aria-hidden","true");
     }
-    loadProductHeaderAccount();
-    setupProductHeaderSearch();
   }
 
   showMobileProductLoadedHeader();
@@ -4537,100 +4622,70 @@ async function addToCart(){
   }
 
   updateCart();
+  loadCartCount();
 
   toast("✓ Added to Cart");
 }
 
 
 /* =========================================================
-   CART BADGE — PRODUCT COUNT ONLY
-   Qty ka koi effect nahi. 1 product row = badge 1.
-   Cached + realtime, so refresh par flash nahi aur cart change
-   hote hi badge instantly update hota hai.
+   CART BADGE
 ========================================================= */
-const PRODUCT_CART_COUNT_CACHE_KEY="mystore_product_cart_count_v1";
-
-function readProductCartCountCache(userId){
-  try{
-    const raw=localStorage.getItem(
-      PRODUCT_CART_COUNT_CACHE_KEY+"_"+String(userId||"guest")
-    );
-    if(raw==null) return null;
-    const n=Number(raw);
-    return Number.isFinite(n)&&n>=0 ? Math.floor(n) : null;
-  }catch(e){
-    return null;
-  }
-}
-
-function cacheProductCartCount(userId,count){
-  try{
-    localStorage.setItem(
-      PRODUCT_CART_COUNT_CACHE_KEY+"_"+String(userId||"guest"),
-      String(Math.max(0,Math.floor(Number(count)||0)))
-    );
-  }catch(e){}
-}
-
-function paintProductCartCount(count){
-  const total=Math.max(0,Math.floor(Number(count)||0));
-  const desktopBadge=document.getElementById("cartCount");
-
-  if(desktopBadge){
-    if(total>0){
-      desktopBadge.textContent=total>99?"99+":String(total);
-      desktopBadge.classList.add("show");
-    }else{
-      desktopBadge.textContent="";
-      desktopBadge.classList.remove("show");
-    }
-  }
-
-  setMobileProductCartBadge(total);
-}
 
 async function updateCart(){
 
-  const user=await getUser();
+  const user=
+    await getUser();
 
   if(!user){
-    paintProductCartCount(0);
+
+    const cartBadge=
+      document.getElementById(
+        "cartCount"
+      );
+
+    if(cartBadge)
+      cartBadge.textContent="0";
+
+    setMobileProductCartBadge("");
+
     return;
   }
 
-  /* FIRST PAINT: show cached product count immediately. */
-  const cached=readProductCartCountCache(user.id);
-  if(cached!==null) paintProductCartCount(cached);
-
-  /* Count rows, NOT qty. Every different cart product = 1 badge. */
-  const {count,error}=
+  const {
+    data,
+    error
+  }=
     await supabaseClient
       .from("cart_items")
-      .select("id",{count:"exact",head:true})
+      .select("id, quantity")
       .eq("user_id",user.id);
 
   if(error){
-    console.error("Product cart count:",error);
+
+    console.error(error);
+
     return;
   }
 
-  const total=Number(count||0);
-  cacheProductCartCount(user.id,total);
-  paintProductCartCount(total);
-}
+  const cartBadge=
+    document.getElementById(
+      "cartCount"
+    );
 
-/* REALTIME: add/remove/update cart => badge updates instantly.
-   Qty changes still keep the badge at the same product count. */
-if(!window.productCartRealtimeStarted){
-  window.productCartRealtimeStarted=true;
-  supabaseClient
-    .channel("product-cart-count-live")
-    .on(
-      "postgres_changes",
-      {event:"*",schema:"public",table:"cart_items"},
-      function(){updateCart();}
-    )
-    .subscribe();
+  if(cartBadge){
+
+    const total=(data||[])
+      .reduce(
+        (s,x)=>
+          s+
+          (Number(x.qty)||0),
+        0
+      );
+
+    cartBadge.textContent=total;
+    setMobileProductCartBadge(total);
+  }
 }
 
 
@@ -5074,13 +5129,206 @@ window.addEventListener(
 
 if(window.innerWidth<=900){document.body.style.overflow="hidden";}
 
-if(window.innerWidth > 900){
-  loadProductHeaderAccount();
-  setupProductHeaderSearch();
-}
-
 load();
 
+
+
+/* =========================================================
+   INDEX-STYLE CART COUNT — PRODUCT PAGE
+========================================================= */
+
+async function loadCartCount(){
+
+  const badge =
+    document.getElementById("cartCount");
+
+  if(!badge) return;
+
+  try{
+
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
+
+    if(!user){
+
+      badge.textContent = "";
+      badge.classList.remove("show");
+      return;
+
+    }
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
+      .from("cart_items")
+      .select("qty")
+      .eq("user_id",user.id);
+
+    if(error){
+
+      console.error("Cart count:",error);
+
+      badge.textContent = "";
+      badge.classList.remove("show");
+      return;
+
+    }
+
+    let total = 0;
+
+    (data || []).forEach(item => {
+      total += Number(item.qty || 0);
+    });
+
+    if(total > 0){
+
+      badge.textContent =
+        total > 99 ? "99+" : String(total);
+
+      badge.classList.add("show");
+
+    }else{
+
+      badge.textContent = "";
+      badge.classList.remove("show");
+
+    }
+
+  }catch(error){
+
+    console.error("Cart count:",error);
+
+    badge.textContent = "";
+    badge.classList.remove("show");
+
+  }
+
+}
+
+supabaseClient.auth.onAuthStateChange(
+  function(){
+
+    setTimeout(
+      loadCartCount,
+      100
+    );
+
+  }
+);
+
+
+/* =========================================================
+   INDEX-STYLE DESKTOP HEADER SEARCH
+========================================================= */
+(function(){
+
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
+  if(
+    !input ||
+    input.dataset.realIndexSearch === "1"
+  ){
+    return;
+  }
+
+  input.dataset.realIndexSearch =
+    "1";
+
+  function openSearch(){
+
+    const value =
+      input.value.trim();
+
+    if(!value) return;
+
+    window.location.href =
+      "index.html?search=" +
+      encodeURIComponent(value);
+
+  }
+
+  input.addEventListener(
+    "keydown",
+    function(e){
+
+      if(e.key === "Enter"){
+
+        e.preventDefault();
+        openSearch();
+
+      }
+
+    }
+  );
+
+  const icon =
+    document.querySelector(
+      "#desktopIndexHeader .search-icon"
+    );
+
+  if(icon){
+
+    icon.style.cursor =
+      "pointer";
+
+    icon.addEventListener(
+      "click",
+      openSearch
+    );
+
+  }
+
+})();
+
+
+/* =========================================================
+   REAL INDEX HEADER INITIALIZATION ON PRODUCT PAGE
+   ========================================================= */
+if(window.innerWidth > 900){
+
+  loadAccount();
+  loadCartCount();
+
+}
+
+
+/* =========================================================
+   PRODUCT HEADER AUTH REFRESH — SAME AS INDEX
+========================================================= */
+if(typeof supabaseClient !== "undefined"){
+  supabaseClient.auth.onAuthStateChange(function(event, session){
+    if(event === "SIGNED_OUT" || !session){
+      clearCachedAccountName();
+    }
+    setTimeout(function(){
+      if(typeof loadAccount === "function") loadAccount();
+      if(typeof loadCartCount === "function") loadCartCount();
+    }, 50);
+  });
+}
+
+
+/* =========================================================
+   PRODUCT HEADER CART CLICK
+========================================================= */
+document.addEventListener("DOMContentLoaded", function(){
+  const cartButton = document.querySelector("#desktopIndexHeader .cart-btn");
+  if(cartButton && !cartButton.dataset.productCartBound){
+    cartButton.dataset.productCartBound = "1";
+    cartButton.addEventListener("click", function(){
+      window.location.href = "cart.html";
+    });
+  }
+});
 </script>
 
 </body>
