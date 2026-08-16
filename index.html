@@ -866,6 +866,13 @@ main{
 /* ================= HERO SLIDER ================= */
 .hero-slider{width:90%;max-width:1250px;margin:14px auto 0;overflow:visible;display:none}
 .hero-slider.show{display:block}
+.hero-slider.loading{display:block}
+.hero-loading{width:100%;aspect-ratio:2.05/1;border-radius:15px;overflow:hidden;background:#e9edf2;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.hero-loading::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:skeletonShimmer 1.15s infinite}
+.hero-loading-dots{height:13px;display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px}
+.hero-loading-dots span{width:18px;height:4px;border-radius:99px;background:#e0e3e8;position:relative;overflow:hidden}
+.hero-loading-dots span::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:rgba(255,255,255,.75);animation:skeletonShimmer 1.15s infinite}
+
 .hero-viewport{width:100%;overflow:hidden;border-radius:15px;position:relative;touch-action:pan-y}
 .hero-track{display:flex;gap:14px;transform:translate3d(0,0,0);transition:transform .38s cubic-bezier(.22,.61,.36,1);will-change:transform}
 .hero-slide{flex:0 0 calc((100% - 28px)/3);aspect-ratio:2.05/1;border-radius:15px;overflow:hidden;background:#eee;display:block;border:0;padding:0}
@@ -881,6 +888,7 @@ main{
 .hero-empty{display:none}
 @media(max-width:700px){
  .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
+ .hero-loading{border-radius:14px}
  .hero-viewport{border-radius:14px}
  .hero-track{gap:0;transition:transform .38s cubic-bezier(.22,.61,.36,1)}
  .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
@@ -1227,7 +1235,11 @@ main{
 
 
 <!-- ================= HERO SLIDER ================= -->
-<section id="heroSlider" class="hero-slider" aria-label="Hero Slider">
+<section id="heroSlider" class="hero-slider loading" aria-label="Hero Slider">
+  <div id="heroLoading" class="hero-loading-wrap" aria-label="Loading hero slider">
+    <div class="hero-loading"></div>
+    <div class="hero-loading-dots"><span></span><span></span><span></span></div>
+  </div>
   <div class="hero-viewport" id="heroViewport">
     <button type="button" class="hero-arrow prev" id="heroPrev" aria-label="Previous banner" onclick="prevHeroSlide()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
@@ -2148,8 +2160,11 @@ let heroTouchMoved=false;
 function heroEscape(value){return String(value||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 
 async function loadHeroSliders(){
-  const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots");
+  const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots"),loader=document.getElementById("heroLoading");
   if(!box||!track||!dots)return;
+  box.classList.add("loading");
+  box.classList.remove("show");
+  if(loader) loader.style.display="block";
   let data = null;
   let error = null;
   try {
@@ -2166,10 +2181,12 @@ async function loadHeroSliders(){
     error = err;
     console.error("Hero slider request error:", err);
   }
-  if(error){console.error("Hero slider error:",error);box.classList.remove("show");stopHeroAutoSlide();return;}
+  if(error){console.error("Hero slider error:",error);box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();return;}
   heroSlides=(data||[]).filter(x=>x.image_url);
   heroIndex=Math.max(0,Math.min(heroIndex,Math.max(heroSlides.length-1,0)));
-  if(!heroSlides.length){box.classList.remove("show");stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
+  if(!heroSlides.length){box.classList.remove("show");box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
+  if(loader) loader.style.display="none";
+  box.classList.remove("loading");
   box.classList.add("show");
   track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="${i===0?'eager':'lazy'}" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
   dots.innerHTML=heroSlides.map((_,i)=>`<button type="button" class="hero-dot ${i===heroIndex?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i},true)"></button>`).join("");
