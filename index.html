@@ -1001,7 +1001,7 @@ main{
   <!-- DESKTOP ACCOUNT -->
   <div class="header-account" id="accountArea">
 
-    <button class="account-btn" id="accountBtn">
+    <button class="account-btn auth-loading" id="accountBtn">
 
       <svg class="account-icon"
         viewBox="0 0 24 24"
@@ -1573,6 +1573,7 @@ function showCachedAccount(){
   welcomeName.textContent = "Welcome, " + cached.firstName + "!";
   loggedOutMenu.style.display = "none";
   loggedInMenu.style.display = "block";
+  accountBtn.classList.remove("auth-loading");
   return true;
 }
 
@@ -1598,6 +1599,7 @@ async function loadAccount(){
       accountName.textContent = "Login";
       loggedOutMenu.style.display = "block";
       loggedInMenu.style.display = "none";
+      accountBtn.classList.remove("auth-loading");
       return;
 
     }
@@ -1660,6 +1662,7 @@ async function loadAccount(){
 
     loggedOutMenu.style.display = "none";
     loggedInMenu.style.display = "block";
+    accountBtn.classList.remove("auth-loading");
 
     /* Naam ko browser me cache karo. */
     writeAccountCache(user.id, firstName);
@@ -1668,7 +1671,12 @@ async function loadAccount(){
 
   catch(error){
     /* Network/profile request fail ho to cached naam ko rehne do. */
-    showCachedAccount();
+    if(!showCachedAccount()){
+      accountName.textContent = "Login";
+      loggedOutMenu.style.display = "block";
+      loggedInMenu.style.display = "none";
+      accountBtn.classList.remove("auth-loading");
+    }
     console.error("Account error:", error);
 
   }
