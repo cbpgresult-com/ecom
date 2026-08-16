@@ -414,6 +414,102 @@ main{
   box-shadow:0 8px 25px rgba(0,0,0,.09);
 }
 
+/* ================= INLINE PRODUCT BANNERS ================= */
+.inline-product-banner{
+  grid-column:1 / -1;
+  width:100%;
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+  padding:14px;
+  box-shadow:0 4px 18px rgba(0,0,0,.06);
+  border:1px solid rgba(255,255,255,.75);
+}
+
+.inline-product-banner.green{
+  background:linear-gradient(135deg,#43e95b 0%,#b9ffb1 48%,#e7ffe1 100%);
+}
+
+.inline-product-banner.orange{
+  background:linear-gradient(135deg,#ff8a1f 0%,#ffb15d 45%,#ffe0bf 100%);
+}
+
+.inline-banner-title{
+  font-size:22px;
+  font-weight:800;
+  color:#171717;
+  line-height:1.2;
+  margin:0 2px 12px;
+}
+
+.inline-banner-scroll{
+  display:flex;
+  justify-content:center;
+  width:100%;
+}
+
+.inline-banner-card{
+  width:100%;
+  max-width:100%;
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.inline-banner-image{
+  width:100%;
+  height:auto;
+  max-height:360px;
+  display:block;
+  object-fit:cover;
+  background:#f5f5f5;
+}
+
+.inline-banner-card-title{
+  min-height:42px;
+  padding:9px 10px 11px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:15px;
+  line-height:1.25;
+  font-weight:700;
+  color:#222;
+}
+
+.inline-banner-mobile{display:none;}
+.inline-banner-desktop{display:block;}
+
+@media(max-width:1100px) and (min-width:701px){
+  .inline-banner-title{font-size:20px;}
+}
+
+@media(max-width:700px){
+  .inline-banner-desktop{display:none;}
+  .inline-banner-mobile{display:block;}
+  .inline-product-banner{
+    padding:10px;
+    border-radius:15px;
+  }
+  .inline-banner-title{
+    font-size:18px;
+    margin:0 2px 9px;
+  }
+  .inline-banner-card{
+    border-radius:10px;
+  }
+  .inline-banner-image{
+    max-height:240px;
+  }
+  .inline-banner-card-title{
+    min-height:34px;
+    padding:7px 6px 8px;
+    font-size:12px;
+  }
+}
+
 .product-image-box{
   height:250px;
   background:#fafafa;
@@ -1849,6 +1945,93 @@ async function waitForContainerImages(container){
 }
 
 /* =========================================================
+   INLINE PRODUCT BANNERS
+   Slider 1 / Slider 2 are managed separately from hero_sliders.
+========================================================= */
+let productBanners = [];
+let allProductsData = [];
+
+function getBannerPosition(row, desktop){
+  const value = desktop ? row.desktop_after : row.mobile_after;
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+}
+
+function createInlineBanner(row, mobile=false){
+  const tone = String(row.slot || '').toLowerCase() === 'slider2' ? 'orange' : 'green';
+  const title = row.title || (tone === 'orange' ? 'Special Offers' : 'Trending Picks');
+  const image = row.image_url || '';
+  const wrapper = document.createElement('section');
+  wrapper.className = `inline-product-banner ${tone} ${mobile ? 'inline-banner-mobile' : 'inline-banner-desktop'}`;
+  wrapper.setAttribute('aria-label', title);
+  wrapper.innerHTML = `
+    <h2 class="inline-banner-title">${escapeHtml(title)}</h2>
+    <div class="inline-banner-card">
+      <img class="inline-banner-image" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async" onerror="this.style.display='none';">
+      <div class="inline-banner-card-title">${escapeHtml(title)}</div>
+    </div>
+  `;
+  return wrapper;
+}
+
+function renderProductBanners(){
+  const grid = document.getElementById('productGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+
+  const active = (productBanners || []).filter(row => row && row.is_active !== false && row.image_url);
+  const desktop = active.filter(row => getBannerPosition(row,true) > 0);
+  const mobile = active.filter(row => getBannerPosition(row,false) > 0);
+
+  allProductsData.forEach((product, index) => {
+    grid.appendChild(createProductCard(product));
+    const count = index + 1;
+
+    desktop
+      .filter(row => getBannerPosition(row,true) === count)
+      .forEach(row => grid.appendChild(createInlineBanner(row,false)));
+
+    mobile
+      .filter(row => getBannerPosition(row,false) === count)
+      .forEach(row => grid.appendChild(createInlineBanner(row,true)));
+  });
+
+  /* If admin intentionally chooses a position beyond the current product count,
+     put the banner at the end instead of silently losing it. */
+  desktop
+    .filter(row => getBannerPosition(row,true) > allProductsData.length)
+    .forEach(row => grid.appendChild(createInlineBanner(row,false)));
+
+  mobile
+    .filter(row => getBannerPosition(row,false) > allProductsData.length)
+    .forEach(row => grid.appendChild(createInlineBanner(row,true)));
+}
+
+async function loadProductBanners(){
+  try{
+    const {data,error} = await supabaseClient
+      .from('product_banners')
+      .select('id,slot,image_url,title,desktop_after,mobile_after,is_active,created_at,updated_at')
+      .eq('is_active',true)
+      .order('slot',{ascending:true});
+
+    if(error){
+      console.error('Product banner error:',error);
+      productBanners = [];
+      renderProductBanners();
+      return;
+    }
+
+    productBanners = data || [];
+    renderProductBanners();
+  }catch(error){
+    console.error('Product banner request error:',error);
+    productBanners = [];
+    renderProductBanners();
+  }
+}
+
+/* =========================================================
    PRODUCTS
 ========================================================= */
 
@@ -1937,15 +2120,10 @@ try {
   }
 
 
-  data.forEach(
-    product => {
+  allProductsData = data || [];
 
-      grid.appendChild(
-        createProductCard(product)
-      );
-
-    }
-  );
+  /* Render products + admin-controlled inline banners together. */
+  await loadProductBanners();
 
   /* Keep the real product skeleton visible until the actual images
      have loaded and decoded. */
@@ -2562,6 +2740,14 @@ supabaseClient
   })
   .subscribe();
 
+
+/* PRODUCT BANNERS REALTIME */
+supabaseClient
+  .channel('product-banners-live')
+  .on('postgres_changes',{event:'*',schema:'public',table:'product_banners'},function(){
+    loadProductBanners();
+  })
+  .subscribe();
 
 /* =========================================================
    START
