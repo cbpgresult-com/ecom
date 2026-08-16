@@ -1254,6 +1254,43 @@ main{
 }
 .looking-banner-nav.prev{left:8px}.looking-banner-nav.next{right:8px}
 .looking-banner-nav[disabled]{opacity:.35;cursor:default;pointer-events:none}
+@media(min-width:701px){
+  #productGrid > #lookingForBannerRoot.looking-desktop-root{
+    grid-column:1 / -1;
+    width:100%;
+    margin:0;
+    padding:0;
+  }
+  #productGrid > #lookingForBannerRoot.looking-desktop-root .looking-banner{
+    margin:0 0 18px;
+  }
+  #productGrid > #lookingForBannerRoot.looking-desktop-root .looking-banner-track{
+    width:100%;
+    min-width:0;
+    justify-content:flex-start;
+    transform:translate3d(0,0,0) !important;
+  }
+  #productGrid > #lookingForBannerRoot.looking-desktop-root .looking-banner-card{
+    flex:0 0 220px;
+    width:220px;
+    max-width:220px;
+    min-width:220px;
+  }
+  #productGrid > #lookingForBannerRoot.looking-desktop-root .looking-banner-image-wrap{
+    height:220px;
+    aspect-ratio:auto;
+  }
+  #productGrid > #lookingForBannerRoot.looking-desktop-root .looking-banner-image{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    padding:0;
+  }
+  #productGrid > #lookingForBannerRoot.looking-desktop-root .looking-banner-nav{
+    display:none !important;
+  }
+}
 @media(max-width:700px){
   .looking-banner{margin:0 0 14px;padding:11px 8px 9px;border-radius:15px;}
   .looking-banner-title{font-size:18px;margin:0 0 9px 3px;}
@@ -3245,39 +3282,154 @@ function getLookingUserId(){
     return data.userId||"guest";
   }catch(e){return "guest";}
 }
+let lookingDesktopRandomId = "";
+
+function placeLookingDesktopRoot(root){
+  if(window.innerWidth<=700 || !root) return;
+
+  const grid=document.getElementById("productGrid");
+  if(!grid) return;
+
+  const cards=Array.from(grid.querySelectorAll(".product-card"));
+  if(cards.length<3) return;
+
+  root.classList.add("looking-desktop-root");
+
+  const third=cards[2];
+  if(third.nextElementSibling!==root){
+    third.insertAdjacentElement("afterend",root);
+  }
+}
+
 function renderLookingBanner(){
   const root=document.getElementById("lookingForBannerRoot");
   if(!root)return;
+
   const data=readLookingData();
-  if(!data.qualified || !Array.isArray(data.items) || !data.items.length){root.innerHTML="";return;}
+
+  if(!data.qualified || !Array.isArray(data.items) || !data.items.length){
+    root.innerHTML="";
+    root.classList.remove("looking-desktop-root");
+    return;
+  }
+
   const items=data.items.slice(0,LOOKING_MAX_ITEMS);
+  const desktop=window.innerWidth>700;
+
+  /*
+    Desktop:
+    same qualification system, but after the 3rd real product card
+    show 4 random products from the automatic recommendation list.
+    The selected four remain stable until the desktop/mobile breakpoint changes.
+  */
+  let displayItems=items;
+  if(desktop){
+    const available=items.slice();
+
+    if(
+      !Array.isArray(window.lookingDesktopRandomIds) ||
+      window.lookingDesktopRandomIds.length!==Math.min(4,available.length) ||
+      window.lookingDesktopRandomIds.some(function(id){
+        return !available.some(function(x){
+          return String(x.id)===String(id);
+        });
+      })
+    ){
+      const shuffled=available.slice().sort(function(){
+        return Math.random()-0.5;
+      });
+
+      window.lookingDesktopRandomIds=shuffled
+        .slice(0,4)
+        .map(function(x){ return String(x.id); });
+    }
+
+    displayItems=window.lookingDesktopRandomIds
+      .map(function(id){
+        return available.find(function(x){
+          return String(x.id)===String(id);
+        });
+      })
+      .filter(Boolean);
+  }
+
   const name=getLookingAccountName();
+
   root.innerHTML=`<section class="looking-banner" aria-label="${lookingEscape(name)} still looking for these">
     <h2 class="looking-banner-title">${lookingEscape(name)} still looking for these?</h2>
     <div class="looking-banner-viewport">
-      <div class="looking-banner-track">${items.map(function(item){
+      <div class="looking-banner-track">${displayItems.map(function(item){
         const image=String(item.image||"").trim();
         const title=String(item.title||"Product").trim();
-        return `<div class="looking-banner-card" data-product-id="${lookingEscape(item.id)}" role="button" tabindex="0">
-          <div class="looking-banner-image-wrap">${image?`<img class="looking-banner-image" src="${lookingEscape(image)}" alt="${lookingEscape(title)}" loading="lazy" decoding="async" onerror="this.style.visibility='hidden'">`:``}</div>
+
+        return `<div class="looking-banner-card"
+          data-product-id="${lookingEscape(item.id)}"
+          role="button"
+          tabindex="0">
+          <div class="looking-banner-image-wrap">
+            ${image
+              ? `<img class="looking-banner-image"
+                  src="${lookingEscape(image)}"
+                  alt="${lookingEscape(title)}"
+                  loading="eager"
+                  decoding="async"
+                  onerror="this.style.visibility='hidden'">`
+              : ``}
+          </div>
           <div class="looking-banner-name">${lookingEscape(title)}</div>
         </div>`;
       }).join("")}</div>
-      <button type="button" class="looking-banner-nav prev" aria-label="Previous" onclick="moveLookingBanner(-1)">‹</button>
-      <button type="button" class="looking-banner-nav next" aria-label="Next" onclick="moveLookingBanner(1)">›</button>
+
+      <button type="button"
+        class="looking-banner-nav prev"
+        aria-label="Previous"
+        onclick="moveLookingBanner(-1)">‹</button>
+
+      <button type="button"
+        class="looking-banner-nav next"
+        aria-label="Next"
+        onclick="moveLookingBanner(1)">›</button>
     </div>
   </section>`;
+
   root.querySelectorAll(".looking-banner-card").forEach(function(card){
     const go=function(){
       const pid=card.getAttribute("data-product-id");
-      if(pid) window.location.href="product.html?id="+encodeURIComponent(pid);
+      if(pid){
+        window.location.href=
+          "product.html?id="+encodeURIComponent(pid);
+      }
     };
+
     card.addEventListener("click",go);
-    card.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
+
+    card.addEventListener("keydown",function(e){
+      if(e.key==="Enter" || e.key===" "){
+        e.preventDefault();
+        go();
+      }
+    });
   });
+
   setupLookingTouch(root.querySelector(".looking-banner"));
-  applyLookingPosition(root.querySelector(".looking-banner"),false);
+
+  if(desktop){
+    requestAnimationFrame(function(){
+      placeLookingDesktopRoot(root);
+      applyLookingPosition(
+        root.querySelector(".looking-banner"),
+        false
+      );
+    });
+  }else{
+    root.classList.remove("looking-desktop-root");
+    applyLookingPosition(
+      root.querySelector(".looking-banner"),
+      false
+    );
+  }
 }
+
 function lookingVisibleCount(){return window.innerWidth<=700?3:(window.innerWidth<=1100?5:7);}
 function applyLookingPosition(wrap,animate){
   if(!wrap)return;
@@ -3337,10 +3489,52 @@ function setupLookingTouch(wrap){
     startX=0;startY=0;dx=0;moved=false;
   },{passive:true});
 }
+let lookingLastDesktopMode = window.innerWidth>700;
+
 window.addEventListener("resize",function(){
-  const wrap=document.querySelector("#lookingForBannerRoot .looking-banner");
-  if(wrap)applyLookingPosition(wrap,false);
+  const desktopNow=window.innerWidth>700;
+
+  if(desktopNow!==lookingLastDesktopMode){
+    lookingLastDesktopMode=desktopNow;
+    window.lookingDesktopRandomIds=[];
+    setTimeout(renderLookingBanner,80);
+    return;
+  }
+
+  if(desktopNow){
+    const root=document.getElementById("lookingForBannerRoot");
+    if(root)placeLookingDesktopRoot(root);
+  }else{
+    const wrap=document.querySelector(
+      "#lookingForBannerRoot .looking-banner"
+    );
+    if(wrap)applyLookingPosition(wrap,false);
+  }
 },{passive:true});
+
+/*
+  Products are asynchronous. As soon as the third real product
+  card exists, place the desktop recommendation after it.
+  This does not rebuild or reorder the product cards.
+*/
+(function(){
+  const grid=document.getElementById("productGrid");
+  if(!grid)return;
+
+  const observer=new MutationObserver(function(){
+    const root=document.getElementById("lookingForBannerRoot");
+
+    if(
+      root &&
+      window.innerWidth>700 &&
+      readLookingData().qualified
+    ){
+      placeLookingDesktopRoot(root);
+    }
+  });
+
+  observer.observe(grid,{childList:true});
+})();
 
 /* Render after account cache/auth and on page return. */
 renderLookingBanner();
