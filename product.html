@@ -5103,7 +5103,7 @@ async function updateCart(){
   }=
     await supabaseClient
       .from("cart_items")
-      .select("id,qty")
+      .select("id, quantity")
       .eq("user_id",user.id);
 
   if(error){
@@ -5120,14 +5120,13 @@ async function updateCart(){
 
   if(cartBadge){
 
-    /*
-      Badge = number of different products in cart.
-      Quantity changes do NOT increase the badge.
-      Each cart_items row represents one product.
-    */
     const total=(data||[])
-      .filter(x => Number(x.qty || 0) > 0)
-      .length;
+      .reduce(
+        (s,x)=>
+          s+
+          (Number(x.qty)||0),
+        0
+      );
 
     cartBadge.textContent=total;
     setMobileProductCartBadge(total);
@@ -5626,15 +5625,11 @@ async function loadCartCount(){
 
     }
 
-    /*
-      Show the number of different products in cart,
-      not the total quantity.
-      Example:
-      Mug qty 5 + Cap qty 2 = badge 2
-    */
-    const total = (data || [])
-      .filter(item => Number(item.qty || 0) > 0)
-      .length;
+    let total = 0;
+
+    (data || []).forEach(item => {
+      total += Number(item.qty || 0);
+    });
 
     if(total > 0){
 
