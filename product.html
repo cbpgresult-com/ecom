@@ -1634,61 +1634,52 @@ a{text-decoration:none;color:inherit}
     visibility:visible;
   }
 }
-  /* ===== ALL DETAILS - EXTRA COMPACT ===== */
 
-.detailGrid .detailRow{
-  display:grid !important;
-  grid-template-columns:1fr 1fr !important;
-  gap:12px !important;
-
-  min-height:30px !important;
-  height:30px !important;
-
-  padding:0 !important;
+/* =========================================================
+   ALL DETAILS ONLY - COMPACT SPECIFICATION ROWS
+   Scoped strictly to #allDetailsSection.
+   Does not affect slider, gallery, highlights, product info,
+   buttons, header, cart, or any other section.
+========================================================= */
+#allDetailsSection #panelSpecifications .detailRow{
+  min-height:34px !important;
+  height:34px !important;
+  padding:3px 0 !important;
   margin:0 !important;
-
+  gap:18px !important;
   box-sizing:border-box !important;
   align-items:center !important;
-
-  border-bottom:1px solid #e5e5e5 !important;
 }
 
-.detailGrid .detailLabel{
-  font-size:13px !important;
-  line-height:1 !important;
+#allDetailsSection #panelSpecifications .detailLabel{
   margin:0 !important;
   padding:0 !important;
+  line-height:1.15 !important;
 }
 
-.detailGrid .detailValue{
-  font-size:13px !important;
-  line-height:1 !important;
+#allDetailsSection #panelSpecifications .detailValue{
   margin:0 !important;
   padding:0 !important;
+  line-height:1.2 !important;
 }
 
-/* Mobile */
 @media(max-width:900px){
-  .detailGrid .detailRow{
-    min-height:30px !important;
-    height:30px !important;
-    padding:0 !important;
+  #allDetailsSection #panelSpecifications .detailRow{
+    min-height:34px !important;
+    height:34px !important;
+    padding:3px 0 !important;
   }
 }
 
-/* Very small mobile */
 @media(max-width:420px){
-  .detailGrid .detailRow{
-    min-height:29px !important;
-    height:29px !important;
-    gap:10px !important;
-  }
-
-  .detailGrid .detailLabel,
-  .detailGrid .detailValue{
-    font-size:12px !important;
+  #allDetailsSection #panelSpecifications .detailRow{
+    min-height:32px !important;
+    height:32px !important;
+    padding:2px 0 !important;
+    gap:12px !important;
   }
 }
+
 </style>
 </head>
 
