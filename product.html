@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Product | Trikund Printers</title>
+<title>Product | MyStore</title>
 
 <style>
 *{box-sizing:border-box}
@@ -1287,6 +1287,7 @@ a{text-decoration:none;color:inherit}
   display:flex;
   align-items:center;
   white-space:nowrap;
+  flex:0 0 auto;
 }
 
 .logo img{
@@ -1549,15 +1550,12 @@ a{text-decoration:none;color:inherit}
 /* ================= MOBILE PRODUCT HEADER + REAL LOADING ================= */
 .mobileProductHeader,.mobileProductLoading{display:none}
 @media(max-width:900px){
-.mobileProductHeader{position:sticky;top:0;z-index:99999;height:112px;min-height:112px;background:#fff;border-bottom:1px solid #e5e7eb;padding:6px 12px;display:none;flex-direction:column;gap:4px}
+.mobileProductHeader{position:sticky;top:0;z-index:99999;height:112px;background:#fff;border-bottom:1px solid #e5e7eb;padding:6px 12px;display:none;flex-direction:column;align-items:stretch;gap:4px}
 .mobileProductHeader.show{display:flex}
-.mobileProductTopRow{height:46px;min-height:46px;display:flex;align-items:center;width:100%;gap:8px}
 .mobileProductHeader .mpBack{width:38px;height:38px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 38px}
 .mobileProductHeader .mpBack svg{width:25px;height:25px}
-.mobileProductLogo{display:flex;align-items:center;white-space:nowrap;min-width:0}
-.mobileProductLogo img{height:46px;width:auto;max-width:205px;display:block;object-fit:contain}
-.mobileProductTopSpacer{flex:1;min-width:0}
-.mobileProductSearch{height:42px;width:100%;flex:0 0 42px;min-width:0;border:2px solid #d7e9ff;border-radius:12px;background:#f8fbff;display:flex;align-items:center;padding:0 10px;gap:8px}
+.mobileProductLogo{font-size:20px;font-weight:900;color:#6d28d9;white-space:nowrap;flex:0 0 auto}
+.mobileProductSearch{height:42px;flex:1 1 auto;min-width:0;border:2px solid #d7e9ff;border-radius:12px;background:#f8fbff;display:flex;align-items:center;padding:0 10px;gap:8px}
 .mobileProductSearch svg{width:20px;height:20px;flex:0 0 20px;color:#111}
 .mobileProductSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px;color:#222;padding:0}
 .mobileProductSearch input::placeholder{color:#777}
@@ -1568,12 +1566,10 @@ a{text-decoration:none;color:inherit}
 .mobileProductLoading{position:fixed;inset:0;z-index:100000;background:#f5f6f8;display:flex;flex-direction:column}
 .mobileProductLoading.hide{display:none}
 .mobileProductLoadingHeader{height:62px;min-height:62px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:10px;padding:0 10px}
-.mobileProductLoadingTopRow{height:46px;min-height:46px;display:flex;align-items:center;width:100%;gap:8px;padding:0 12px}
 .mobileProductLoadingHeader .mpBack{width:38px;height:38px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 38px}
 .mobileProductLoadingHeader .mpBack svg{width:25px;height:25px}
-.mobileProductLoadingLogo{display:flex;align-items:center;white-space:nowrap;min-width:0}
-.mobileProductLoadingLogo img{height:46px;width:auto;max-width:205px;display:block;object-fit:contain}
-.mobileProductLoadingSpacer{flex:1;min-width:0}
+.mobileProductLoadingLogo{font-size:20px;font-weight:900;color:#6d28d9;white-space:nowrap}
+.mobileProductLoadingSpacer{flex:1}
 .mobileProductLoadingAction{width:40px;height:40px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;position:relative}
 .mobileProductLoadingAction svg{width:24px;height:24px}
 .mobileProductLoadingBadge{position:absolute;top:0;right:-1px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#ef4444;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center}
@@ -1901,6 +1897,22 @@ a{text-decoration:none;color:inherit}
   }
 }
 
+
+@media(max-width:900px){
+.mobileProductTopRow{height:46px;display:flex;align-items:center;width:100%;gap:6px}
+.mobileProductHeader .mpBack{width:38px;height:38px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 38px}
+.mobileProductHeader .mpBack svg{width:25px;height:25px}
+.mobileProductLogo{display:flex;align-items:center;justify-content:flex-start;min-width:0;flex:1;height:46px;cursor:pointer}
+.mobileProductLogo img{height:46px;width:auto;max-width:205px;display:block;object-fit:contain}
+.mobileProductSearch{height:42px;width:100%;flex:0 0 42px;border:2px solid #d7e9ff;border-radius:12px;background:#f8fbff;display:flex;align-items:center;padding:0 10px;gap:8px}
+.mobileProductSearch svg{width:20px;height:20px;flex:0 0 20px;color:#111}
+.mobileProductSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:14px}
+.mobileProductSearchIcon{width:24px;height:28px;border:0;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;flex:0 0 24px}
+.mobileProductCart{width:38px;height:38px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;position:relative;flex:0 0 38px}
+.mobileProductCart svg{width:24px;height:24px}
+.mobileProductCartBadge{position:absolute;top:1px;right:-1px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#6d28d9;color:#fff;font-size:10px;line-height:16px;text-align:center;display:none}
+.mobileProductCartBadge.show{display:block}
+}
 </style>
 </head>
 
@@ -1911,7 +1923,9 @@ a{text-decoration:none;color:inherit}
 <div id="desktopIndexHeader">
 <header class="header">
 
-  <div class="logo" id="desktopStoreLogo" role="button" tabindex="0" aria-label="Home" onclick="goHome()"><img src="Trikund Printers Color Wheel Logo.png" alt="Trikund Printers Logo"></div>
+  <div class="logo" id="desktopStoreLogo" role="button" tabindex="0" aria-label="Home" onclick="goHome()">
+      <img src="https://i.ibb.co/nNwLxx1G/logio-ne-100kb-1.jpg" alt="Trikund Printers Logo">
+    </div>
 
   <div class="search">
     <input
@@ -2158,29 +2172,30 @@ a{text-decoration:none;color:inherit}
 <!-- ================= MOBILE PRODUCT LOADING ================= -->
 <div id="mobileProductLoading" class="mobileProductLoading">
   <div class="mobileProductLoadingHeader">
-    <div class="mobileProductLoadingTopRow">
-      <button class="mpBack" type="button" aria-label="Back" onclick="productGoBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-      <div class="mobileProductLoadingLogo"><img src="Trikund Printers Color Wheel Logo.png" alt="Trikund Printers Logo"></div>
-      <div class="mobileProductLoadingSpacer"></div>
-      <button class="mobileProductLoadingAction" type="button" aria-label="Cart" onclick="productGoCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 11.5h10.8L21 8H6"/></svg><span id="mobileProductLoadingBadge" class="mobileProductLoadingBadge"></span></button>
-    </div>
+    <button class="mpBack" type="button" aria-label="Back" onclick="productGoBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+    <div class="mobileProductLoadingSpacer"></div>
+    <button class="mobileProductLoadingAction" type="button" aria-label="Search" onclick="productGoSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+    <button class="mobileProductLoadingAction" type="button" aria-label="Cart" onclick="productGoCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 11.5h10.8L21 8H6"/></svg><span id="mobileProductLoadingBadge" class="mobileProductLoadingBadge"></span></button>
   </div>
   <div class="mobileProductLoadingCenter"><div class="mobileProductLoadingSpinner" aria-label="Loading"></div></div>
 </div>
 <!-- ================= MOBILE PRODUCT HEADER ================= -->
 <header id="mobileProductHeader" class="mobileProductHeader">
   <div class="mobileProductTopRow">
-    <button class="mpBack" type="button" aria-label="Back" onclick="productGoBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-    <div class="mobileProductLogo"><img src="Trikund Printers Color Wheel Logo.png" alt="Trikund Printers Logo"></div>
-    <div class="mobileProductTopSpacer"></div>
-    <button class="mobileProductCart" type="button" aria-label="Cart" onclick="productGoCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 11.5h10.8L21 8H6"/></svg><span id="mobileProductCartBadge" class="mobileProductCartBadge"></span></button>
+    <button class="mpBack" type="button" aria-label="Back" onclick="productGoBack()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    </button>
+    <div class="mobileProductLogo" role="button" tabindex="0" aria-label="Home" onclick="goHome()">
+      <img src="https://i.ibb.co/nNwLxx1G/logio-ne-100kb-1.jpg" alt="Trikund Printers Logo">
+    </div>
+    <button class="mobileProductCart" type="button" aria-label="Cart" onclick="productGoCart()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 11.5h10.8L21 8H6"/></svg>
+      <span id="mobileProductCartBadge" class="mobileProductCartBadge"></span>
+    </button>
   </div>
   <div class="mobileProductSearch">
     <button type="button" class="mobileProductSearchIcon" aria-label="Search" onclick="focusProductSearch()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-        <circle cx="11" cy="11" r="7"/>
-        <path d="m20 20-4-4"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
     </button>
     <input id="mobileProductSearchInput" type="search" autocomplete="off" enterkeyhint="search" placeholder="Search for Products, Brands and More" onkeydown="handleProductSearchKey(event)">
   </div>
