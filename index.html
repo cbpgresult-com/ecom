@@ -1059,7 +1059,7 @@ main{
 }
 .product-banner-track{
   display:flex;
-  gap:10px;
+  gap:12px;
   width:max-content;
   min-width:100%;
   transform:translate3d(0,0,0);
@@ -1091,9 +1091,9 @@ main{
 .product-banner-nav.next{right:8px;}
 .product-banner-nav[disabled]{opacity:.35;cursor:default;pointer-events:none;}
 .product-banner-card{
-  flex:0 0 calc((100% - 30px) / 4);
-  max-width:170px;
-  min-width:0;
+  flex:0 0 calc((100vw - 160px - 72px) / 7);
+  max-width:190px;
+  min-width:135px;
   background:#fff;
   border-radius:14px;
   overflow:hidden;
@@ -1137,15 +1137,14 @@ main{
   box-shadow:0 2px 5px rgba(0,0,0,.14);
 }
 .product-banner-name{
-  height:31px;
-  min-height:31px;
-  padding:6px 8px 7px;
+  min-height:43px;
+  padding:8px 10px 10px;
   display:flex;
   align-items:flex-start;
   justify-content:center;
   text-align:center;
-  font-size:12px;
-  line-height:1.2;
+  font-size:14px;
+  line-height:1.25;
   font-weight:600;
   color:#222;
   background:#fff;
@@ -1182,7 +1181,7 @@ main{
 .looking-banner{
   width:100%;
   margin:0 0 18px;
-  padding:10px 10px 9px;
+  padding:15px 14px 12px;
   border-radius:16px;
   background:linear-gradient(135deg,#6d28d9 0%,#8b5cf6 42%,#ffffff 100%);
   box-shadow:0 5px 18px rgba(91,33,182,.14);
@@ -1190,8 +1189,8 @@ main{
   position:relative;
 }
 .looking-banner-title{
-  margin:0 0 7px 2px;
-  font-size:18px;
+  margin:0 0 11px 2px;
+  font-size:22px;
   line-height:1.2;
   font-weight:800;
   color:#fff;
@@ -1218,15 +1217,15 @@ main{
   max-width:190px;
   min-width:135px;
   background:#fff;
-  border-radius:11px;
+  border-radius:14px;
   overflow:hidden;
-  box-shadow:0 2px 7px rgba(0,0,0,.10);
+  box-shadow:0 2px 7px rgba(0,0,0,.12);
   cursor:pointer;
   border:1px solid rgba(255,255,255,.9);
 }
 .looking-banner-image-wrap{
   width:100%;
-  aspect-ratio:1.25/1;
+  aspect-ratio:1/1;
   background:#fff;
   display:flex;
   align-items:center;
@@ -1256,15 +1255,15 @@ main{
 .looking-banner-nav.prev{left:8px}.looking-banner-nav.next{right:8px}
 .looking-banner-nav[disabled]{opacity:.35;cursor:default;pointer-events:none}
 @media(max-width:700px){
-  .looking-banner{margin:0 0 12px;padding:8px 7px 7px;border-radius:13px;}
-  .looking-banner-title{font-size:16px;margin:0 0 7px 2px;}
-  .looking-banner-track{gap:7px;}
-  .looking-banner-card{flex-basis:calc((100vw - 28px)/3);min-width:0;max-width:none;border-radius:9px;}
+  .looking-banner{margin:0 0 14px;padding:11px 8px 9px;border-radius:15px;}
+  .looking-banner-title{font-size:18px;margin:0 0 9px 3px;}
+  .looking-banner-track{gap:8px;}
+  .looking-banner-card{flex-basis:calc((100vw - 40px)/3);min-width:0;max-width:none;border-radius:11px;}
   .looking-banner-nav{display:none;}
-  .looking-banner-name{height:27px;min-height:27px;padding:5px 4px 6px;font-size:10px;line-height:1.15;}
+  .looking-banner-name{min-height:36px;padding:6px 5px 8px;font-size:11px;line-height:1.2;}
 }
 @media(min-width:701px) and (max-width:1100px){
-  .looking-banner-card{flex-basis:calc((100% - 30px)/4);}
+  .looking-banner-card{flex-basis:calc((100vw - 90px - 48px)/5);}
 }
 
 </style>
@@ -2105,8 +2104,6 @@ async function waitForContainerImages(container){
    PRODUCTS
 ========================================================= */
 
-let lookingAllLoadedProducts = [];
-
 async function loadProducts(){
 
   const loading =
@@ -2191,8 +2188,6 @@ try {
 
   }
 
-  lookingAllLoadedProducts = Array.isArray(data) ? data.slice() : [];
-
 
   data.forEach(
     product => {
@@ -2211,7 +2206,6 @@ try {
   /* Product banners are fetched separately and inserted without blocking
      the product grid or its loading state. */
   loadProductBanners();
-  setTimeout(renderLookingBanner, 0);
 
 }
 
@@ -3253,45 +3247,10 @@ function getLookingUserId(){
 }
 function renderLookingBanner(){
   const root=document.getElementById("lookingForBannerRoot");
-  const grid=document.getElementById("productGrid");
   if(!root)return;
   const data=readLookingData();
-  if(!data.qualified || !Array.isArray(data.items) || !data.items.length){
-    root.innerHTML="";
-    root.style.display="";
-    return;
-  }
-
-  /* Show the banner only after the first 3 real product cards on desktop.
-     On mobile keep it at the top of the product area so the existing mobile
-     layout remains untouched. */
-  if(grid && window.innerWidth>700){
-    const cards=Array.from(grid.querySelectorAll(":scope > .product-card"));
-    if(cards.length>=3){
-      const third=cards[2];
-      if(third.nextElementSibling!==root) third.insertAdjacentElement("afterend",root);
-    }
-  }
-
-  let items=data.items.slice(0,LOOKING_MAX_ITEMS);
-
-  /* Desktop: keep 4 recommendation cards visible. If fewer than 4 viewed
-     products are available, add one random product from the current catalog. */
-  const used=new Set(items.map(x=>String(x.id)));
-  if(window.innerWidth>700 && items.length<4 && lookingAllLoadedProducts.length){
-    const candidates=lookingAllLoadedProducts.filter(function(p){
-      return p && p.id!=null && !used.has(String(p.id));
-    });
-    if(candidates.length){
-      const random=candidates[Math.floor(Math.random()*candidates.length)];
-      items.push({
-        id:String(random.id),
-        title:String(random.title||random.name||"Product"),
-        image:String(getMainImage(random)||random.image||"")
-      });
-    }
-  }
-
+  if(!data.qualified || !Array.isArray(data.items) || !data.items.length){root.innerHTML="";return;}
+  const items=data.items.slice(0,LOOKING_MAX_ITEMS);
   const name=getLookingAccountName();
   root.innerHTML=`<section class="looking-banner" aria-label="${lookingEscape(name)} still looking for these">
     <h2 class="looking-banner-title">${lookingEscape(name)} still looking for these?</h2>
@@ -3301,7 +3260,7 @@ function renderLookingBanner(){
         const title=String(item.title||"Product").trim();
         return `<div class="looking-banner-card" data-product-id="${lookingEscape(item.id)}" role="button" tabindex="0">
           <div class="looking-banner-image-wrap">${image?`<img class="looking-banner-image" src="${lookingEscape(image)}" alt="${lookingEscape(title)}" loading="lazy" decoding="async" onerror="this.style.visibility='hidden'">`:``}</div>
-          <div class="looking-banner-name" title="${lookingEscape(title)}">${lookingEscape(title).slice(0,12)}${title.length>12?'...':''}</div>
+          <div class="looking-banner-name">${lookingEscape(title)}</div>
         </div>`;
       }).join("")}</div>
       <button type="button" class="looking-banner-nav prev" aria-label="Previous" onclick="moveLookingBanner(-1)">‹</button>
@@ -3319,7 +3278,7 @@ function renderLookingBanner(){
   setupLookingTouch(root.querySelector(".looking-banner"));
   applyLookingPosition(root.querySelector(".looking-banner"),false);
 }
-function lookingVisibleCount(){return window.innerWidth<=700?3:4;}
+function lookingVisibleCount(){return window.innerWidth<=700?3:(window.innerWidth<=1100?5:7);}
 function applyLookingPosition(wrap,animate){
   if(!wrap)return;
   const track=wrap.querySelector(".looking-banner-track");
