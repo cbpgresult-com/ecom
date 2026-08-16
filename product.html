@@ -1288,16 +1288,6 @@ a{text-decoration:none;color:inherit}
   font-weight:900;
   color:var(--violet);
   white-space:nowrap;
-  display:flex;
-  align-items:center;
-  cursor:pointer;
-}
-
-.logo img{
-  width:120px;
-  height:42px;
-  object-fit:contain;
-  display:block;
 }
 
 .search{
@@ -1908,9 +1898,7 @@ a{text-decoration:none;color:inherit}
 <div id="desktopIndexHeader">
 <header class="header">
 
-  <div class="logo" id="desktopStoreLogo" role="button" tabindex="0" aria-label="Home" onclick="goHome()">
-    <img id="storeLogoImage" src="https://i.ibb.co/nNwLxx1G/logio-ne-100kb-1.jpg" alt="Logo" onerror="this.style.display='none'">
-  </div>
+  <div class="logo" id="desktopStoreLogo" role="button" tabindex="0" aria-label="Home" onclick="goHome()">MyStore</div>
 
   <div class="search">
     <input
@@ -1946,7 +1934,7 @@ a{text-decoration:none;color:inherit}
 
       <span id="accountName">Login</span>
 
-      
+      <script>
       /* Paint the cached account name immediately, before the browser can
          show a Login -> name transition. localStorage survives normal
          reloads and is only absent on a first/cleared browser state. */
