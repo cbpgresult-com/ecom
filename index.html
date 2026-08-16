@@ -3345,6 +3345,49 @@ window.addEventListener("resize",function(){
 /* Render after account cache/auth and on page return. */
 renderLookingBanner();
 window.addEventListener("pageshow",function(){renderLookingBanner();});
+  /* =========================================================
+   FIX: RETURN FROM PRODUCT PAGE
+   Mobile/browser Back must remove navigation loader.
+========================================================= */
+function resetProductNavigationState(){
+
+  const loader =
+    document.getElementById("productNavLoader");
+
+  if(loader){
+    loader.classList.remove("show");
+    loader.setAttribute("aria-hidden","true");
+    loader.style.display = "none";
+  }
+
+  document.body.style.overflow = "";
+
+  try{
+    sessionStorage.removeItem(
+      "mystore_product_navigation"
+    );
+  }catch(e){}
+}
+
+/*
+   Browser Back / Android Back / BFCache restore
+*/
+window.addEventListener(
+  "pageshow",
+  function(){
+    resetProductNavigationState();
+  }
+);
+
+/*
+   Extra safety when index page becomes active again.
+*/
+window.addEventListener(
+  "focus",
+  function(){
+    resetProductNavigationState();
+  }
+);
 if(typeof supabaseClient!=="undefined" && supabaseClient.auth){
   supabaseClient.auth.onAuthStateChange(function(){setTimeout(renderLookingBanner,120);});
 }
