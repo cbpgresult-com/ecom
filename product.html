@@ -1684,62 +1684,102 @@ a{text-decoration:none;color:inherit}
 
 /* =========================================================
    RATINGS & REVIEWS CARD - ADDITION ONLY
-   Desktop: below Add to Cart / Buy buttons
-   Mobile: below All Details
-   Does not modify slider, highlights, details, cart or buy.
+   Desktop: premium card below Add to Cart / Buy buttons
+   Mobile: same card below All Details
+   Existing page elements remain untouched
 ========================================================= */
 .productRatingCard{
   width:100%;
   box-sizing:border-box;
-  border-top:1px solid #e5e7eb;
   margin-top:18px;
-  padding:18px 0 4px;
+  padding:18px 18px 16px;
+  border:1px solid #e2e5e9;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 5px 18px rgba(0,0,0,.06);
+}
+.productRatingHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
 }
 .productRatingTitle{
-  margin:0 0 13px;
-  font-size:20px;
+  margin:0;
+  font-size:19px;
   line-height:1.25;
   font-weight:800;
   color:#222;
 }
-.productRatingMain{
+.productRatingCountTop{
+  color:#777;
+  font-size:12px;
+  font-weight:600;
+  white-space:nowrap;
+}
+.productRatingContent{
   display:flex;
   align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
+  gap:18px;
+}
+.productRatingScoreBox{
+  min-width:116px;
+  padding:13px 14px;
+  border-radius:11px;
+  background:#f7f8fa;
+  text-align:center;
+}
+.productRatingScore{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
 }
 .productRatingNumber{
-  font-size:22px;
+  font-size:28px;
   line-height:1;
   font-weight:800;
   color:#222;
 }
 .productRatingStar{
   color:#16803a;
-  font-size:19px;
+  font-size:22px;
   line-height:1;
 }
 .productRatingQuality{
   display:inline-flex;
   align-items:center;
+  justify-content:center;
+  margin-top:8px;
   padding:5px 9px;
   border-radius:5px;
   background:#e8f7ef;
   color:#16803a;
-  font-size:13px;
+  font-size:12px;
   line-height:1;
   font-weight:700;
 }
+.productRatingInfo{
+  min-width:0;
+  flex:1;
+}
+.productRatingInfoTitle{
+  margin:0 0 6px;
+  font-size:14px;
+  font-weight:800;
+  color:#333;
+}
 .productRatingSub{
-  margin-top:9px;
+  margin:0;
   color:#737373;
   font-size:13px;
-  line-height:1.4;
+  line-height:1.5;
 }
 .productRatingVerified{
   display:inline-flex;
   align-items:center;
-  gap:3px;
+  gap:4px;
   color:#707070;
   font-weight:600;
 }
@@ -1757,25 +1797,95 @@ a{text-decoration:none;color:inherit}
   line-height:1;
   font-weight:800;
 }
+.productRatingDivider{
+  height:1px;
+  background:#ececec;
+  margin:14px 0 12px;
+}
+.productRatingFooter{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  color:#666;
+  font-size:12px;
+}
+.productRatingStarsText{
+  letter-spacing:1px;
+  color:#16803a;
+  font-size:13px;
+}
 .ratingCardMobile{display:none;}
+
 @media(max-width:900px){
   .ratingCardDesktop{display:none !important;}
   .ratingCardMobile{display:block;}
+
   .productRatingCard{
-    margin-top:0;
-    padding:18px 0 10px;
+    margin-top:12px;
+    padding:16px 14px 14px;
+    border-radius:12px;
   }
+
+  .productRatingHeader{
+    margin-bottom:12px;
+  }
+
   .productRatingTitle{
     font-size:18px;
-    margin-bottom:13px;
   }
-  .productRatingNumber{font-size:21px;}
-  .productRatingStar{font-size:18px;}
-  .productRatingQuality{
+
+  .productRatingContent{
+    gap:12px;
+  }
+
+  .productRatingScoreBox{
+    min-width:98px;
+    padding:11px 10px;
+  }
+
+  .productRatingNumber{
+    font-size:25px;
+  }
+
+  .productRatingStar{
+    font-size:20px;
+  }
+
+  .productRatingSub{
     font-size:12px;
-    padding:5px 8px;
   }
-  .productRatingSub{font-size:12px;}
+}
+
+@media(max-width:420px){
+  .productRatingCard{
+    padding:15px 12px 13px;
+  }
+
+  .productRatingHeader{
+    align-items:flex-start;
+  }
+
+  .productRatingCountTop{
+    font-size:11px;
+  }
+
+  .productRatingContent{
+    gap:10px;
+  }
+
+  .productRatingScoreBox{
+    min-width:88px;
+    padding:10px 8px;
+  }
+
+  .productRatingNumber{
+    font-size:23px;
+  }
+
+  .productRatingStar{
+    font-size:18px;
+  }
 }
 
 </style>
@@ -2247,17 +2357,34 @@ class="detailsPanel">
 <!-- ================= MOBILE RATINGS & REVIEWS ================= -->
 <div class="productRatingCard ratingCardMobile">
 
-<h2 class="productRatingTitle">Ratings and reviews</h2>
-
-<div class="productRatingMain">
-<span id="mobileRatingNumber" class="productRatingNumber">4</span>
-<span class="productRatingStar">★</span>
-<span id="mobileRatingQuality" class="productRatingQuality">Good</span>
+<div class="productRatingHeader">
+  <h2 class="productRatingTitle">Ratings and reviews</h2>
+  <span class="productRatingCountTop"><span id="mobileRatingCountTop">0</span> ratings</span>
 </div>
 
-<div class="productRatingSub">
-based on <span id="mobileRatingCount">0</span> ratings by
-<span class="productRatingVerified">Verified Buyers</span>
+<div class="productRatingContent">
+  <div class="productRatingScoreBox">
+    <div class="productRatingScore">
+      <span id="mobileRatingNumber" class="productRatingNumber">4</span>
+      <span class="productRatingStar">★</span>
+    </div>
+    <span id="mobileRatingQuality" class="productRatingQuality">Good</span>
+  </div>
+
+  <div class="productRatingInfo">
+    <p class="productRatingInfoTitle">Customer rating</p>
+    <p class="productRatingSub">
+      Based on <span id="mobileRatingCount">0</span> ratings by
+      <span class="productRatingVerified">Verified Buyers</span>
+    </p>
+  </div>
+</div>
+
+<div class="productRatingDivider"></div>
+
+<div class="productRatingFooter">
+  <span>Overall product rating</span>
+  <span class="productRatingStarsText">★★★★★</span>
 </div>
 
 </div>
@@ -2440,17 +2567,34 @@ Buy at <span id="buyPrice"></span>
 <!-- ================= DESKTOP RATINGS & REVIEWS ================= -->
 <div class="productRatingCard ratingCardDesktop">
 
-<h2 class="productRatingTitle">Ratings and reviews</h2>
-
-<div class="productRatingMain">
-<span id="desktopRatingNumber" class="productRatingNumber">4</span>
-<span class="productRatingStar">★</span>
-<span id="desktopRatingQuality" class="productRatingQuality">Good</span>
+<div class="productRatingHeader">
+  <h2 class="productRatingTitle">Ratings and reviews</h2>
+  <span class="productRatingCountTop"><span id="desktopRatingCountTop">0</span> ratings</span>
 </div>
 
-<div class="productRatingSub">
-based on <span id="desktopRatingCount">0</span> ratings by
-<span class="productRatingVerified">Verified Buyers</span>
+<div class="productRatingContent">
+  <div class="productRatingScoreBox">
+    <div class="productRatingScore">
+      <span id="desktopRatingNumber" class="productRatingNumber">4</span>
+      <span class="productRatingStar">★</span>
+    </div>
+    <span id="desktopRatingQuality" class="productRatingQuality">Good</span>
+  </div>
+
+  <div class="productRatingInfo">
+    <p class="productRatingInfoTitle">Customer rating</p>
+    <p class="productRatingSub">
+      Based on <span id="desktopRatingCount">0</span> ratings by
+      <span class="productRatingVerified">Verified Buyers</span>
+    </p>
+  </div>
+</div>
+
+<div class="productRatingDivider"></div>
+
+<div class="productRatingFooter">
+  <span>Overall product rating</span>
+  <span class="productRatingStarsText">★★★★★</span>
 </div>
 
 </div>
@@ -4299,8 +4443,13 @@ function render(){
 
 
   /* ================= RATINGS & REVIEWS CARD ================= */
-  const ratingValue = Number(product.rating) || 0;
-  const ratingCount = Number(product.reviews) || 0;
+  const ratingValueMatch = String(product.rating ?? "").match(/\d+(?:\.\d+)?/);
+  const ratingValue = ratingValueMatch ? Number(ratingValueMatch[0]) : 0;
+
+  const ratingCountMatch = String(product.reviews ?? "").match(/\d[\d,]*/);
+  const ratingCount = ratingCountMatch
+    ? Number(ratingCountMatch[0].replace(/,/g,""))
+    : 0;
 
   let ratingQuality = "Good";
   if(ratingValue >= 4.5){
@@ -4325,6 +4474,10 @@ function render(){
   if(desktopRatingCount){
     desktopRatingCount.textContent = ratingCount;
   }
+  const desktopRatingCountTop = document.getElementById("desktopRatingCountTop");
+  if(desktopRatingCountTop){
+    desktopRatingCountTop.textContent = ratingCount;
+  }
   if(desktopRatingQuality){
     desktopRatingQuality.textContent = ratingQuality;
   }
@@ -4340,6 +4493,10 @@ function render(){
   }
   if(mobileRatingCount){
     mobileRatingCount.textContent = ratingCount;
+  }
+  const mobileRatingCountTop = document.getElementById("mobileRatingCountTop");
+  if(mobileRatingCountTop){
+    mobileRatingCountTop.textContent = ratingCount;
   }
   if(mobileRatingQuality){
     mobileRatingQuality.textContent = ratingQuality;
