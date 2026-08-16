@@ -2122,9 +2122,16 @@ async function loadProductBanners(){
 function renderProductBanners(){
   const root=document.getElementById("productBannersRoot");
   const grid=document.getElementById("productGrid");
-  if(!root || !grid)return;
+  if(!grid)return;
 
-  root.innerHTML="";
+  /* IMPORTANT: remove previously inserted banners before rebuilding.
+     Mobile browsers can fire resize/realtime events more than once;
+     without this cleanup the same banners would be inserted again and again. */
+  grid.querySelectorAll(":scope > .product-banner-block").forEach(function(banner){
+    banner.remove();
+  });
+  if(root) root.innerHTML="";
+
   const cards=Array.from(grid.querySelectorAll(":scope > .product-card"));
   if(!cards.length || !productBannerSets.length)return;
 
