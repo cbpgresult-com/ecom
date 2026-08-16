@@ -1,61 +1,2432 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MyStore Admin - Categories</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Helvetica,sans-serif;background:#f6f7fb;color:#202027}.wrap{max-width:1200px;margin:auto;padding:24px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.top h1{font-size:26px}
-.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer}.primary{background:#5b45e8;color:#fff}.secondary{background:#eeeef5}.danger{background:#fff0f1;color:#c33}
-.layout{display:grid;grid-template-columns:360px 1fr;gap:20px}.card{background:#fff;border:1px solid #e5e5ed;border-radius:16px;padding:18px}.card h2{font-size:18px;margin-bottom:15px}
-label{display:block;font-size:13px;font-weight:700;margin:12px 0 7px}input{width:100%;padding:11px 12px;border:1px solid #dcdce5;border-radius:9px;outline:none}input:focus{border-color:#5b45e8}
-.preview{height:100px;border-radius:12px;background:#f3f3f7;margin-top:9px;display:grid;place-items:center;color:#888;overflow:hidden}.preview img{width:100%;height:100%;object-fit:cover}
-.box{border-top:1px solid #eee;margin-top:16px;padding-top:14px}.addrow{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}.draft{display:grid;gap:7px;margin-top:10px}.draftrow{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid #e5e5ec;border-radius:9px}.draftrow img{width:40px;height:40px;border-radius:50%;object-fit:cover}.draftrow strong{flex:1;font-size:13px}.note{font-size:12px;color:#777;line-height:1.45;margin-top:9px}.status{min-height:20px;margin-top:12px;font-size:13px}.ok{color:#168447}.err{color:#c33}
-.list{display:grid;gap:12px}.category{border:1px solid #e2e2ea;border-radius:12px;padding:13px}.head{display:flex;align-items:center;gap:10px}.head img,.ph{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#f0eff7;display:grid;place-items:center}.name{flex:1;font-weight:750}.actions{display:flex;gap:5px}.actions button{border:0;border-radius:7px;padding:7px 9px;cursor:pointer}.section{font-size:12px;color:#777;margin-top:11px}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}.chip{background:#f5f5f8;border-radius:18px;padding:7px 10px;font-size:12px}.empty{text-align:center;color:#777;padding:35px 10px}
-@media(max-width:850px){.wrap{padding:14px}.layout{grid-template-columns:1fr}.top h1{font-size:21px}}@media(max-width:550px){.addrow{grid-template-columns:1fr}.actions{flex-direction:column}}
-</style>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Categories Manager - MyStore</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #f6f7fb;
+
+      color: #171717;
+
+      padding: 28px;
+    }
+
+    /* =========================
+       PAGE
+    ========================== */
+
+    .page {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      margin-bottom: 22px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .save-main-btn {
+      border: none;
+
+      background: #5b45e8;
+
+      color: white;
+
+      padding: 13px 22px;
+
+      border-radius: 11px;
+
+      font-size: 14px;
+
+      font-weight: 750;
+
+      cursor: pointer;
+    }
+
+    .save-main-btn:hover {
+      background: #4d38d5;
+    }
+
+    .save-main-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    /* =========================
+       LAYOUT
+    ========================== */
+
+    .layout {
+      display: grid;
+
+      grid-template-columns:
+        330px
+        minmax(0, 1fr);
+
+      gap: 20px;
+
+      align-items: start;
+    }
+
+    .card {
+      background: white;
+
+      border: 1px solid #e2e3eb;
+
+      border-radius: 16px;
+
+      padding: 18px;
+
+      box-shadow:
+        0 3px 15px
+        rgba(0, 0, 0, .03);
+    }
+
+    .card-title {
+      font-size: 18px;
+
+      font-weight: 750;
+
+      margin-bottom: 18px;
+    }
+
+    /* =========================
+       FORM
+    ========================== */
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
+      display: block;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      margin-bottom: 7px;
+    }
+
+    .field input {
+      width: 100%;
+
+      height: 41px;
+
+      border:
+        1px solid #d7d8e2;
+
+      border-radius: 9px;
+
+      padding: 0 12px;
+
+      font-size: 13px;
+
+      outline: none;
+
+      background: white;
+    }
+
+    .field input:focus {
+      border-color: #5b45e8;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(91, 69, 232, .10);
+    }
+
+    /* =========================
+       IMAGE PREVIEW
+    ========================== */
+
+    .image-preview {
+      width: 100%;
+
+      height: 100px;
+
+      border-radius: 11px;
+
+      background: #f3f3f7;
+
+      border: 1px solid #eeeeF3;
+
+      overflow: hidden;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      margin-top: 8px;
+
+      color: #999;
+
+      font-size: 13px;
+
+      text-align: center;
+    }
+
+    .image-preview img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: contain;
+
+      display: block;
+    }
+
+    .separator {
+      border: none;
+
+      border-top:
+        1px solid #eeeeee;
+
+      margin: 17px 0;
+    }
+
+    /* =========================
+       SUBCATEGORY PENDING LIST
+    ========================== */
+
+    .pending-title {
+      font-size: 13px;
+
+      font-weight: 750;
+
+      margin:
+        16px 0 8px;
+    }
+
+    .pending-list {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 7px;
+    }
+
+    .pending-item {
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      background: #f7f6ff;
+
+      border:
+        1px solid #e5e1ff;
+
+      padding: 7px;
+
+      border-radius: 9px;
+    }
+
+    .pending-image {
+      width: 38px;
+      height: 38px;
+
+      min-width: 38px;
+
+      border-radius: 7px;
+
+      background: #eee;
+
+      overflow: hidden;
+    }
+
+    .pending-image img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+    }
+
+    .pending-name {
+      flex: 1;
+
+      font-size: 12px;
+
+      font-weight: 650;
+    }
+
+    .remove-pending {
+      border: none;
+
+      background: #ffe9e9;
+
+      color: #d92d20;
+
+      width: 26px;
+      height: 26px;
+
+      border-radius: 7px;
+
+      cursor: pointer;
+
+      font-weight: 800;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================== */
+
+    .btn {
+      width: 100%;
+
+      height: 41px;
+
+      border: none;
+
+      border-radius: 9px;
+
+      font-size: 13px;
+
+      font-weight: 750;
+
+      cursor: pointer;
+    }
+
+    .btn-purple {
+      background: #5b45e8;
+
+      color: white;
+    }
+
+    .btn-purple:hover {
+      background: #4d38d5;
+    }
+
+    .btn-light {
+      background: #f1efff;
+
+      color: #5b45e8;
+
+      margin-top: 8px;
+    }
+
+    /* =========================
+       CATEGORY LIST
+    ========================== */
+
+    .category-list {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+    .category-item {
+      border:
+        1px solid #dedfe7;
+
+      border-radius: 13px;
+
+      padding: 13px;
+
+      background: white;
+    }
+
+    .category-top {
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+    }
+
+    .category-main-image {
+      width: 48px;
+      height: 48px;
+
+      min-width: 48px;
+
+      border-radius: 50%;
+
+      background: #f1f1f5;
+
+      overflow: hidden;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      font-size: 16px;
+
+      font-weight: 750;
+
+      color: #777;
+    }
+
+    .category-main-image img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+    }
+
+    .category-info {
+      flex: 1;
+
+      min-width: 0;
+    }
+
+    .category-name {
+      font-size: 16px;
+
+      font-weight: 750;
+
+      margin-bottom: 5px;
+    }
+
+    .category-section-name {
+      font-size: 12px;
+
+      color: #6b6b73;
+    }
+
+    .category-actions {
+      display: flex;
+
+      gap: 7px;
+    }
+
+    .edit-btn,
+    .delete-btn {
+      border: none;
+
+      border-radius: 7px;
+
+      padding: 7px 10px;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background: #f0edff;
+
+      color: #5b45e8;
+    }
+
+    .delete-btn {
+      background: #fff0f0;
+
+      color: #d92d20;
+    }
+
+    /* =========================
+       SUBCATEGORY DISPLAY
+    ========================== */
+
+    .saved-sections {
+      margin-top: 12px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 9px;
+    }
+
+    .saved-section {
+      background: #fafafa;
+
+      border-radius: 9px;
+
+      padding: 9px;
+    }
+
+    .saved-section-title {
+      font-size: 12px;
+
+      font-weight: 750;
+
+      margin-bottom: 7px;
+    }
+
+    .saved-items {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 7px;
+    }
+
+    .saved-subcategory {
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 6px;
+
+      background: white;
+
+      border:
+        1px solid #e3e3e3;
+
+      border-radius: 20px;
+
+      padding: 4px 8px 4px 4px;
+
+      font-size: 11px;
+    }
+
+    .saved-subcategory img {
+      width: 27px;
+      height: 27px;
+
+      border-radius: 50%;
+
+      object-fit: cover;
+    }
+
+    /* =========================
+       EMPTY
+    ========================== */
+
+    .empty-list {
+      padding: 60px 20px;
+
+      text-align: center;
+
+      color: #777;
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+
+      border-radius: 50%;
+
+      background: #f1efff;
+
+      color: #5b45e8;
+
+      font-size: 30px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      margin: 0 auto 13px;
+    }
+
+    .empty-title {
+      font-weight: 750;
+
+      color: #333;
+
+      margin-bottom: 5px;
+    }
+
+    .empty-text {
+      font-size: 12px;
+    }
+
+    /* =========================
+       STATUS
+    ========================== */
+
+    .status {
+      position: fixed;
+
+      right: 20px;
+
+      bottom: 20px;
+
+      min-width: 230px;
+
+      max-width: 380px;
+
+      padding: 12px 15px;
+
+      border-radius: 10px;
+
+      background: #222;
+
+      color: white;
+
+      font-size: 12px;
+
+      line-height: 1.4;
+
+      display: none;
+
+      z-index: 1000;
+
+      box-shadow:
+        0 8px 30px
+        rgba(0,0,0,.18);
+    }
+
+    .status.success {
+      background: #087443;
+    }
+
+    .status.error {
+      background: #b42318;
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 800px) {
+
+      body {
+        padding: 14px;
+      }
+
+      .page-header {
+        align-items: flex-start;
+
+        gap: 12px;
+      }
+
+      .page-title {
+        font-size: 23px;
+      }
+
+      .save-main-btn {
+        padding: 11px 14px;
+
+        font-size: 12px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        border-radius: 14px;
+      }
+
+    }
+
+  </style>
+
 </head>
+
+
 <body>
-<div class="wrap">
-<div class="top"><h1>Categories Manager</h1><div><button class="btn secondary" onclick="newCat()">New</button> <button class="btn primary" onclick="saveCat()">Save Category</button></div></div>
-<div class="layout">
-<div class="card">
-<h2>Add / Edit Category</h2>
-<label>Category Name</label><input id="name" placeholder="e.g. Fashion">
-<label>Category Image Link</label><input id="catimg" placeholder="https://.../fashion.webp" oninput="preview()">
-<div class="preview" id="preview">Image preview</div>
-<div class="box">
-<label>Section Name</label><input id="section" placeholder="e.g. Women's Fashion">
-<label>Subcategory Name</label>
-<div class="addrow"><input id="subname" placeholder="e.g. Sarees"><input id="subimg" placeholder="https://.../saree.webp"><button class="btn primary" onclick="addSub()">Add</button></div>
-<div class="draft" id="draft"></div>
-<div class="note">Subcategory add karne ke baad <b>Save Category</b> dabao. Save hote hi Supabase me data jayega.</div>
+
+
+<div class="page">
+
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <h1 class="page-title">
+      Categories Manager
+    </h1>
+
+    <button
+      class="save-main-btn"
+      id="saveCategoryBtn"
+      onclick="saveCategory()"
+    >
+      Save Categories
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       LAYOUT
+  ========================== -->
+
+  <div class="layout">
+
+
+    <!-- =========================
+         LEFT FORM
+    ========================== -->
+
+    <div class="card">
+
+      <h2 class="card-title">
+        Add / Edit Category
+      </h2>
+
+
+      <!-- CATEGORY NAME -->
+
+      <div class="field">
+
+        <label>
+          Category Name
+        </label>
+
+        <input
+          type="text"
+          id="categoryName"
+          placeholder="e.g. Fashion"
+        >
+
+      </div>
+
+
+      <!-- CATEGORY IMAGE -->
+
+      <div class="field">
+
+        <label>
+          Category Image Link
+        </label>
+
+        <input
+          type="text"
+          id="categoryImage"
+          placeholder="https://.../fashion.webp"
+          oninput="previewCategoryImage()"
+        >
+
+        <div
+          class="image-preview"
+          id="categoryImagePreview"
+        >
+          Image preview
+        </div>
+
+      </div>
+
+
+      <hr class="separator">
+
+
+      <!-- SECTION -->
+
+      <div class="field">
+
+        <label>
+          Section Name
+        </label>
+
+        <input
+          type="text"
+          id="sectionName"
+          placeholder="e.g. Fashion Categories"
+        >
+
+      </div>
+
+
+      <hr class="separator">
+
+
+      <!-- SUBCATEGORY -->
+
+      <div class="field">
+
+        <label>
+          Subcategory Name
+        </label>
+
+        <input
+          type="text"
+          id="subcategoryName"
+          placeholder="e.g. Sarees"
+        >
+
+      </div>
+
+
+      <!-- SUBCATEGORY IMAGE -->
+
+      <div class="field">
+
+        <label>
+          Subcategory Image Link
+        </label>
+
+        <input
+          type="text"
+          id="subcategoryImage"
+          placeholder="https://.../saree.webp"
+          oninput="previewSubcategoryImage()"
+        >
+
+        <div
+          class="image-preview"
+          id="subcategoryImagePreview"
+        >
+          Image preview
+        </div>
+
+      </div>
+
+
+      <!-- ADD SUBCATEGORY -->
+
+      <button
+        class="btn btn-purple"
+        onclick="addSubcategory()"
+      >
+        Add Subcategory
+      </button>
+
+
+      <!-- PENDING -->
+
+      <div
+        class="pending-title"
+        id="pendingTitle"
+        style="display:none;"
+      >
+        Subcategories to Save
+      </div>
+
+
+      <div
+        class="pending-list"
+        id="pendingList"
+      ></div>
+
+
+      <!-- NEW SECTION -->
+
+      <button
+        class="btn btn-light"
+        onclick="startNewSection()"
+      >
+        + New Section
+      </button>
+
+    </div>
+
+
+    <!-- =========================
+         RIGHT SAVED CATEGORIES
+    ========================== -->
+
+    <div class="card">
+
+      <h2 class="card-title">
+        Categories
+      </h2>
+
+
+      <div
+        class="category-list"
+        id="categoryList"
+      >
+
+        <div class="empty-list">
+
+          <div class="empty-icon">
+            +
+          </div>
+
+          <div class="empty-title">
+            Loading...
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
 </div>
-<div class="status" id="status"></div>
-</div>
-<div class="card"><h2>Categories</h2><div class="list" id="list"></div></div>
-</div>
-</div>
+
+
+<!-- STATUS -->
+
+<div
+  class="status"
+  id="status"
+></div>
+
+
+<!-- SUPABASE -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
 <script>
-const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let rows=[],editing=null,draft=[];
-const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-function msg(t,e=false){status.textContent=t;status.className="status "+(e?"err":"ok")}
-function preview(){let u=catimg.value.trim();document.getElementById("preview").innerHTML=u?'<img src="'+esc(u)+'" onerror="this.style.display=\'none\'">':"Image preview"}
-function newCat(){editing=null;name.value="";catimg.value="";section.value="";subname.value="";subimg.value="";draft=[];preview();renderDraft();msg("")}
-function addSub(){let n=subname.value.trim(),u=subimg.value.trim();if(!n){msg("Subcategory name required.",true);return}draft.push({name:n,image:u});subname.value="";subimg.value="";renderDraft();msg("Subcategory add ho gayi. Save Category dabao.")}
-function renderDraft(){draftEl=document.getElementById("draft");draftEl.innerHTML=draft.map((x,i)=>'<div class="draftrow">'+(x.image?'<img src="'+esc(x.image)+'">':'<div class="ph">'+esc(x.name[0])+'</div>')+'<strong>'+esc(x.name)+'</strong><button class="btn danger" onclick="draft.splice('+i+',1);renderDraft()">×</button></div>').join("")}
-async function load(){let r=await sb.from("categories").select("id,name,image_url,sections,sort_order,is_active,created_at").order("sort_order",{ascending:true}).order("created_at",{ascending:true});if(r.error){msg(r.error.message,true);return}rows=r.data||[];renderList()}
-function renderList(){if(!rows.length){list.innerHTML='<div class="empty">Abhi koi category nahi hai.</div>';return}list.innerHTML=rows.map(c=>'<div class="category"><div class="head">'+(c.image_url?'<img src="'+esc(c.image_url)+'">':'<div class="ph">'+esc((c.name||"")[0])+'</div>')+'<div class="name">'+esc(c.name)+'</div><div class="actions"><button class="secondary" onclick="editCat(\''+c.id+'\')">Edit</button><button class="danger" onclick="delCat(\''+c.id+'\')">Delete</button></div></div>'+((Array.isArray(c.sections)?c.sections:[]).map(s=>'<div class="section">'+esc(s.title||"")+'</div><div class="chips">'+(Array.isArray(s.items)?s.items:[]).map(i=>'<span class="chip">'+esc(i.name)+'</span>').join("")+'</div>').join(""))+'</div>').join("")}
-function editCat(id){let c=rows.find(x=>String(x.id)===String(id));if(!c)return;editing=c.id;name.value=c.name||"";catimg.value=c.image_url||"";let s=(Array.isArray(c.sections)?c.sections:[])[0]||{title:"",items:[]};section.value=s.title||"";draft=Array.isArray(s.items)?s.items.map(x=>({name:x.name||"",image:x.image||""})):[];preview();renderDraft();scrollTo({top:0,behavior:"smooth"});msg("Edit mode")}
-async function saveCat(){let n=name.value.trim(),u=catimg.value.trim(),s=section.value.trim();if(!n)return msg("Category name required.",true);if(!s)return msg("Section name required.",true);let payload={name:n,image_url:u||null,sections:[{title:s,items:draft}],is_active:true};let r=editing?await sb.from("categories").update(payload).eq("id",editing).select().single():await sb.from("categories").insert(payload).select().single();if(r.error){console.error(r.error);msg(r.error.message,true);return}msg("Category Supabase me save ho gayi.");newCat();await load()}
-async function delCat(id){let c=rows.find(x=>String(x.id)===String(id));if(!c||!confirm('"'+c.name+'" delete karni hai?'))return;let r=await sb.from("categories").delete().eq("id",id);if(r.error){msg(r.error.message,true);return}msg("Category delete ho gayi.");await load()}
-load();
+
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+  "https://bszojvhitsoamhksyjul.supabase.co";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+
+const db =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+let categories = [];
+
+let pendingItems = [];
+
+let editingId = null;
+
+
+/*
+  Current section data.
+
+  Example:
+
+  {
+    title: "Men Clothes",
+    items: [
+      {
+        name: "Hoodies",
+        image: "..."
+      }
+    ]
+  }
+*/
+
+let currentSection = {
+  title: "",
+  items: []
+};
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const categoryName =
+  document.getElementById(
+    "categoryName"
+  );
+
+const categoryImage =
+  document.getElementById(
+    "categoryImage"
+  );
+
+const sectionName =
+  document.getElementById(
+    "sectionName"
+  );
+
+const subcategoryName =
+  document.getElementById(
+    "subcategoryName"
+  );
+
+const subcategoryImage =
+  document.getElementById(
+    "subcategoryImage"
+  );
+
+const categoryList =
+  document.getElementById(
+    "categoryList"
+  );
+
+const pendingList =
+  document.getElementById(
+    "pendingList"
+  );
+
+const pendingTitle =
+  document.getElementById(
+    "pendingTitle"
+  );
+
+const saveButton =
+  document.getElementById(
+    "saveCategoryBtn"
+  );
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+let statusTimer = null;
+
+
+function showStatus(
+  message,
+  type = ""
+) {
+
+  const box =
+    document.getElementById(
+      "status"
+    );
+
+
+  box.textContent =
+    message;
+
+
+  box.className =
+    "status";
+
+
+  if (type) {
+
+    box.classList.add(type);
+
+  }
+
+
+  box.style.display =
+    "block";
+
+
+  clearTimeout(
+    statusTimer
+  );
+
+
+  statusTimer =
+    setTimeout(
+      () => {
+
+        box.style.display =
+          "none";
+
+      },
+      3500
+    );
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function escapeHTML(value) {
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =====================================================
+   CATEGORY IMAGE PREVIEW
+===================================================== */
+
+function previewCategoryImage() {
+
+  const url =
+    categoryImage.value.trim();
+
+  const preview =
+    document.getElementById(
+      "categoryImagePreview"
+    );
+
+
+  if (!url) {
+
+    preview.innerHTML =
+      "Image preview";
+
+    return;
+
+  }
+
+
+  preview.innerHTML = `
+
+    <img
+      src="${escapeHTML(url)}"
+      alt="Preview"
+      onerror="
+        this.style.display='none';
+        this.parentElement.textContent='Image not found';
+      "
+    >
+
+  `;
+
+}
+
+
+/* =====================================================
+   SUBCATEGORY IMAGE PREVIEW
+===================================================== */
+
+function previewSubcategoryImage() {
+
+  const url =
+    subcategoryImage.value.trim();
+
+  const preview =
+    document.getElementById(
+      "subcategoryImagePreview"
+    );
+
+
+  if (!url) {
+
+    preview.innerHTML =
+      "Image preview";
+
+    return;
+
+  }
+
+
+  preview.innerHTML = `
+
+    <img
+      src="${escapeHTML(url)}"
+      alt="Preview"
+      onerror="
+        this.style.display='none';
+        this.parentElement.textContent='Image not found';
+      "
+    >
+
+  `;
+
+}
+
+
+/* =====================================================
+   ADD SUBCATEGORY
+===================================================== */
+
+function addSubcategory() {
+
+  const name =
+    subcategoryName.value.trim();
+
+  const image =
+    subcategoryImage.value.trim();
+
+
+  if (!name) {
+
+    showStatus(
+      "Subcategory Name bhariye.",
+      "error"
+    );
+
+    subcategoryName.focus();
+
+    return;
+
+  }
+
+
+  if (!sectionName.value.trim()) {
+
+    showStatus(
+      "Pehle Section Name bhariye.",
+      "error"
+    );
+
+    sectionName.focus();
+
+    return;
+
+  }
+
+
+  /*
+    Section title current section
+    me set kar dete hain.
+  */
+
+  currentSection.title =
+    sectionName.value.trim();
+
+
+  currentSection.items.push({
+
+    name: name,
+
+    image: image
+
+  });
+
+
+  /*
+    UI list update
+  */
+
+  renderPendingItems();
+
+
+  /*
+    Sirf subcategory fields
+    clear honge.
+
+    Category + Section
+    same rahenge taaki next
+    subcategory quickly add
+    ki ja sake.
+  */
+
+  subcategoryName.value = "";
+
+  subcategoryImage.value = "";
+
+  document.getElementById(
+    "subcategoryImagePreview"
+  ).innerHTML =
+    "Image preview";
+
+
+  subcategoryName.focus();
+
+
+  showStatus(
+    "Subcategory add ho gayi. Ab Save Categories dabao.",
+    "success"
+  );
+
+}
+
+
+/* =====================================================
+   RENDER PENDING ITEMS
+===================================================== */
+
+function renderPendingItems() {
+
+  const items =
+    currentSection.items;
+
+
+  if (!items.length) {
+
+    pendingTitle.style.display =
+      "none";
+
+    pendingList.innerHTML =
+      "";
+
+    return;
+
+  }
+
+
+  pendingTitle.style.display =
+    "block";
+
+
+  pendingList.innerHTML =
+    "";
+
+
+  items.forEach(
+    (item, index) => {
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className =
+        "pending-item";
+
+
+      const imageHTML =
+        item.image
+
+          ? `
+            <img
+              src="${escapeHTML(item.image)}"
+              alt=""
+              onerror="this.style.display='none';"
+            >
+          `
+
+          : "";
+
+
+      div.innerHTML = `
+
+        <div class="pending-image">
+          ${imageHTML}
+        </div>
+
+        <div class="pending-name">
+          ${escapeHTML(item.name)}
+        </div>
+
+        <button
+          class="remove-pending"
+          onclick="removePending(${index})"
+        >
+          ×
+        </button>
+
+      `;
+
+
+      pendingList.appendChild(
+        div
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   REMOVE PENDING
+===================================================== */
+
+function removePending(index) {
+
+  currentSection.items.splice(
+    index,
+    1
+  );
+
+
+  renderPendingItems();
+
+}
+
+
+/* =====================================================
+   NEW SECTION
+===================================================== */
+
+function startNewSection() {
+
+  /*
+    Agar current section me items hain
+    to pehle usko save structure me
+    convert karna zaroori hai.
+  */
+
+  if (
+    currentSection.items.length
+  ) {
+
+    const title =
+      currentSection.title.trim();
+
+
+    if (!title) {
+
+      showStatus(
+        "Section Name missing hai.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    /*
+      Multiple sections ko
+      temporary array me rakhte hain.
+    */
+
+    ensureSectionsArray();
+
+
+    categoryDraftSections.push({
+
+      title: title,
+
+      items: [
+        ...currentSection.items
+      ]
+
+    });
+
+  }
+
+
+  /*
+    Current section reset
+  */
+
+  currentSection = {
+
+    title: "",
+
+    items: []
+
+  };
+
+
+  sectionName.value =
+    "";
+
+  subcategoryName.value =
+    "";
+
+  subcategoryImage.value =
+    "";
+
+  document.getElementById(
+    "subcategoryImagePreview"
+  ).innerHTML =
+    "Image preview";
+
+
+  pendingItems = [];
+
+
+  renderPendingItems();
+
+
+  showStatus(
+    "New Section ke liye form ready hai.",
+    "success"
+  );
+
+}
+
+
+/* =====================================================
+   DRAFT SECTIONS
+===================================================== */
+
+let categoryDraftSections = [];
+
+
+function ensureSectionsArray() {
+
+  if (
+    !Array.isArray(
+      categoryDraftSections
+    )
+  ) {
+
+    categoryDraftSections =
+      [];
+
+  }
+
+}
+
+
+/* =====================================================
+   BUILD FINAL SECTIONS
+===================================================== */
+
+function buildFinalSections() {
+
+  ensureSectionsArray();
+
+
+  const sections = [
+    ...categoryDraftSections
+  ];
+
+
+  /*
+    Current section agar items ke
+    saath hai to usko bhi add karo.
+  */
+
+  if (
+    currentSection.items.length
+  ) {
+
+    const title =
+      sectionName.value.trim()
+      ||
+      currentSection.title.trim();
+
+
+    if (title) {
+
+      sections.push({
+
+        title: title,
+
+        items: [
+          ...currentSection.items
+        ]
+
+      });
+
+    }
+
+  }
+
+
+  /*
+    Duplicate empty sections remove
+  */
+
+  return sections.filter(
+    section =>
+      section &&
+      section.title &&
+      Array.isArray(section.items) &&
+      section.items.length
+  );
+
+}
+
+
+/* =====================================================
+   SAVE CATEGORY
+===================================================== */
+
+async function saveCategory() {
+
+  const name =
+    categoryName.value.trim();
+
+  const image =
+    categoryImage.value.trim();
+
+
+  if (!name) {
+
+    showStatus(
+      "Category Name bhariye.",
+      "error"
+    );
+
+    categoryName.focus();
+
+    return;
+
+  }
+
+
+  const sections =
+    buildFinalSections();
+
+
+  /*
+    Section/subcategory optional
+    rakha gaya hai.
+
+    Category sirf image/name ke
+    saath bhi save ho sakti hai.
+  */
+
+
+  saveButton.disabled =
+    true;
+
+  saveButton.textContent =
+    "Saving...";
+
+
+  try {
+
+    const payload = {
+
+      name: name,
+
+      image_url:
+        image || null,
+
+      sections:
+        sections,
+
+      is_active:
+        true
+
+    };
+
+
+    /* =========================
+       EDIT
+    ========================== */
+
+    if (editingId) {
+
+      const {
+        data,
+        error
+      } = await db
+
+        .from("categories")
+
+        .update(payload)
+
+        .eq(
+          "id",
+          editingId
+        )
+
+        .select()
+        .single();
+
+
+      if (error) {
+
+        console.error(
+          "Update error:",
+          error
+        );
+
+        throw error;
+
+      }
+
+
+      showStatus(
+        "Category successfully update ho gayi.",
+        "success"
+      );
+
+    }
+
+
+    /* =========================
+       NEW CATEGORY
+    ========================== */
+
+    else {
+
+      const {
+        data,
+        error
+      } = await db
+
+        .from("categories")
+
+        .insert(
+          payload
+        )
+
+        .select()
+        .single();
+
+
+      if (error) {
+
+        console.error(
+          "Insert error:",
+          error
+        );
+
+        throw error;
+
+      }
+
+
+      showStatus(
+        "Category successfully save ho gayi.",
+        "success"
+      );
+
+    }
+
+
+    /*
+      Database save successful.
+
+      Ab form completely clear.
+    */
+
+    resetForm();
+
+
+    /*
+      Fresh data Supabase se load.
+    */
+
+    await loadCategories();
+
+
+  } catch (error) {
+
+    console.error(
+      "Save category error:",
+      error
+    );
+
+
+    showStatus(
+      error?.message ||
+      "Category save nahi ho paayi.",
+      "error"
+    );
+
+  } finally {
+
+    saveButton.disabled =
+      false;
+
+    saveButton.textContent =
+      "Save Categories";
+
+  }
+
+}
+
+
+/* =====================================================
+   LOAD CATEGORIES
+===================================================== */
+
+async function loadCategories() {
+
+  categoryList.innerHTML = `
+
+    <div class="empty-list">
+
+      <div class="empty-title">
+        Loading categories...
+      </div>
+
+    </div>
+
+  `;
+
+
+  try {
+
+    const {
+      data,
+      error
+    } = await db
+
+      .from("categories")
+
+      .select(`
+        id,
+        name,
+        image_url,
+        sections,
+        sort_order,
+        is_active,
+        created_at
+      `)
+
+      .order(
+        "sort_order",
+        {
+          ascending: true
+        }
+      )
+
+      .order(
+        "created_at",
+        {
+          ascending: true
+        }
+      );
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    categories =
+      Array.isArray(data)
+        ? data
+        : [];
+
+
+    renderCategories();
+
+
+  } catch (error) {
+
+    console.error(
+      "Load categories error:",
+      error
+    );
+
+
+    categoryList.innerHTML = `
+
+      <div class="empty-list">
+
+        <div class="empty-title">
+          Categories load nahi hui
+        </div>
+
+        <div class="empty-text">
+          ${escapeHTML(
+            error?.message ||
+            "Unknown error"
+          )}
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =====================================================
+   RENDER SAVED CATEGORIES
+===================================================== */
+
+function renderCategories() {
+
+  if (!categories.length) {
+
+    categoryList.innerHTML = `
+
+      <div class="empty-list">
+
+        <div class="empty-icon">
+          +
+        </div>
+
+        <div class="empty-title">
+          No Categories Yet
+        </div>
+
+        <div class="empty-text">
+          Left side se category add karein.
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  categoryList.innerHTML =
+    "";
+
+
+  categories.forEach(
+    category => {
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+
+      item.className =
+        "category-item";
+
+
+      const firstLetter =
+        String(
+          category.name || "?"
+        )
+          .trim()
+          .charAt(0)
+          .toUpperCase();
+
+
+      const categoryImage =
+        category.image_url
+
+          ? `
+            <img
+              src="${escapeHTML(category.image_url)}"
+              alt="${escapeHTML(category.name)}"
+              onerror="this.style.display='none';"
+            >
+          `
+
+          : firstLetter;
+
+
+      let sections =
+        Array.isArray(
+          category.sections
+        )
+          ? category.sections
+          : [];
+
+
+      let sectionsHTML =
+        "";
+
+
+      sections.forEach(
+        section => {
+
+          if (
+            !section ||
+            !Array.isArray(
+              section.items
+            )
+          ) {
+
+            return;
+
+          }
+
+
+          if (
+            !section.items.length
+          ) {
+
+            return;
+
+          }
+
+
+          let itemsHTML =
+            "";
+
+
+          section.items.forEach(
+            sub => {
+
+              itemsHTML += `
+
+                <div class="saved-subcategory">
+
+                  ${
+                    sub.image
+                      ? `
+                        <img
+                          src="${escapeHTML(sub.image)}"
+                          alt=""
+                          onerror="this.style.display='none';"
+                        >
+                      `
+                      : ""
+                  }
+
+                  <span>
+                    ${escapeHTML(
+                      sub.name
+                    )}
+                  </span>
+
+                </div>
+
+              `;
+
+            }
+          );
+
+
+          sectionsHTML += `
+
+            <div class="saved-section">
+
+              <div class="saved-section-title">
+                ${escapeHTML(
+                  section.title
+                )}
+              </div>
+
+              <div class="saved-items">
+                ${itemsHTML}
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      );
+
+
+      item.innerHTML = `
+
+        <div class="category-top">
+
+          <div class="category-main-image">
+
+            ${categoryImage}
+
+          </div>
+
+
+          <div class="category-info">
+
+            <div class="category-name">
+              ${escapeHTML(
+                category.name
+              )}
+            </div>
+
+            ${
+              sections.length
+                ? `
+                  <div class="category-section-name">
+                    ${escapeHTML(
+                      sections[0]?.title || ""
+                    )}
+                  </div>
+                `
+                : ""
+            }
+
+          </div>
+
+
+          <div class="category-actions">
+
+            <button
+              class="edit-btn"
+              onclick="editCategory('${category.id}')"
+            >
+              Edit
+            </button>
+
+            <button
+              class="delete-btn"
+              onclick="deleteCategory('${category.id}')"
+            >
+              Delete
+            </button>
+
+          </div>
+
+        </div>
+
+
+        ${
+          sectionsHTML
+            ? `
+              <div class="saved-sections">
+                ${sectionsHTML}
+              </div>
+            `
+            : ""
+        }
+
+      `;
+
+
+      categoryList.appendChild(
+        item
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   EDIT CATEGORY
+===================================================== */
+
+function editCategory(id) {
+
+  const category =
+    categories.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if (!category) {
+
+    return;
+
+  }
+
+
+  editingId =
+    category.id;
+
+
+  categoryName.value =
+    category.name || "";
+
+
+  categoryImage.value =
+    category.image_url || "";
+
+
+  previewCategoryImage();
+
+
+  /*
+    Existing sections ko
+    draft me load karo.
+  */
+
+  categoryDraftSections =
+    Array.isArray(
+      category.sections
+    )
+      ? JSON.parse(
+          JSON.stringify(
+            category.sections
+          )
+        )
+      : [];
+
+
+  /*
+    First section form me load.
+  */
+
+  if (
+    categoryDraftSections.length
+  ) {
+
+    const first =
+      categoryDraftSections.shift();
+
+
+    currentSection = {
+
+      title:
+        first.title || "",
+
+      items:
+        Array.isArray(first.items)
+          ? first.items
+          : []
+
+    };
+
+
+    sectionName.value =
+      currentSection.title;
+
+
+    renderPendingItems();
+
+  } else {
+
+    currentSection = {
+
+      title: "",
+
+      items: []
+
+    };
+
+
+    sectionName.value =
+      "";
+
+    renderPendingItems();
+
+  }
+
+
+  subcategoryName.value =
+    "";
+
+  subcategoryImage.value =
+    "";
+
+  document.getElementById(
+    "subcategoryImagePreview"
+  ).innerHTML =
+    "Image preview";
+
+
+  saveButton.textContent =
+    "Update Category";
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+
+  showStatus(
+    "Category edit mode me hai.",
+    "success"
+  );
+
+}
+
+
+/* =====================================================
+   DELETE CATEGORY
+===================================================== */
+
+async function deleteCategory(id) {
+
+  const category =
+    categories.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if (!category) {
+
+    return;
+
+  }
+
+
+  const confirmDelete =
+    confirm(
+      `"${category.name}" ko delete karna hai?`
+    );
+
+
+  if (!confirmDelete) {
+
+    return;
+
+  }
+
+
+  try {
+
+    const {
+      error
+    } = await db
+
+      .from("categories")
+
+      .delete()
+
+      .eq(
+        "id",
+        id
+      );
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    /*
+      Agar currently deleted
+      category edit ho rahi thi
+      to form reset.
+    */
+
+    if (
+      String(editingId) ===
+      String(id)
+    ) {
+
+      resetForm();
+
+    }
+
+
+    showStatus(
+      "Category delete ho gayi.",
+      "success"
+    );
+
+
+    await loadCategories();
+
+
+  } catch (error) {
+
+    console.error(
+      "Delete error:",
+      error
+    );
+
+
+    showStatus(
+      error?.message ||
+      "Category delete nahi hui.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   RESET FORM
+===================================================== */
+
+function resetForm() {
+
+  /*
+    EDIT MODE OFF
+  */
+
+  editingId =
+    null;
+
+
+  /*
+    CATEGORY
+  */
+
+  categoryName.value =
+    "";
+
+  categoryImage.value =
+    "";
+
+
+  /*
+    SECTION
+  */
+
+  sectionName.value =
+    "";
+
+
+  /*
+    SUBCATEGORY
+  */
+
+  subcategoryName.value =
+    "";
+
+  subcategoryImage.value =
+    "";
+
+
+  /*
+    PREVIEWS
+  */
+
+  document.getElementById(
+    "categoryImagePreview"
+  ).innerHTML =
+    "Image preview";
+
+
+  document.getElementById(
+    "subcategoryImagePreview"
+  ).innerHTML =
+    "Image preview";
+
+
+  /*
+    ALL DRAFT DATA CLEAR
+  */
+
+  pendingItems =
+    [];
+
+  categoryDraftSections =
+    [];
+
+
+  currentSection = {
+
+    title: "",
+
+    items: []
+
+  };
+
+
+  /*
+    PENDING UI CLEAR
+  */
+
+  pendingList.innerHTML =
+    "";
+
+  pendingTitle.style.display =
+    "none";
+
+
+  /*
+    BUTTON NORMAL
+  */
+
+  saveButton.textContent =
+    "Save Categories";
+
+}
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+loadCategories();
+
 </script>
+
+
 </body>
 </html>
