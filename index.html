@@ -7,17 +7,6 @@
 <title>MyStore - Online Shopping</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-(function(){
-  try{
-    const cachedName=localStorage.getItem("mystore_cached_first_name");
-    const cachedUser=localStorage.getItem("mystore_cached_logged_in");
-    const cachedCart=Number(localStorage.getItem("mystore_cached_cart_count")||0);
-    window.__mystoreCachedName=(cachedUser==="1"&&cachedName)?cachedName:"Login";
-    window.__mystoreCachedCart=cachedUser==="1"?cachedCart:0;
-  }catch(e){window.__mystoreCachedName="Login";window.__mystoreCachedCart=0;}
-})();
-</script>
 
 <style>
 *{
@@ -877,6 +866,17 @@ main{
 /* ================= HERO SLIDER ================= */
 .hero-slider{width:90%;max-width:1250px;margin:14px auto 0;overflow:visible;display:none}
 .hero-slider.show{display:block}
+.hero-slider.loading{display:block}
+.hero-loading{width:100%;height:auto;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;background:transparent;position:relative;box-shadow:none}
+.hero-loading::before,.hero-loading::after{content:"";display:block;position:relative;inset:auto;height:auto;aspect-ratio:2.05/1;border-radius:15px;background:#e9edf2;box-shadow:0 2px 8px rgba(0,0,0,.04);animation:none}
+.hero-loading::before{box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.hero-loading{isolation:isolate}
+.hero-loading-dots{position:relative}
+.hero-loading-dots::before{content:"";position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:skeletonShimmer 1.15s infinite}
+.hero-loading-dots{height:13px;display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px;overflow:hidden;position:relative}
+.hero-loading-dots span{width:18px;height:4px;border-radius:99px;background:#e0e3e8;position:relative;overflow:hidden}
+.hero-loading-dots span::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:rgba(255,255,255,.75);animation:skeletonShimmer 1.15s infinite}
+
 .hero-viewport{width:100%;overflow:hidden;border-radius:15px;position:relative;touch-action:pan-y}
 .hero-track{display:flex;gap:14px;transform:translate3d(0,0,0);transition:transform .38s cubic-bezier(.22,.61,.36,1);will-change:transform}
 .hero-slide{flex:0 0 calc((100% - 28px)/3);aspect-ratio:2.05/1;border-radius:15px;overflow:hidden;background:#eee;display:block;border:0;padding:0}
@@ -892,6 +892,10 @@ main{
 .hero-empty{display:none}
 @media(max-width:700px){
  .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
+ .hero-loading{grid-template-columns:1fr;gap:0}
+ .hero-loading::before,.hero-loading::after{display:none}
+ .hero-loading::before{content:"";display:block;aspect-ratio:2.05/1;border-radius:14px;background:#e9edf2;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+ .hero-loading::after{display:none}
  .hero-viewport{border-radius:14px}
  .hero-track{gap:0;transition:transform .38s cubic-bezier(.22,.61,.36,1)}
  .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
@@ -973,7 +977,7 @@ main{
         <circle cx="12" cy="12" r="10"></circle>
       </svg>
 
-      <span id="accountName"><script>document.write(window.__mystoreCachedName||"Login");</script></span>
+      <span id="accountName">Login</span>
 
       <svg class="arrow"
         viewBox="0 0 24 24"
@@ -1162,7 +1166,7 @@ main{
 
     Cart
 
-    <span class="cart-number" id="cartCount"><script>if(window.__mystoreCachedCart>0){document.write(window.__mystoreCachedCart>99?"99+":String(window.__mystoreCachedCart));document.currentScript.parentElement.classList.add("show");}</script></span>
+    <span class="cart-number" id="cartCount">0</span>
 
   </button>
 
@@ -1238,7 +1242,11 @@ main{
 
 
 <!-- ================= HERO SLIDER ================= -->
-<section id="heroSlider" class="hero-slider" aria-label="Hero Slider">
+<section id="heroSlider" class="hero-slider loading" aria-label="Hero Slider">
+  <div id="heroLoading" class="hero-loading-wrap" aria-label="Loading hero slider">
+    <div class="hero-loading"></div>
+    <div class="hero-loading-dots"><span></span><span></span><span></span></div>
+  </div>
   <div class="hero-viewport" id="heroViewport">
     <button type="button" class="hero-arrow prev" id="heroPrev" aria-label="Previous banner" onclick="prevHeroSlide()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
@@ -1495,16 +1503,6 @@ function getFirstName(fullName){
    LOAD LOGIN STATE
 ========================================================= */
 
-function cacheAccountState(firstName){
-  try{localStorage.setItem("mystore_cached_logged_in","1");localStorage.setItem("mystore_cached_first_name",String(firstName||"User"));}catch(e){}
-}
-function clearAccountCache(){
-  try{localStorage.removeItem("mystore_cached_logged_in");localStorage.removeItem("mystore_cached_first_name");localStorage.removeItem("mystore_cached_cart_count");}catch(e){}
-}
-function cacheCartCount(total){
-  try{localStorage.setItem("mystore_cached_cart_count",String(Number(total||0)));}catch(e){}
-}
-
 async function loadAccount(){
 
   try{
@@ -1520,7 +1518,6 @@ async function loadAccount(){
     if(!user){
 
       /* NOT LOGGED IN */
-      clearAccountCache();
 
       accountName.textContent =
         "Login";
@@ -1587,7 +1584,6 @@ async function loadAccount(){
 
     }
 
-    cacheAccountState(firstName);
 
     accountName.textContent =
       firstName;
@@ -1622,13 +1618,63 @@ async function loadAccount(){
 
 supabaseClient.auth.onAuthStateChange(
   function(){
-    setTimeout(function(){
-      loadAccount();
-      loadCartCount();
-    },100);
+
+    setTimeout(
+      loadAccount,
+      100
+    );
+
   }
 );
 
+
+/* =========================================================
+   IMAGE LOADING HELPERS
+   Skeleton tabhi hide hoga jab visible images browser me load/decode ho jayein.
+========================================================= */
+function preloadImage(url){
+  return new Promise(function(resolve){
+    if(!url){resolve(false);return;}
+    const img=new Image();
+    let done=false;
+    const finish=function(ok){
+      if(done)return;
+      done=true;
+      resolve(ok);
+    };
+    img.onload=function(){
+      if(typeof img.decode === "function"){
+        img.decode().then(function(){finish(true);}).catch(function(){finish(true);});
+      }else{
+        finish(true);
+      }
+    };
+    img.onerror=function(){finish(false);};
+    img.src=url;
+    if(img.complete && img.naturalWidth>0){
+      if(typeof img.decode === "function"){
+        img.decode().then(function(){finish(true);}).catch(function(){finish(true);});
+      }else{
+        finish(true);
+      }
+    }
+  });
+}
+
+async function waitForContainerImages(container){
+  if(!container)return;
+  const imgs=Array.from(container.querySelectorAll("img"));
+  await Promise.all(imgs.map(function(img){
+    if(img.complete && img.naturalWidth>0){
+      return typeof img.decode === "function" ? img.decode().catch(function(){}) : Promise.resolve();
+    }
+    return new Promise(function(resolve){
+      const finish=function(){resolve();};
+      img.addEventListener("load",finish,{once:true});
+      img.addEventListener("error",finish,{once:true});
+    });
+  }));
+}
 
 /* =========================================================
    PRODUCTS
@@ -1657,17 +1703,21 @@ async function loadProducts(){
   );
 
 
-const {
-  data,
-  error
-} =
-await supabaseClient
-  .from("products")
-  .select("*")
-  .order(
-    "created_at",
-    { ascending: false }
-  );
+let data = null;
+let error = null;
+
+try {
+  const result = await supabaseClient
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .abortSignal(AbortSignal.timeout(12000));
+  data = result.data;
+  error = result.error;
+} catch (err) {
+  error = err;
+  console.error("Products request error:", err);
+}
 
 /* =========================================================
    LATEST PRODUCT ORDER
@@ -1688,10 +1738,6 @@ await supabaseClient
   return timeB - timeA;
 
 });
-  loading.style.display =
-    "none";
-
-
   if(error){
 
     console.error(error);
@@ -1728,6 +1774,11 @@ await supabaseClient
 
     }
   );
+
+  /* Keep the real product skeleton visible until the actual images
+     have loaded and decoded. */
+  await waitForContainerImages(grid);
+  loading.style.display = "none";
 
 }
 
@@ -1824,7 +1875,8 @@ function createProductCard(product){
         class="product-image"
         src="${escapeHtml(image)}"
         alt="${escapeHtml(title)}"
-        loading="lazy"
+        loading="eager"
+        decoding="async"
         onerror="this.style.display='none';"
       >
 
@@ -1976,42 +2028,66 @@ document
 
 /* =========================================================
    CART COUNT
-   cart_items has no quantity column: count actual cart rows.
-   Cached value prevents hard-refresh badge flash.
 ========================================================= */
+
 async function loadCartCount(){
-  const badge=document.getElementById("cartCount");
-  if(!badge)return;
+
+  const badge =
+    document.getElementById("cartCount");
+
+  if(!badge) return;
+
   try{
-    const {data:{user}}=await supabaseClient.auth.getUser();
+
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
+
     if(!user){
-      cacheCartCount(0);
-      badge.textContent="";
+      badge.textContent = "";
       badge.classList.remove("show");
       return;
     }
-    const {count,error}=await supabaseClient
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
       .from("cart_items")
-      .select("id",{count:"exact",head:true})
+      .select("id, quantity")
       .eq("user_id",user.id);
-    if(error){console.error("Cart count:",error);return;}
-    const total=Number(count||0);
-    cacheCartCount(total);
-    if(total>0){
-      badge.textContent=total>99?"99+":String(total);
+
+    if(error){
+      console.error("Cart count:",error);
+      badge.textContent = "";
+      badge.classList.remove("show");
+      return;
+    }
+
+    let total = 0;
+
+    (data || []).forEach(item => {
+      total += Number(item.quantity || 0);
+    });
+
+    if(total > 0){
+      badge.textContent = total > 99 ? "99+" : String(total);
       badge.classList.add("show");
     }else{
-      badge.textContent="";
+      badge.textContent = "";
       badge.classList.remove("show");
     }
-  }catch(error){console.error("Cart count:",error);}
-}
 
-/* Real-time cart badge update */
-supabaseClient
-  .channel("index-cart-count-live")
-  .on("postgres_changes",{event:"*",schema:"public",table:"cart_items"},function(){loadCartCount();})
-  .subscribe();
+  }catch(error){
+    console.error(error);
+    badge.textContent = "";
+    badge.classList.remove("show");
+  }
+}
 
 
 /* =========================================================
@@ -2115,8 +2191,6 @@ function goAccount(){
 
 async function logoutUser(){
 
-  clearAccountCache();
-
   await supabaseClient.auth.signOut();
 
   window.location.reload();
@@ -2143,16 +2217,43 @@ let heroTouchMoved=false;
 function heroEscape(value){return String(value||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 
 async function loadHeroSliders(){
-  const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots");
+  const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots"),loader=document.getElementById("heroLoading");
   if(!box||!track||!dots)return;
-  const {data,error}=await supabaseClient.from("hero_sliders").select("id,image_url,sort_order,is_active,created_at").eq("is_active",true).order("sort_order",{ascending:true}).order("created_at",{ascending:true});
-  if(error){console.error("Hero slider error:",error);box.classList.remove("show");stopHeroAutoSlide();return;}
+  box.classList.add("loading");
+  box.classList.remove("show");
+  if(loader) loader.style.display="block";
+  let data = null;
+  let error = null;
+  try {
+    const result = await supabaseClient
+      .from("hero_sliders")
+      .select("id,image_url,sort_order,is_active,created_at")
+      .eq("is_active",true)
+      .order("sort_order",{ascending:true})
+      .order("created_at",{ascending:true})
+      .abortSignal(AbortSignal.timeout(10000));
+    data = result.data;
+    error = result.error;
+  } catch(err) {
+    error = err;
+    console.error("Hero slider request error:", err);
+  }
+  if(error){console.error("Hero slider error:",error);box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();return;}
   heroSlides=(data||[]).filter(x=>x.image_url);
   heroIndex=Math.max(0,Math.min(heroIndex,Math.max(heroSlides.length-1,0)));
-  if(!heroSlides.length){box.classList.remove("show");stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
-  box.classList.add("show");
-  track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="${i===0?'eager':'lazy'}" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
+  if(!heroSlides.length){box.classList.remove("show");box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
+
+  /* First preload the banners. The skeleton stays exactly here until
+     the images are actually available/decoded, so no empty frame flash. */
+  await Promise.all(heroSlides.map(function(slide){return preloadImage(slide.image_url);}));
+
+  track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="eager" decoding="async" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
   dots.innerHTML=heroSlides.map((_,i)=>`<button type="button" class="hero-dot ${i===heroIndex?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i},true)"></button>`).join("");
+
+  await waitForContainerImages(track);
+  if(loader) loader.style.display="none";
+  box.classList.remove("loading");
+  box.classList.add("show");
   applyHeroPosition(false);setupHeroTouch();setupHeroAutoSlide();
 }
 function getHeroMaxIndex(){return window.innerWidth<=700?Math.max(heroSlides.length-1,0):Math.max(heroSlides.length-3,0);}
@@ -2167,7 +2268,7 @@ function getHeroStepPx(){
 function applyHeroPosition(animate=true){
   const track=document.getElementById("heroTrack");if(!track)return;
   heroIndex=Math.max(0,Math.min(heroIndex,getHeroMaxIndex()));
-  track.style.transition=animate?"transform .38s cubic-bezier(.22,.61,.36,1)":"none";
+  track.style.transition=animate ? "transform .38s cubic-bezier(.22,.61,.36,1)" : "none";
   track.style.transform=`translate3d(-${heroIndex*getHeroStepPx()}px,0,0)`;
   document.querySelectorAll(".hero-dot").forEach((dot,i)=>dot.classList.toggle("active",i===heroIndex));
   updateHeroArrows();
