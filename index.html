@@ -3253,7 +3253,7 @@ function renderLookingBanner(){
   const items=data.items.slice(0,LOOKING_MAX_ITEMS);
   const name=getLookingAccountName();
   root.innerHTML=`<section class="looking-banner" aria-label="${lookingEscape(name)} still looking for these">
-    <h2 class="looking-banner-title">${lookingEscape(name)} still looking for these?</h2>
+    <h2 class="looking-banner-title">${lookingEscape(name)}, still looking for these?</h2>
     <div class="looking-banner-viewport">
       <div class="looking-banner-track">${items.map(function(item){
         const image=String(item.image||"").trim();
