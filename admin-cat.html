@@ -2171,7 +2171,7 @@ const db =
 
 /* =========================================================
    ADMIN AUTHENTICATION
-   Only users whose Supabase Auth app_metadata.admin === true
+   Only authenticated users whose public.accounts.is_admin === true
    can enter the admin panel.
 ========================================================= */
 
@@ -2221,11 +2221,33 @@ function setAdminLoggedOut(){
 }
 
 async function isAuthorisedAdmin(user){
-    return !!(
-        user &&
-        user.app_metadata &&
-        user.app_metadata.admin === true
-    );
+
+    if(!user || !user.id){
+        return false;
+    }
+
+    try{
+        /*
+         * Admin status is checked through a SECURITY DEFINER
+         * Supabase RPC. This avoids accounts-table RLS recursion
+         * and never exposes another user's account data.
+         */
+        const { data, error } = await db.rpc(
+            "is_admin_user",
+            { check_user_id: user.id }
+        );
+
+        if(error){
+            console.error("Admin permission RPC failed:", error);
+            return false;
+        }
+
+        return data === true;
+
+    }catch(error){
+        console.error("Admin permission check failed:", error);
+        return false;
+    }
 }
 
 async function checkAdminSession(){
