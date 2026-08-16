@@ -2128,6 +2128,12 @@ function paintCartCount(count){
 
   [badge,mobileBadge].forEach(function(el){
     if(!el) return;
+
+    /* Real count milte hi loading state hatao.
+       cart-loading me display:none !important hai, isliye
+       sirf .show add karne se badge visible nahi hota tha. */
+    el.classList.remove("cart-loading");
+
     const visible=el.classList.contains("show");
     const current=el.textContent || "";
 
