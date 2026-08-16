@@ -7,6 +7,17 @@
 <title>MyStore - Online Shopping</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  try{
+    const cachedName=localStorage.getItem("mystore_cached_first_name");
+    const cachedUser=localStorage.getItem("mystore_cached_logged_in");
+    const cachedCart=Number(localStorage.getItem("mystore_cached_cart_count")||0);
+    window.__mystoreCachedName=(cachedUser==="1"&&cachedName)?cachedName:"Login";
+    window.__mystoreCachedCart=cachedUser==="1"?cachedCart:0;
+  }catch(e){window.__mystoreCachedName="Login";window.__mystoreCachedCart=0;}
+})();
+</script>
 
 <style>
 *{
@@ -107,10 +118,6 @@ body{
 
 .account-btn:hover{
   color:var(--violet);
-}
-
-#accountName{
-  min-width:42px;
 }
 
 .account-icon{
@@ -966,8 +973,7 @@ main{
         <circle cx="12" cy="12" r="10"></circle>
       </svg>
 
-      <span id="accountName">Login</span>
-      <script>(function(){try{const n=localStorage.getItem("mystore_auth_name");if(n)document.getElementById("accountName").textContent=n;}catch(e){}})();</script>
+      <span id="accountName"><script>document.write(window.__mystoreCachedName||"Login");</script></span>
 
       <svg class="arrow"
         viewBox="0 0 24 24"
@@ -1156,20 +1162,7 @@ main{
 
     Cart
 
-    <span class="cart-number" id="cartCount"></span>
-
-    <script>
-      (function(){
-        try{
-          const c=Number(localStorage.getItem("mystore_cart_count") || 0);
-          const b=document.getElementById("cartCount");
-          if(b && c>0){
-            b.textContent=c>99?"99+":String(c);
-            b.classList.add("show");
-          }
-        }catch(e){}
-      })();
-    </script>
+    <span class="cart-number" id="cartCount"><script>if(window.__mystoreCachedCart>0){document.write(window.__mystoreCachedCart>99?"99+":String(window.__mystoreCachedCart));document.currentScript.parentElement.classList.add("show");}</script></span>
 
   </button>
 
@@ -1502,6 +1495,16 @@ function getFirstName(fullName){
    LOAD LOGIN STATE
 ========================================================= */
 
+function cacheAccountState(firstName){
+  try{localStorage.setItem("mystore_cached_logged_in","1");localStorage.setItem("mystore_cached_first_name",String(firstName||"User"));}catch(e){}
+}
+function clearAccountCache(){
+  try{localStorage.removeItem("mystore_cached_logged_in");localStorage.removeItem("mystore_cached_first_name");localStorage.removeItem("mystore_cached_cart_count");}catch(e){}
+}
+function cacheCartCount(total){
+  try{localStorage.setItem("mystore_cached_cart_count",String(Number(total||0)));}catch(e){}
+}
+
 async function loadAccount(){
 
   try{
@@ -1517,8 +1520,7 @@ async function loadAccount(){
     if(!user){
 
       /* NOT LOGGED IN */
-
-      try{ localStorage.removeItem("mystore_auth_name"); }catch(e){}
+      clearAccountCache();
 
       accountName.textContent =
         "Login";
@@ -1529,8 +1531,8 @@ async function loadAccount(){
       loggedInMenu.style.display =
         "none";
 
-      accountName.classList.remove("auth-loading");
-      return false;
+      return;
+
     }
 
 
@@ -1585,8 +1587,7 @@ async function loadAccount(){
 
     }
 
-
-    try{ localStorage.setItem("mystore_auth_name",firstName); }catch(e){}
+    cacheAccountState(firstName);
 
     accountName.textContent =
       firstName;
@@ -1594,13 +1595,12 @@ async function loadAccount(){
     welcomeName.textContent =
       "Welcome, " + firstName + "!";
 
+
     loggedOutMenu.style.display =
       "none";
 
     loggedInMenu.style.display =
       "block";
-
-    return true;
 
   }
 
@@ -1611,19 +1611,10 @@ async function loadAccount(){
       error
     );
 
-    try{
-      const savedName = localStorage.getItem("mystore_auth_name");
-      if(savedName){
-        accountName.textContent = savedName;
-        return true;
-      }
-    }catch(e){}
-    accountName.textContent = "Login";
-    return false;
-
   }
 
 }
+
 
 /* =========================================================
    AUTH STATE
@@ -1631,13 +1622,10 @@ async function loadAccount(){
 
 supabaseClient.auth.onAuthStateChange(
   function(){
-
-    /* Re-read both account and cart after login/logout without a visual flash. */
-    setTimeout(async function(){
-      await loadAccount();
-      await loadCartCount();
+    setTimeout(function(){
+      loadAccount();
+      loadCartCount();
     },100);
-
   }
 );
 
@@ -1988,135 +1976,43 @@ document
 
 /* =========================================================
    CART COUNT
+   cart_items has no quantity column: count actual cart rows.
+   Cached value prevents hard-refresh badge flash.
 ========================================================= */
-
 async function loadCartCount(){
-
-  const badge =
-    document.getElementById("cartCount");
-
-  if(!badge) return;
-
-  /* Paint the last verified count immediately; Supabase corrects it below. */
+  const badge=document.getElementById("cartCount");
+  if(!badge)return;
   try{
-    const savedCount = Number(localStorage.getItem("mystore_cart_count") || 0);
-    if(savedCount > 0){
-      badge.textContent = savedCount > 99 ? "99+" : String(savedCount);
-      badge.classList.add("show");
-    }else{
-      badge.textContent = "";
-      badge.classList.remove("show");
-    }
-  }catch(e){}
-
-  try{
-
-    const {
-      data:{
-        user
-      }
-    } =
-    await supabaseClient.auth.getUser();
-
+    const {data:{user}}=await supabaseClient.auth.getUser();
     if(!user){
-      try{ localStorage.removeItem("mystore_cart_count"); }catch(e){}
-      badge.textContent = "";
+      cacheCartCount(0);
+      badge.textContent="";
       badge.classList.remove("show");
       return;
     }
-
-    let data = null;
-    let error = null;
-
-    /* Preferred: sum real item quantities. */
-    const quantityResult =
-      await supabaseClient
-        .from("cart_items")
-        .select("id, quantity")
-        .eq("user_id",user.id);
-
-    data = quantityResult.data;
-    error = quantityResult.error;
-
-    /*
-      Compatibility fallback:
-      If the current cart_items table does not have a quantity column,
-      count the actual cart rows instead of leaving the badge blank.
-    */
-    if(error){
-
-      console.warn("Cart quantity count fallback:",error.message || error);
-
-      const rowResult =
-        await supabaseClient
-          .from("cart_items")
-          .select("id")
-          .eq("user_id",user.id);
-
-      if(rowResult.error){
-        console.error("Cart count:",rowResult.error);
-        return;
-      }
-
-      const rowTotal =
-        Array.isArray(rowResult.data)
-          ? rowResult.data.length
-          : 0;
-
-      if(rowTotal > 0){
-        badge.textContent = rowTotal > 99 ? "99+" : String(rowTotal);
-        badge.classList.add("show");
-        try{ localStorage.setItem("mystore_cart_count",String(rowTotal)); }catch(e){}
-      }else{
-        badge.textContent = "";
-        badge.classList.remove("show");
-        try{ localStorage.setItem("mystore_cart_count","0"); }catch(e){}
-      }
-
-      return;
-    }
-
-    let total = 0;
-
-    (data || []).forEach(item => {
-      total += Number(item.quantity || 0);
-    });
-
-    if(total > 0){
-
-      badge.textContent =
-        total > 99 ? "99+" : String(total);
-
+    const {count,error}=await supabaseClient
+      .from("cart_items")
+      .select("id",{count:"exact",head:true})
+      .eq("user_id",user.id);
+    if(error){console.error("Cart count:",error);return;}
+    const total=Number(count||0);
+    cacheCartCount(total);
+    if(total>0){
+      badge.textContent=total>99?"99+":String(total);
       badge.classList.add("show");
-      try{ localStorage.setItem("mystore_cart_count",String(total)); }catch(e){}
-
     }else{
-
-      badge.textContent = "";
+      badge.textContent="";
       badge.classList.remove("show");
-      try{ localStorage.setItem("mystore_cart_count","0"); }catch(e){}
-
     }
-
-  }
-
-  catch(error){
-
-    console.error("Cart count:",error);
-    try{
-      const savedCount = Number(localStorage.getItem("mystore_cart_count") || 0);
-      if(savedCount > 0){
-        badge.textContent = savedCount > 99 ? "99+" : String(savedCount);
-        badge.classList.add("show");
-        return;
-      }
-    }catch(e){}
-    badge.textContent = "";
-    badge.classList.remove("show");
-
-  }
-
+  }catch(error){console.error("Cart count:",error);}
 }
+
+/* Real-time cart badge update */
+supabaseClient
+  .channel("index-cart-count-live")
+  .on("postgres_changes",{event:"*",schema:"public",table:"cart_items"},function(){loadCartCount();})
+  .subscribe();
+
 
 /* =========================================================
    ESCAPE HTML
@@ -2219,10 +2115,7 @@ function goAccount(){
 
 async function logoutUser(){
 
-  try{
-    localStorage.removeItem("mystore_auth_name");
-    localStorage.removeItem("mystore_cart_count");
-  }catch(e){}
+  clearAccountCache();
 
   await supabaseClient.auth.signOut();
 
@@ -2274,7 +2167,7 @@ function getHeroStepPx(){
 function applyHeroPosition(animate=true){
   const track=document.getElementById("heroTrack");if(!track)return;
   heroIndex=Math.max(0,Math.min(heroIndex,getHeroMaxIndex()));
-  track.style.transition = animate ? "transform .38s cubic-bezier(.22,.61,.36,1)" : "none";
+  track.style.transition=animate?"transform .38s cubic-bezier(.22,.61,.36,1)":"none";
   track.style.transform=`translate3d(-${heroIndex*getHeroStepPx()}px,0,0)`;
   document.querySelectorAll(".hero-dot").forEach((dot,i)=>dot.classList.toggle("active",i===heroIndex));
   updateHeroArrows();
@@ -2317,12 +2210,9 @@ supabaseClient
    START
 ========================================================= */
 
-/* Restore saved login first, then load the real cart badge. */
-(async function initUserUI(){
-  await loadAccount();
-  await loadCartCount();
-})();
+loadAccount();
 
+loadCartCount();
 loadHeroSliders();
 
 loadProducts();
