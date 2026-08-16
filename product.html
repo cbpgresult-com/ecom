@@ -880,106 +880,6 @@ a{text-decoration:none;color:inherit}
   transform:translate(-50%,0);
 }
 
-
-/* Desktop: let the new right-side content flow normally below the buttons. */
-@media(min-width:901px){
-  .info .cta{
-    margin-top:22px;
-  }
-}
-
-/* =========================================================
-   RIGHT SIDE EXTRA INFO
-   Independent from All Details / Slider
-========================================================= */
-.rightExtras{
-  margin-top:22px;
-  padding:18px 18px 16px;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  background:#fff;
-}
-
-.rightExtrasTitle{
-  margin:0 0 13px;
-  font-size:17px;
-  line-height:1.25;
-  font-weight:800;
-  color:#202124;
-}
-
-.rightBenefits{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.rightBenefit{
-  display:flex;
-  align-items:flex-start;
-  gap:9px;
-  padding:10px 9px;
-  border:1px solid #edf0f3;
-  border-radius:11px;
-  background:#fafbfc;
-}
-
-.rightBenefitIcon{
-  width:28px;
-  height:28px;
-  min-width:28px;
-  border-radius:8px;
-  background:#f1f5f9;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:15px;
-}
-
-.rightBenefitText{min-width:0}
-.rightBenefitText b{
-  display:block;
-  margin:0 0 3px;
-  color:#202124;
-  font-size:11px;
-  line-height:1.25;
-}
-.rightBenefitText span{
-  display:block;
-  color:#70757a;
-  font-size:10px;
-  line-height:1.3;
-}
-
-.rightOffer{
-  margin-top:12px;
-  padding:12px 13px;
-  border-radius:12px;
-  border:1px dashed #d9dde3;
-  background:#fffaf0;
-}
-.rightOffer b{
-  display:block;
-  color:#202124;
-  font-size:12px;
-  margin-bottom:3px;
-}
-.rightOffer span{
-  color:#666;
-  font-size:10px;
-  line-height:1.35;
-}
-
-@media(max-width:900px){
-  .rightExtras{margin-top:16px;padding:14px 12px}
-  .rightExtrasTitle{font-size:15px;margin-bottom:10px}
-  .rightBenefits{gap:7px}
-  .rightBenefit{padding:8px 7px;gap:7px}
-  .rightBenefitIcon{width:24px;height:24px;min-width:24px;font-size:13px}
-  .rightBenefitText b{font-size:10px}
-  .rightBenefitText span{font-size:9px}
-}
-
 /* ================= MOBILE ================= */
 
 @media(max-width:900px){
@@ -1734,6 +1634,52 @@ a{text-decoration:none;color:inherit}
     visibility:visible;
   }
 }
+
+/* =========================================================
+   ALL DETAILS ONLY - COMPACT SPECIFICATION ROWS
+   Scoped strictly to #allDetailsSection.
+   Does not affect slider, gallery, highlights, product info,
+   buttons, header, cart, or any other section.
+========================================================= */
+#allDetailsSection #panelSpecifications .detailRow{
+  min-height:34px !important;
+  height:34px !important;
+  padding:3px 0 !important;
+  margin:0 !important;
+  gap:18px !important;
+  box-sizing:border-box !important;
+  align-items:center !important;
+}
+
+#allDetailsSection #panelSpecifications .detailLabel{
+  margin:0 !important;
+  padding:0 !important;
+  line-height:1.15 !important;
+}
+
+#allDetailsSection #panelSpecifications .detailValue{
+  margin:0 !important;
+  padding:0 !important;
+  line-height:1.2 !important;
+}
+
+@media(max-width:900px){
+  #allDetailsSection #panelSpecifications .detailRow{
+    min-height:34px !important;
+    height:34px !important;
+    padding:3px 0 !important;
+  }
+}
+
+@media(max-width:420px){
+  #allDetailsSection #panelSpecifications .detailRow{
+    min-height:32px !important;
+    height:32px !important;
+    padding:2px 0 !important;
+    gap:12px !important;
+  }
+}
+
 </style>
 </head>
 
@@ -2374,50 +2320,6 @@ Buy at <span id="buyPrice"></span>
 
 </button>
 
-</div>
-
-<!-- ================= RIGHT SIDE EXTRA INFO ================= -->
-<div class="rightExtras" aria-label="Product benefits">
-  <h3 class="rightExtrasTitle">Why you'll love it</h3>
-
-  <div class="rightBenefits">
-    <div class="rightBenefit">
-      <div class="rightBenefitIcon">✓</div>
-      <div class="rightBenefitText">
-        <b>Premium Quality</b>
-        <span>Made for everyday use</span>
-      </div>
-    </div>
-
-    <div class="rightBenefit">
-      <div class="rightBenefitIcon">🎨</div>
-      <div class="rightBenefitText">
-        <b>Personalized Design</b>
-        <span>Make it special and unique</span>
-      </div>
-    </div>
-
-    <div class="rightBenefit">
-      <div class="rightBenefitIcon">⚡</div>
-      <div class="rightBenefitText">
-        <b>Smart Feature</b>
-        <span>Designed for a better experience</span>
-      </div>
-    </div>
-
-    <div class="rightBenefit">
-      <div class="rightBenefitIcon">🎁</div>
-      <div class="rightBenefitText">
-        <b>Perfect Gift</b>
-        <span>Great for special occasions</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="rightOffer">
-    <b>🎁 Special Offer</b>
-    <span>Enjoy the current product price and convenient delivery options at checkout.</span>
-  </div>
 </div>
 
 </div>
