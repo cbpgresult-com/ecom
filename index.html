@@ -109,6 +109,10 @@ body{
   color:var(--violet);
 }
 
+#accountName{
+  min-width:42px;
+}
+
 .account-icon{
   width:21px;
   height:21px;
@@ -866,17 +870,6 @@ main{
 /* ================= HERO SLIDER ================= */
 .hero-slider{width:90%;max-width:1250px;margin:14px auto 0;overflow:visible;display:none}
 .hero-slider.show{display:block}
-.hero-slider.loading{display:block}
-.hero-loading{width:100%;height:auto;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;background:transparent;position:relative;box-shadow:none}
-.hero-loading::before,.hero-loading::after{content:"";display:block;position:relative;inset:auto;height:auto;aspect-ratio:2.05/1;border-radius:15px;background:#e9edf2;box-shadow:0 2px 8px rgba(0,0,0,.04);animation:none}
-.hero-loading::before{box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.hero-loading{isolation:isolate}
-.hero-loading-dots{position:relative}
-.hero-loading-dots::before{content:"";position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:skeletonShimmer 1.15s infinite}
-.hero-loading-dots{height:13px;display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px;overflow:hidden;position:relative}
-.hero-loading-dots span{width:18px;height:4px;border-radius:99px;background:#e0e3e8;position:relative;overflow:hidden}
-.hero-loading-dots span::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:rgba(255,255,255,.75);animation:skeletonShimmer 1.15s infinite}
-
 .hero-viewport{width:100%;overflow:hidden;border-radius:15px;position:relative;touch-action:pan-y}
 .hero-track{display:flex;gap:14px;transform:translate3d(0,0,0);transition:transform .38s cubic-bezier(.22,.61,.36,1);will-change:transform}
 .hero-slide{flex:0 0 calc((100% - 28px)/3);aspect-ratio:2.05/1;border-radius:15px;overflow:hidden;background:#eee;display:block;border:0;padding:0}
@@ -892,10 +885,6 @@ main{
 .hero-empty{display:none}
 @media(max-width:700px){
  .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
- .hero-loading{grid-template-columns:1fr;gap:0}
- .hero-loading::before,.hero-loading::after{display:none}
- .hero-loading::before{content:"";display:block;aspect-ratio:2.05/1;border-radius:14px;background:#e9edf2;box-shadow:0 2px 8px rgba(0,0,0,.04)}
- .hero-loading::after{display:none}
  .hero-viewport{border-radius:14px}
  .hero-track{gap:0;transition:transform .38s cubic-bezier(.22,.61,.36,1)}
  .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
@@ -978,6 +967,7 @@ main{
       </svg>
 
       <span id="accountName">Login</span>
+      <script>(function(){try{const n=localStorage.getItem("mystore_auth_name");if(n)document.getElementById("accountName").textContent=n;}catch(e){}})();</script>
 
       <svg class="arrow"
         viewBox="0 0 24 24"
@@ -1166,7 +1156,20 @@ main{
 
     Cart
 
-    <span class="cart-number" id="cartCount">0</span>
+    <span class="cart-number" id="cartCount"></span>
+
+    <script>
+      (function(){
+        try{
+          const c=Number(localStorage.getItem("mystore_cart_count") || 0);
+          const b=document.getElementById("cartCount");
+          if(b && c>0){
+            b.textContent=c>99?"99+":String(c);
+            b.classList.add("show");
+          }
+        }catch(e){}
+      })();
+    </script>
 
   </button>
 
@@ -1242,11 +1245,7 @@ main{
 
 
 <!-- ================= HERO SLIDER ================= -->
-<section id="heroSlider" class="hero-slider loading" aria-label="Hero Slider">
-  <div id="heroLoading" class="hero-loading-wrap" aria-label="Loading hero slider">
-    <div class="hero-loading"></div>
-    <div class="hero-loading-dots"><span></span><span></span><span></span></div>
-  </div>
+<section id="heroSlider" class="hero-slider" aria-label="Hero Slider">
   <div class="hero-viewport" id="heroViewport">
     <button type="button" class="hero-arrow prev" id="heroPrev" aria-label="Previous banner" onclick="prevHeroSlide()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
@@ -1519,6 +1518,8 @@ async function loadAccount(){
 
       /* NOT LOGGED IN */
 
+      try{ localStorage.removeItem("mystore_auth_name"); }catch(e){}
+
       accountName.textContent =
         "Login";
 
@@ -1528,8 +1529,8 @@ async function loadAccount(){
       loggedInMenu.style.display =
         "none";
 
-      return;
-
+      accountName.classList.remove("auth-loading");
+      return false;
     }
 
 
@@ -1585,18 +1586,21 @@ async function loadAccount(){
     }
 
 
+    try{ localStorage.setItem("mystore_auth_name",firstName); }catch(e){}
+
     accountName.textContent =
       firstName;
 
     welcomeName.textContent =
       "Welcome, " + firstName + "!";
 
-
     loggedOutMenu.style.display =
       "none";
 
     loggedInMenu.style.display =
       "block";
+
+    return true;
 
   }
 
@@ -1607,10 +1611,19 @@ async function loadAccount(){
       error
     );
 
+    try{
+      const savedName = localStorage.getItem("mystore_auth_name");
+      if(savedName){
+        accountName.textContent = savedName;
+        return true;
+      }
+    }catch(e){}
+    accountName.textContent = "Login";
+    return false;
+
   }
 
 }
-
 
 /* =========================================================
    AUTH STATE
@@ -1619,62 +1632,15 @@ async function loadAccount(){
 supabaseClient.auth.onAuthStateChange(
   function(){
 
-    setTimeout(
-      loadAccount,
-      100
-    );
+    /* Re-read both account and cart after login/logout without a visual flash. */
+    setTimeout(async function(){
+      await loadAccount();
+      await loadCartCount();
+    },100);
 
   }
 );
 
-
-/* =========================================================
-   IMAGE LOADING HELPERS
-   Skeleton tabhi hide hoga jab visible images browser me load/decode ho jayein.
-========================================================= */
-function preloadImage(url){
-  return new Promise(function(resolve){
-    if(!url){resolve(false);return;}
-    const img=new Image();
-    let done=false;
-    const finish=function(ok){
-      if(done)return;
-      done=true;
-      resolve(ok);
-    };
-    img.onload=function(){
-      if(typeof img.decode === "function"){
-        img.decode().then(function(){finish(true);}).catch(function(){finish(true);});
-      }else{
-        finish(true);
-      }
-    };
-    img.onerror=function(){finish(false);};
-    img.src=url;
-    if(img.complete && img.naturalWidth>0){
-      if(typeof img.decode === "function"){
-        img.decode().then(function(){finish(true);}).catch(function(){finish(true);});
-      }else{
-        finish(true);
-      }
-    }
-  });
-}
-
-async function waitForContainerImages(container){
-  if(!container)return;
-  const imgs=Array.from(container.querySelectorAll("img"));
-  await Promise.all(imgs.map(function(img){
-    if(img.complete && img.naturalWidth>0){
-      return typeof img.decode === "function" ? img.decode().catch(function(){}) : Promise.resolve();
-    }
-    return new Promise(function(resolve){
-      const finish=function(){resolve();};
-      img.addEventListener("load",finish,{once:true});
-      img.addEventListener("error",finish,{once:true});
-    });
-  }));
-}
 
 /* =========================================================
    PRODUCTS
@@ -1703,21 +1669,17 @@ async function loadProducts(){
   );
 
 
-let data = null;
-let error = null;
-
-try {
-  const result = await supabaseClient
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .abortSignal(AbortSignal.timeout(12000));
-  data = result.data;
-  error = result.error;
-} catch (err) {
-  error = err;
-  console.error("Products request error:", err);
-}
+const {
+  data,
+  error
+} =
+await supabaseClient
+  .from("products")
+  .select("*")
+  .order(
+    "created_at",
+    { ascending: false }
+  );
 
 /* =========================================================
    LATEST PRODUCT ORDER
@@ -1738,6 +1700,10 @@ try {
   return timeB - timeA;
 
 });
+  loading.style.display =
+    "none";
+
+
   if(error){
 
     console.error(error);
@@ -1774,11 +1740,6 @@ try {
 
     }
   );
-
-  /* Keep the real product skeleton visible until the actual images
-     have loaded and decoded. */
-  await waitForContainerImages(grid);
-  loading.style.display = "none";
 
 }
 
@@ -1875,8 +1836,7 @@ function createProductCard(product){
         class="product-image"
         src="${escapeHtml(image)}"
         alt="${escapeHtml(title)}"
-        loading="eager"
-        decoding="async"
+        loading="lazy"
         onerror="this.style.display='none';"
       >
 
@@ -2037,6 +1997,18 @@ async function loadCartCount(){
 
   if(!badge) return;
 
+  /* Paint the last verified count immediately; Supabase corrects it below. */
+  try{
+    const savedCount = Number(localStorage.getItem("mystore_cart_count") || 0);
+    if(savedCount > 0){
+      badge.textContent = savedCount > 99 ? "99+" : String(savedCount);
+      badge.classList.add("show");
+    }else{
+      badge.textContent = "";
+      badge.classList.remove("show");
+    }
+  }catch(e){}
+
   try{
 
     const {
@@ -2047,24 +2019,60 @@ async function loadCartCount(){
     await supabaseClient.auth.getUser();
 
     if(!user){
+      try{ localStorage.removeItem("mystore_cart_count"); }catch(e){}
       badge.textContent = "";
       badge.classList.remove("show");
       return;
     }
 
-    const {
-      data,
-      error
-    } =
-    await supabaseClient
-      .from("cart_items")
-      .select("id, quantity")
-      .eq("user_id",user.id);
+    let data = null;
+    let error = null;
 
+    /* Preferred: sum real item quantities. */
+    const quantityResult =
+      await supabaseClient
+        .from("cart_items")
+        .select("id, quantity")
+        .eq("user_id",user.id);
+
+    data = quantityResult.data;
+    error = quantityResult.error;
+
+    /*
+      Compatibility fallback:
+      If the current cart_items table does not have a quantity column,
+      count the actual cart rows instead of leaving the badge blank.
+    */
     if(error){
-      console.error("Cart count:",error);
-      badge.textContent = "";
-      badge.classList.remove("show");
+
+      console.warn("Cart quantity count fallback:",error.message || error);
+
+      const rowResult =
+        await supabaseClient
+          .from("cart_items")
+          .select("id")
+          .eq("user_id",user.id);
+
+      if(rowResult.error){
+        console.error("Cart count:",rowResult.error);
+        return;
+      }
+
+      const rowTotal =
+        Array.isArray(rowResult.data)
+          ? rowResult.data.length
+          : 0;
+
+      if(rowTotal > 0){
+        badge.textContent = rowTotal > 99 ? "99+" : String(rowTotal);
+        badge.classList.add("show");
+        try{ localStorage.setItem("mystore_cart_count",String(rowTotal)); }catch(e){}
+      }else{
+        badge.textContent = "";
+        badge.classList.remove("show");
+        try{ localStorage.setItem("mystore_cart_count","0"); }catch(e){}
+      }
+
       return;
     }
 
@@ -2075,20 +2083,40 @@ async function loadCartCount(){
     });
 
     if(total > 0){
-      badge.textContent = total > 99 ? "99+" : String(total);
+
+      badge.textContent =
+        total > 99 ? "99+" : String(total);
+
       badge.classList.add("show");
+      try{ localStorage.setItem("mystore_cart_count",String(total)); }catch(e){}
+
     }else{
+
       badge.textContent = "";
       badge.classList.remove("show");
+      try{ localStorage.setItem("mystore_cart_count","0"); }catch(e){}
+
     }
 
-  }catch(error){
-    console.error(error);
+  }
+
+  catch(error){
+
+    console.error("Cart count:",error);
+    try{
+      const savedCount = Number(localStorage.getItem("mystore_cart_count") || 0);
+      if(savedCount > 0){
+        badge.textContent = savedCount > 99 ? "99+" : String(savedCount);
+        badge.classList.add("show");
+        return;
+      }
+    }catch(e){}
     badge.textContent = "";
     badge.classList.remove("show");
-  }
-}
 
+  }
+
+}
 
 /* =========================================================
    ESCAPE HTML
@@ -2191,6 +2219,11 @@ function goAccount(){
 
 async function logoutUser(){
 
+  try{
+    localStorage.removeItem("mystore_auth_name");
+    localStorage.removeItem("mystore_cart_count");
+  }catch(e){}
+
   await supabaseClient.auth.signOut();
 
   window.location.reload();
@@ -2217,43 +2250,16 @@ let heroTouchMoved=false;
 function heroEscape(value){return String(value||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 
 async function loadHeroSliders(){
-  const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots"),loader=document.getElementById("heroLoading");
+  const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots");
   if(!box||!track||!dots)return;
-  box.classList.add("loading");
-  box.classList.remove("show");
-  if(loader) loader.style.display="block";
-  let data = null;
-  let error = null;
-  try {
-    const result = await supabaseClient
-      .from("hero_sliders")
-      .select("id,image_url,sort_order,is_active,created_at")
-      .eq("is_active",true)
-      .order("sort_order",{ascending:true})
-      .order("created_at",{ascending:true})
-      .abortSignal(AbortSignal.timeout(10000));
-    data = result.data;
-    error = result.error;
-  } catch(err) {
-    error = err;
-    console.error("Hero slider request error:", err);
-  }
-  if(error){console.error("Hero slider error:",error);box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();return;}
+  const {data,error}=await supabaseClient.from("hero_sliders").select("id,image_url,sort_order,is_active,created_at").eq("is_active",true).order("sort_order",{ascending:true}).order("created_at",{ascending:true});
+  if(error){console.error("Hero slider error:",error);box.classList.remove("show");stopHeroAutoSlide();return;}
   heroSlides=(data||[]).filter(x=>x.image_url);
   heroIndex=Math.max(0,Math.min(heroIndex,Math.max(heroSlides.length-1,0)));
-  if(!heroSlides.length){box.classList.remove("show");box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
-
-  /* First preload the banners. The skeleton stays exactly here until
-     the images are actually available/decoded, so no empty frame flash. */
-  await Promise.all(heroSlides.map(function(slide){return preloadImage(slide.image_url);}));
-
-  track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="eager" decoding="async" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
-  dots.innerHTML=heroSlides.map((_,i)=>`<button type="button" class="hero-dot ${i===heroIndex?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i},true)"></button>`).join("");
-
-  await waitForContainerImages(track);
-  if(loader) loader.style.display="none";
-  box.classList.remove("loading");
+  if(!heroSlides.length){box.classList.remove("show");stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
   box.classList.add("show");
+  track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="${i===0?'eager':'lazy'}" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
+  dots.innerHTML=heroSlides.map((_,i)=>`<button type="button" class="hero-dot ${i===heroIndex?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i},true)"></button>`).join("");
   applyHeroPosition(false);setupHeroTouch();setupHeroAutoSlide();
 }
 function getHeroMaxIndex(){return window.innerWidth<=700?Math.max(heroSlides.length-1,0):Math.max(heroSlides.length-3,0);}
@@ -2268,7 +2274,7 @@ function getHeroStepPx(){
 function applyHeroPosition(animate=true){
   const track=document.getElementById("heroTrack");if(!track)return;
   heroIndex=Math.max(0,Math.min(heroIndex,getHeroMaxIndex()));
-  track.style.transition=animate ? "transform .38s cubic-bezier(.22,.61,.36,1)" : "none";
+  track.style.transition = animate ? "transform .38s cubic-bezier(.22,.61,.36,1)" : "none";
   track.style.transform=`translate3d(-${heroIndex*getHeroStepPx()}px,0,0)`;
   document.querySelectorAll(".hero-dot").forEach((dot,i)=>dot.classList.toggle("active",i===heroIndex));
   updateHeroArrows();
@@ -2311,9 +2317,12 @@ supabaseClient
    START
 ========================================================= */
 
-loadAccount();
+/* Restore saved login first, then load the real cart badge. */
+(async function initUserUI(){
+  await loadAccount();
+  await loadCartCount();
+})();
 
-loadCartCount();
 loadHeroSliders();
 
 loadProducts();
