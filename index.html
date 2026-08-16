@@ -2043,7 +2043,13 @@ async function loadAccount(){
 ========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
-  function(){
+  function(event, session){
+
+    /* New login starts a completely fresh Still Looking journey.
+       Do not clear on INITIAL_SESSION so a normal page refresh keeps progress. */
+    if(event === "SIGNED_IN"){
+      try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
+    }
 
     loadAccount();
     loadCartCount();
@@ -2992,6 +2998,9 @@ async function logoutUser(){
 
   clearCartCountCache();
   cartCountUserId="";
+
+  /* Logout also resets the automatic Still Looking history. */
+  try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
 
   await supabaseClient.auth.signOut();
 
