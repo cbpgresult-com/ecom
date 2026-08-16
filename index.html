@@ -1636,17 +1636,21 @@ async function loadProducts(){
   );
 
 
-const {
-  data,
-  error
-} =
-await supabaseClient
-  .from("products")
-  .select("*")
-  .order(
-    "created_at",
-    { ascending: false }
-  );
+let data = null;
+let error = null;
+
+try {
+  const result = await supabaseClient
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .abortSignal(AbortSignal.timeout(12000));
+  data = result.data;
+  error = result.error;
+} catch (err) {
+  error = err;
+  console.error("Products request error:", err);
+}
 
 /* =========================================================
    LATEST PRODUCT ORDER
@@ -2146,7 +2150,22 @@ function heroEscape(value){return String(value||"").replace(/&/g,"&amp;").replac
 async function loadHeroSliders(){
   const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots");
   if(!box||!track||!dots)return;
-  const {data,error}=await supabaseClient.from("hero_sliders").select("id,image_url,sort_order,is_active,created_at").eq("is_active",true).order("sort_order",{ascending:true}).order("created_at",{ascending:true});
+  let data = null;
+  let error = null;
+  try {
+    const result = await supabaseClient
+      .from("hero_sliders")
+      .select("id,image_url,sort_order,is_active,created_at")
+      .eq("is_active",true)
+      .order("sort_order",{ascending:true})
+      .order("created_at",{ascending:true})
+      .abortSignal(AbortSignal.timeout(10000));
+    data = result.data;
+    error = result.error;
+  } catch(err) {
+    error = err;
+    console.error("Hero slider request error:", err);
+  }
   if(error){console.error("Hero slider error:",error);box.classList.remove("show");stopHeroAutoSlide();return;}
   heroSlides=(data||[]).filter(x=>x.image_url);
   heroIndex=Math.max(0,Math.min(heroIndex,Math.max(heroSlides.length-1,0)));
@@ -2168,7 +2187,7 @@ function getHeroStepPx(){
 function applyHeroPosition(animate=true){
   const track=document.getElementById("heroTrack");if(!track)return;
   heroIndex=Math.max(0,Math.min(heroIndex,getHeroMaxIndex()));
-  track.style.transition=animate?"transform .38s cubic-bezier(.22,.61,.36,1)":"none":"none";
+  track.style.transition=animate ? "transform .38s cubic-bezier(.22,.61,.36,1)" : "none";
   track.style.transform=`translate3d(-${heroIndex*getHeroStepPx()}px,0,0)`;
   document.querySelectorAll(".hero-dot").forEach((dot,i)=>dot.classList.toggle("active",i===heroIndex));
   updateHeroArrows();
