@@ -1913,6 +1913,22 @@ a{text-decoration:none;color:inherit}
 .mobileProductCartBadge.show{display:block}
 }
 </style>
+
+<style>
+.product-loading-spinner{
+  width:26px;
+  height:26px;
+  border:3px solid #eadcff;
+  border-top-color:#7c3aed;
+  border-radius:50%;
+  display:block;
+  animation:productLoadingSpin .7s linear infinite;
+}
+@keyframes productLoadingSpin{
+  to{transform:rotate(360deg);}
+}
+</style>
+
 </head>
 
 <body>
@@ -2202,7 +2218,7 @@ a{text-decoration:none;color:inherit}
 
 <div id="loading"
 style="background:#fff;border-radius:20px;min-height:550px;display:flex;align-items:center;justify-content:center">
-<b>Loading product...</b>
+  <span class="product-loading-spinner" aria-label="Loading"></span>
 </div>
 
 <section id="product" class="product">
