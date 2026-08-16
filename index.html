@@ -867,9 +867,13 @@ main{
 .hero-slider{width:90%;max-width:1250px;margin:14px auto 0;overflow:visible;display:none}
 .hero-slider.show{display:block}
 .hero-slider.loading{display:block}
-.hero-loading{width:100%;aspect-ratio:2.05/1;border-radius:15px;overflow:hidden;background:#e9edf2;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.hero-loading::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:skeletonShimmer 1.15s infinite}
-.hero-loading-dots{height:13px;display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px}
+.hero-loading{width:100%;height:auto;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;background:transparent;position:relative;box-shadow:none}
+.hero-loading::before,.hero-loading::after{content:"";display:block;position:relative;inset:auto;height:auto;aspect-ratio:2.05/1;border-radius:15px;background:#e9edf2;box-shadow:0 2px 8px rgba(0,0,0,.04);animation:none}
+.hero-loading::before{box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.hero-loading{isolation:isolate}
+.hero-loading-dots{position:relative}
+.hero-loading-dots::before{content:"";position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:skeletonShimmer 1.15s infinite}
+.hero-loading-dots{height:13px;display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px;overflow:hidden;position:relative}
 .hero-loading-dots span{width:18px;height:4px;border-radius:99px;background:#e0e3e8;position:relative;overflow:hidden}
 .hero-loading-dots span::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:rgba(255,255,255,.75);animation:skeletonShimmer 1.15s infinite}
 
@@ -888,7 +892,10 @@ main{
 .hero-empty{display:none}
 @media(max-width:700px){
  .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
- .hero-loading{border-radius:14px}
+ .hero-loading{grid-template-columns:1fr;gap:0}
+ .hero-loading::before,.hero-loading::after{display:none}
+ .hero-loading::before{content:"";display:block;aspect-ratio:2.05/1;border-radius:14px;background:#e9edf2;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+ .hero-loading::after{display:none}
  .hero-viewport{border-radius:14px}
  .hero-track{gap:0;transition:transform .38s cubic-bezier(.22,.61,.36,1)}
  .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
@@ -1622,6 +1629,54 @@ supabaseClient.auth.onAuthStateChange(
 
 
 /* =========================================================
+   IMAGE LOADING HELPERS
+   Skeleton tabhi hide hoga jab visible images browser me load/decode ho jayein.
+========================================================= */
+function preloadImage(url){
+  return new Promise(function(resolve){
+    if(!url){resolve(false);return;}
+    const img=new Image();
+    let done=false;
+    const finish=function(ok){
+      if(done)return;
+      done=true;
+      resolve(ok);
+    };
+    img.onload=function(){
+      if(typeof img.decode === "function"){
+        img.decode().then(function(){finish(true);}).catch(function(){finish(true);});
+      }else{
+        finish(true);
+      }
+    };
+    img.onerror=function(){finish(false);};
+    img.src=url;
+    if(img.complete && img.naturalWidth>0){
+      if(typeof img.decode === "function"){
+        img.decode().then(function(){finish(true);}).catch(function(){finish(true);});
+      }else{
+        finish(true);
+      }
+    }
+  });
+}
+
+async function waitForContainerImages(container){
+  if(!container)return;
+  const imgs=Array.from(container.querySelectorAll("img"));
+  await Promise.all(imgs.map(function(img){
+    if(img.complete && img.naturalWidth>0){
+      return typeof img.decode === "function" ? img.decode().catch(function(){}) : Promise.resolve();
+    }
+    return new Promise(function(resolve){
+      const finish=function(){resolve();};
+      img.addEventListener("load",finish,{once:true});
+      img.addEventListener("error",finish,{once:true});
+    });
+  }));
+}
+
+/* =========================================================
    PRODUCTS
 ========================================================= */
 
@@ -1683,10 +1738,6 @@ try {
   return timeB - timeA;
 
 });
-  loading.style.display =
-    "none";
-
-
   if(error){
 
     console.error(error);
@@ -1723,6 +1774,11 @@ try {
 
     }
   );
+
+  /* Keep the real product skeleton visible until the actual images
+     have loaded and decoded. */
+  await waitForContainerImages(grid);
+  loading.style.display = "none";
 
 }
 
@@ -1819,7 +1875,8 @@ function createProductCard(product){
         class="product-image"
         src="${escapeHtml(image)}"
         alt="${escapeHtml(title)}"
-        loading="lazy"
+        loading="eager"
+        decoding="async"
         onerror="this.style.display='none';"
       >
 
@@ -2185,11 +2242,18 @@ async function loadHeroSliders(){
   heroSlides=(data||[]).filter(x=>x.image_url);
   heroIndex=Math.max(0,Math.min(heroIndex,Math.max(heroSlides.length-1,0)));
   if(!heroSlides.length){box.classList.remove("show");box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
+
+  /* First preload the banners. The skeleton stays exactly here until
+     the images are actually available/decoded, so no empty frame flash. */
+  await Promise.all(heroSlides.map(function(slide){return preloadImage(slide.image_url);}));
+
+  track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="eager" decoding="async" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
+  dots.innerHTML=heroSlides.map((_,i)=>`<button type="button" class="hero-dot ${i===heroIndex?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i},true)"></button>`).join("");
+
+  await waitForContainerImages(track);
   if(loader) loader.style.display="none";
   box.classList.remove("loading");
   box.classList.add("show");
-  track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="${i===0?'eager':'lazy'}" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
-  dots.innerHTML=heroSlides.map((_,i)=>`<button type="button" class="hero-dot ${i===heroIndex?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i},true)"></button>`).join("");
   applyHeroPosition(false);setupHeroTouch();setupHeroAutoSlide();
 }
 function getHeroMaxIndex(){return window.innerWidth<=700?Math.max(heroSlides.length-1,0):Math.max(heroSlides.length-3,0);}
