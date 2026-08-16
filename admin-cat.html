@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyStore Admin - Categories</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f6f7fb;color:#202027}.wrap{max-width:1200px;margin:auto;padding:24px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.top h1{font-size:26px}.top button,.primary{border:0;border-radius:10px;background:#5b45e8;color:#fff;padding:12px 17px;font-weight:700;cursor:pointer}
+.layout{display:grid;grid-template-columns:330px 1fr;gap:20px}.card{background:#fff;border:1px solid #e7e7ee;border-radius:16px;padding:18px;box-shadow:0 4px 18px #00000008}.card h2{font-size:18px;margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:700;margin:13px 0 7px}input,select{width:100%;padding:11px 12px;border:1px solid #dcdce5;border-radius:9px;outline:none}input:focus,select:focus{border-color:#5b45e8}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.preview{height:100px;border-radius:12px;background:#f3f3f7;margin-top:10px;display:grid;place-items:center;overflow:hidden;color:#888}.preview img{width:100%;height:100%;object-fit:cover}
+.list{display:grid;gap:12px}.category{border:1px solid #e5e5eb;border-radius:12px;padding:13px}.category-head{display:flex;align-items:center;gap:10px}.category-head img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#f2f2f6}.category-head strong{flex:1}.mini-actions button{border:0;background:#f1efff;color:#5b45e8;border-radius:7px;padding:6px 8px;margin-left:4px;cursor:pointer}.subs{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.sub{background:#f6f6f9;border-radius:20px;padding:7px 10px;font-size:12px}
+.section-box{border-top:1px solid #eee;margin-top:16px;padding-top:14px}.sub-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px}.small{font-size:12px;color:#777;margin-top:5px}.danger{background:#fff0f1!important;color:#d33!important}
+.status{margin-top:12px;font-size:13px;min-height:18px}.saved{color:#17834a}.err{color:#c33}
+@media(max-width:800px){.wrap{padding:14px}.layout{grid-template-columns:1fr}.top{gap:10px}.top h1{font-size:21px}.sub-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><h1>Categories Manager</h1><button onclick="saveAll()">Save Categories</button></div>
+<div class="layout">
+<div class="card">
+<h2>Add / Edit Category</h2>
+<label>Category Name</label><input id="catName" placeholder="e.g. Fashion">
+<label>Category Image Link</label><input id="catImage" placeholder="https://.../fashion.jpg" oninput="preview()">
+<div class="preview" id="preview">Image preview</div>
+<div class="section-box">
+<label>Section Name</label><input id="sectionName" placeholder="e.g. Fashion Categories">
+</div>
+<div class="section-box">
+<label>Subcategory Name</label><input id="subName" placeholder="e.g. Sarees">
+<label>Subcategory Image Link</label><input id="subImage" placeholder="https://.../saree.jpg">
+<button class="primary" style="margin-top:12px;width:100%" onclick="addSub()">Add Subcategory</button>
+</div>
+<div class="status" id="status"></div>
+</div>
+<div class="card">
+<h2>Categories</h2>
+<div class="list" id="list"></div>
+</div>
+</div>
+</div>
+<script>
+const KEY="mystore_categories_admin_v1";
+let data=JSON.parse(localStorage.getItem(KEY)||"null")||[
+{id:"popular",name:"Popular",image:"",sections:[{title:"Popular Categories",items:[]}]}
+];
+let editing=null;
+function uid(){return "c_"+Date.now()+"_"+Math.random().toString(36).slice(2,7)}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function preview(){const u=catImage.value.trim();previewEl.innerHTML=u?`<img src="${esc(u)}" onerror="this.style.display='none'">`:"Image preview"}
+const previewEl=document.getElementById("preview");
+function addSub(){
+const name=catName.value.trim(), img=catImage.value.trim(), sec=sectionName.value.trim()||"Categories", sn=subName.value.trim(), si=subImage.value.trim();
+if(!name){msg("Category name required",true);return}
+if(!sn){msg("Subcategory name required",true);return}
+let c=editing?data.find(x=>x.id===editing):null;
+if(!c){c={id:uid(),name,image:img,sections:[]};data.push(c);editing=c.id}
+c.name=name;c.image=img;
+let s=c.sections.find(x=>x.title===sec);if(!s){s={title:sec,items:[]};c.sections.push(s)}
+s.items.push({name:sn,image:si});
+render();clearSub();msg("Subcategory added.",false)
+}
+function newCategory(){editing=null;catName.value="";catImage.value="";sectionName.value="";subName.value="";subImage.value="";previewEl.innerHTML="Image preview"}
+function editCat(id){const c=data.find(x=>x.id===id);if(!c)return;editing=id;catName.value=c.name;catImage.value=c.image||"";sectionName.value=c.sections[0]?.title||"";preview();window.scrollTo({top:0,behavior:"smooth"})}
+function deleteCat(id){if(!confirm("Delete this category?"))return;data=data.filter(x=>x.id!==id);if(editing===id)newCategory();render()}
+function deleteSub(cid,si,ii){data.find(x=>x.id===cid).sections[si].items.splice(ii,1);render()}
+function render(){
+list.innerHTML=data.map(c=>`<div class="category"><div class="category-head">${c.image?`<img src="${esc(c.image)}">`:`<div style="width:48px;height:48px;border-radius:50%;background:#f0eff7;display:grid;place-items:center">${esc(c.name[0])}</div>`}<strong>${esc(c.name)}</strong><div class="mini-actions"><button onclick="editCat('${c.id}')">Edit</button><button class="danger" onclick="deleteCat('${c.id}')">Delete</button></div></div>${c.sections.map((s,si)=>`<div class="small">${esc(s.title)}</div><div class="subs">${s.items.map((i,ii)=>`<span class="sub">${esc(i.name)} <button style="border:0;background:none;color:#c33;cursor:pointer" onclick="deleteSub('${c.id}',${si},${ii})">×</button></span>`).join("")}</div>`).join("")}</div>`).join("")}
+function clearSub(){subName.value="";subImage.value=""}
+function saveAll(){localStorage.setItem(KEY,JSON.stringify(data));msg("Saved successfully. Categories page ko data mil jayega.",false)}
+function msg(t,e){status.textContent=t;status.className="status "+(e?"err":"saved")}
+render();
+</script>
+</body>
+</html>
