@@ -995,6 +995,29 @@ main{
  .hero-dots{margin-top:6px}
  .hero-dot{width:7px;height:4px}.hero-dot.active{width:18px}
 }
+
+/* =========================================================
+   LAPTOP/DESKTOP PRODUCT NAVIGATION LOADER - SPINNER ONLY
+   Do not show back/search/cart header while navigating.
+   Mobile remains completely untouched.
+========================================================= */
+@media(min-width:901px){
+  #productNavLoader .nav-head{
+    display:none !important;
+  }
+
+  #productNavLoader{
+    background:#fff !important;
+  }
+
+  #productNavLoader .nav-body{
+    flex:1 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+}
+
 </style>
 </head>
 
