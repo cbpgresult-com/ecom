@@ -1331,6 +1331,157 @@ label{
     }
 }
 
+
+/* =========================
+   HOME BUTTON
+   ========================= */
+.admin-home-btn{
+    display:inline-flex !important;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    min-width:78px;
+}
+.home-icon{
+    font-size:18px;
+    line-height:1;
+    font-weight:900;
+    transform:translateY(-1px);
+}
+.admin-home-btn.tab-active{
+    background:linear-gradient(135deg,#5b45e8,#6d50f4) !important;
+    color:#fff !important;
+    box-shadow:0 8px 18px rgba(91,69,232,.22);
+}
+@media(max-width:700px){
+    .admin-home-btn{min-width:64px;padding-left:11px !important;padding-right:11px !important;}
+}
+
+/* =========================
+   ADMIN WELCOME SCREEN
+   ========================= */
+.admin-welcome{
+    min-height:calc(100vh - 250px);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:58px 20px 70px;
+    box-sizing:border-box;
+}
+.admin-welcome-card{
+    position:relative;
+    width:min(650px,100%);
+    min-height:320px;
+    box-sizing:border-box;
+    overflow:hidden;
+    border:1px solid rgba(91,69,232,.12);
+    border-radius:30px;
+    background:
+      radial-gradient(circle at 85% 18%,rgba(110,91,255,.16),transparent 30%),
+      radial-gradient(circle at 15% 88%,rgba(124,92,255,.10),transparent 30%),
+      linear-gradient(145deg,#ffffff 0%,#fbfaff 52%,#f6f4ff 100%);
+    box-shadow:0 25px 70px rgba(46,35,120,.13),0 5px 18px rgba(30,25,70,.05);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:45px 35px;
+}
+.admin-welcome-card::before,
+.admin-welcome-card::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+}
+.admin-welcome-card::before{
+    width:150px;height:150px;
+    right:-65px;top:-65px;
+    border:28px solid rgba(91,69,232,.06);
+}
+.admin-welcome-card::after{
+    width:110px;height:110px;
+    left:-65px;bottom:-65px;
+    border:22px solid rgba(91,69,232,.055);
+}
+.admin-welcome-badge{
+    position:relative;
+    z-index:1;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 13px;
+    border-radius:999px;
+    background:#efedff;
+    color:#5b45e8;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+    margin-bottom:17px;
+}
+.admin-welcome-dot{
+    width:7px;height:7px;border-radius:50%;
+    background:#5b45e8;
+    box-shadow:0 0 0 5px rgba(91,69,232,.10);
+}
+.admin-welcome-title{
+    position:relative;
+    z-index:1;
+    margin:0;
+    font-size:48px;
+    line-height:1;
+    letter-spacing:-1.8px;
+    font-weight:900;
+    color:#1d1e2e;
+}
+.admin-welcome-subtitle{
+    position:relative;
+    z-index:1;
+    margin:15px 0 0;
+    max-width:460px;
+    color:#747586;
+    font-size:14px;
+    line-height:1.6;
+}
+.admin-welcome-divider{
+    position:relative;
+    z-index:1;
+    width:52px;
+    height:4px;
+    border-radius:999px;
+    background:#5b45e8;
+    margin:24px 0 18px;
+}
+.admin-welcome-credit{
+    position:relative;
+    z-index:1;
+    font-size:15px;
+    font-weight:800;
+    color:#28293a;
+}
+.admin-welcome-credit span{
+    color:#5b45e8;
+}
+.admin-welcome-mini{
+    position:relative;
+    z-index:1;
+    margin-top:7px;
+    font-size:11px;
+    color:#9899a6;
+    letter-spacing:.35px;
+}
+.admin-welcome.hidden{
+    display:none;
+}
+@media(max-width:650px){
+    .admin-welcome{padding:35px 14px 50px;min-height:calc(100vh - 220px);}
+    .admin-welcome-card{min-height:285px;border-radius:24px;padding:38px 22px;}
+    .admin-welcome-title{font-size:38px;}
+    .admin-welcome-subtitle{font-size:13px;}
+}
+
 </style>
 </head>
 
@@ -1353,6 +1504,13 @@ label{
         <h1>Categories Manager</h1>
 
         <div class="top-buttons">
+
+            <button
+                id="homeTabBtn"
+                class="btn secondary admin-home-btn"
+                onclick="showAdminPanel(null)">
+                <span class="home-icon">⌂</span> Home
+            </button>
 
             <button
                 id="categoriesTabBtn"
@@ -1386,6 +1544,20 @@ label{
 
     </div>
 
+
+    <!-- =========================
+         ADMIN WELCOME
+    ========================== -->
+    <div id="adminWelcome" class="admin-welcome">
+        <div class="admin-welcome-card">
+            <div class="admin-welcome-badge"><span class="admin-welcome-dot"></span> ADMIN PANEL</div>
+            <h2 class="admin-welcome-title">WELCOME !</h2>
+            <p class="admin-welcome-subtitle">Your store control center is ready. Choose a section above to manage your website.</p>
+            <div class="admin-welcome-divider"></div>
+            <div class="admin-welcome-credit">Developed by <span>Suraj</span></div>
+            <div class="admin-welcome-mini">Clean • Simple • Made with care</div>
+        </div>
+    </div>
 
     <div id="categoriesPanel" class="layout manager-panel">
 
@@ -1773,6 +1945,9 @@ const sliderStatus = document.getElementById("sliderStatus");
 const addSliderButton = document.getElementById("addSliderButton");
 
 function showAdminPanel(panel){
+    const welcome=document.getElementById("adminWelcome");
+    if(welcome) welcome.classList.toggle("hidden",!!panel);
+
     const panels={
         categories:document.getElementById("categoriesPanel"),
         slider:document.getElementById("sliderPanel"),
@@ -1780,15 +1955,26 @@ function showAdminPanel(panel){
         banner2:document.getElementById("banner2Panel")
     };
     const buttons={
+        home:document.getElementById("homeTabBtn"),
         categories:document.getElementById("categoriesTabBtn"),
         slider:document.getElementById("sliderTabBtn"),
         banner1:document.getElementById("banner1TabBtn"),
         banner2:document.getElementById("banner2TabBtn")
     };
+
     Object.keys(panels).forEach(function(key){
         if(panels[key]) panels[key].classList.toggle("active",key===panel);
+    });
+
+    Object.keys(buttons).forEach(function(key){
         if(buttons[key]) buttons[key].classList.toggle("tab-active",key===panel);
     });
+
+    /* Home = only the welcome screen. Everything else stays hidden. */
+    if(!panel){
+        window.scrollTo({top:0,behavior:"smooth"});
+        return;
+    }
 
     /* Only the clicked manager is shown/loaded. */
     if(panel==="categories") loadCategories();
