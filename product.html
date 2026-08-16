@@ -1625,6 +1625,44 @@ a{text-decoration:none;color:inherit}
     visibility:visible;
   }
 }
+  /* ===== COMPACT ALL DETAILS ROWS ===== */
+.detailGrid .detailRow{
+  min-height:40px !important;
+  height:40px !important;
+  padding:4px 0 !important;
+  margin:0 !important;
+  gap:18px !important;
+  box-sizing:border-box !important;
+  align-items:center !important;
+}
+
+.detailGrid .detailLabel{
+  line-height:1.2 !important;
+  margin:0 !important;
+}
+
+.detailGrid .detailValue{
+  line-height:1.2 !important;
+  margin:0 !important;
+}
+
+/* Mobile */
+@media(max-width:900px){
+  .detailGrid .detailRow{
+    min-height:40px !important;
+    height:40px !important;
+    padding:4px 0 !important;
+  }
+}
+
+@media(max-width:420px){
+  .detailGrid .detailRow{
+    min-height:38px !important;
+    height:38px !important;
+    padding:3px 0 !important;
+    gap:14px !important;
+  }
+}
 </style>
 </head>
 
