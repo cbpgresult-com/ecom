@@ -1172,6 +1172,100 @@ main{
   .product-banner-card{flex-basis:calc((100vw - 90px - 48px) / 5);}
 }
 
+
+/* =========================================================
+   AUTOMATIC "STILL LOOKING" RECOMMENDATION BANNER
+   Addition only — does not affect existing banners/products.
+========================================================= */
+#lookingForBannerRoot{width:100%;overflow-anchor:none;}
+.looking-banner{
+  width:100%;
+  margin:0 0 18px;
+  padding:15px 14px 12px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#6d28d9 0%,#8b5cf6 42%,#ffffff 100%);
+  box-shadow:0 5px 18px rgba(91,33,182,.14);
+  overflow:hidden;
+  position:relative;
+}
+.looking-banner-title{
+  margin:0 0 11px 2px;
+  font-size:22px;
+  line-height:1.2;
+  font-weight:800;
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.12);
+}
+.looking-banner-viewport{
+  width:100%;
+  overflow:hidden;
+  border-radius:12px;
+  position:relative;
+  touch-action:pan-y;
+}
+.looking-banner-track{
+  display:flex;
+  gap:12px;
+  width:max-content;
+  min-width:100%;
+  transform:translate3d(0,0,0);
+  transition:transform .38s cubic-bezier(.22,.61,.36,1);
+  will-change:transform;
+}
+.looking-banner-card{
+  flex:0 0 calc((100vw - 160px - 72px) / 7);
+  max-width:190px;
+  min-width:135px;
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 2px 7px rgba(0,0,0,.12);
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.9);
+}
+.looking-banner-image-wrap{
+  width:100%;
+  aspect-ratio:1/1;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.looking-banner-image{width:100%;height:100%;object-fit:contain;object-position:center;display:block;}
+.looking-banner-name{
+  min-height:43px;
+  padding:8px 10px 10px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  text-align:center;
+  font-size:14px;
+  line-height:1.25;
+  font-weight:600;
+  color:#222;
+}
+.looking-banner-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:42px;height:42px;border:0;border-radius:50%;
+  background:#fff;color:#5b21b6;box-shadow:0 3px 12px rgba(0,0,0,.18);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:5;font-size:26px;line-height:1;
+}
+.looking-banner-nav.prev{left:8px}.looking-banner-nav.next{right:8px}
+.looking-banner-nav[disabled]{opacity:.35;cursor:default;pointer-events:none}
+@media(max-width:700px){
+  .looking-banner{margin:0 0 14px;padding:11px 8px 9px;border-radius:15px;}
+  .looking-banner-title{font-size:18px;margin:0 0 9px 3px;}
+  .looking-banner-track{gap:8px;}
+  .looking-banner-card{flex-basis:calc((100vw - 40px)/3);min-width:0;max-width:none;border-radius:11px;}
+  .looking-banner-nav{display:none;}
+  .looking-banner-name{min-height:36px;padding:6px 5px 8px;font-size:11px;line-height:1.2;}
+}
+@media(min-width:701px) and (max-width:1100px){
+  .looking-banner-card{flex-basis:calc((100vw - 90px - 48px)/5);}
+}
+
 </style>
 </head>
 
@@ -1642,6 +1736,8 @@ main{
       </div>
     </div>
   </div>
+
+  <div id="lookingForBannerRoot"></div>
 
   <div id="productBannersRoot"></div>
 
@@ -3103,6 +3199,155 @@ loadProducts();
     );
 
 })();
+
+
+
+/* =========================================================
+   AUTOMATIC "STILL LOOKING" RECOMMENDATIONS
+   3 different products + same product visited twice +
+   combined time of both visits >= 5 seconds.
+   Images/names come automatically from viewed products.
+========================================================= */
+const LOOKING_DATA_KEY = "mystore_still_looking_v1";
+const LOOKING_MIN_SECONDS = 5;
+const LOOKING_MAX_ITEMS = 10;
+let lookingBannerIndex = 0;
+
+function lookingEscape(value){
+  return String(value ?? "").replace(/[&<>"']/g,function(ch){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch];
+  });
+}
+function readLookingData(){
+  try{
+    const raw=localStorage.getItem(LOOKING_DATA_KEY);
+    const data=raw?JSON.parse(raw):null;
+    if(!data || typeof data!=="object") return {userId:"",items:[],qualified:false};
+    if(!Array.isArray(data.items)) data.items=[];
+    return data;
+  }catch(e){return {userId:"",items:[],qualified:false};}
+}
+function writeLookingData(data){
+  try{localStorage.setItem(LOOKING_DATA_KEY,JSON.stringify(data));}catch(e){}
+}
+function getLookingAccountName(){
+  try{
+    const cache=typeof readAccountCache==="function"?readAccountCache():null;
+    if(cache && cache.firstName) return String(cache.firstName).trim();
+  }catch(e){}
+  const el=document.getElementById("accountName");
+  const text=el?String(el.textContent||"").trim():"";
+  return text && !/^login$/i.test(text) ? text : "You";
+}
+function getLookingUserId(){
+  try{
+    const data=readLookingData();
+    return data.userId||"guest";
+  }catch(e){return "guest";}
+}
+function renderLookingBanner(){
+  const root=document.getElementById("lookingForBannerRoot");
+  if(!root)return;
+  const data=readLookingData();
+  if(!data.qualified || !Array.isArray(data.items) || !data.items.length){root.innerHTML="";return;}
+  const items=data.items.slice(0,LOOKING_MAX_ITEMS);
+  const name=getLookingAccountName();
+  root.innerHTML=`<section class="looking-banner" aria-label="${lookingEscape(name)} still looking for these">
+    <h2 class="looking-banner-title">${lookingEscape(name)} still looking for these?</h2>
+    <div class="looking-banner-viewport">
+      <div class="looking-banner-track">${items.map(function(item){
+        const image=String(item.image||"").trim();
+        const title=String(item.title||"Product").trim();
+        return `<div class="looking-banner-card" data-product-id="${lookingEscape(item.id)}" role="button" tabindex="0">
+          <div class="looking-banner-image-wrap">${image?`<img class="looking-banner-image" src="${lookingEscape(image)}" alt="${lookingEscape(title)}" loading="lazy" decoding="async" onerror="this.style.visibility='hidden'">`:``}</div>
+          <div class="looking-banner-name">${lookingEscape(title)}</div>
+        </div>`;
+      }).join("")}</div>
+      <button type="button" class="looking-banner-nav prev" aria-label="Previous" onclick="moveLookingBanner(-1)">‹</button>
+      <button type="button" class="looking-banner-nav next" aria-label="Next" onclick="moveLookingBanner(1)">›</button>
+    </div>
+  </section>`;
+  root.querySelectorAll(".looking-banner-card").forEach(function(card){
+    const go=function(){
+      const pid=card.getAttribute("data-product-id");
+      if(pid) window.location.href="product.html?id="+encodeURIComponent(pid);
+    };
+    card.addEventListener("click",go);
+    card.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
+  });
+  setupLookingTouch(root.querySelector(".looking-banner"));
+  applyLookingPosition(root.querySelector(".looking-banner"),false);
+}
+function lookingVisibleCount(){return window.innerWidth<=700?3:(window.innerWidth<=1100?5:7);}
+function applyLookingPosition(wrap,animate){
+  if(!wrap)return;
+  const track=wrap.querySelector(".looking-banner-track");
+  const cards=track?Array.from(track.querySelectorAll(".looking-banner-card")):[];
+  if(!track||!cards.length)return;
+  const max=Math.max(0,cards.length-lookingVisibleCount());
+  lookingBannerIndex=Math.max(0,Math.min(lookingBannerIndex,max));
+  const gap=parseFloat(getComputedStyle(track).gap)||0;
+  const step=cards[0].getBoundingClientRect().width+gap;
+  track.style.transition=animate?"transform .38s cubic-bezier(.22,.61,.36,1)":"none";
+  track.style.transform=`translate3d(${-lookingBannerIndex*step}px,0,0)`;
+  const prev=wrap.querySelector(".looking-banner-nav.prev");
+  const next=wrap.querySelector(".looking-banner-nav.next");
+  const desktop=window.innerWidth>700 && max>0;
+  if(prev){prev.style.display=desktop?"flex":"none";prev.disabled=lookingBannerIndex<=0;}
+  if(next){next.style.display=desktop?"flex":"none";next.disabled=lookingBannerIndex>=max;}
+}
+function moveLookingBanner(direction){
+  const wrap=document.querySelector("#lookingForBannerRoot .looking-banner");
+  if(!wrap)return;
+  const track=wrap.querySelector(".looking-banner-track");
+  const cards=track?Array.from(track.querySelectorAll(".looking-banner-card")):[];
+  const max=Math.max(0,cards.length-lookingVisibleCount());
+  lookingBannerIndex=Math.max(0,Math.min(lookingBannerIndex+(direction>0?1:-1),max));
+  applyLookingPosition(wrap,true);
+}
+function setupLookingTouch(wrap){
+  if(!wrap)return;
+  const viewport=wrap.querySelector(".looking-banner-viewport");
+  const track=wrap.querySelector(".looking-banner-track");
+  if(!viewport||!track)return;
+  let startX=0,startY=0,dx=0,moved=false;
+  viewport.addEventListener("touchstart",function(e){
+    if(window.innerWidth>700||e.touches.length!==1)return;
+    startX=e.touches[0].clientX;startY=e.touches[0].clientY;dx=0;moved=false;track.style.transition="none";
+  },{passive:true});
+  viewport.addEventListener("touchmove",function(e){
+    if(window.innerWidth>700||!startX||e.touches.length!==1)return;
+    dx=e.touches[0].clientX-startX;
+    const dy=e.touches[0].clientY-startY;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){
+      moved=true;
+      const cards=track.querySelectorAll(".looking-banner-card");
+      if(!cards.length)return;
+      const gap=parseFloat(getComputedStyle(track).gap)||0;
+      const step=cards[0].getBoundingClientRect().width+gap;
+      const max=Math.max(0,cards.length-lookingVisibleCount());
+      let x=(-lookingBannerIndex*step)+dx;
+      if((lookingBannerIndex===0&&dx>0)||(lookingBannerIndex===max&&dx<0))x=(-lookingBannerIndex*step)+(dx*.3);
+      track.style.transform=`translate3d(${x}px,0,0)`;
+    }
+  },{passive:true});
+  viewport.addEventListener("touchend",function(){
+    if(window.innerWidth>700||!startX)return;
+    if(moved&&Math.abs(dx)>45)moveLookingBanner(dx<0?1:-1);else applyLookingPosition(wrap,true);
+    startX=0;startY=0;dx=0;moved=false;
+  },{passive:true});
+}
+window.addEventListener("resize",function(){
+  const wrap=document.querySelector("#lookingForBannerRoot .looking-banner");
+  if(wrap)applyLookingPosition(wrap,false);
+},{passive:true});
+
+/* Render after account cache/auth and on page return. */
+renderLookingBanner();
+window.addEventListener("pageshow",function(){renderLookingBanner();});
+if(typeof supabaseClient!=="undefined" && supabaseClient.auth){
+  supabaseClient.auth.onAuthStateChange(function(){setTimeout(renderLookingBanner,120);});
+}
 
 </script>
 </body>
