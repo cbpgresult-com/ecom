@@ -1,222 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#ffffff">
-<title>MyStore Admin - Subcategories</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Categories Manager - MyStore</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Helvetica,sans-serif;background:#f6f7fb;color:#202027}
-button,input{font:inherit}
-.wrap{max-width:1100px;margin:auto;padding:24px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}
-.top h1{font-size:26px}
-.card{background:#fff;border:1px solid #e4e4ec;border-radius:16px;padding:18px}
-.form-card{max-width:520px}
-label{display:block;font-size:13px;font-weight:700;margin:4px 0 7px}
-input{width:100%;padding:12px;border:1px solid #d9d9e3;border-radius:10px;outline:none;background:#fff}
-input:focus{border-color:#5b45e8;box-shadow:0 0 0 3px rgba(91,69,232,.08)}
-.preview{height:150px;margin-top:10px;border-radius:12px;background:#f2f2f6;overflow:hidden;display:grid;place-items:center;color:#888}
-.preview img{width:100%;height:100%;object-fit:contain}
-.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:700;cursor:pointer}
-.primary{background:#5b45e8;color:#fff}
-.secondary{background:#eeeef5;color:#222}
-.danger{background:#fff0f1;color:#c33}
-.full{width:100%;margin-top:12px}
-.status{min-height:20px;margin-top:12px;font-size:13px}
-.ok{color:#168447}.err{color:#c33}.loading{color:#5b45e8}
-.list-card{margin-top:20px}
-.list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:15px}
-.item{border:1px solid #e3e3eb;border-radius:14px;padding:12px;background:#fff}
-.item img,.placeholder{width:78px;height:78px;border-radius:12px;object-fit:cover;background:#f1f1f6;display:grid;place-items:center;color:#777;font-weight:700}
-.item-name{font-weight:750;margin-top:10px;word-break:break-word}
-.item-link{font-size:11px;color:#777;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.actions{display:flex;gap:7px;margin-top:10px}
-.actions button{flex:1;padding:8px 9px;border:0;border-radius:8px;font-weight:700;cursor:pointer}
-.empty{text-align:center;color:#777;padding:40px 10px}
-@media(max-width:800px){.list{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.wrap{padding:14px}.top{align-items:flex-start;flex-direction:column}.top .btn{width:100%}.list{grid-template-columns:repeat(2,minmax(0,1fr))}.item img,.placeholder{width:64px;height:64px}}
-</style>
-</head>
+*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#f6f7fb;color:#111}
+.wrap{max-width:1100px;margin:auto;padding:28px 20px 50px}.top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:20px}h1{font-size:28px;margin:0}h2{font-size:19px;margin:0 0 18px}
+.card{background:#fff;border:1px solid #e3e4ea;border-radius:16px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,.03)}.layout{display:grid;grid-template-columns:360px 1fr;gap:20px}
+label{display:block;font-size:13px;font-weight:700;margin:0 0 7px}input{width:100%;height:46px;border:1px solid #d6d7df;border-radius:10px;padding:0 13px;font-size:14px;outline:none;margin-bottom:14px}input:focus{border-color:#6246f5;box-shadow:0 0 0 3px rgba(98,70,245,.10)}
+.btn{border:0;border-radius:10px;padding:11px 17px;font-weight:700;cursor:pointer;font-size:14px}.primary{background:#6246f5;color:#fff}.danger{background:#fff0f0;color:#d22}
+.preview{height:170px;border-radius:13px;background:#f3f3f7;border:1px solid #e6e6ed;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#888;margin:0 0 16px}.preview img{width:100%;height:100%;object-fit:contain;display:block}.preview .bad{color:#d22;font-weight:700}
+.form-note{font-size:12px;color:#777;line-height:1.45;margin-top:10px}.status{min-height:22px;margin-top:14px;font-size:13px;font-weight:700}.status.ok{color:#14804a}.status.err{color:#c62828}
+.list{display:flex;flex-direction:column;gap:12px}.row{border:1px solid #e1e2e8;border-radius:13px;padding:13px;display:flex;align-items:center;gap:13px}.thumb{width:64px;height:64px;border-radius:12px;background:#f2f2f6;overflow:hidden;display:flex;align-items:center;justify-content:center;flex:none;font-weight:800;color:#6246f5}.thumb img{width:100%;height:100%;object-fit:contain}.rowmain{min-width:0;flex:1}.rowname{font-weight:800;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rowlink{font-size:11px;color:#777;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.actions{display:flex;gap:7px;flex:none}.empty{text-align:center;color:#777;padding:45px 10px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}}@media(max-width:520px){.wrap{padding:16px 12px 35px}.top{align-items:flex-start}h1{font-size:22px}.card{padding:16px}.row{align-items:flex-start}.actions{flex-direction:column}.preview{height:160px}}
+</style></head>
 <body>
 <div class="wrap">
-  <div class="top">
-    <h1>Subcategories Manager</h1>
-    <button class="btn secondary" onclick="clearForm()">New</button>
-  </div>
-
-  <div class="card form-card">
-    <h2 id="formTitle">Add Subcategory</h2>
-    <br>
-
-    <label for="subName">Subcategory Name</label>
-    <input id="subName" type="text" placeholder="e.g. Hoodies">
-
-    <label for="subImage" style="margin-top:15px">Subcategory Image Link</label>
-    <input id="subImage" type="url" placeholder="https://example.com/hoodies.webp" oninput="previewImage()">
-
-    <div class="preview" id="preview">Image preview</div>
-
-    <button class="btn primary full" id="saveBtn" onclick="saveSubcategory()">Add Subcategory</button>
-    <div class="status" id="status"></div>
-  </div>
-
-  <div class="card list-card">
-    <h2>Subcategories</h2>
-    <div id="list" class="list"></div>
-  </div>
-</div>
-
+<div class="top"><h1>Categories Manager</h1><button class="btn primary" onclick="saveAll()" id="saveBtn">Save Categories</button></div>
+<div class="layout">
+<section class="card"><h2>Add Subcategory</h2>
+<label>Subcategory Name</label><input id="subName" placeholder="e.g. Hoodies">
+<label>Subcategory Image Link</label><input id="subImage" placeholder="https://.../hoodies.webp" autocomplete="off">
+<div class="preview" id="preview">Image preview</div>
+<button class="btn primary" style="width:100%" onclick="addSubcategory()">Add Subcategory</button>
+<div class="form-note">Image link paste karte hi preview isi medium box mein turant dikhega.</div>
+<div id="status" class="status"></div>
+</section>
+<section class="card"><h2>Subcategories</h2><div id="list" class="list"></div></section>
+</div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const MARKER="__SUBCATEGORY_ONLY__";
-let items=[];
-let editingId=null;
-
-const nameEl=document.getElementById("subName");
-const imageEl=document.getElementById("subImage");
-const previewEl=document.getElementById("preview");
-const listEl=document.getElementById("list");
-const statusEl=document.getElementById("status");
-const saveBtn=document.getElementById("saveBtn");
-const formTitle=document.getElementById("formTitle");
-
-function esc(v){
-  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-}
-function showStatus(msg,type="ok"){
-  statusEl.textContent=msg;
-  statusEl.className="status "+type;
-}
-function previewImage(){
-  const url=imageEl.value.trim();
-  if(!url){previewEl.textContent="Image preview";return}
-  previewEl.innerHTML=`<img src="${esc(url)}" alt="Preview" onerror="this.parentElement.textContent='Image load nahi hui'">`;
-}
-function isOurItem(row){
-  const s=row?.sections;
-  return Array.isArray(s) && s.some(x=>x && x.title===MARKER);
-}
-function clearForm(){
-  editingId=null;
-  nameEl.value="";
-  imageEl.value="";
-  previewEl.textContent="Image preview";
-  formTitle.textContent="Add Subcategory";
-  saveBtn.textContent="Add Subcategory";
-  saveBtn.disabled=false;
-  showStatus("");
-  nameEl.focus();
-}
-async function load(){
-  listEl.innerHTML=`<div class="empty">Loading...</div>`;
-  const {data,error}=await db.from("categories")
-    .select("id,name,image_url,sections,sort_order,created_at,is_active")
-    .eq("is_active",true)
-    .order("sort_order",{ascending:true})
-    .order("created_at",{ascending:true});
-
-  if(error){
-    console.error(error);
-    listEl.innerHTML=`<div class="empty"><b>Load nahi hua</b><br><br>${esc(error.message)}</div>`;
-    showStatus(error.message,"err");
-    return;
-  }
-  items=(data||[]).filter(isOurItem);
-  renderList();
-}
+let draft=[],rows=[];
+const subName=document.getElementById("subName"),subImage=document.getElementById("subImage"),previewEl=document.getElementById("preview"),listEl=document.getElementById("list"),statusEl=document.getElementById("status"),saveBtn=document.getElementById("saveBtn");
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function status(msg,error=false){statusEl.textContent=msg;statusEl.className="status "+(error?"err":"ok");}
+function showPreview(){const url=subImage.value.trim();if(!url){previewEl.innerHTML="Image preview";return;}previewEl.innerHTML=`<img src="${esc(url)}" alt="Preview" onload="this.style.display='block'" onerror="this.parentElement.innerHTML='<div class=&quot;bad&quot;>Image load nahi hui</div>'">`;}
+subImage.addEventListener("input",showPreview);subImage.addEventListener("paste",()=>setTimeout(showPreview,0));
+function clearInputs(){subName.value="";subImage.value="";previewEl.innerHTML="Image preview";}
+function addSubcategory(){const name=subName.value.trim(),image=subImage.value.trim();if(!name){status("Subcategory name required.",true);subName.focus();return;}if(!image){status("Subcategory image link required.",true);subImage.focus();return;}draft.push({name,image});clearInputs();renderList();status("Subcategory add ho gayi. Ab Save Categories dabao.");}
+function removeDraft(i){draft.splice(i,1);renderList();}
 function renderList(){
-  if(!items.length){
-    listEl.innerHTML=`<div class="empty" style="grid-column:1/-1">Abhi koi subcategory nahi hai.</div>`;
-    return;
-  }
-  listEl.innerHTML=items.map(row=>{
-    const image=row.image_url
-      ? `<img src="${esc(row.image_url)}" alt="${esc(row.name)}" onerror="this.style.display='none'">`
-      : `<div class="placeholder">${esc((row.name||"?")[0].toUpperCase())}</div>`;
-    return `<div class="item">
-      ${image}
-      <div class="item-name">${esc(row.name)}</div>
-      <div class="item-link" title="${esc(row.image_url||"")}">${esc(row.image_url||"No image link")}</div>
-      <div class="actions">
-        <button class="secondary" onclick="editItem('${esc(row.id)}')">Edit</button>
-        <button class="danger" onclick="deleteItem('${esc(row.id)}')">Delete</button>
-      </div>
-    </div>`;
-  }).join("");
+ const all=[...draft.map((x,i)=>({...x,_draft:true,_index:i})),...rows.map(x=>({...x,_draft:false}))];
+ if(!all.length){listEl.innerHTML='<div class="empty">Abhi koi subcategory nahi hai.</div>';return;}
+ listEl.innerHTML=all.map(x=>`<div class="row"><div class="thumb">${x.image?`<img src="${esc(x.image)}" onerror="this.style.display='none'">`:esc((x.name||"?")[0])}</div><div class="rowmain"><div class="rowname">${esc(x.name)}</div><div class="rowlink">${esc(x.image)}</div></div><div class="actions">${x._draft?`<button class="btn danger" onclick="removeDraft(${x._index})">Remove</button>`:`<button class="btn danger" onclick="deleteRow('${esc(x.id)}')">Delete</button>`}</div></div>`).join("");
 }
-function editItem(id){
-  const row=items.find(x=>String(x.id)===String(id));
-  if(!row)return;
-  editingId=row.id;
-  nameEl.value=row.name||"";
-  imageEl.value=row.image_url||"";
-  formTitle.textContent="Edit Subcategory";
-  saveBtn.textContent="Update Subcategory";
-  previewImage();
-  showStatus("Edit mode active.","ok");
-  window.scrollTo({top:0,behavior:"smooth"});
+async function loadRows(){
+ const {data,error}=await sb.from("categories").select("id,name,image_url,sections,is_active,sort_order,created_at").eq("is_active",true).order("sort_order",{ascending:true}).order("created_at",{ascending:true});
+ if(error){console.error(error);status(error.message,true);return;}
+ rows=(data||[]).filter(r=>Array.isArray(r.sections)&&r.sections.some(s=>s&&s.title===MARKER));renderList();
 }
-async function saveSubcategory(){
-  const name=nameEl.value.trim();
-  const image=imageEl.value.trim();
-  if(!name){
-    showStatus("Subcategory name required.","err");
-    nameEl.focus(); return;
-  }
-  saveBtn.disabled=true;
-  saveBtn.textContent=editingId?"Updating...":"Saving...";
-  showStatus("Supabase me save ho raha hai...","loading");
-
-  const payload={
-    name:name,
-    image_url:image||null,
-    sections:[{title:MARKER,items:[]}],
-    is_active:true
-  };
-
-  let result;
-  if(editingId){
-    result=await db.from("categories").update(payload).eq("id",editingId).select().single();
-  }else{
-    result=await db.from("categories").insert(payload).select().single();
-  }
-
-  if(result.error){
-    console.error(result.error);
-    showStatus(result.error.message,"err");
-    saveBtn.disabled=false;
-    saveBtn.textContent=editingId?"Update Subcategory":"Add Subcategory";
-    return;
-  }
-
-  clearForm();
-  showStatus("✓ Subcategory successfully save ho gayi.","ok");
-  await load();
+async function saveAll(){
+ if(!draft.length){status("Pehle kam se kam ek subcategory add karo.",true);return;}
+ saveBtn.disabled=true;saveBtn.textContent="Saving...";status("Supabase me save ho raha hai...");
+ try{
+  const payload=draft.map((x,i)=>({name:x.name,image_url:x.image,sections:[{title:MARKER,items:[{name:x.name,image:x.image}]}],is_active:true,sort_order:rows.length+i}));
+  const {error}=await sb.from("categories").insert(payload);if(error)throw error;
+  draft=[];clearInputs();await loadRows();status("✓ Categories successfully save ho gayi.");
+ }catch(error){console.error(error);status(error.message||String(error),true);}
+ finally{saveBtn.disabled=false;saveBtn.textContent="Save Categories";}
 }
-async function deleteItem(id){
-  const row=items.find(x=>String(x.id)===String(id));
-  if(!row)return;
-  if(!confirm(`"${row.name}" delete karni hai?`))return;
-
-  showStatus("Delete ho raha hai...","loading");
-  const {error}=await db.from("categories").delete().eq("id",id);
-  if(error){showStatus(error.message,"err");return}
-  if(String(editingId)===String(id))clearForm();
-  showStatus("✓ Subcategory delete ho gayi.","ok");
-  await load();
+async function deleteRow(id){
+ if(!confirm("Ye subcategory delete karni hai?"))return;
+ const {error}=await sb.from("categories").delete().eq("id",id);
+ if(error){status(error.message||String(error),true);return;}
+ await loadRows();status("✓ Subcategory delete ho gayi.");
 }
-
-db.channel("subcategory-admin-live")
- .on("postgres_changes",{event:"*",schema:"public",table:"categories"},load)
- .subscribe();
-
-document.addEventListener("DOMContentLoaded",load);
-</script>
-</body>
-</html>
+sb.channel("categories-admin-live").on("postgres_changes",{event:"*",schema:"public",table:"categories"},loadRows).subscribe();
+document.addEventListener("DOMContentLoaded",loadRows);
+</script></body></html>
