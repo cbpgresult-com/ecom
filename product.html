@@ -3021,6 +3021,9 @@ function goCart(){
 
 async function logoutUser(){
 
+  /* Logout also resets the automatic Still Looking history. */
+  try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
+
   await supabaseClient.auth.signOut();
 
   window.location.reload();
@@ -5774,7 +5777,16 @@ if(typeof supabaseClient !== "undefined"){
     if(event === "SIGNED_OUT"){
       /* Clear the shared Index/Product header cache ONLY on real logout. */
       clearCachedAccountName();
+      /* Logout = fresh Still Looking journey next time. */
+      try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
     }
+
+    if(event === "SIGNED_IN"){
+      /* A fresh login always starts Still Looking from zero.
+         INITIAL_SESSION is intentionally not cleared on refresh. */
+      try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
+    }
+
     setTimeout(function(){
       if(typeof loadAccount === "function") loadAccount();
       if(typeof loadCartCount === "function") loadCartCount();
