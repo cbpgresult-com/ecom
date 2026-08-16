@@ -2043,29 +2043,7 @@ async function loadAccount(){
 ========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
-  function(event, session){
-
-    /*
-       Reset Still Looking only when the authenticated account actually
-       changes. Supabase can emit SIGNED_IN again while restoring an
-       existing session; that must NOT erase the user's progress.
-       A real logout already clears the journey, and a different account
-       gets a fresh journey here.
-    */
-    if(event === "SIGNED_OUT"){
-      /* Real logout: clear the automatic Still Looking journey completely. */
-      try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
-    }
-
-    if(event === "SIGNED_IN" && session && session.user){
-      try{
-        const existing = JSON.parse(localStorage.getItem("mystore_still_looking_v1") || "null");
-        const existingUserId = existing && existing.userId ? String(existing.userId) : "";
-        if(existingUserId && existingUserId !== String(session.user.id)){
-          localStorage.removeItem("mystore_still_looking_v1");
-        }
-      }catch(e){}
-    }
+  function(){
 
     loadAccount();
     loadCartCount();
@@ -3015,9 +2993,6 @@ async function logoutUser(){
   clearCartCountCache();
   cartCountUserId="";
 
-  /* Logout also resets the automatic Still Looking history. */
-  try{ localStorage.removeItem("mystore_still_looking_v1"); }catch(e){}
-
   await supabaseClient.auth.signOut();
 
   window.location.reload();
@@ -3278,7 +3253,7 @@ function renderLookingBanner(){
   const items=data.items.slice(0,LOOKING_MAX_ITEMS);
   const name=getLookingAccountName();
   root.innerHTML=`<section class="looking-banner" aria-label="${lookingEscape(name)} still looking for these">
-    <h2 class="looking-banner-title">${lookingEscape(name)}, still looking for these?</h2>
+    <h2 class="looking-banner-title">${lookingEscape(name)} still looking for these?</h2>
     <div class="looking-banner-viewport">
       <div class="looking-banner-track">${items.map(function(item){
         const image=String(item.image||"").trim();
