@@ -347,44 +347,46 @@ input:focus{
 .slider-note{font-size:12px;color:#777;line-height:1.5;margin-top:10px}
 .slider-preview{height:150px;border-radius:12px;background:#f3f3f7;margin-top:9px;display:grid;place-items:center;color:#888;overflow:hidden;text-align:center}
 .slider-preview img{width:100%;height:100%;object-fit:cover;display:block}
-
-/* ================= PRODUCT BANNER MANAGER ================= */
-.banner-manager-layout{display:grid;grid-template-columns:360px 1fr;gap:20px}
-.banner-slot-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.banner-slot-tab{border:1px solid #dedee8;background:#f7f7fb;color:#333;border-radius:9px;padding:10px;font-weight:800;cursor:pointer}
-.banner-slot-tab.active{background:#5b45e8;color:#fff;border-color:#5b45e8}
-.banner-form-title{font-size:17px;font-weight:800;margin-bottom:3px}
-.banner-help{font-size:12px;color:#777;line-height:1.5;margin-top:9px}
-.banner-preview{height:190px;border-radius:14px;margin-top:9px;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#43e95b,#e7ffe1);padding:10px}
-.banner-preview.orange{background:linear-gradient(135deg,#ff8a1f,#ffe0bf)}
-.banner-preview-inner{width:100%;height:100%;border-radius:11px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
-.banner-preview-inner img{width:100%;height:135px;object-fit:cover;display:block}
-.banner-preview-inner span{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:800;padding:5px}
-.banner-position-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.banner-position-grid input{font-weight:700}
-.banner-row{border:1px solid #e2e2ea;border-radius:14px;padding:12px;background:#fff;display:grid;grid-template-columns:150px 1fr auto;gap:13px;align-items:center}
-.banner-row-thumb{width:150px;aspect-ratio:1.7/1;border-radius:11px;overflow:hidden;background:#f2f2f6;position:relative}
-.banner-row-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.banner-row-main{min-width:0}
-.banner-row-title{font-size:15px;font-weight:800;margin-bottom:5px}
-.banner-row-meta{font-size:12px;color:#666;line-height:1.55}
-.banner-slot-badge{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:800;margin-bottom:6px;background:#dcfce7;color:#166534}
-.banner-slot-badge.orange{background:#ffedd5;color:#c2410c}
-.banner-actions{display:flex;gap:6px}
-.banner-actions button{white-space:nowrap}
-.banner-list{display:grid;gap:12px}
-@media(max-width:850px){.banner-manager-layout{grid-template-columns:1fr}}
-@media(max-width:650px){
-  .banner-position-grid{grid-template-columns:1fr}
-  .banner-row{grid-template-columns:92px 1fr;align-items:start}
-  .banner-row-thumb{width:92px}
-  .banner-actions{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr}
-  .banner-actions button{width:100%}
-  .banner-preview{height:160px}
-  .banner-preview-inner img{height:105px}
-}
 @media(max-width:850px){.slider-layout{grid-template-columns:1fr}}
 @media(max-width:550px){.slider-thumb{width:110px}.slider-row{align-items:flex-start}.slider-actions{flex-direction:column}.top-buttons{width:100%}.top-buttons button{flex:1}}
+
+
+
+/* =========================================================
+   PRODUCT BANNER MANAGER
+========================================================= */
+.banner-manager-panel{display:none;grid-template-columns:380px 1fr;gap:20px;}
+.banner-manager-panel.active{display:grid;}
+.banner-form-title{font-size:18px;font-weight:800;margin-bottom:14px;}
+.banner-color-note{display:flex;align-items:center;gap:8px;margin:8px 0 14px;font-size:12px;color:#666;}
+.banner-color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;}
+.banner-color-dot.green{background:linear-gradient(135deg,#45e34e,#baf7b4);}
+.banner-color-dot.orange{background:linear-gradient(135deg,#ff8a1d,#ffd4b1);}
+.banner-item-list{display:grid;gap:10px;margin-top:12px;}
+.banner-item-row{border:1px solid #e5e5ec;border-radius:12px;padding:10px;background:#fafafe;}
+.banner-item-grid{display:grid;grid-template-columns:78px 1fr;gap:10px;align-items:start;}
+.banner-item-preview{width:78px;height:78px;border-radius:10px;background:#eeeef5;display:grid;place-items:center;overflow:hidden;color:#888;font-size:11px;text-align:center;}
+.banner-item-preview img{width:100%;height:100%;object-fit:contain;background:#fff;display:block;}
+.banner-item-fields{display:grid;gap:7px;}
+.banner-item-fields input{padding:9px 10px;}
+.banner-item-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px;}
+.banner-add-item{margin-top:10px;width:100%;}
+.banner-preview-wrap{border:1px solid #e5e5ec;border-radius:14px;padding:14px;background:#f7f7fb;overflow:hidden;}
+.banner-preview-title{font-weight:800;margin-bottom:10px;}
+.banner-live-preview{padding:12px;border-radius:14px;overflow:hidden;}
+.banner-live-preview.green{background:linear-gradient(135deg,#45e34e,#baf7b4);}
+.banner-live-preview.orange{background:linear-gradient(135deg,#ff8a1d,#ffd4b1);}
+.banner-live-track{display:flex;gap:9px;overflow:hidden;}
+.banner-live-card{flex:0 0 118px;background:#fff;border-radius:11px;overflow:hidden;}
+.banner-live-img{height:110px;background:#f5f5f5;position:relative;}
+.banner-live-img img{width:100%;height:100%;object-fit:contain;background:#fff;display:block;}
+.banner-live-badge{position:absolute;left:6px;top:6px;background:#b40052;color:#fff;border-radius:999px;padding:3px 6px;font-size:8px;font-weight:800;max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.banner-live-name{padding:7px 6px 9px;text-align:center;font-size:10px;font-weight:600;min-height:32px;}
+.banner-help{font-size:12px;line-height:1.5;color:#666;margin-top:10px;}
+.banner-save-row{display:flex;gap:8px;margin-top:12px;}
+.banner-save-row .btn{flex:1;}
+@media(max-width:850px){.banner-manager-panel.active{grid-template-columns:1fr}.banner-item-grid{grid-template-columns:64px 1fr}.banner-item-preview{width:64px;height:64px}}
+@media(max-width:550px){.top-buttons{flex-wrap:wrap}.top-buttons .btn{flex:1;min-width:110px}.banner-save-row{flex-direction:column}.banner-live-card{flex-basis:100px}.banner-live-img{height:94px}}
 
 </style>
 </head>
@@ -624,81 +626,83 @@ input:focus{
         </div>
     </div>
 
+</div>
+
     <!-- ================= PRODUCT BANNER 1 ================= -->
-    <div id="banner1Panel" class="banner-manager-layout manager-panel">
+    <div id="banner1Panel" class="banner-manager-panel manager-panel">
         <div class="card">
-            <div class="banner-form-title">Slider 1</div>
-            <div class="banner-help">Green gradient banner. Desktop aur mobile par kitne products ke baad dikhana hai, yahin se set karein.</div>
+            <div class="banner-form-title">Slider 1 — Green Banner</div>
+            <div class="banner-color-note"><span class="banner-color-dot green"></span> Green gradient banner</div>
 
             <label>Banner Title</label>
-            <input id="banner1Title" type="text" placeholder="e.g. Trending Rakhis" autocomplete="off">
+            <input id="banner1Title" type="text" placeholder="e.g. Suraj, still looking for these?" oninput="renderBannerLivePreview('banner1')">
 
-            <label>Banner Image Link</label>
-            <input id="banner1Image" type="text" placeholder="https://.../banner.webp" autocomplete="off" oninput="previewProductBanner('slider1')">
-
-            <div id="banner1Preview" class="banner-preview">Image preview</div>
-
-            <label>Banner Position</label>
-            <div class="banner-position-grid">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                 <div>
-                    <input id="banner1DesktopAfter" type="number" min="1" step="1" value="8" placeholder="8">
-                    <div class="banner-help">Laptop / Desktop — products ke baad</div>
+                    <label>Desktop: after products</label>
+                    <input id="banner1DesktopAfter" type="number" min="1" value="8">
                 </div>
                 <div>
-                    <input id="banner1MobileAfter" type="number" min="1" step="1" value="4" placeholder="4">
-                    <div class="banner-help">Mobile — products ke baad</div>
+                    <label>Mobile: after products</label>
+                    <input id="banner1MobileAfter" type="number" min="1" value="4">
                 </div>
             </div>
 
-            <button id="banner1Save" class="btn primary" onclick="saveProductBanner('slider1')" style="width:100%;margin-top:13px;">Save Slider 1</button>
-            <button class="btn secondary" onclick="newProductBanner('slider1')" style="width:100%;margin-top:7px;">New / Clear</button>
+            <label>Banner Items</label>
+            <div id="banner1Items" class="banner-item-list"></div>
+            <button class="btn secondary banner-add-item" onclick="addBannerItem('banner1')">+ Add Image / Item</button>
+
+            <div class="banner-save-row">
+                <button class="btn primary" onclick="saveProductBanner('banner1')">Save Slider 1</button>
+                <button class="btn danger" onclick="deleteProductBanner('banner1')">Delete Slider 1</button>
+            </div>
             <div id="banner1Status" class="status"></div>
+            <div class="banner-help">Har item me Image Link, Image Name aur optional Badge bhar sakte ho. Badge khaali rakhenge to image ke upar badge nahi dikhega.</div>
         </div>
 
         <div class="card">
-            <h2>Slider 1 Manage</h2>
-            <div id="banner1List" class="banner-list"></div>
+            <div class="banner-form-title">Slider 1 Preview</div>
+            <div id="banner1LivePreview" class="banner-preview-wrap"></div>
         </div>
     </div>
 
     <!-- ================= PRODUCT BANNER 2 ================= -->
-    <div id="banner2Panel" class="banner-manager-layout manager-panel">
+    <div id="banner2Panel" class="banner-manager-panel manager-panel">
         <div class="card">
-            <div class="banner-form-title">Slider 2</div>
-            <div class="banner-help">Orange gradient banner. Iski position Slider 1 se alag set kar sakte hain.</div>
+            <div class="banner-form-title">Slider 2 — Orange Banner</div>
+            <div class="banner-color-note"><span class="banner-color-dot orange"></span> Orange gradient banner</div>
 
             <label>Banner Title</label>
-            <input id="banner2Title" type="text" placeholder="e.g. Special Offers" autocomplete="off">
+            <input id="banner2Title" type="text" placeholder="e.g. Raksha Bandhan Specials" oninput="renderBannerLivePreview('banner2')">
 
-            <label>Banner Image Link</label>
-            <input id="banner2Image" type="text" placeholder="https://.../banner.webp" autocomplete="off" oninput="previewProductBanner('slider2')">
-
-            <div id="banner2Preview" class="banner-preview orange">Image preview</div>
-
-            <label>Banner Position</label>
-            <div class="banner-position-grid">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                 <div>
-                    <input id="banner2DesktopAfter" type="number" min="1" step="1" value="16" placeholder="16">
-                    <div class="banner-help">Laptop / Desktop — products ke baad</div>
+                    <label>Desktop: after products</label>
+                    <input id="banner2DesktopAfter" type="number" min="1" value="16">
                 </div>
                 <div>
-                    <input id="banner2MobileAfter" type="number" min="1" step="1" value="8" placeholder="8">
-                    <div class="banner-help">Mobile — products ke baad</div>
+                    <label>Mobile: after products</label>
+                    <input id="banner2MobileAfter" type="number" min="1" value="8">
                 </div>
             </div>
 
-            <button id="banner2Save" class="btn primary" onclick="saveProductBanner('slider2')" style="width:100%;margin-top:13px;">Save Slider 2</button>
-            <button class="btn secondary" onclick="newProductBanner('slider2')" style="width:100%;margin-top:7px;">New / Clear</button>
+            <label>Banner Items</label>
+            <div id="banner2Items" class="banner-item-list"></div>
+            <button class="btn secondary banner-add-item" onclick="addBannerItem('banner2')">+ Add Image / Item</button>
+
+            <div class="banner-save-row">
+                <button class="btn primary" onclick="saveProductBanner('banner2')">Save Slider 2</button>
+                <button class="btn danger" onclick="deleteProductBanner('banner2')">Delete Slider 2</button>
+            </div>
             <div id="banner2Status" class="status"></div>
+            <div class="banner-help">Har item me Image Link, Image Name aur optional Badge bhar sakte ho. Badge khaali rakhenge to image ke upar badge nahi dikhega.</div>
         </div>
 
         <div class="card">
-            <h2>Slider 2 Manage</h2>
-            <div id="banner2List" class="banner-list"></div>
+            <div class="banner-form-title">Slider 2 Preview</div>
+            <div id="banner2LivePreview" class="banner-preview-wrap"></div>
         </div>
     </div>
-
-</div>
 
 
 <!-- SUPABASE -->
@@ -743,23 +747,18 @@ function showAdminPanel(panel){
         banner1:document.getElementById("banner1Panel"),
         banner2:document.getElementById("banner2Panel")
     };
-    Object.keys(panels).forEach(function(key){
-        if(panels[key]) panels[key].classList.toggle("active",key===panel);
-    });
-
     const buttons={
         categories:document.getElementById("categoriesTabBtn"),
         slider:document.getElementById("sliderTabBtn"),
         banner1:document.getElementById("banner1TabBtn"),
         banner2:document.getElementById("banner2TabBtn")
     };
-    Object.keys(buttons).forEach(function(key){
+    Object.keys(panels).forEach(function(key){
+        if(panels[key]) panels[key].classList.toggle("active",key===panel);
         if(buttons[key]) buttons[key].classList.toggle("tab-active",key===panel);
     });
-
     if(panel==="slider") loadSliders();
-    if(panel==="banner1") loadProductBannersAdmin("slider1");
-    if(panel==="banner2") loadProductBannersAdmin("slider2");
+    if(panel==="banner1" || panel==="banner2") loadProductBannerEditor(panel);
 }
 
 function showSliderStatus(message,type="ok"){
@@ -863,166 +862,172 @@ async function deleteSlider(id){
 }
 
 
-/* =========================================================
-   PRODUCT BANNER ADMIN — SLIDER 1 / SLIDER 2
-   Separate table: product_banners
-========================================================= */
-const productBannerState={slider1:null,slider2:null};
 
-function bannerPrefix(slot){
-    return slot==="slider2" ? "banner2" : "banner1";
+
+/* =========================================================
+   PRODUCT BANNER MANAGER
+========================================================= */
+const productBannerDefaults={
+    banner1:{title:"Suraj, still looking for these?",desktop_after:8,mobile_after:4,items:[]},
+    banner2:{title:"Raksha Bandhan Specials",desktop_after:16,mobile_after:8,items:[]}
+};
+
+function bannerSlotElements(slot){
+    return {
+        title:document.getElementById(slot+"Title"),
+        desktop:document.getElementById(slot+"DesktopAfter"),
+        mobile:document.getElementById(slot+"MobileAfter"),
+        items:document.getElementById(slot+"Items"),
+        preview:document.getElementById(slot+"LivePreview"),
+        status:document.getElementById(slot+"Status")
+    };
 }
 
-function showProductBannerStatus(slot,message,type="ok"){
-    const el=document.getElementById(bannerPrefix(slot)+"Status");
+function bannerStatus(slot,message,type="ok"){
+    const el=bannerSlotElements(slot).status;
     if(!el)return;
     el.textContent=message;
     el.className="status "+type;
 }
 
-function previewProductBanner(slot){
-    const p=bannerPrefix(slot);
-    const image=(document.getElementById(p+"Image")?.value||"").trim();
-    const title=(document.getElementById(p+"Title")?.value||"").trim() || (slot==="slider2"?"Special Offers":"Trending Picks");
-    const box=document.getElementById(p+"Preview");
-    if(!box)return;
-    box.classList.toggle("orange",slot==="slider2");
-    if(!image){box.textContent="Image preview";return;}
-    box.innerHTML=`<div class="banner-preview-inner"><img src="${escapeHTML(image)}" alt="Preview" onerror="this.parentElement.innerHTML='<span>Image load nahi hui</span>'"><span>${escapeHTML(title)}</span></div>`;
-}
-
-function newProductBanner(slot){
-    const p=bannerPrefix(slot);
-    document.getElementById(p+"Title").value="";
-    document.getElementById(p+"Image").value="";
-    document.getElementById(p+"DesktopAfter").value=slot==="slider2"?16:8;
-    document.getElementById(p+"MobileAfter").value=slot==="slider2"?8:4;
-    productBannerState[slot]=null;
-    const box=document.getElementById(p+"Preview");
-    box.innerHTML="Image preview";
-    showProductBannerStatus(slot,"","ok");
-    const btn=document.getElementById(p+"Save");
-    if(btn)btn.textContent=slot==="slider2"?"Save Slider 2":"Save Slider 1";
-}
-
-function renderProductBannerList(slot,rows){
-    const p=bannerPrefix(slot);
-    const list=document.getElementById(p+"List");
-    if(!list)return;
-    const filtered=(rows||[]).filter(row=>row.slot===slot);
-    if(!filtered.length){
-        list.innerHTML='<div class="empty">Abhi '+(slot==="slider2"?"Slider 2":"Slider 1")+' save nahi hai.</div>';
-        return;
-    }
-    list.innerHTML=filtered.map(row=>`
-      <div class="banner-row">
-        <div class="banner-row-thumb">
-          <img src="${escapeHTML(row.image_url)}" alt="${escapeHTML(row.title||slot)}" onerror="this.style.display='none'">
-        </div>
-        <div class="banner-row-main">
-          <div class="banner-slot-badge ${slot==="slider2"?"orange":""}">${slot==="slider2"?"SLIDER 2":"SLIDER 1"}</div>
-          <div class="banner-row-title">${escapeHTML(row.title||"Untitled Banner")}</div>
-          <div class="banner-row-meta">Desktop: <b>${Number(row.desktop_after||0)}</b> products ke baad · Mobile: <b>${Number(row.mobile_after||0)}</b> products ke baad<br>${escapeHTML(row.image_url)}</div>
-        </div>
-        <div class="banner-actions">
-          <button class="btn secondary" onclick="editProductBanner('${escapeHTML(row.id)}','${slot}')">Edit</button>
-          <button class="btn danger" onclick="deleteProductBanner('${escapeHTML(row.id)}','${slot}')">Delete</button>
+function addBannerItem(slot,item={}){
+    const el=bannerSlotElements(slot);
+    if(!el.items)return;
+    const row=document.createElement("div");
+    row.className="banner-item-row";
+    row.dataset.slot=slot;
+    row.innerHTML=`
+      <div class="banner-item-grid">
+        <div class="banner-item-preview">Image preview</div>
+        <div class="banner-item-fields">
+          <input class="banner-item-image" type="text" placeholder="Image Link (https://...)" value="${escapeHTML(item.image||"")}">
+          <input class="banner-item-name" type="text" placeholder="Image Name e.g. Trending rakhis" value="${escapeHTML(item.name||"")}">
+          <input class="banner-item-badge" type="text" placeholder="Badge optional — e.g. MINUTES" value="${escapeHTML(item.badge||"")}">
         </div>
       </div>
-    `).join("");
+      <div class="banner-item-actions">
+        <button type="button" class="btn danger" onclick="this.closest('.banner-item-row').remove();renderBannerLivePreview('${slot}')">Remove</button>
+      </div>`;
+    el.items.appendChild(row);
+    const imageInput=row.querySelector(".banner-item-image");
+    imageInput.addEventListener("input",function(){
+        updateBannerItemPreview(row);
+        renderBannerLivePreview(slot);
+    });
+    row.querySelectorAll("input").forEach(function(input){
+        input.addEventListener("input",function(){renderBannerLivePreview(slot);});
+    });
+    updateBannerItemPreview(row);
 }
 
-async function loadProductBannersAdmin(slot){
-    const p=bannerPrefix(slot);
-    const list=document.getElementById(p+"List");
-    if(list)list.innerHTML='<div class="empty">Loading...</div>';
-    const {data,error}=await db
-      .from("product_banners")
-      .select("id,slot,image_url,title,desktop_after,mobile_after,is_active,created_at,updated_at")
-      .eq("slot",slot)
-      .order("created_at",{ascending:true});
-    if(error){
-        if(list)list.innerHTML=`<div class="empty"><b>Banner load nahi hua</b><br><br>${escapeHTML(error.message)}</div>`;
-        return;
+function updateBannerItemPreview(row){
+    const preview=row.querySelector(".banner-item-preview");
+    const url=row.querySelector(".banner-item-image")?.value.trim()||"";
+    if(!url){preview.textContent="Image preview";return;}
+    preview.innerHTML=`<img src="${escapeHTML(url)}" alt="Preview" onerror="this.parentElement.textContent='Image load nahi hui';">`;
+}
+
+function collectProductBannerItems(slot){
+    return Array.from(bannerSlotElements(slot).items?.querySelectorAll(".banner-item-row")||[])
+      .map(function(row){
+        return {
+          image:row.querySelector(".banner-item-image")?.value.trim()||"",
+          name:row.querySelector(".banner-item-name")?.value.trim()||"",
+          badge:row.querySelector(".banner-item-badge")?.value.trim()||""
+        };
+      })
+      .filter(function(item){return item.image || item.name;});
+}
+
+function renderBannerLivePreview(slot){
+    const el=bannerSlotElements(slot);
+    if(!el.preview)return;
+    const title=el.title?.value.trim()||"Banner Title";
+    const items=collectProductBannerItems(slot);
+    const orange=slot==="banner2";
+    el.preview.innerHTML=`
+      <div class="banner-live-preview ${orange?'orange':'green'}">
+        <div style="font-size:18px;font-weight:800;margin-bottom:10px;">${escapeHTML(title)}</div>
+        <div class="banner-live-track">
+          ${items.length?items.map(function(item){return `
+            <div class="banner-live-card">
+              <div class="banner-live-img">
+                ${item.badge?`<div class="banner-live-badge">${escapeHTML(item.badge)}</div>`:""}
+                ${item.image?`<img src="${escapeHTML(item.image)}" alt="" onerror="this.style.visibility='hidden'">`:``}
+              </div>
+              <div class="banner-live-name">${escapeHTML(item.name)}</div>
+            </div>`;}).join(""):`<div style="padding:25px;color:#666;font-size:13px;">Add banner images to see preview.</div>`}
+        </div>
+      </div>`;
+}
+
+async function loadProductBannerEditor(slot){
+    const el=bannerSlotElements(slot);
+    if(!el.title)return;
+    try{
+        const {data,error}=await db
+          .from("product_banner_sets")
+          .select("id,slot,title,desktop_after,mobile_after,items,is_active")
+          .eq("slot",slot)
+          .maybeSingle();
+        if(error)throw error;
+        let row=data;
+        let items=row?.items;
+        if(typeof items==="string"){
+            try{items=JSON.parse(items);}catch(e){items=[];}
+        }
+        const defaults=productBannerDefaults[slot];
+        el.title.value=row?.title ?? defaults.title;
+        el.desktop.value=row?.desktop_after ?? defaults.desktop_after;
+        el.mobile.value=row?.mobile_after ?? defaults.mobile_after;
+        el.items.innerHTML="";
+        (Array.isArray(items)?items:[]).forEach(function(item){addBannerItem(slot,item);});
+        if(!el.items.children.length)addBannerItem(slot);
+        renderBannerLivePreview(slot);
+        bannerStatus(slot,row?"Saved banner loaded.":"New banner — ab images add karke save karein.","ok");
+    }catch(error){
+        console.error("Product banner editor error:",error);
+        bannerStatus(slot,error.message||String(error),"err");
     }
-    renderProductBannerList(slot,data||[]);
 }
 
 async function saveProductBanner(slot){
-    const p=bannerPrefix(slot);
-    const title=(document.getElementById(p+"Title").value||"").trim();
-    const image=(document.getElementById(p+"Image").value||"").trim();
-    const desktopAfter=Math.max(1,parseInt(document.getElementById(p+"DesktopAfter").value,10)||0);
-    const mobileAfter=Math.max(1,parseInt(document.getElementById(p+"MobileAfter").value,10)||0);
-    const button=document.getElementById(p+"Save");
-
-    if(!title){showProductBannerStatus(slot,"Banner title required.","err");document.getElementById(p+"Title").focus();return;}
-    if(!image){showProductBannerStatus(slot,"Banner image link required.","err");document.getElementById(p+"Image").focus();return;}
-    if(!desktopAfter || !mobileAfter){showProductBannerStatus(slot,"Position 1 ya usse zyada rakhein.","err");return;}
-
-    button.disabled=true;
-    button.textContent="Saving...";
-    showProductBannerStatus(slot,"Banner Supabase me save ho raha hai...","loading");
-
+    const el=bannerSlotElements(slot);
+    const title=el.title.value.trim();
+    const desktop=Math.max(1,Number(el.desktop.value)||1);
+    const mobile=Math.max(1,Number(el.mobile.value)||1);
+    const items=collectProductBannerItems(slot);
+    if(!title){bannerStatus(slot,"Banner title required.","err");el.title.focus();return;}
+    if(!items.length){bannerStatus(slot,"Kam se kam 1 image/item add karein.","err");return;}
     try{
-        /* Only one active banner is kept for each slot. Editing updates it;
-           saving a fresh banner replaces the current slot so duplicate Slider 1/2
-           banners cannot accidentally appear on the index. */
-        const existingId=productBannerState[slot]?.id || null;
-        let result;
-        const payload={slot:slot,image_url:image,title:title,desktop_after:desktopAfter,mobile_after:mobileAfter,is_active:true,updated_at:new Date().toISOString()};
-
-        if(existingId){
-            result=await db.from("product_banners").update(payload).eq("id",existingId).select().single();
-        }else{
-            const {data:existing,error:existingError}=await db.from("product_banners").select("id").eq("slot",slot).limit(1);
-            if(existingError)throw existingError;
-            if(existing && existing.length){
-                result=await db.from("product_banners").update(payload).eq("id",existing[0].id).select().single();
-            }else{
-                result=await db.from("product_banners").insert(payload).select().single();
-            }
-        }
-        if(result.error)throw result.error;
-        productBannerState[slot]=result.data;
-        await loadProductBannersAdmin(slot);
-        showProductBannerStatus(slot,"✓ "+(slot==="slider2"?"Slider 2":"Slider 1")+" successfully save ho gaya.","ok");
-        button.textContent="Update "+(slot==="slider2"?"Slider 2":"Slider 1");
+        bannerStatus(slot,"Saving...","loading");
+        const payload={slot:slot,title:title,desktop_after:desktop,mobile_after:mobile,items:items,is_active:true,updated_at:new Date().toISOString()};
+        const {error}=await db.from("product_banner_sets").upsert(payload,{onConflict:"slot"});
+        if(error)throw error;
+        bannerStatus(slot,"✓ Slider successfully save ho gaya.","ok");
     }catch(error){
-        console.error("Product banner save error:",error);
-        showProductBannerStatus(slot,error.message||String(error),"err");
-        button.textContent=slot==="slider2"?"Save Slider 2":"Save Slider 1";
-    }finally{
-        button.disabled=false;
+        console.error("Save product banner error:",error);
+        bannerStatus(slot,error.message||String(error),"err");
     }
 }
 
-async function editProductBanner(id,slot){
-    const {data,error}=await db.from("product_banners").select("*").eq("id",id).single();
-    if(error){showProductBannerStatus(slot,error.message||String(error),"err");return;}
-    const p=bannerPrefix(slot);
-    productBannerState[slot]=data;
-    document.getElementById(p+"Title").value=data.title||"";
-    document.getElementById(p+"Image").value=data.image_url||"";
-    document.getElementById(p+"DesktopAfter").value=Number(data.desktop_after||1);
-    document.getElementById(p+"MobileAfter").value=Number(data.mobile_after||1);
-    previewProductBanner(slot);
-    document.getElementById(p+"Save").textContent="Update "+(slot==="slider2"?"Slider 2":"Slider 1");
-    showProductBannerStatus(slot,"Edit mode active.","ok");
-    window.scrollTo({top:0,behavior:"smooth"});
+async function deleteProductBanner(slot){
+    if(!confirm("Ye product banner delete karna hai?"))return;
+    const el=bannerSlotElements(slot);
+    try{
+        const {error}=await db.from("product_banner_sets").delete().eq("slot",slot);
+        if(error)throw error;
+        el.title.value=productBannerDefaults[slot].title;
+        el.desktop.value=productBannerDefaults[slot].desktop_after;
+        el.mobile.value=productBannerDefaults[slot].mobile_after;
+        el.items.innerHTML="";
+        addBannerItem(slot);
+        renderBannerLivePreview(slot);
+        bannerStatus(slot,"✓ Slider delete ho gaya.","ok");
+    }catch(error){
+        bannerStatus(slot,error.message||String(error),"err");
+    }
 }
-
-async function deleteProductBanner(id,slot){
-    if(!confirm((slot==="slider2"?"Slider 2":"Slider 1")+" delete karna hai?"))return;
-    const {error}=await db.from("product_banners").delete().eq("id",id);
-    if(error){showProductBannerStatus(slot,error.message||String(error),"err");return;}
-    productBannerState[slot]=null;
-    newProductBanner(slot);
-    await loadProductBannersAdmin(slot);
-    showProductBannerStatus(slot,"✓ "+(slot==="slider2"?"Slider 2":"Slider 1")+" delete ho gaya.","ok");
-}
-
-
 
 /* =========================================================
    GLOBALS
@@ -2026,14 +2031,6 @@ db.channel("hero-sliders-admin-live")
   })
   .subscribe();
 
-/* PRODUCT BANNERS REALTIME */
-db.channel("product-banners-admin-live")
-  .on("postgres_changes",{event:"*",schema:"public",table:"product_banners"},function(payload){
-      const slot=payload?.new?.slot || payload?.old?.slot;
-      if(slot==="slider1" || slot==="slider2") loadProductBannersAdmin(slot);
-  })
-  .subscribe();
-
 /* =========================================================
    INITIAL LOAD
 ========================================================= */
@@ -2043,8 +2040,6 @@ document.addEventListener(
     function(){
 
         loadCategories();
-        loadProductBannersAdmin("slider1");
-        loadProductBannersAdmin("slider2");
 
     }
 );
