@@ -2435,11 +2435,18 @@ async function loadAccount(){
 
     if(!user){
 
-      /* NOT LOGGED IN */
+      /* NOT LOGGED IN
+         Keep the cached name during auth/session initialization.
+         The cache is cleared only by an explicit logout.
+      */
 
-      clearCachedAccountName();
+      const cachedName =
+        localStorage.getItem(ACCOUNT_NAME_CACHE_KEY);
+
       accountName.textContent =
-        "Login";
+        (cachedName && cachedName.trim())
+          ? cachedName
+          : "Login";
       accountName.classList.add("account-ready");
 
       loggedOutMenu.style.display =
@@ -2555,8 +2562,8 @@ async function loadAccount(){
 supabaseClient.auth.onAuthStateChange(
   function(event, session){
 
-    if(event === "SIGNED_OUT" || !session){
-      clearCachedAccountName();
+    if(event === "SIGNED_OUT"){
+      /* Do not clear here. Cache is cleared only by logoutUser(). */
     }
 
     setTimeout(
@@ -2621,6 +2628,9 @@ function goCart(){
 }
 
 async function logoutUser(){
+
+  /* Explicit logout = clear cached account name */
+  clearCachedAccountName();
 
   await supabaseClient.auth.signOut();
 
@@ -5306,8 +5316,8 @@ if(window.innerWidth > 900){
 ========================================================= */
 if(typeof supabaseClient !== "undefined"){
   supabaseClient.auth.onAuthStateChange(function(event, session){
-    if(event === "SIGNED_OUT" || !session){
-      clearCachedAccountName();
+    if(event === "SIGNED_OUT"){
+      /* Do not clear here. Cache is cleared only by logoutUser(). */
     }
     setTimeout(function(){
       if(typeof loadAccount === "function") loadAccount();
