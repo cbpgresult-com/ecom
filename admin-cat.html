@@ -2,269 +2,354 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Categories Manager - MyStore</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MyStore Admin - Categories</title>
 
 <style>
+
 *{
-  box-sizing:border-box
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-html,body{
-  margin:0;
-  padding:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f6f7fb;
-  color:#111;
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f6f7fb;
+    color:#202027;
+}
+
+button,
+input{
+    font-family:inherit;
 }
 
 .wrap{
-  max-width:1100px;
-  margin:auto;
-  padding:28px 20px 50px;
+    max-width:1200px;
+    margin:auto;
+    padding:24px;
 }
+
+/* TOP */
 
 .top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:22px;
 }
 
-h1{
-  font-size:28px;
-  margin:0;
+.top h1{
+    font-size:26px;
 }
 
-h2{
-  font-size:19px;
-  margin:0 0 18px;
-}
-
-.card{
-  background:#fff;
-  border:1px solid #e3e4ea;
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 3px 12px rgba(0,0,0,.03);
-}
-
-.layout{
-  display:grid;
-  grid-template-columns:360px 1fr;
-  gap:20px;
-}
-
-label{
-  display:block;
-  font-size:13px;
-  font-weight:700;
-  margin:0 0 7px;
-}
-
-input{
-  width:100%;
-  height:46px;
-  border:1px solid #d6d7df;
-  border-radius:10px;
-  padding:0 13px;
-  font-size:14px;
-  outline:none;
-  margin-bottom:14px;
-}
-
-input:focus{
-  border-color:#6246f5;
-  box-shadow:0 0 0 3px rgba(98,70,245,.10);
+.top-buttons{
+    display:flex;
+    gap:8px;
 }
 
 .btn{
-  border:0;
-  border-radius:10px;
-  padding:11px 17px;
-  font-weight:700;
-  cursor:pointer;
-  font-size:14px;
-}
-
-.btn:disabled{
-  opacity:.6;
-  cursor:not-allowed;
+    border:0;
+    border-radius:9px;
+    padding:10px 14px;
+    font-weight:700;
+    cursor:pointer;
 }
 
 .primary{
-  background:#6246f5;
-  color:#fff;
+    background:#5b45e8;
+    color:#fff;
+}
+
+.secondary{
+    background:#eeeef5;
+    color:#222;
 }
 
 .danger{
-  background:#fff0f0;
-  color:#d22;
+    background:#fff0f1;
+    color:#c33;
+}
+
+/* LAYOUT */
+
+.layout{
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:20px;
+}
+
+.card{
+    background:#fff;
+    border:1px solid #e5e5ed;
+    border-radius:16px;
+    padding:18px;
+}
+
+.card h2{
+    font-size:18px;
+    margin-bottom:15px;
+}
+
+/* FORM */
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    margin:13px 0 7px;
+}
+
+input{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid #dcdce5;
+    border-radius:9px;
+    outline:none;
+    background:#fff;
+}
+
+input:focus{
+    border-color:#5b45e8;
+    box-shadow:0 0 0 2px rgba(91,69,232,.08);
 }
 
 /* IMAGE PREVIEW */
+
 .preview{
-  height:170px;
-  border-radius:13px;
-  background:#f3f3f7;
-  border:1px solid #e6e6ed;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  color:#888;
-  margin:0 0 16px;
+    height:110px;
+    border-radius:12px;
+    background:#f3f3f7;
+    margin-top:9px;
+    display:grid;
+    place-items:center;
+    color:#888;
+    overflow:hidden;
+    text-align:center;
 }
 
 .preview img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
-.preview .bad{
-  color:#d22;
-  font-weight:700;
+/* SECTION */
+
+.section-box{
+    border-top:1px solid #eee;
+    margin-top:18px;
+    padding-top:15px;
 }
 
-.form-note{
-  font-size:12px;
-  color:#777;
-  line-height:1.45;
-  margin-top:10px;
+.addrow{
+    display:grid;
+    grid-template-columns:1fr 1fr auto;
+    gap:7px;
+}
+
+.draft{
+    display:grid;
+    gap:7px;
+    margin-top:10px;
+}
+
+.draftrow{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px;
+    border:1px solid #e5e5ec;
+    border-radius:9px;
+}
+
+.draftrow img,
+.draft-image{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#f0eff7;
+    flex-shrink:0;
+}
+
+.draft-name{
+    flex:1;
+    font-size:13px;
+    font-weight:700;
+}
+
+.note{
+    font-size:12px;
+    color:#777;
+    line-height:1.5;
+    margin-top:10px;
 }
 
 .status{
-  min-height:22px;
-  margin-top:14px;
-  font-size:13px;
-  font-weight:700;
+    min-height:20px;
+    margin-top:12px;
+    font-size:13px;
 }
 
 .status.ok{
-  color:#14804a;
+    color:#168447;
 }
 
 .status.err{
-  color:#c62828;
+    color:#c33;
 }
 
-/* LIST */
+.status.loading{
+    color:#5b45e8;
+}
+
+/* CATEGORY LIST */
+
 .list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+    display:grid;
+    gap:12px;
 }
 
-.row{
-  border:1px solid #e1e2e8;
-  border-radius:13px;
-  padding:13px;
-  display:flex;
-  align-items:center;
-  gap:13px;
-  min-width:0;
+.category{
+    border:1px solid #e2e2ea;
+    border-radius:12px;
+    padding:13px;
 }
 
-/* THUMBNAIL */
-.thumb{
-  width:64px;
-  height:64px;
-  border-radius:12px;
-  background:#f2f2f6;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex:none;
-  font-weight:800;
-  color:#6246f5;
-  border:1px solid #ededf2;
+.head{
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
-.thumb img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
+.head img,
+.category-placeholder{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#f0eff7;
+    display:grid;
+    place-items:center;
+    flex-shrink:0;
 }
 
-.rowmain{
-  min-width:0;
-  flex:1;
-}
-
-.rowname{
-  font-weight:800;
-  font-size:15px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.rowlink{
-  font-size:11px;
-  color:#777;
-  margin-top:5px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+.category-name{
+    flex:1;
+    font-weight:750;
 }
 
 .actions{
-  display:flex;
-  gap:7px;
-  flex:none;
+    display:flex;
+    gap:5px;
 }
+
+.actions button{
+    border:0;
+    border-radius:7px;
+    padding:7px 9px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.section-title{
+    font-size:12px;
+    color:#777;
+    margin-top:11px;
+}
+
+.chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:7px;
+}
+
+.chip{
+    background:#f5f5f8;
+    border-radius:18px;
+    padding:7px 10px;
+    font-size:12px;
+}
+
+/* EMPTY */
 
 .empty{
-  text-align:center;
-  color:#777;
-  padding:45px 10px;
+    text-align:center;
+    color:#777;
+    padding:45px 10px;
 }
 
-/* MOBILE */
-@media(max-width:800px){
+/* RESPONSIVE */
 
-  .layout{
-    grid-template-columns:1fr;
-  }
+@media(max-width:850px){
+
+    .wrap{
+        padding:14px;
+    }
+
+    .layout{
+        grid-template-columns:1fr;
+    }
+
+    .top{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .top-buttons{
+        width:100%;
+    }
+
+    .top-buttons button{
+        flex:1;
+    }
+
+}
+
+@media(max-width:550px){
+
+    .addrow{
+        grid-template-columns:1fr;
+    }
+
+    .actions{
+        flex-direction:column;
+    }
+
+    .card{
+        padding:14px;
+    }
+
+    .top h1{
+        font-size:22px;
+    }
 
 }
 
-@media(max-width:520px){
 
-  .wrap{
-    padding:16px 12px 35px;
-  }
+/* ================= ADMIN TABS / SLIDER ================= */
+.top-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.top-buttons .tab-active{background:#5b45e8;color:#fff}
+.manager-panel{display:none}
+.manager-panel.active{display:block}
+.slider-layout{display:grid;grid-template-columns:360px 1fr;gap:20px}
+.slider-list{display:grid;gap:12px}
+.slider-row{border:1px solid #e2e2ea;border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;background:#fff}
+.slider-thumb{width:150px;aspect-ratio:2.05/1;border-radius:10px;background:#f1f1f5;overflow:hidden;flex:none;display:grid;place-items:center;color:#777}
+.slider-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.slider-row-main{min-width:0;flex:1}
+.slider-row-link{font-size:12px;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slider-actions{display:flex;gap:6px;flex:none}
+.slider-note{font-size:12px;color:#777;line-height:1.5;margin-top:10px}
+.slider-preview{height:150px;border-radius:12px;background:#f3f3f7;margin-top:9px;display:grid;place-items:center;color:#888;overflow:hidden;text-align:center}
+.slider-preview img{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:850px){.slider-layout{grid-template-columns:1fr}}
+@media(max-width:550px){.slider-thumb{width:110px}.slider-row{align-items:flex-start}.slider-actions{flex-direction:column}.top-buttons{width:100%}.top-buttons button{flex:1}}
 
-  .top{
-    align-items:flex-start;
-  }
-
-  h1{
-    font-size:22px;
-  }
-
-  .card{
-    padding:16px;
-  }
-
-  .row{
-    align-items:flex-start;
-  }
-
-  .actions{
-    flex-direction:column;
-  }
-
-  .preview{
-    height:160px;
-  }
-
-}
 </style>
 </head>
 
@@ -272,1034 +357,1389 @@ input:focus{
 
 <div class="wrap">
 
-  <div class="top">
-    <h1>Categories Manager</h1>
+    <!-- TOP -->
 
-    <button
-      class="btn primary"
-      onclick="saveAll()"
-      id="saveBtn">
-      Save Categories
-    </button>
-  </div>
+    <div class="top">
 
+        <h1>Categories Manager</h1>
 
-  <div class="layout">
+        <div class="top-buttons">
 
-    <!-- LEFT -->
-    <section class="card">
+            <button
+                id="categoriesTabBtn"
+                class="btn primary tab-active"
+                onclick="showAdminPanel('categories')">
+                Add Categories
+            </button>
 
-      <h2>Add Subcategory</h2>
+            <button
+                id="sliderTabBtn"
+                class="btn secondary"
+                onclick="showAdminPanel('slider')">
+                Add Slider
+            </button>
 
-      <label>Subcategory Name</label>
+        </div>
 
-      <input
-        id="subName"
-        placeholder="e.g. Hoodies"
-      >
-
-
-      <label>Subcategory Image Link</label>
-
-      <input
-        id="subImage"
-        placeholder="https://.../hoodies.webp"
-        autocomplete="off"
-      >
+    </div>
 
 
-      <!-- MEDIUM IMAGE PREVIEW -->
-      <div
-        class="preview"
-        id="preview">
-        Image preview
-      </div>
+    <div id="categoriesPanel" class="layout manager-panel active">
+
+        <!-- =========================
+             FORM
+        ========================== -->
+
+        <div class="card">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;">
+                <h2 id="formTitle" style="margin:0;">
+                    Add / Edit Category
+                </h2>
+                <button class="btn secondary" onclick="newCategory()">New</button>
+            </div>
+
+            <button
+                class="btn primary"
+                id="saveButton"
+                onclick="saveCategory()"
+                style="width:100%;margin-bottom:4px;">
+                Save Category
+            </button>
 
 
-      <button
-        class="btn primary"
-        style="width:100%"
-        onclick="addSubcategory()">
-        Add Subcategory
-      </button>
+            <label>
+                Category Name
+            </label>
+
+            <input
+                id="categoryName"
+                type="text"
+                placeholder="e.g. Fashion"
+            >
 
 
-      <div class="form-note">
-        Image link paste karte hi preview isi medium box mein turant dikhega.
-      </div>
+            <label>
+                Category Image Link
+            </label>
+
+            <input
+                id="categoryImage"
+                type="text"
+                placeholder="https://.../fashion.webp"
+                oninput="previewCategoryImage()"
+            >
 
 
-      <div
-        id="status"
-        class="status">
-      </div>
+            <div
+                class="preview"
+                id="categoryPreview">
+                Image preview
+            </div>
 
-    </section>
+
+            <!-- SECTION -->
+
+            <div class="section-box">
+
+                <label>
+                    Section Name
+                </label>
+
+                <input
+                    id="sectionName"
+                    type="text"
+                    placeholder="e.g. Women's Fashion"
+                >
 
 
-    <!-- RIGHT -->
-    <section class="card">
+                <label>
+                    Subcategory Name
+                </label>
 
-      <h2>Subcategories</h2>
+                <div class="addrow">
 
-      <div
-        id="list"
-        class="list">
-      </div>
+                    <input
+                        id="subName"
+                        type="text"
+                        placeholder="e.g. Sarees"
+                    >
 
-    </section>
+                    <input
+                        id="subImage"
+                        type="text"
+                        placeholder="https://.../saree.webp"
+                    >
 
-  </div>
+                    <button
+                        class="btn primary"
+                        onclick="addSubcategory()">
+                        Add
+                    </button>
+
+                </div>
+
+
+                <!-- DRAFT SUBCATEGORIES -->
+
+                <div
+                    class="draft"
+                    id="draft">
+                </div>
+
+
+                <div class="note">
+
+                    Pehle subcategory add karein.
+                    <br>
+
+                    Uske baad
+                    <b>Save Category</b>
+                    dabayein.
+
+                    <br><br>
+
+                    Save hone ke baad form automatically
+                    khaali ho jayega.
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="status"
+                class="status">
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CATEGORY LIST
+        ========================== -->
+
+        <div class="card">
+
+            <h2>
+                Categories
+            </h2>
+
+            <div
+                id="categoryList"
+                class="list">
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= SLIDER PANEL ================= -->
+    <div id="sliderPanel" class="slider-layout manager-panel">
+
+        <div class="card">
+            <h2>Add Hero Slider</h2>
+
+            <label>Slider Image Link</label>
+            <input
+                id="sliderImage"
+                type="text"
+                placeholder="https://.../banner.webp"
+                autocomplete="off"
+                oninput="previewSliderImage()"
+            >
+
+            <div id="sliderPreview" class="slider-preview">
+                Image preview
+            </div>
+
+            <button
+                id="addSliderButton"
+                class="btn primary"
+                onclick="addSlider()"
+                style="width:100%;margin-top:12px;">
+                Add Slider
+            </button>
+
+            <div class="slider-note">
+                Image link paste karte hi preview dikhega. Add Slider dabate hi image Supabase me save hokar index.html par automatically show hogi.
+            </div>
+
+            <div id="sliderStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+            <h2>Hero Sliders</h2>
+            <div id="sliderList" class="slider-list"></div>
+        </div>
+    </div>
 
 </div>
 
 
 <!-- SUPABASE -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
 /* =========================================================
-   SAME SUPABASE URL + SAME API KEY
-   ========================================================= */
+   SUPABASE CONFIG
+
+   SAME API AS YOUR INDEX.HTML
+========================================================= */
 
 const SUPABASE_URL =
-"https://bszojvhitsoamhksyjul.supabase.co";
+    "https://bszojvhitsoamhksyjul.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
 
 
-const sb =
-window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-
-/* =========================================================
-   MARKER
-   ========================================================= */
-
-const MARKER =
-"__SUBCATEGORY_ONLY__";
+const db =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
 /* =========================================================
-   DATA
-   ========================================================= */
+   HERO SLIDER ADMIN
+========================================================= */
+const sliderImage = document.getElementById("sliderImage");
+const sliderPreview = document.getElementById("sliderPreview");
+const sliderList = document.getElementById("sliderList");
+const sliderStatus = document.getElementById("sliderStatus");
+const addSliderButton = document.getElementById("addSliderButton");
 
-let draft = [];
-let rows = [];
+function showAdminPanel(panel){
+    const catPanel=document.getElementById("categoriesPanel");
+    const sliderPanel=document.getElementById("sliderPanel");
+    const catBtn=document.getElementById("categoriesTabBtn");
+    const sliderBtn=document.getElementById("sliderTabBtn");
+    const cat=panel==="categories";
+    catPanel.classList.toggle("active",cat);
+    sliderPanel.classList.toggle("active",!cat);
+    catBtn.classList.toggle("tab-active",cat);
+    sliderBtn.classList.toggle("tab-active",!cat);
+    if(!cat) loadSliders();
+}
+
+function showSliderStatus(message,type="ok"){
+    if(!sliderStatus)return;
+    sliderStatus.textContent=message;
+    sliderStatus.className="status "+type;
+}
+
+function previewSliderImage(){
+    const url=sliderImage.value.trim();
+    if(!url){sliderPreview.innerHTML="Image preview";return;}
+    sliderPreview.innerHTML=`<img src="${escapeHTML(url)}" alt="Slider preview" onerror="this.parentElement.innerHTML='Image load nahi hui';">`;
+}
+
+function clearSliderInput(){
+    sliderImage.value="";
+    sliderPreview.innerHTML="Image preview";
+}
+
+async function loadSliders(){
+    if(!sliderList)return;
+    const {data,error}=await db
+        .from("hero_sliders")
+        .select("id,image_url,sort_order,is_active,created_at")
+        .order("sort_order",{ascending:true})
+        .order("created_at",{ascending:true});
+
+    if(error){
+        sliderList.innerHTML=`<div class="empty"><b>Sliders load nahi hui</b><br><br>${escapeHTML(error.message)}</div>`;
+        return;
+    }
+
+    const rows=data||[];
+    if(!rows.length){
+        sliderList.innerHTML='<div class="empty">Abhi koi slider nahi hai.</div>';
+        return;
+    }
+
+    sliderList.innerHTML=rows.map(slide=>`
+        <div class="slider-row">
+            <div class="slider-thumb">
+                <img src="${escapeHTML(slide.image_url)}" alt="Slider" onerror="this.style.display='none'">
+            </div>
+            <div class="slider-row-main">
+                <div style="font-weight:800;font-size:14px;margin-bottom:5px;">Hero Slider</div>
+                <div class="slider-row-link">${escapeHTML(slide.image_url)}</div>
+            </div>
+            <div class="slider-actions">
+                <button class="btn danger" onclick="deleteSlider('${escapeHTML(slide.id)}')">Delete</button>
+            </div>
+        </div>
+    `).join("");
+}
+
+async function addSlider(){
+    const image=sliderImage.value.trim();
+    if(!image){
+        showSliderStatus("Slider image link required.","err");
+        sliderImage.focus();
+        return;
+    }
+
+    addSliderButton.disabled=true;
+    addSliderButton.textContent="Adding...";
+    showSliderStatus("Slider save ho raha hai...","loading");
+
+    try{
+        const {data:existing,error:readError}=await db
+            .from("hero_sliders")
+            .select("id,sort_order")
+            .order("sort_order",{ascending:false})
+            .limit(1);
+        if(readError) throw readError;
+
+        const nextOrder=existing && existing.length ? Number(existing[0].sort_order||0)+1 : 0;
+        const {error}=await db.from("hero_sliders").insert({
+            image_url:image,
+            sort_order:nextOrder,
+            is_active:true
+        });
+        if(error) throw error;
+
+        clearSliderInput();
+        await loadSliders();
+        showSliderStatus("✓ Slider successfully add ho gaya.","ok");
+    }catch(error){
+        console.error("Add slider error:",error);
+        showSliderStatus(error.message||String(error),"err");
+    }finally{
+        addSliderButton.disabled=false;
+        addSliderButton.textContent="Add Slider";
+    }
+}
+
+async function deleteSlider(id){
+    if(!confirm("Ye slider delete karna hai?")) return;
+    const {error}=await db.from("hero_sliders").delete().eq("id",id);
+    if(error){showSliderStatus(error.message||String(error),"err");return;}
+    await loadSliders();
+    showSliderStatus("✓ Slider delete ho gaya.","ok");
+}
+
+
+
+/* =========================================================
+   GLOBALS
+========================================================= */
+
+let categories = [];
+
+let editingId = null;
+
+let draftSubcategories = [];
 
 
 /* =========================================================
    ELEMENTS
-   ========================================================= */
+========================================================= */
+
+const categoryName =
+    document.getElementById("categoryName");
+
+const categoryImage =
+    document.getElementById("categoryImage");
+
+const categoryPreview =
+    document.getElementById("categoryPreview");
+
+const sectionName =
+    document.getElementById("sectionName");
 
 const subName =
-document.getElementById("subName");
+    document.getElementById("subName");
 
 const subImage =
-document.getElementById("subImage");
+    document.getElementById("subImage");
 
-const previewEl =
-document.getElementById("preview");
+const draft =
+    document.getElementById("draft");
 
-const listEl =
-document.getElementById("list");
+const categoryList =
+    document.getElementById("categoryList");
 
-const statusEl =
-document.getElementById("status");
+const statusBox =
+    document.getElementById("status");
 
-const saveBtn =
-document.getElementById("saveBtn");
+const saveButton =
+    document.getElementById("saveButton");
+
+const formTitle =
+    document.getElementById("formTitle");
 
 
 /* =========================================================
    ESCAPE HTML
-   ========================================================= */
+========================================================= */
 
-function esc(v){
+function escapeHTML(value){
 
-  return String(v ?? "")
-    .replace(
-      /[&<>"']/g,
-      c => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-      }[c])
-    );
+    return String(value ?? "")
+        .replace(/[&<>"']/g,function(char){
+
+            return {
+
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                '"':"&quot;",
+                "'":"&#039;"
+
+            }[char];
+
+        });
 
 }
 
 
 /* =========================================================
    STATUS
-   ========================================================= */
+========================================================= */
 
-function status(msg,error=false){
+function showStatus(
+    message,
+    type = "ok"
+){
 
-  statusEl.textContent = msg;
+    statusBox.textContent =
+        message;
 
-  statusEl.className =
-    "status " +
-    (error ? "err" : "ok");
-
-}
-
-
-/* =========================================================
-   IMAGE PREVIEW
-   ========================================================= */
-
-function showPreview(){
-
-  const url =
-    subImage.value.trim();
-
-
-  if(!url){
-
-    previewEl.innerHTML =
-      "Image preview";
-
-    return;
-  }
-
-
-  previewEl.innerHTML = `
-
-    <img
-      src="${esc(url)}"
-      alt="Preview"
-      onload="
-        this.style.display='block';
-      "
-      onerror="
-        this.parentElement.innerHTML=
-        '<div class=&quot;bad&quot;>Image load nahi hui</div>';
-      "
-    >
-
-  `;
-
-}
-
-
-subImage.addEventListener(
-  "input",
-  showPreview
-);
-
-
-subImage.addEventListener(
-  "paste",
-  () => {
-
-    setTimeout(
-      showPreview,
-      0
-    );
-
-  }
-);
-
-
-/* =========================================================
-   CLEAR INPUTS
-   SAVE KE BAAD SAB EMPTY
-   ========================================================= */
-
-function clearInputs(){
-
-  subName.value = "";
-
-  subImage.value = "";
-
-  previewEl.innerHTML =
-    "Image preview";
+    statusBox.className =
+        "status " + type;
 
 }
 
 
 /* =========================================================
-   ADD SUBCATEGORY
-   ========================================================= */
+   CATEGORY IMAGE PREVIEW
+========================================================= */
+
+function previewCategoryImage(){
+
+    const url =
+        categoryImage.value.trim();
+
+    if(!url){
+
+        categoryPreview.innerHTML =
+            "Image preview";
+
+        return;
+
+    }
+
+    categoryPreview.innerHTML = `
+        <img
+            src="${escapeHTML(url)}"
+            alt="Category"
+            onerror="
+                this.parentElement.innerHTML =
+                'Image load nahi hui';
+            "
+        >
+    `;
+
+}
+
+
+/* =========================================================
+   ADD SUBCATEGORY TO DRAFT
+========================================================= */
 
 function addSubcategory(){
 
-  const name =
-    subName.value.trim();
+    const name =
+        subName.value.trim();
 
-  const image =
-    subImage.value.trim();
+    const image =
+        subImage.value.trim();
 
 
-  if(!name){
+    if(!name){
 
-    status(
-      "Subcategory name required.",
-      true
+        showStatus(
+            "Subcategory name required.",
+            "err"
+        );
+
+        subName.focus();
+
+        return;
+
+    }
+
+
+    draftSubcategories.push({
+
+        name:name,
+
+        image:image
+
+    });
+
+
+    subName.value = "";
+
+    subImage.value = "";
+
+    renderDraft();
+
+
+    showStatus(
+        "Subcategory add ho gayi. Ab Save Category dabayein.",
+        "ok"
     );
 
-    subName.focus();
-
-    return;
-  }
+}
 
 
-  if(!image){
+/* =========================================================
+   RENDER DRAFT
+========================================================= */
 
-    status(
-      "Subcategory image link required.",
-      true
-    );
+function renderDraft(){
 
-    subImage.focus();
+    if(!draftSubcategories.length){
 
-    return;
-  }
+        draft.innerHTML = "";
 
+        return;
 
-  /* DRAFT ME IMAGE SAVE */
-  draft.push({
-
-    name:name,
-
-    image:image
-
-  });
+    }
 
 
-  /* INPUT CLEAR */
-  clearInputs();
+    draft.innerHTML =
+        draftSubcategories
+        .map(function(item,index){
+
+            const image =
+                item.image
+                ?
+                `
+                <img
+                    class="draft-image"
+                    src="${escapeHTML(item.image)}"
+                    onerror="this.style.display='none'"
+                >
+                `
+                :
+                `
+                <div class="category-placeholder">
+                    ${escapeHTML(
+                        item.name.charAt(0).toUpperCase()
+                    )}
+                </div>
+                `;
 
 
-  /* LIST UPDATE */
-  renderList();
+            return `
 
+                <div class="draftrow">
 
-  status(
-    "Subcategory add ho gayi. Ab Save Categories dabao."
-  );
+                    ${image}
+
+                    <div class="draft-name">
+                        ${escapeHTML(item.name)}
+                    </div>
+
+                    <button
+                        class="btn danger"
+                        onclick="removeDraft(${index})">
+                        ×
+                    </button>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
 
 }
 
 
 /* =========================================================
    REMOVE DRAFT
-   ========================================================= */
+========================================================= */
 
-function removeDraft(i){
+function removeDraft(index){
 
-  draft.splice(
-    i,
-    1
-  );
+    draftSubcategories.splice(
+        index,
+        1
+    );
 
-  renderList();
-
-}
-
-
-/* =========================================================
-   GET IMAGE FROM SAVED ROW
-   ========================================================= */
-
-function getSavedImage(x){
-
-  /*
-   * FIRST:
-   * image_url column
-   */
-
-  if(
-    x &&
-    typeof x.image_url === "string" &&
-    x.image_url.trim()
-  ){
-
-    return x.image_url.trim();
-
-  }
-
-
-  /*
-   * SECOND:
-   * direct image field
-   */
-
-  if(
-    x &&
-    typeof x.image === "string" &&
-    x.image.trim()
-  ){
-
-    return x.image.trim();
-
-  }
-
-
-  /*
-   * THIRD:
-   * sections -> marker -> items -> image
-   */
-
-  if(
-    x &&
-    Array.isArray(x.sections)
-  ){
-
-    const section =
-      x.sections.find(
-        s =>
-          s &&
-          s.title === MARKER
-      );
-
-
-    if(
-      section &&
-      Array.isArray(section.items) &&
-      section.items.length
-    ){
-
-      const item =
-        section.items[0];
-
-
-      if(
-        item &&
-        typeof item.image === "string" &&
-        item.image.trim()
-      ){
-
-        return item.image.trim();
-
-      }
-
-
-      if(
-        item &&
-        typeof item.image_url === "string" &&
-        item.image_url.trim()
-      ){
-
-        return item.image_url.trim();
-
-      }
-
-    }
-
-  }
-
-
-  return "";
+    renderDraft();
 
 }
 
 
 /* =========================================================
-   RENDER LIST
-   ========================================================= */
+   CLEAR FORM
+========================================================= */
 
-function renderList(){
+function newCategory(){
 
-  /*
-   * DRAFT + SAVED
-   */
+    editingId = null;
 
-  const all = [
+    draftSubcategories = [];
 
-    ...draft.map(
-      (x,i) => ({
 
-        name:x.name,
+    categoryName.value = "";
 
-        image:x.image,
+    categoryImage.value = "";
 
-        _draft:true,
+    sectionName.value = "";
 
-        _index:i
+    subName.value = "";
 
-      })
-    ),
+    subImage.value = "";
 
 
-    ...rows.map(
-      x => ({
+    categoryPreview.innerHTML =
+        "Image preview";
 
-        ...x,
 
-        _draft:false,
+    renderDraft();
 
-        /*
-         * IMPORTANT:
-         * Saved image fallback
-         */
 
-        image:getSavedImage(x)
+    formTitle.textContent =
+        "Add / Edit Category";
 
-      })
-    )
 
-  ];
+    saveButton.textContent =
+        "Save Category";
 
 
-  /* EMPTY */
-  if(!all.length){
-
-    listEl.innerHTML =
-      '<div class="empty">Abhi koi subcategory nahi hai.</div>';
-
-    return;
-
-  }
-
-
-  /* HTML */
-  listEl.innerHTML =
-    all.map(
-      x => {
-
-        const image =
-          String(
-            x.image || ""
-          ).trim();
-
-
-        const firstLetter =
-          String(
-            x.name || "?"
-          )
-          .charAt(0)
-          .toUpperCase();
-
-
-        return `
-
-          <div class="row">
-
-
-            <!-- THUMBNAIL -->
-
-            <div class="thumb">
-
-              ${
-                image
-
-                ?
-
-                `
-
-                <img
-                  src="${esc(image)}"
-                  alt="${esc(x.name)}"
-                  loading="lazy"
-
-                  onload="
-                    this.style.display='block';
-                  "
-
-                  onerror="
-                    this.onerror=null;
-                    this.style.display='none';
-                    this.parentElement.innerHTML=
-                    '<span>${esc(firstLetter)}</span>';
-                  "
-                >
-
-                `
-
-                :
-
-                `<span>${esc(firstLetter)}</span>`
-
-              }
-
-            </div>
-
-
-            <!-- NAME + LINK -->
-
-            <div class="rowmain">
-
-              <div class="rowname">
-                ${esc(x.name)}
-              </div>
-
-
-              <div class="rowlink">
-                ${esc(image)}
-              </div>
-
-            </div>
-
-
-            <!-- ACTION -->
-
-            <div class="actions">
-
-              ${
-                x._draft
-
-                ?
-
-                `
-
-                <button
-                  class="btn danger"
-                  onclick="removeDraft(${x._index})">
-                  Remove
-                </button>
-
-                `
-
-                :
-
-                `
-
-                <button
-                  class="btn danger"
-                  onclick="deleteRow('${String(x.id).replace(/'/g,"\\'")}')">
-                  Delete
-                </button>
-
-                `
-
-              }
-
-            </div>
-
-
-          </div>
-
-        `;
-
-      }
-    ).join("");
+    showStatus("","ok");
 
 }
 
 
 /* =========================================================
-   LOAD SAVED CATEGORIES
-   ========================================================= */
+   LOAD CATEGORIES
+========================================================= */
 
-async function loadRows(){
+async function loadCategories(){
 
-  try{
+    showStatus(
+        "Categories loading...",
+        "loading"
+    );
+
 
     const {
-      data,
-      error
-    } = await sb
-      .from("categories")
-      .select(`
-        id,
-        name,
-        image_url,
-        sections,
-        is_active,
-        sort_order,
-        created_at
-      `)
-      .eq(
-        "is_active",
-        true
-      )
-      .order(
-        "sort_order",
-        {
-          ascending:true
-        }
-      )
-      .order(
-        "created_at",
-        {
-          ascending:true
-        }
-      );
 
-
-    /* ERROR */
-
-    if(error){
-
-      console.error(
-        "Categories Load Error:",
+        data,
         error
-      );
 
-      status(
-        error.message ||
-        "Categories load nahi hui.",
-        true
-      );
+    } = await db
 
-      return;
+        .from("categories")
 
-    }
+        .select(`
+            id,
+            name,
+            image_url,
+            sections,
+            sort_order,
+            is_active,
+            created_at
+        `)
 
-
-    /*
-     * ONLY OUR SUBCATEGORY ROWS
-     */
-
-    rows =
-      (data || [])
-      .filter(
-        r =>
-
-          Array.isArray(
-            r.sections
-          )
-
-          &&
-
-          r.sections.some(
-            s =>
-              s &&
-              s.title === MARKER
-          )
-
-      );
-
-
-    /*
-     * DEBUG
-     */
-
-    console.log(
-      "Loaded categories:",
-      rows
-    );
-
-
-    /*
-     * RENDER
-     */
-
-    renderList();
-
-
-  }catch(error){
-
-    console.error(
-      "Load Error:",
-      error
-    );
-
-    status(
-      error.message ||
-      "Categories load nahi hui.",
-      true
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   SAVE ALL
-   ========================================================= */
-
-async function saveAll(){
-
-  /*
-   * DRAFT CHECK
-   */
-
-  if(!draft.length){
-
-    status(
-      "Pehle kam se kam ek subcategory add karo.",
-      true
-    );
-
-    return;
-
-  }
-
-
-  /*
-   * BUTTON LOCK
-   */
-
-  saveBtn.disabled = true;
-
-  saveBtn.textContent =
-    "Saving...";
-
-
-  status(
-    "Supabase me save ho raha hai..."
-  );
-
-
-  try{
-
-
-    /*
-     * PAYLOAD
-     *
-     * IMAGE 2 JAGAH SAVE:
-     *
-     * 1. image_url
-     *
-     * 2. sections.items.image
-     *
-     * Isse save ke baad thumbnail
-     * properly load hoga.
-     */
-
-    const payload =
-      draft.map(
-        (x,i) => ({
-
-          name:x.name,
-
-
-          /* MAIN IMAGE COLUMN */
-
-          image_url:x.image,
-
-
-          /* SUBCATEGORY DATA */
-
-          sections:[
+        .order(
+            "sort_order",
             {
-
-              title:MARKER,
-
-              items:[
-                {
-
-                  name:x.name,
-
-                  image:x.image,
-
-                  image_url:x.image
-
-                }
-
-              ]
-
+                ascending:true
             }
-          ],
+        )
 
-
-          /* ACTIVE */
-
-          is_active:true,
-
-
-          /* ORDER */
-
-          sort_order:
-            rows.length + i
-
-        })
-      );
-
-
-    console.log(
-      "Saving payload:",
-      payload
-    );
-
-
-    /*
-     * INSERT
-     */
-
-    const {
-      error
-    } =
-      await sb
-        .from("categories")
-        .insert(payload);
-
-
-    if(error){
-
-      throw error;
-
-    }
-
-
-    /*
-     * SUCCESS
-     *
-     * Draft clear
-     * Inputs clear
-     */
-
-    draft = [];
-
-
-    clearInputs();
-
-
-    /*
-     * DATABASE SE LOAD
-     */
-
-    await loadRows();
-
-
-    /*
-     * SUCCESS MESSAGE
-     */
-
-    status(
-      "✓ Categories successfully save ho gayi."
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Save Error:",
-      error
-    );
-
-
-    status(
-      error.message ||
-      String(error),
-      true
-    );
-
-  }
-
-
-  finally{
-
-    saveBtn.disabled = false;
-
-    saveBtn.textContent =
-      "Save Categories";
-
-  }
-
-}
-
-
-/* =========================================================
-   DELETE SAVED ROW
-   ========================================================= */
-
-async function deleteRow(id){
-
-  if(
-    !confirm(
-      "Ye subcategory delete karni hai?"
-    )
-  ){
-
-    return;
-
-  }
-
-
-  try{
-
-    const {
-      error
-    } =
-      await sb
-        .from("categories")
-        .delete()
-        .eq(
-          "id",
-          id
+        .order(
+            "created_at",
+            {
+                ascending:true
+            }
         );
 
 
     if(error){
 
-      status(
-        error.message ||
-        String(error),
-        true
-      );
+        console.error(
+            "Categories load error:",
+            error
+        );
 
-      return;
+
+        categories = [];
+
+        categoryList.innerHTML = `
+
+            <div class="empty">
+
+                <b>Categories load nahi hui</b>
+
+                <br><br>
+
+                ${escapeHTML(error.message)}
+
+            </div>
+
+        `;
+
+        showStatus(
+            error.message,
+            "err"
+        );
+
+        return;
 
     }
 
 
-    /*
-     * RELOAD
-     */
-
-    await loadRows();
+    categories =
+        data || [];
 
 
-    status(
-      "✓ Subcategory delete ho gayi."
+    renderCategories();
+
+
+    showStatus(
+        categories.length
+        ?
+        `${categories.length} categories loaded.`
+        :
+        "Abhi koi category nahi hai.",
+        "ok"
     );
-
-
-  }catch(error){
-
-    console.error(
-      "Delete Error:",
-      error
-    );
-
-    status(
-      error.message ||
-      String(error),
-      true
-    );
-
-  }
 
 }
 
 
 /* =========================================================
-   REALTIME
-   ========================================================= */
+   RENDER CATEGORIES
+========================================================= */
 
-sb
-.channel(
-  "categories-admin-live"
-)
-.on(
-  "postgres_changes",
-  {
-    event:"*",
-    schema:"public",
-    table:"categories"
-  },
-  () => {
+function renderCategories(){
 
-    loadRows();
+    if(!categories.length){
 
-  }
-)
-.subscribe();
+        categoryList.innerHTML = `
+
+            <div class="empty">
+
+                Abhi koi category nahi hai.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    categoryList.innerHTML =
+
+        categories
+        .map(function(category){
+
+            const sections =
+                Array.isArray(
+                    category.sections
+                )
+                ?
+                category.sections
+                :
+                [];
+
+
+            const categoryImageHTML =
+
+                category.image_url
+
+                ?
+
+                `
+                <img
+                    src="${escapeHTML(
+                        category.image_url
+                    )}"
+                    alt="${escapeHTML(
+                        category.name
+                    )}"
+                    onerror="
+                        this.style.display='none';
+                    "
+                >
+                `
+
+                :
+
+                `
+                <div class="category-placeholder">
+                    ${escapeHTML(
+                        (category.name || "?")
+                        .charAt(0)
+                        .toUpperCase()
+                    )}
+                </div>
+                `;
+
+
+            const sectionsHTML =
+
+                sections
+                .map(function(section){
+
+                    const items =
+                        Array.isArray(
+                            section.items
+                        )
+                        ?
+                        section.items
+                        :
+                        [];
+
+
+                    return `
+
+                        <div class="section-title">
+
+                            ${escapeHTML(
+                                section.title || ""
+                            )}
+
+                        </div>
+
+                        <div class="chips">
+
+                            ${
+                                items.length
+
+                                ?
+
+                                items
+                                .map(function(item){
+
+                                    return `
+
+                                        <span class="chip">
+
+                                            ${escapeHTML(
+                                                item.name
+                                            )}
+
+                                        </span>
+
+                                    `;
+
+                                })
+                                .join("")
+
+                                :
+
+                                `<span class="chip">
+                                    No subcategory
+                                </span>`
+
+                            }
+
+                        </div>
+
+                    `;
+
+                })
+                .join("");
+
+
+            return `
+
+                <div class="category">
+
+                    <div class="head">
+
+                        ${categoryImageHTML}
+
+
+                        <div class="category-name">
+
+                            ${escapeHTML(
+                                category.name
+                            )}
+
+                        </div>
+
+
+                        <div class="actions">
+
+                            <button
+                                class="secondary"
+                                onclick="
+                                    editCategory(
+                                        '${escapeHTML(
+                                            category.id
+                                        )}'
+                                    )
+                                ">
+
+                                Edit
+
+                            </button>
+
+
+                            <button
+                                class="danger"
+                                onclick="
+                                    deleteCategory(
+                                        '${escapeHTML(
+                                            category.id
+                                        )}'
+                                    )
+                                ">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    ${sectionsHTML}
+
+                </div>
+
+            `;
+
+        })
+        .join("");
+
+}
 
 
 /* =========================================================
+   EDIT CATEGORY
+========================================================= */
+
+function editCategory(id){
+
+    const category =
+        categories.find(function(item){
+
+            return String(item.id) ===
+                   String(id);
+
+        });
+
+
+    if(!category){
+
+        return;
+
+    }
+
+
+    editingId =
+        category.id;
+
+
+    categoryName.value =
+        category.name || "";
+
+
+    categoryImage.value =
+        category.image_url || "";
+
+
+    const sections =
+        Array.isArray(
+            category.sections
+        )
+        ?
+        category.sections
+        :
+        [];
+
+
+    const firstSection =
+        sections[0] || {
+
+            title:"",
+            items:[]
+
+        };
+
+
+    sectionName.value =
+        firstSection.title || "";
+
+
+    draftSubcategories =
+
+        Array.isArray(
+            firstSection.items
+        )
+
+        ?
+
+        firstSection.items
+        .map(function(item){
+
+            return {
+
+                name:item.name || "",
+
+                image:item.image || ""
+
+            };
+
+        })
+
+        :
+
+        [];
+
+
+    formTitle.textContent =
+        "Edit Category";
+
+
+    saveButton.textContent =
+        "Update Category";
+
+
+    previewCategoryImage();
+
+    renderDraft();
+
+
+    showStatus(
+        "Edit mode active.",
+        "ok"
+    );
+
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+}
+
+
+/* =========================================================
+   SAVE CATEGORY
+========================================================= */
+
+async function saveCategory(){
+
+    const name =
+        categoryName.value.trim();
+
+    const image =
+        categoryImage.value.trim();
+
+    const section =
+        sectionName.value.trim();
+
+
+    /* VALIDATION */
+
+    if(!name){
+
+        showStatus(
+            "Category name required.",
+            "err"
+        );
+
+        categoryName.focus();
+
+        return;
+
+    }
+
+
+    if(!section){
+
+        showStatus(
+            "Section name required.",
+            "err"
+        );
+
+        sectionName.focus();
+
+        return;
+
+    }
+
+
+    /* BUTTON LOCK */
+
+    saveButton.disabled = true;
+
+    saveButton.textContent =
+        "Saving...";
+
+
+    showStatus(
+        "Supabase me save ho raha hai...",
+        "loading"
+    );
+
+
+    /* PAYLOAD */
+
+    const payload = {
+
+        name:name,
+
+        image_url:
+            image || null,
+
+        sections:[
+            {
+                title:section,
+
+                items:
+                    draftSubcategories
+                    .map(function(item){
+
+                        return {
+
+                            name:item.name,
+
+                            image:item.image || ""
+
+                        };
+
+                    })
+
+            }
+        ],
+
+        is_active:true
+
+    };
+
+
+    let result;
+
+
+    /* UPDATE */
+
+    if(editingId){
+
+        result = await db
+
+            .from("categories")
+
+            .update(payload)
+
+            .eq(
+                "id",
+                editingId
+            )
+
+            .select()
+            .single();
+
+    }
+
+    /* INSERT */
+
+    else{
+
+        result = await db
+
+            .from("categories")
+
+            .insert(payload)
+
+            .select()
+            .single();
+
+    }
+
+
+    /* ERROR */
+
+    if(result.error){
+
+        console.error(
+            "Save category error:",
+            result.error
+        );
+
+
+        showStatus(
+            result.error.message,
+            "err"
+        );
+
+
+        saveButton.disabled = false;
+
+        saveButton.textContent =
+            editingId
+            ?
+            "Update Category"
+            :
+            "Save Category";
+
+        return;
+
+    }
+
+
+    /* SUCCESS */
+
+    showStatus(
+        "✓ Category successfully save ho gayi.",
+        "ok"
+    );
+
+
+    /* FORM CLEAR */
+
+    newCategory();
+
+
+    /* RELOAD LIST */
+
+    await loadCategories();
+
+
+    saveButton.disabled = false;
+
+    saveButton.textContent =
+        "Save Category";
+
+}
+
+
+/* =========================================================
+   DELETE CATEGORY
+========================================================= */
+
+async function deleteCategory(id){
+
+    const category =
+        categories.find(function(item){
+
+            return String(item.id) ===
+                   String(id);
+
+        });
+
+
+    if(!category){
+
+        return;
+
+    }
+
+
+    const confirmDelete =
+        confirm(
+            `"${category.name}" delete karni hai?`
+        );
+
+
+    if(!confirmDelete){
+
+        return;
+
+    }
+
+
+    showStatus(
+        "Category delete ho rahi hai...",
+        "loading"
+    );
+
+
+    const {
+
+        error
+
+    } = await db
+
+        .from("categories")
+
+        .delete()
+
+        .eq(
+            "id",
+            id
+        );
+
+
+    if(error){
+
+        console.error(
+            "Delete error:",
+            error
+        );
+
+
+        showStatus(
+            error.message,
+            "err"
+        );
+
+        return;
+
+    }
+
+
+    showStatus(
+        "✓ Category delete ho gayi.",
+        "ok"
+    );
+
+
+    if(String(editingId) === String(id)){
+
+        newCategory();
+
+    }
+
+
+    await loadCategories();
+
+}
+
+
+/* HERO SLIDER REALTIME */
+db.channel("hero-sliders-admin-live")
+  .on("postgres_changes",{event:"*",schema:"public",table:"hero_sliders"},function(){
+      loadSliders();
+  })
+  .subscribe();
+
+/* =========================================================
    INITIAL LOAD
-   ========================================================= */
+========================================================= */
 
 document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+    "DOMContentLoaded",
+    function(){
 
-    loadRows();
+        loadCategories();
 
-  }
+    }
 );
 
 </script>
