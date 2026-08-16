@@ -701,7 +701,8 @@ a{text-decoration:none;color:inherit}
   display:flex;
   align-items:center;
   gap:8px;
-  padding:0 0 15px;
+
+  padding:0 0 9px;
   border-bottom:1px solid #e5e5e5;
   overflow-x:auto;
   scrollbar-width:none;
@@ -732,7 +733,8 @@ a{text-decoration:none;color:inherit}
 
 .detailsPanel{
   display:none;
-  padding-top:18px;
+
+  padding-top:10px;
 }
 
 .detailsPanel.active{
@@ -740,7 +742,8 @@ a{text-decoration:none;color:inherit}
 }
 
 .detailGroup{
-  margin-bottom:28px;
+
+  margin-bottom:18px;
 }
 
 .detailGroup:last-child{
@@ -751,7 +754,8 @@ a{text-decoration:none;color:inherit}
   font-size:16px;
   font-weight:800;
   color:#333;
-  margin:0 0 9px;
+
+  margin:0 0 5px;
 }
 
 .detailGrid{
@@ -761,9 +765,10 @@ a{text-decoration:none;color:inherit}
 .detailRow{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px;
-  min-height:44px;
-  padding:7px 0;
+  gap:25px;
+
+  min-height:46px;
+  padding:8px 0;
   border-bottom:1px solid #e5e5e5;
   align-items:center;
 }
@@ -1153,7 +1158,8 @@ a{text-decoration:none;color:inherit}
     font-size:14px;
   }
 
-  .detailsTabs{
+ 
+.detailsTabs{
     gap:7px;
     padding-bottom:14px;
   }
@@ -1164,21 +1170,24 @@ a{text-decoration:none;color:inherit}
     border-radius:8px;
   }
 
+
   .detailGroup{
-    margin-bottom:25px;
+    margin-bottom:17px;
   }
+
 
   .detailGroupTitle{
     font-size:16px;
-    margin-bottom:8px;
+    margin-bottom:5px;
   }
 
- .detailRow{
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-  min-height:44px;
-  padding:7px 0;
-}
+
+  .detailRow{
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    min-height:46px;
+    padding:8px 0;
+  }
 
   .detailLabel{
     font-size:12px;
@@ -1625,42 +1634,59 @@ a{text-decoration:none;color:inherit}
     visibility:visible;
   }
 }
-  /* ===== COMPACT ALL DETAILS ROWS ===== */
+  /* ===== ALL DETAILS - EXTRA COMPACT ===== */
+
 .detailGrid .detailRow{
-  min-height:40px !important;
-  height:40px !important;
-  padding:4px 0 !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:12px !important;
+
+  min-height:30px !important;
+  height:30px !important;
+
+  padding:0 !important;
   margin:0 !important;
-  gap:18px !important;
+
   box-sizing:border-box !important;
   align-items:center !important;
+
+  border-bottom:1px solid #e5e5e5 !important;
 }
 
 .detailGrid .detailLabel{
-  line-height:1.2 !important;
+  font-size:13px !important;
+  line-height:1 !important;
   margin:0 !important;
+  padding:0 !important;
 }
 
 .detailGrid .detailValue{
-  line-height:1.2 !important;
+  font-size:13px !important;
+  line-height:1 !important;
   margin:0 !important;
+  padding:0 !important;
 }
 
 /* Mobile */
 @media(max-width:900px){
   .detailGrid .detailRow{
-    min-height:40px !important;
-    height:40px !important;
-    padding:4px 0 !important;
+    min-height:30px !important;
+    height:30px !important;
+    padding:0 !important;
   }
 }
 
+/* Very small mobile */
 @media(max-width:420px){
   .detailGrid .detailRow{
-    min-height:38px !important;
-    height:38px !important;
-    padding:3px 0 !important;
-    gap:14px !important;
+    min-height:29px !important;
+    height:29px !important;
+    gap:10px !important;
+  }
+
+  .detailGrid .detailLabel,
+  .detailGrid .detailValue{
+    font-size:12px !important;
   }
 }
 </style>
