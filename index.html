@@ -2248,7 +2248,17 @@ async function loadProductBanners(){
       if(typeof items === "string"){
         try{items=JSON.parse(items);}catch(e){items=[];}
       }
-      return {...row,items:Array.isArray(items)?items:[]};
+
+      /* Individual Slider item ON/OFF comes from Admin.
+         Keep everything else exactly the same; only hide items that
+         were explicitly switched OFF. */
+      items=(Array.isArray(items)?items:[]).filter(function(item){
+        if(!item)return false;
+        const active=item.is_active;
+        return !(active === false || active === "false" || active === 0 || active === "0");
+      });
+
+      return {...row,items:items};
     }).filter(function(row){return row.items.length;});
 
     /* Do not rebuild the product grid when Supabase sends a duplicate/live
@@ -3253,7 +3263,7 @@ function renderLookingBanner(){
   const items=data.items.slice(0,LOOKING_MAX_ITEMS);
   const name=getLookingAccountName();
   root.innerHTML=`<section class="looking-banner" aria-label="${lookingEscape(name)} still looking for these">
-    <h2 class="looking-banner-title">${lookingEscape(name)}, still looking for these?</h2>
+    <h2 class="looking-banner-title">${lookingEscape(name)} still looking for these?</h2>
     <div class="looking-banner-viewport">
       <div class="looking-banner-track">${items.map(function(item){
         const image=String(item.image||"").trim();
