@@ -1256,12 +1256,16 @@ main{
 .looking-banner-nav.prev{left:8px}.looking-banner-nav.next{right:8px}
 .looking-banner-nav[disabled]{opacity:.35;cursor:default;pointer-events:none}
 @media(max-width:700px){
-  .looking-banner{margin:0 0 10px;padding:8px 7px 6px;border-radius:13px;}
-  .looking-banner-title{font-size:17px;margin:0 0 6px 2px;line-height:1.15;}
+  /* ONLY the automatic looking banner is adjusted on mobile. */
+  #lookingForBannerRoot{display:block;width:100%;min-width:0;clear:both;}
+  .looking-banner{width:100%;box-sizing:border-box;margin:0 0 10px;padding:7px 7px 6px;border-radius:13px;}
+  .looking-banner-title{font-size:16px;margin:0 0 6px 2px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .looking-banner-viewport{width:100%;min-width:0;}
   .looking-banner-track{gap:7px;}
-  .looking-banner-card{flex-basis:calc((100vw - 28px)/3);min-width:0;max-width:none;border-radius:9px;}
+  .looking-banner-card{flex:0 0 calc((100% - 14px)/3);min-width:0;max-width:none;border-radius:9px;}
+  .looking-banner-image-wrap{aspect-ratio:1.35/1;}
+  .looking-banner-name{height:36px;min-height:36px;padding:4px 4px 5px;font-size:10px;line-height:1.15;font-weight:600;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;word-break:normal;}
   .looking-banner-nav{display:none;}
-  .looking-banner-name{height:32px;min-height:32px;padding:4px 4px 5px;font-size:9px;line-height:1.12;font-weight:600;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
 }
 @media(min-width:701px) and (max-width:1100px){
   .looking-banner-card{flex-basis:calc((100% - 30px)/4);}
@@ -2284,7 +2288,6 @@ function scheduleProductBannerRender(force){
 
 function renderProductBanners(force){
   const root=document.getElementById("productBannersRoot");
-  const grid=document.getElementById("productGrid");
   if(!grid)return;
 
   const isMobile=window.innerWidth<=700;
@@ -3260,17 +3263,6 @@ function renderLookingBanner(){
     root.innerHTML="";
     root.style.display="";
     return;
-  }
-
-  /* Show the banner only after the first 3 real product cards on desktop.
-     On mobile keep it at the top of the product area so the existing mobile
-     layout remains untouched. */
-  if(grid && window.innerWidth>700){
-    const cards=Array.from(grid.querySelectorAll(":scope > .product-card"));
-    if(cards.length>=3){
-      const third=cards[2];
-      if(third.nextElementSibling!==root) third.insertAdjacentElement("afterend",root);
-    }
   }
 
   let items=data.items.slice(0,LOOKING_MAX_ITEMS);
