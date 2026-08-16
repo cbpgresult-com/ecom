@@ -105,6 +105,10 @@ body{
   white-space:nowrap;
 }
 
+.account-btn.auth-loading{
+  visibility:hidden;
+}
+
 .account-btn:hover{
   color:var(--violet);
 }
@@ -164,6 +168,10 @@ body{
   line-height:1;
   box-shadow:0 2px 7px rgba(0,0,0,.2);
   z-index:3;
+}
+
+.cart-number.cart-loading{
+  display:none !important;
 }
 
 .cart-number.show{
@@ -1166,7 +1174,7 @@ main{
 
     Cart
 
-    <span class="cart-number" id="cartCount">0</span>
+    <span class="cart-number cart-loading" id="cartCount">0</span>
 
   </button>
 
@@ -1500,8 +1508,48 @@ function getFirstName(fullName){
 
 
 /* =========================================================
-   LOAD LOGIN STATE
+   LOGIN NAME CACHE
+   Refresh par cached naam turant dikhega.
+   Cache sirf explicit logout par remove hoga.
 ========================================================= */
+const ACCOUNT_CACHE_KEY = "mystore_account_cache_v1";
+
+function readAccountCache(){
+  try{
+    const raw = localStorage.getItem(ACCOUNT_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){
+    return null;
+  }
+}
+
+function writeAccountCache(userId, firstName){
+  try{
+    localStorage.setItem(ACCOUNT_CACHE_KEY, JSON.stringify({
+      userId: userId || "",
+      firstName: firstName || "User"
+    }));
+  }catch(e){}
+}
+
+function clearAccountCache(){
+  try{ localStorage.removeItem(ACCOUNT_CACHE_KEY); }catch(e){}
+}
+
+function showCachedAccount(){
+  const cached = readAccountCache();
+  if(!cached || !cached.firstName) return false;
+
+  accountName.textContent = cached.firstName;
+  welcomeName.textContent = "Welcome, " + cached.firstName + "!";
+  loggedOutMenu.style.display = "none";
+  loggedInMenu.style.display = "block";
+  return true;
+}
+
+/* Cached naam ko FIRST paint se pehle set karo.
+   Isliye refresh par Login -> Pawan flash nahi hoga. */
+showCachedAccount();
 
 async function loadAccount(){
 
@@ -1518,16 +1566,9 @@ async function loadAccount(){
     if(!user){
 
       /* NOT LOGGED IN */
-
-      accountName.textContent =
-        "Login";
-
-      loggedOutMenu.style.display =
-        "block";
-
-      loggedInMenu.style.display =
-        "none";
-
+      accountName.textContent = "Login";
+      loggedOutMenu.style.display = "block";
+      loggedInMenu.style.display = "none";
       return;
 
     }
@@ -1585,27 +1626,21 @@ async function loadAccount(){
     }
 
 
-    accountName.textContent =
-      firstName;
+    accountName.textContent = firstName;
+    welcomeName.textContent = "Welcome, " + firstName + "!";
 
-    welcomeName.textContent =
-      "Welcome, " + firstName + "!";
+    loggedOutMenu.style.display = "none";
+    loggedInMenu.style.display = "block";
 
-
-    loggedOutMenu.style.display =
-      "none";
-
-    loggedInMenu.style.display =
-      "block";
+    /* Naam ko browser me cache karo. */
+    writeAccountCache(user.id, firstName);
 
   }
 
   catch(error){
-
-    console.error(
-      "Account error:",
-      error
-    );
+    /* Network/profile request fail ho to cached naam ko rehne do. */
+    showCachedAccount();
+    console.error("Account error:", error);
 
   }
 
@@ -1619,10 +1654,8 @@ async function loadAccount(){
 supabaseClient.auth.onAuthStateChange(
   function(){
 
-    setTimeout(
-      loadAccount,
-      100
-    );
+    loadAccount();
+    loadCartCount();
 
   }
 );
@@ -2037,6 +2070,10 @@ async function loadCartCount(){
 
   if(!badge) return;
 
+  // Never show a stale/temporary number while Supabase is resolving.
+  badge.classList.remove("show");
+  badge.classList.add("cart-loading");
+
   try{
 
     const {
@@ -2049,6 +2086,7 @@ async function loadCartCount(){
     if(!user){
       badge.textContent = "";
       badge.classList.remove("show");
+      badge.classList.remove("cart-loading");
       return;
     }
 
@@ -2065,6 +2103,7 @@ async function loadCartCount(){
       console.error("Cart count:",error);
       badge.textContent = "";
       badge.classList.remove("show");
+      badge.classList.remove("cart-loading");
       return;
     }
 
@@ -2076,19 +2115,21 @@ async function loadCartCount(){
 
     if(total > 0){
       badge.textContent = total > 99 ? "99+" : String(total);
+      badge.classList.remove("cart-loading");
       badge.classList.add("show");
     }else{
       badge.textContent = "";
       badge.classList.remove("show");
+      badge.classList.remove("cart-loading");
     }
 
   }catch(error){
-    console.error(error);
+    console.error("Cart count error:",error);
     badge.textContent = "";
     badge.classList.remove("show");
+    badge.classList.remove("cart-loading");
   }
 }
-
 
 /* =========================================================
    ESCAPE HTML
