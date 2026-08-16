@@ -1023,9 +1023,11 @@ main{
 /* =========================================================
    PRODUCT BANNERS — ADMIN MANAGED
 ========================================================= */
-#productBannersRoot{width:100%;}
+#productBannersRoot{width:100%;overflow-anchor:none;}
+.product-grid{overflow-anchor:none;}
 .product-banner-block{
   grid-column:1 / -1;
+  overflow-anchor:none;
   width:100%;
   margin:0 0 18px;
   padding:16px 14px 12px;
@@ -1049,6 +1051,7 @@ main{
 }
 .product-banner-viewport{
   width:100%;
+  overflow-anchor:none;
   overflow:hidden;
 }
 .product-banner-track{
@@ -2085,6 +2088,9 @@ try {
 ========================================================= */
 let productBannerSets = [];
 let productBannerRequest = 0;
+let productBannerLastSignature = "";
+let productBannerLastLayoutMode = window.innerWidth <= 700 ? "mobile" : "desktop";
+let productBannerRenderTimer = null;
 
 function productBannerEscape(value){
   return String(value ?? "").replace(/[&<>"']/g,function(ch){
@@ -2113,37 +2119,69 @@ async function loadProductBanners(){
       }
       return {...row,items:Array.isArray(items)?items:[]};
     }).filter(function(row){return row.items.length;});
-    renderProductBanners();
+
+    /* Do not rebuild the product grid when Supabase sends a duplicate/live
+       event with exactly the same banner data. Rebuilding DOM while the user
+       is scrolling is what causes the page to jump on mobile. */
+    const signature = JSON.stringify(productBannerSets.map(function(row){
+      return {
+        id:row.id, slot:row.slot, title:row.title,
+        desktop_after:row.desktop_after, mobile_after:row.mobile_after,
+        items:row.items
+      };
+    }));
+    if(signature === productBannerLastSignature)return;
+    productBannerLastSignature = signature;
+    scheduleProductBannerRender(false);
   }catch(error){
     console.error("Product banner request error:",error);
   }
 }
 
-function renderProductBanners(){
+function scheduleProductBannerRender(force){
+  clearTimeout(productBannerRenderTimer);
+  productBannerRenderTimer=setTimeout(function(){
+    renderProductBanners(!!force);
+  }, force ? 0 : 30);
+}
+
+function renderProductBanners(force){
   const root=document.getElementById("productBannersRoot");
   const grid=document.getElementById("productGrid");
   if(!grid)return;
 
-  /* IMPORTANT: remove previously inserted banners before rebuilding.
-     Mobile browsers can fire resize/realtime events more than once;
-     without this cleanup the same banners would be inserted again and again. */
+  const isMobile=window.innerWidth<=700;
+  const layoutMode=isMobile ? "mobile" : "desktop";
+
+  /* Most importantly: scrolling on mobile can temporarily change the
+     viewport height when the browser address bar appears/disappears.
+     That is NOT a layout-mode change, so never rebuild the grid for it. */
+  if(!force && layoutMode===productBannerLastLayoutMode){
+    const existing=grid.querySelector(":scope > .product-banner-block");
+    if(existing)return;
+  }
+  productBannerLastLayoutMode=layoutMode;
+
+  const cards=Array.from(grid.querySelectorAll(":scope > .product-card"));
+  if(!cards.length || !productBannerSets.length)return;
+
+  /* Capture a stable point before changing the DOM. This prevents any live
+     update from visibly moving the user's current scroll position. */
+  const anchor = grid.querySelector(":scope > .product-card");
+  const anchorTop = anchor ? anchor.getBoundingClientRect().top : null;
+  const scrollYBefore = window.scrollY;
+
   grid.querySelectorAll(":scope > .product-banner-block").forEach(function(banner){
     banner.remove();
   });
   if(root) root.innerHTML="";
 
-  const cards=Array.from(grid.querySelectorAll(":scope > .product-card"));
-  if(!cards.length || !productBannerSets.length)return;
-
-  const isMobile=window.innerWidth<=700;
   const sorted=productBannerSets.slice().sort(function(a,b){
     const pa=Number(isMobile?a.mobile_after:a.desktop_after)||0;
     const pb=Number(isMobile?b.mobile_after:b.desktop_after)||0;
     return pa-pb;
   });
 
-  /* We rebuild only the visual order around the existing cards. The
-     original card DOM nodes are reused, so their click handlers stay intact. */
   const fragment=document.createDocumentFragment();
   const bannerByPosition={};
   sorted.forEach(function(banner){
@@ -2156,13 +2194,18 @@ function renderProductBanners(){
   cards.forEach(function(card,index){
     fragment.appendChild(card);
     const position=index+1;
-    const banners=bannerByPosition[position]||[];
-    banners.forEach(function(banner){
+    (bannerByPosition[position]||[]).forEach(function(banner){
       fragment.appendChild(createProductBanner(banner));
     });
   });
-
   grid.appendChild(fragment);
+
+  /* Restore the exact scroll position after a genuine layout rebuild. */
+  if(anchor && anchorTop !== null){
+    const anchorTopAfter=anchor.getBoundingClientRect().top;
+    const delta=anchorTopAfter-anchorTop;
+    if(Math.abs(delta)>0.5)window.scrollTo({top:scrollYBefore+delta,behavior:"instant"});
+  }
 }
 
 function createProductBanner(banner){
@@ -2195,12 +2238,19 @@ function createProductBanner(banner){
   return wrap;
 }
 
-/* Recalculate positions if the viewport changes between desktop/mobile. */
+/* Recalculate positions ONLY when the device crosses the mobile/desktop
+   breakpoint. Normal mobile browser resize events while scrolling are ignored. */
 let productBannerResizeTimer=null;
 window.addEventListener("resize",function(){
   clearTimeout(productBannerResizeTimer);
-  productBannerResizeTimer=setTimeout(renderProductBanners,120);
-});
+  productBannerResizeTimer=setTimeout(function(){
+    const mode=window.innerWidth<=700 ? "mobile" : "desktop";
+    if(mode!==productBannerLastLayoutMode){
+      productBannerLastLayoutMode=mode;
+      scheduleProductBannerRender(true);
+    }
+  },180);
+},{passive:true});
 
 supabaseClient
   .channel("product-banner-sets-live")
