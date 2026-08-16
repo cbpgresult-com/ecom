@@ -864,42 +864,30 @@ main{
 
 
 /* ================= HERO SLIDER ================= */
-.hero-slider{
-  width:90%;
-  max-width:1250px;
-  margin:16px auto 0;
-  overflow:hidden;
-  display:none;
-}
+.hero-slider{width:90%;max-width:1250px;margin:14px auto 0;overflow:visible;display:none}
 .hero-slider.show{display:block}
-.hero-viewport{width:100%;overflow:hidden;border-radius:15px}
-.hero-track{display:flex;gap:14px;transition:transform .45s ease;will-change:transform}
-.hero-slide{
-  flex:0 0 calc((100% - 28px)/3);
-  aspect-ratio:2.05/1;
-  border-radius:15px;
-  overflow:hidden;
-  background:#eee;
-  display:block;
-  border:0;
-  padding:0;
-}
-.hero-slide img{width:100%;height:100%;display:block;object-fit:cover}
+.hero-viewport{width:100%;overflow:hidden;border-radius:15px;position:relative;touch-action:pan-y}
+.hero-track{display:flex;gap:14px;transform:translate3d(0,0,0);transition:transform .38s cubic-bezier(.22,.61,.36,1);will-change:transform}
+.hero-slide{flex:0 0 calc((100% - 28px)/3);aspect-ratio:2.05/1;border-radius:15px;overflow:hidden;background:#eee;display:block;border:0;padding:0}
+.hero-slide img{width:100%;height:100%;display:block;object-fit:cover;user-select:none;-webkit-user-drag:none}
+.hero-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.96);box-shadow:0 3px 12px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;color:#111}
+.hero-arrow:hover{background:#fff;box-shadow:0 5px 16px rgba(0,0,0,.23)}
+.hero-arrow svg{width:21px;height:21px}
+.hero-arrow.prev{left:12px}.hero-arrow.next{right:12px}
+.hero-arrow:disabled{opacity:.35;cursor:default}
 .hero-dots{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px}
-.hero-dot{width:7px;height:4px;border:0;border-radius:99px;background:#d9d9df;padding:0}
+.hero-dot{width:7px;height:4px;border:0;border-radius:99px;background:#d9d9df;padding:0;cursor:pointer}
 .hero-dot.active{width:18px;background:#111}
 .hero-empty{display:none}
-
 @media(max-width:700px){
-  .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
-  .hero-viewport{border-radius:14px}
-  .hero-track{gap:0}
-  .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
-  .hero-dots{margin-top:6px}
-  .hero-dot{width:7px;height:4px}
-  .hero-dot.active{width:18px}
+ .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
+ .hero-viewport{border-radius:14px}
+ .hero-track{gap:0;transition:transform .22s cubic-bezier(.22,.61,.36,1)}
+ .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
+ .hero-arrow{display:none}
+ .hero-dots{margin-top:6px}
+ .hero-dot{width:7px;height:4px}.hero-dot.active{width:18px}
 }
-
 </style>
 </head>
 
@@ -1171,14 +1159,6 @@ main{
 
 
 
-<!-- ================= HERO SLIDER ================= -->
-<section id="heroSlider" class="hero-slider" aria-label="Hero Slider">
-  <div class="hero-viewport">
-    <div id="heroTrack" class="hero-track"></div>
-  </div>
-  <div id="heroDots" class="hero-dots"></div>
-</section>
-
 <!-- ================= CATEGORIES ================= -->
 
 <div class="categories">
@@ -1245,6 +1225,20 @@ main{
 
 </div>
 
+
+<!-- ================= HERO SLIDER ================= -->
+<section id="heroSlider" class="hero-slider" aria-label="Hero Slider">
+  <div class="hero-viewport" id="heroViewport">
+    <button type="button" class="hero-arrow prev" id="heroPrev" aria-label="Previous banner" onclick="prevHeroSlide()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <div id="heroTrack" class="hero-track"></div>
+    <button type="button" class="hero-arrow next" id="heroNext" aria-label="Next banner" onclick="nextHeroSlide(true)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+  <div id="heroDots" class="hero-dots"></div>
+</section>
 
 <!-- ================= MAIN ================= -->
 
@@ -2135,118 +2129,70 @@ async function logoutUser(){
 /* =========================================================
    HERO SLIDER
    Admin panel se image links aate hain.
-   Desktop: 3 banners visible.
-   Mobile: 1 banner visible + automatic slide.
+   Desktop: 3 banners visible + left/right arrows.
+   Mobile: 1 banner + smooth swipe + automatic slide.
 ========================================================= */
-let heroSlides = [];
-let heroIndex = 0;
-let heroTimer = null;
+let heroSlides=[];
+let heroIndex=0;
+let heroTimer=null;
+let heroTouchStartX=0;
+let heroTouchStartY=0;
+let heroTouchDeltaX=0;
+let heroTouching=false;
+let heroTouchMoved=false;
 
-function heroEscape(value){
-  return String(value || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
+function heroEscape(value){return String(value||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 
 async function loadHeroSliders(){
-  const box = document.getElementById("heroSlider");
-  const track = document.getElementById("heroTrack");
-  const dots = document.getElementById("heroDots");
-  if(!box || !track || !dots) return;
-
-  const {data,error} = await supabaseClient
-    .from("hero_sliders")
-    .select("id,image_url,sort_order,is_active,created_at")
-    .eq("is_active",true)
-    .order("sort_order",{ascending:true})
-    .order("created_at",{ascending:true});
-
-  if(error){
-    console.error("Hero slider error:",error);
-    box.classList.remove("show");
-    stopHeroAutoSlide();
-    return;
-  }
-
-  heroSlides = (data || []).filter(x => x.image_url);
-  heroIndex = 0;
-
-  if(!heroSlides.length){
-    box.classList.remove("show");
-    stopHeroAutoSlide();
-    track.innerHTML = "";
-    dots.innerHTML = "";
-    return;
-  }
-
+  const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots");
+  if(!box||!track||!dots)return;
+  const {data,error}=await supabaseClient.from("hero_sliders").select("id,image_url,sort_order,is_active,created_at").eq("is_active",true).order("sort_order",{ascending:true}).order("created_at",{ascending:true});
+  if(error){console.error("Hero slider error:",error);box.classList.remove("show");stopHeroAutoSlide();return;}
+  heroSlides=(data||[]).filter(x=>x.image_url);
+  heroIndex=Math.max(0,Math.min(heroIndex,Math.max(heroSlides.length-1,0)));
+  if(!heroSlides.length){box.classList.remove("show");stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
   box.classList.add("show");
-  track.innerHTML = heroSlides.map((slide,i)=>`
-    <div class="hero-slide">
-      <img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="${i===0?'eager':'lazy'}" onerror="this.parentElement.style.display='none'">
-    </div>
-  `).join("");
-
-  dots.innerHTML = heroSlides.map((_,i)=>`
-    <button type="button" class="hero-dot ${i===0?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i})"></button>
-  `).join("");
-
-  applyHeroPosition(false);
-  setupHeroAutoSlide();
+  track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="${i===0?'eager':'lazy'}" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
+  dots.innerHTML=heroSlides.map((_,i)=>`<button type="button" class="hero-dot ${i===heroIndex?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i},true)"></button>`).join("");
+  applyHeroPosition(false);setupHeroTouch();setupHeroAutoSlide();
 }
-
+function getHeroMaxIndex(){return window.innerWidth<=700?Math.max(heroSlides.length-1,0):Math.max(heroSlides.length-3,0);}
+function getHeroStepPx(){
+  const viewport=document.getElementById("heroViewport");
+  if(!viewport)return 0;
+  if(window.innerWidth<=700)return viewport.clientWidth;
+  const slide=document.querySelector(".hero-slide");
+  if(!slide)return viewport.clientWidth/3;
+  return slide.getBoundingClientRect().width+14;
+}
 function applyHeroPosition(animate=true){
-  const track = document.getElementById("heroTrack");
-  if(!track) return;
-  track.style.transition = animate ? "transform .45s ease" : "none";
-
-  if(window.innerWidth <= 700){
-    track.style.transform = `translateX(-${heroIndex * 100}%)`;
-  }else{
-    track.style.transform = "translateX(0)";
-  }
-
-  document.querySelectorAll(".hero-dot").forEach((dot,i)=>{
-    dot.classList.toggle("active",i===heroIndex);
-  });
+  const track=document.getElementById("heroTrack");if(!track)return;
+  heroIndex=Math.max(0,Math.min(heroIndex,getHeroMaxIndex()));
+  track.style.transition=animate?(window.innerWidth<=700?"transform .22s cubic-bezier(.22,.61,.36,1)":"transform .38s cubic-bezier(.22,.61,.36,1)"):"none";
+  track.style.transform=`translate3d(-${heroIndex*getHeroStepPx()}px,0,0)`;
+  document.querySelectorAll(".hero-dot").forEach((dot,i)=>dot.classList.toggle("active",i===heroIndex));
+  updateHeroArrows();
 }
-
-function goHeroSlide(index){
-  if(!heroSlides.length) return;
-  heroIndex = Math.max(0,Math.min(index,heroSlides.length-1));
-  applyHeroPosition(true);
+function updateHeroArrows(){
+  const prev=document.getElementById("heroPrev"),next=document.getElementById("heroNext");if(!prev||!next)return;
+  const desktop=window.innerWidth>700&&heroSlides.length>3;
+  prev.style.display=desktop?"flex":"none";next.style.display=desktop?"flex":"none";
+  prev.disabled=heroIndex<=0;next.disabled=heroIndex>=getHeroMaxIndex();
 }
-
-function nextHeroSlide(){
-  if(window.innerWidth > 700 || heroSlides.length < 2) return;
-  heroIndex = (heroIndex + 1) % heroSlides.length;
-  applyHeroPosition(true);
+function goHeroSlide(index,userAction=false){if(!heroSlides.length)return;heroIndex=Math.max(0,Math.min(index,getHeroMaxIndex()));applyHeroPosition(true);if(userAction)restartHeroAutoSlide();}
+function nextHeroSlide(userAction=false){if(heroSlides.length<2)return;const max=getHeroMaxIndex();heroIndex=heroIndex>=max?0:heroIndex+1;applyHeroPosition(true);if(userAction)restartHeroAutoSlide();}
+function prevHeroSlide(){if(heroSlides.length<2)return;heroIndex=heroIndex<=0?getHeroMaxIndex():heroIndex-1;applyHeroPosition(true);restartHeroAutoSlide();}
+function startHeroAutoSlide(){stopHeroAutoSlide();if(window.innerWidth<=700&&heroSlides.length>1)heroTimer=setInterval(()=>nextHeroSlide(false),3200);}
+function stopHeroAutoSlide(){if(heroTimer){clearInterval(heroTimer);heroTimer=null;}}
+function restartHeroAutoSlide(){startHeroAutoSlide();}
+function setupHeroAutoSlide(){startHeroAutoSlide();}
+function setupHeroTouch(){
+  const viewport=document.getElementById("heroViewport");if(!viewport||viewport.dataset.touchReady==="1")return;viewport.dataset.touchReady="1";
+  viewport.addEventListener("touchstart",e=>{if(window.innerWidth>700||heroSlides.length<2)return;const t=e.touches[0];heroTouchStartX=t.clientX;heroTouchStartY=t.clientY;heroTouchDeltaX=0;heroTouching=true;heroTouchMoved=false;stopHeroAutoSlide();},{passive:true});
+  viewport.addEventListener("touchmove",e=>{if(!heroTouching||window.innerWidth>700)return;const t=e.touches[0];heroTouchDeltaX=t.clientX-heroTouchStartX;const dy=t.clientY-heroTouchStartY;if(Math.abs(heroTouchDeltaX)>Math.abs(dy)&&Math.abs(heroTouchDeltaX)>8)heroTouchMoved=true;},{passive:true});
+  viewport.addEventListener("touchend",()=>{if(!heroTouching)return;heroTouching=false;if(window.innerWidth<=700&&heroTouchMoved&&Math.abs(heroTouchDeltaX)>=35){if(heroTouchDeltaX<0)nextHeroSlide(true);else prevHeroSlide();}else restartHeroAutoSlide();heroTouchDeltaX=0;},{passive:true});
 }
-
-function startHeroAutoSlide(){
-  stopHeroAutoSlide();
-  if(window.innerWidth <= 700 && heroSlides.length > 1){
-    heroTimer = setInterval(nextHeroSlide,3200);
-  }
-}
-
-function stopHeroAutoSlide(){
-  if(heroTimer){clearInterval(heroTimer);heroTimer=null;}
-}
-
-function setupHeroAutoSlide(){
-  startHeroAutoSlide();
-}
-
-window.addEventListener("resize",function(){
-  if(!heroSlides.length) return;
-  applyHeroPosition(false);
-  startHeroAutoSlide();
-});
-
-
+window.addEventListener("resize",()=>{if(!heroSlides.length)return;heroIndex=Math.min(heroIndex,getHeroMaxIndex());applyHeroPosition(false);setupHeroAutoSlide();});
 
 /* HERO REALTIME UPDATE */
 supabaseClient
