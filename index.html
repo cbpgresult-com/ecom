@@ -178,6 +178,34 @@ body{
   display:inline-flex;
 }
 
+/* Mobile bottom Cart badge */
+.bottom-item{
+  position:relative;
+}
+.cart-number-mobile{
+  position:absolute;
+  top:2px;
+  right:calc(50% - 20px);
+  min-width:18px;
+  height:18px;
+  padding:0 4px;
+  border-radius:999px;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:#ef4444;
+  color:#fff;
+  border:2px solid #fff;
+  font-size:9px;
+  font-weight:800;
+  line-height:1;
+  box-shadow:0 2px 6px rgba(0,0,0,.18);
+  z-index:3;
+}
+.cart-number-mobile.show{
+  display:inline-flex;
+}
+
 /* ================= ACCOUNT DROPDOWN ================= */
 
 .account-menu{
@@ -1416,6 +1444,7 @@ main{
       <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
     </svg>
     Cart
+    <span class="cart-number-mobile" id="cartCountMobile"></span>
   </button>
 
 </nav>
@@ -2063,73 +2092,140 @@ document
    CART COUNT
 ========================================================= */
 
+const CART_COUNT_CACHE_KEY = "mystore_cart_count_v1";
+let cartCountUserId = "";
+
+function readCartCountCache(userId){
+  try{
+    const raw = localStorage.getItem(CART_COUNT_CACHE_KEY);
+    if(!raw) return null;
+    const cached = JSON.parse(raw);
+    if(!cached || String(cached.userId || "") !== String(userId || "")) return null;
+    return Number(cached.count || 0);
+  }catch(e){
+    return null;
+  }
+}
+
+function writeCartCountCache(userId,count){
+  try{
+    localStorage.setItem(CART_COUNT_CACHE_KEY,JSON.stringify({
+      userId:userId || "",
+      count:Number(count || 0)
+    }));
+  }catch(e){}
+}
+
+function clearCartCountCache(){
+  try{ localStorage.removeItem(CART_COUNT_CACHE_KEY); }catch(e){}
+}
+
+function paintCartCount(count){
+  const badge=document.getElementById("cartCount");
+  const mobileBadge=document.getElementById("cartCountMobile");
+  const total=Math.max(0,Number(count || 0));
+  const nextText=total > 99 ? "99+" : String(total);
+
+  [badge,mobileBadge].forEach(function(el){
+    if(!el) return;
+    const visible=el.classList.contains("show");
+    const current=el.textContent || "";
+
+    /* Same value ho to DOM ko touch mat karo: zero flash. */
+    if(total > 0){
+      if(!visible || current !== nextText){
+        el.textContent=nextText;
+        el.classList.add("show");
+      }
+    }else{
+      if(visible || current){
+        el.textContent="";
+        el.classList.remove("show");
+      }
+    }
+  });
+}
+
+
 async function loadCartCount(){
 
-  const badge =
-    document.getElementById("cartCount");
-
+  const badge=document.getElementById("cartCount");
   if(!badge) return;
 
-  // Never show a stale/temporary number while Supabase is resolving.
-  badge.classList.remove("show");
-  badge.classList.add("cart-loading");
-
   try{
-
-    const {
-      data:{
-        user
-      }
-    } =
-    await supabaseClient.auth.getUser();
+    const {data:{user}}=await supabaseClient.auth.getUser();
 
     if(!user){
-      badge.textContent = "";
-      badge.classList.remove("show");
-      badge.classList.remove("cart-loading");
+      cartCountUserId="";
+      clearCartCountCache();
+      paintCartCount(0);
       return;
     }
 
-    const {
-      data,
-      error
-    } =
-    await supabaseClient
+    cartCountUserId=user.id;
+
+    /* Refresh par cached count FIRST paint hota hai. */
+    const cached=readCartCountCache(user.id);
+    if(cached !== null){
+      paintCartCount(cached);
+    }
+
+    /* =======================================================
+       BADGE RULE:
+       Quantity ka badge se koi relation nahi hai.
+       1 cart row/product = badge +1.
+       Quantity badhne par badge nahi badhega.
+       Example: Product A qty 5 + Product B qty 2 = badge 2.
+       ======================================================= */
+    const {data,error}=await supabaseClient
       .from("cart_items")
-      .select("id, quantity")
+      .select("id")
       .eq("user_id",user.id);
 
     if(error){
-      console.error("Cart count:",error);
-      badge.textContent = "";
-      badge.classList.remove("show");
-      badge.classList.remove("cart-loading");
+      console.error("Cart product count:",error);
+      /* Cached value ko error par bhi rehne do; flash nahi hoga. */
       return;
     }
 
-    let total = 0;
-
-    (data || []).forEach(item => {
-      total += Number(item.quantity || 0);
-    });
-
-    if(total > 0){
-      badge.textContent = total > 99 ? "99+" : String(total);
-      badge.classList.remove("cart-loading");
-      badge.classList.add("show");
-    }else{
-      badge.textContent = "";
-      badge.classList.remove("show");
-      badge.classList.remove("cart-loading");
-    }
+    const productCount=(data || []).length;
+    writeCartCountCache(user.id,productCount);
+    paintCartCount(productCount);
 
   }catch(error){
     console.error("Cart count error:",error);
-    badge.textContent = "";
-    badge.classList.remove("show");
-    badge.classList.remove("cart-loading");
+    /* Existing cached badge ko hide mat karo. */
   }
 }
+
+/* =========================================================
+   CART REALTIME
+   Add/delete hote hi badge bina page refresh ke update.
+========================================================= */
+supabaseClient
+  .channel("cart-count-live")
+  .on(
+    "postgres_changes",
+    {
+      event:"*",
+      schema:"public",
+      table:"cart_items"
+    },
+    function(payload){
+      if(!cartCountUserId) return;
+
+      const changedUserId =
+        payload?.new?.user_id ||
+        payload?.old?.user_id ||
+        "";
+
+      if(changedUserId && String(changedUserId)!==String(cartCountUserId)) return;
+
+      /* Database change ke turant baad authoritative count fetch karo. */
+      loadCartCount();
+    }
+  )
+  .subscribe();
 
 /* =========================================================
    ESCAPE HTML
@@ -2231,6 +2327,9 @@ function goAccount(){
 ========================================================= */
 
 async function logoutUser(){
+
+  clearCartCountCache();
+  cartCountUserId="";
 
   await supabaseClient.auth.signOut();
 
