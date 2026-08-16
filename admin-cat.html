@@ -1192,10 +1192,157 @@ label{
 @media(max-width:760px){
     .banner-manager-panel.active{grid-template-columns:1fr !important;}
 }
+
+/* =========================
+   FIXED ADD-ITEM PREVIEW
+   ========================= */
+.banner-draft-preview{
+    height:180px !important;
+    min-height:180px !important;
+    width:100%;
+    box-sizing:border-box;
+    margin:14px 0 14px;
+    border:1px solid #e2e3eb;
+    border-radius:14px;
+    background:#f7f7fa;
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    color:#8a8b98;
+    font-size:12px;
+}
+.banner-draft-preview img{
+    width:100% !important;
+    height:100% !important;
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain !important;
+    background:#fff;
+    display:block;
+}
+
+/* Latest added item stays at the top */
+.banner-item-list{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px;
+}
+
+/* Old inline status areas remain for compatibility,
+   but visible messages are now shown in the toast. */
+.status{
+    display:none !important;
+}
+
+/* =========================
+   TOP-RIGHT TOAST
+   ========================= */
+.admin-toast{
+    position:fixed;
+    top:22px;
+    right:22px;
+    z-index:99999;
+    width:min(390px,calc(100vw - 30px));
+    min-height:54px;
+    box-sizing:border-box;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:11px 13px 11px 14px;
+    border:1px solid #e5e6ee;
+    border-radius:14px;
+    background:rgba(255,255,255,.97);
+    box-shadow:0 16px 45px rgba(30,25,70,.18),0 3px 10px rgba(0,0,0,.06);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    opacity:0;
+    transform:translateY(-12px) scale(.98);
+    pointer-events:none;
+    transition:opacity .2s ease,transform .2s ease;
+}
+.admin-toast.show{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    pointer-events:auto;
+}
+.admin-toast-icon{
+    width:29px;
+    height:29px;
+    flex:0 0 29px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:#f0efff;
+    color:#5b45e8;
+    font-size:15px;
+    font-weight:900;
+}
+.admin-toast.ok .admin-toast-icon{
+    background:#eaf8f0;
+    color:#168447;
+}
+.admin-toast.err .admin-toast-icon{
+    background:#fff0f0;
+    color:#d13d3d;
+}
+.admin-toast.loading .admin-toast-icon{
+    background:#f0efff;
+    color:#5b45e8;
+    font-size:0;
+}
+.admin-toast.loading .admin-toast-icon::before{
+    content:"";
+    width:13px;
+    height:13px;
+    border:2px solid #cfcaff;
+    border-top-color:#5b45e8;
+    border-radius:50%;
+    animation:adminToastSpin .7s linear infinite;
+}
+.admin-toast-text{
+    min-width:0;
+    flex:1;
+    color:#252637;
+    font-size:13px;
+    line-height:1.35;
+    font-weight:650;
+    overflow-wrap:anywhere;
+}
+.admin-toast-close{
+    border:0;
+    background:transparent;
+    color:#8a8b98;
+    width:28px;
+    height:28px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:20px;
+    line-height:1;
+}
+.admin-toast-close:hover{background:#f3f3f7;color:#333;}
+@keyframes adminToastSpin{to{transform:rotate(360deg);}}
+@media(max-width:700px){
+    .admin-toast{
+        top:12px;
+        right:12px;
+        left:12px;
+        width:auto;
+    }
+}
+
 </style>
 </head>
 
 <body>
+
+
+<div id="adminToast" class="admin-toast" role="status" aria-live="polite">
+    <span class="admin-toast-icon"></span>
+    <span class="admin-toast-text"></span>
+    <button type="button" class="admin-toast-close" onclick="hideAdminToast()" aria-label="Close">×</button>
+</div>
+
 
 <div class="wrap">
 
@@ -1652,9 +1799,11 @@ function showAdminPanel(panel){
 }
 
 function showSliderStatus(message,type="ok"){
-    if(!sliderStatus)return;
-    sliderStatus.textContent=message;
-    sliderStatus.className="status "+type;
+    if(sliderStatus){
+        sliderStatus.textContent=message;
+        sliderStatus.className="status "+type;
+    }
+    if(message)showAdminToast(message,type);
 }
 
 function previewSliderImage(){
@@ -1780,18 +1929,51 @@ function bannerSlotElements(slot){
     };
 }
 
+let adminToastTimer=null;
+
+function showAdminToast(message,type="ok"){
+    const toast=document.getElementById("adminToast");
+    if(!toast)return;
+
+    clearTimeout(adminToastTimer);
+
+    const icon=toast.querySelector(".admin-toast-icon");
+    const text=toast.querySelector(".admin-toast-text");
+
+    toast.className="admin-toast show "+type;
+    text.textContent=message || "";
+
+    if(type==="ok") icon.textContent="✓";
+    else if(type==="err") icon.textContent="!";
+    else icon.textContent="";
+
+    if(type!=="loading"){
+        adminToastTimer=setTimeout(hideAdminToast,3400);
+    }
+}
+
+function hideAdminToast(){
+    const toast=document.getElementById("adminToast");
+    if(!toast)return;
+    toast.classList.remove("show");
+}
+
 function bannerStatus(slot,message,type="ok"){
     const el=bannerSlotElements(slot).status;
-    if(!el)return;
-    el.textContent=message;
-    el.className="status "+type;
+    if(el){
+        el.textContent=message;
+        el.className="status "+type;
+    }
+    if(message)showAdminToast(message,type);
 }
 
 function draftBannerStatus(slot,message,type="ok"){
     const el=bannerSlotElements(slot).draftStatus;
-    if(!el)return;
-    el.textContent=message;
-    el.className="status "+type;
+    if(el){
+        el.textContent=message;
+        el.className="status "+type;
+    }
+    if(message)showAdminToast(message,type);
 }
 
 function openBannerItemForm(slot){
@@ -1803,7 +1985,18 @@ function openBannerItemForm(slot){
     if(el.draftName)el.draftName.value="";
     if(el.draftBadge)el.draftBadge.value="";
     if(el.draftPreview)el.draftPreview.textContent="Image preview";
+    if(el.draftImage){
+        el.draftImage.oninput=function(){
+            updateDraftBannerPreview(slot);
+        };
+        el.draftImage.onpaste=function(){
+            setTimeout(function(){
+                updateDraftBannerPreview(slot);
+            },30);
+        };
+    }
     draftBannerStatus(slot,"","ok");
+    updateDraftBannerPreview(slot);
     setTimeout(()=>el.draftImage?.focus(),100);
 }
 
@@ -1818,9 +2011,17 @@ function closeBannerItemForm(slot){
 function updateDraftBannerPreview(slot){
     const el=bannerSlotElements(slot);
     if(!el.draftPreview)return;
+
     const url=el.draftImage?.value.trim()||"";
-    if(!url){el.draftPreview.textContent="Image preview";return;}
-    el.draftPreview.innerHTML=`<img src="${escapeHTML(url)}" alt="Preview" onerror="this.parentElement.textContent='Image load nahi hui';">`;
+
+    if(!url){
+        el.draftPreview.innerHTML="<span>Image preview</span>";
+        return;
+    }
+
+    el.draftPreview.innerHTML=`<img src="${escapeHTML(url)}" alt="Preview"
+        onload="this.style.display='block';"
+        onerror="this.parentElement.innerHTML='<span>Image load nahi hui</span>';">`;
 }
 
 function commitBannerItem(slot){
@@ -1878,7 +2079,8 @@ function addBannerItem(slot,item={}){
         </div>
         <button type="button" class="btn danger" onclick="removeBannerItem(this,'${slot}')">Remove</button>
       </div>`;
-    el.items.appendChild(row);
+    /* Latest added item always goes to the top. */
+    el.items.insertBefore(row,el.items.firstElementChild || null);
 
     const imageInput=row.querySelector(".banner-item-image");
     imageInput.addEventListener("input",function(){
@@ -1903,8 +2105,16 @@ function removeBannerItem(button,slot){
 function updateBannerItemPreview(row){
     const preview=row.querySelector(".banner-item-preview");
     const url=row.querySelector(".banner-item-image")?.value.trim()||"";
-    if(!url){preview.textContent="Image preview";return;}
-    preview.innerHTML=`<img src="${escapeHTML(url)}" alt="Preview" onerror="this.parentElement.textContent='Image load nahi hui';">`;
+    if(!preview)return;
+
+    if(!url){
+        preview.textContent="Image preview";
+        return;
+    }
+
+    preview.innerHTML=`<img src="${escapeHTML(url)}" alt="Preview"
+        onload="this.style.display='block';"
+        onerror="this.parentElement.innerHTML='<span>Image load nahi hui</span>';">`;
 }
 
 function collectProductBannerItems(slot){
@@ -2073,13 +2283,9 @@ function showStatus(
     message,
     type = "ok"
 ){
-
-    statusBox.textContent =
-        message;
-
-    statusBox.className =
-        "status " + type;
-
+    statusBox.textContent = message;
+    statusBox.className = "status " + type;
+    showAdminToast(message,type);
 }
 
 
