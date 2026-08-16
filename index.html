@@ -862,6 +862,44 @@ main{
   to{transform:rotate(360deg)}
 }
 
+
+/* ================= HERO SLIDER ================= */
+.hero-slider{
+  width:90%;
+  max-width:1250px;
+  margin:16px auto 0;
+  overflow:hidden;
+  display:none;
+}
+.hero-slider.show{display:block}
+.hero-viewport{width:100%;overflow:hidden;border-radius:15px}
+.hero-track{display:flex;gap:14px;transition:transform .45s ease;will-change:transform}
+.hero-slide{
+  flex:0 0 calc((100% - 28px)/3);
+  aspect-ratio:2.05/1;
+  border-radius:15px;
+  overflow:hidden;
+  background:#eee;
+  display:block;
+  border:0;
+  padding:0;
+}
+.hero-slide img{width:100%;height:100%;display:block;object-fit:cover}
+.hero-dots{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px}
+.hero-dot{width:7px;height:4px;border:0;border-radius:99px;background:#d9d9df;padding:0}
+.hero-dot.active{width:18px;background:#111}
+.hero-empty{display:none}
+
+@media(max-width:700px){
+  .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
+  .hero-viewport{border-radius:14px}
+  .hero-track{gap:0}
+  .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
+  .hero-dots{margin-top:6px}
+  .hero-dot{width:7px;height:4px}
+  .hero-dot.active{width:18px}
+}
+
 </style>
 </head>
 
@@ -1131,6 +1169,15 @@ main{
 
 </header>
 
+
+
+<!-- ================= HERO SLIDER ================= -->
+<section id="heroSlider" class="hero-slider" aria-label="Hero Slider">
+  <div class="hero-viewport">
+    <div id="heroTrack" class="hero-track"></div>
+  </div>
+  <div id="heroDots" class="hero-dots"></div>
+</section>
 
 <!-- ================= CATEGORIES ================= -->
 
@@ -2084,6 +2131,136 @@ async function logoutUser(){
 }
 
 
+
+/* =========================================================
+   HERO SLIDER
+   Admin panel se image links aate hain.
+   Desktop: 3 banners visible.
+   Mobile: 1 banner visible + automatic slide.
+========================================================= */
+let heroSlides = [];
+let heroIndex = 0;
+let heroTimer = null;
+
+function heroEscape(value){
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+async function loadHeroSliders(){
+  const box = document.getElementById("heroSlider");
+  const track = document.getElementById("heroTrack");
+  const dots = document.getElementById("heroDots");
+  if(!box || !track || !dots) return;
+
+  const {data,error} = await supabaseClient
+    .from("hero_sliders")
+    .select("id,image_url,sort_order,is_active,created_at")
+    .eq("is_active",true)
+    .order("sort_order",{ascending:true})
+    .order("created_at",{ascending:true});
+
+  if(error){
+    console.error("Hero slider error:",error);
+    box.classList.remove("show");
+    stopHeroAutoSlide();
+    return;
+  }
+
+  heroSlides = (data || []).filter(x => x.image_url);
+  heroIndex = 0;
+
+  if(!heroSlides.length){
+    box.classList.remove("show");
+    stopHeroAutoSlide();
+    track.innerHTML = "";
+    dots.innerHTML = "";
+    return;
+  }
+
+  box.classList.add("show");
+  track.innerHTML = heroSlides.map((slide,i)=>`
+    <div class="hero-slide">
+      <img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="${i===0?'eager':'lazy'}" onerror="this.parentElement.style.display='none'">
+    </div>
+  `).join("");
+
+  dots.innerHTML = heroSlides.map((_,i)=>`
+    <button type="button" class="hero-dot ${i===0?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i})"></button>
+  `).join("");
+
+  applyHeroPosition(false);
+  setupHeroAutoSlide();
+}
+
+function applyHeroPosition(animate=true){
+  const track = document.getElementById("heroTrack");
+  if(!track) return;
+  track.style.transition = animate ? "transform .45s ease" : "none";
+
+  if(window.innerWidth <= 700){
+    track.style.transform = `translateX(-${heroIndex * 100}%)`;
+  }else{
+    track.style.transform = "translateX(0)";
+  }
+
+  document.querySelectorAll(".hero-dot").forEach((dot,i)=>{
+    dot.classList.toggle("active",i===heroIndex);
+  });
+}
+
+function goHeroSlide(index){
+  if(!heroSlides.length) return;
+  heroIndex = Math.max(0,Math.min(index,heroSlides.length-1));
+  applyHeroPosition(true);
+}
+
+function nextHeroSlide(){
+  if(window.innerWidth > 700 || heroSlides.length < 2) return;
+  heroIndex = (heroIndex + 1) % heroSlides.length;
+  applyHeroPosition(true);
+}
+
+function startHeroAutoSlide(){
+  stopHeroAutoSlide();
+  if(window.innerWidth <= 700 && heroSlides.length > 1){
+    heroTimer = setInterval(nextHeroSlide,3200);
+  }
+}
+
+function stopHeroAutoSlide(){
+  if(heroTimer){clearInterval(heroTimer);heroTimer=null;}
+}
+
+function setupHeroAutoSlide(){
+  startHeroAutoSlide();
+}
+
+window.addEventListener("resize",function(){
+  if(!heroSlides.length) return;
+  applyHeroPosition(false);
+  startHeroAutoSlide();
+});
+
+
+
+/* HERO REALTIME UPDATE */
+supabaseClient
+  .channel("hero-sliders-live")
+  .on("postgres_changes",{
+    event:"*",
+    schema:"public",
+    table:"hero_sliders"
+  },function(){
+    loadHeroSliders();
+  })
+  .subscribe();
+
+
 /* =========================================================
    START
 ========================================================= */
@@ -2091,6 +2268,7 @@ async function logoutUser(){
 loadAccount();
 
 loadCartCount();
+loadHeroSliders();
 
 loadProducts();
 
