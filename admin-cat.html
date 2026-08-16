@@ -1,78 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MyStore Admin - Categories</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f6f7fb;color:#202027}.wrap{max-width:1200px;margin:auto;padding:24px}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.top h1{font-size:26px}.top button,.primary{border:0;border-radius:10px;background:#5b45e8;color:#fff;padding:12px 17px;font-weight:700;cursor:pointer}
-.layout{display:grid;grid-template-columns:330px 1fr;gap:20px}.card{background:#fff;border:1px solid #e7e7ee;border-radius:16px;padding:18px;box-shadow:0 4px 18px #00000008}.card h2{font-size:18px;margin-bottom:16px}
-label{display:block;font-size:13px;font-weight:700;margin:13px 0 7px}input,select{width:100%;padding:11px 12px;border:1px solid #dcdce5;border-radius:9px;outline:none}input:focus,select:focus{border-color:#5b45e8}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.preview{height:100px;border-radius:12px;background:#f3f3f7;margin-top:10px;display:grid;place-items:center;overflow:hidden;color:#888}.preview img{width:100%;height:100%;object-fit:cover}
-.list{display:grid;gap:12px}.category{border:1px solid #e5e5eb;border-radius:12px;padding:13px}.category-head{display:flex;align-items:center;gap:10px}.category-head img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#f2f2f6}.category-head strong{flex:1}.mini-actions button{border:0;background:#f1efff;color:#5b45e8;border-radius:7px;padding:6px 8px;margin-left:4px;cursor:pointer}.subs{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.sub{background:#f6f6f9;border-radius:20px;padding:7px 10px;font-size:12px}
-.section-box{border-top:1px solid #eee;margin-top:16px;padding-top:14px}.sub-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px}.small{font-size:12px;color:#777;margin-top:5px}.danger{background:#fff0f1!important;color:#d33!important}
-.status{margin-top:12px;font-size:13px;min-height:18px}.saved{color:#17834a}.err{color:#c33}
-@media(max-width:800px){.wrap{padding:14px}.layout{grid-template-columns:1fr}.top{gap:10px}.top h1{font-size:21px}.sub-row{grid-template-columns:1fr}}
+body{font-family:Arial,Helvetica,sans-serif;background:#f6f7fb;color:#202027}.wrap{max-width:1200px;margin:auto;padding:24px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.top h1{font-size:26px}
+.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer}.primary{background:#5b45e8;color:#fff}.secondary{background:#eeeef5}.danger{background:#fff0f1;color:#c33}
+.layout{display:grid;grid-template-columns:360px 1fr;gap:20px}.card{background:#fff;border:1px solid #e5e5ed;border-radius:16px;padding:18px}.card h2{font-size:18px;margin-bottom:15px}
+label{display:block;font-size:13px;font-weight:700;margin:12px 0 7px}input{width:100%;padding:11px 12px;border:1px solid #dcdce5;border-radius:9px;outline:none}input:focus{border-color:#5b45e8}
+.preview{height:100px;border-radius:12px;background:#f3f3f7;margin-top:9px;display:grid;place-items:center;color:#888;overflow:hidden}.preview img{width:100%;height:100%;object-fit:cover}
+.box{border-top:1px solid #eee;margin-top:16px;padding-top:14px}.addrow{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}.draft{display:grid;gap:7px;margin-top:10px}.draftrow{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid #e5e5ec;border-radius:9px}.draftrow img{width:40px;height:40px;border-radius:50%;object-fit:cover}.draftrow strong{flex:1;font-size:13px}.note{font-size:12px;color:#777;line-height:1.45;margin-top:9px}.status{min-height:20px;margin-top:12px;font-size:13px}.ok{color:#168447}.err{color:#c33}
+.list{display:grid;gap:12px}.category{border:1px solid #e2e2ea;border-radius:12px;padding:13px}.head{display:flex;align-items:center;gap:10px}.head img,.ph{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#f0eff7;display:grid;place-items:center}.name{flex:1;font-weight:750}.actions{display:flex;gap:5px}.actions button{border:0;border-radius:7px;padding:7px 9px;cursor:pointer}.section{font-size:12px;color:#777;margin-top:11px}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}.chip{background:#f5f5f8;border-radius:18px;padding:7px 10px;font-size:12px}.empty{text-align:center;color:#777;padding:35px 10px}
+@media(max-width:850px){.wrap{padding:14px}.layout{grid-template-columns:1fr}.top h1{font-size:21px}}@media(max-width:550px){.addrow{grid-template-columns:1fr}.actions{flex-direction:column}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><h1>Categories Manager</h1><button onclick="saveAll()">Save Categories</button></div>
+<div class="top"><h1>Categories Manager</h1><div><button class="btn secondary" onclick="newCat()">New</button> <button class="btn primary" onclick="saveCat()">Save Category</button></div></div>
 <div class="layout">
 <div class="card">
 <h2>Add / Edit Category</h2>
-<label>Category Name</label><input id="catName" placeholder="e.g. Fashion">
-<label>Category Image Link</label><input id="catImage" placeholder="https://.../fashion.jpg" oninput="preview()">
+<label>Category Name</label><input id="name" placeholder="e.g. Fashion">
+<label>Category Image Link</label><input id="catimg" placeholder="https://.../fashion.webp" oninput="preview()">
 <div class="preview" id="preview">Image preview</div>
-<div class="section-box">
-<label>Section Name</label><input id="sectionName" placeholder="e.g. Fashion Categories">
-</div>
-<div class="section-box">
-<label>Subcategory Name</label><input id="subName" placeholder="e.g. Sarees">
-<label>Subcategory Image Link</label><input id="subImage" placeholder="https://.../saree.jpg">
-<button class="primary" style="margin-top:12px;width:100%" onclick="addSub()">Add Subcategory</button>
+<div class="box">
+<label>Section Name</label><input id="section" placeholder="e.g. Women's Fashion">
+<label>Subcategory Name</label>
+<div class="addrow"><input id="subname" placeholder="e.g. Sarees"><input id="subimg" placeholder="https://.../saree.webp"><button class="btn primary" onclick="addSub()">Add</button></div>
+<div class="draft" id="draft"></div>
+<div class="note">Subcategory add karne ke baad <b>Save Category</b> dabao. Save hote hi Supabase me data jayega.</div>
 </div>
 <div class="status" id="status"></div>
 </div>
-<div class="card">
-<h2>Categories</h2>
-<div class="list" id="list"></div>
+<div class="card"><h2>Categories</h2><div class="list" id="list"></div></div>
 </div>
 </div>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const KEY="mystore_categories_admin_v1";
-let data=JSON.parse(localStorage.getItem(KEY)||"null")||[
-{id:"popular",name:"Popular",image:"",sections:[{title:"Popular Categories",items:[]}]}
-];
-let editing=null;
-function uid(){return "c_"+Date.now()+"_"+Math.random().toString(36).slice(2,7)}
-function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function preview(){const u=catImage.value.trim();previewEl.innerHTML=u?`<img src="${esc(u)}" onerror="this.style.display='none'">`:"Image preview"}
-const previewEl=document.getElementById("preview");
-function addSub(){
-const name=catName.value.trim(), img=catImage.value.trim(), sec=sectionName.value.trim()||"Categories", sn=subName.value.trim(), si=subImage.value.trim();
-if(!name){msg("Category name required",true);return}
-if(!sn){msg("Subcategory name required",true);return}
-let c=editing?data.find(x=>x.id===editing):null;
-if(!c){c={id:uid(),name,image:img,sections:[]};data.push(c);editing=c.id}
-c.name=name;c.image=img;
-let s=c.sections.find(x=>x.title===sec);if(!s){s={title:sec,items:[]};c.sections.push(s)}
-s.items.push({name:sn,image:si});
-render();clearSub();msg("Subcategory added.",false)
-}
-function newCategory(){editing=null;catName.value="";catImage.value="";sectionName.value="";subName.value="";subImage.value="";previewEl.innerHTML="Image preview"}
-function editCat(id){const c=data.find(x=>x.id===id);if(!c)return;editing=id;catName.value=c.name;catImage.value=c.image||"";sectionName.value=c.sections[0]?.title||"";preview();window.scrollTo({top:0,behavior:"smooth"})}
-function deleteCat(id){if(!confirm("Delete this category?"))return;data=data.filter(x=>x.id!==id);if(editing===id)newCategory();render()}
-function deleteSub(cid,si,ii){data.find(x=>x.id===cid).sections[si].items.splice(ii,1);render()}
-function render(){
-list.innerHTML=data.map(c=>`<div class="category"><div class="category-head">${c.image?`<img src="${esc(c.image)}">`:`<div style="width:48px;height:48px;border-radius:50%;background:#f0eff7;display:grid;place-items:center">${esc(c.name[0])}</div>`}<strong>${esc(c.name)}</strong><div class="mini-actions"><button onclick="editCat('${c.id}')">Edit</button><button class="danger" onclick="deleteCat('${c.id}')">Delete</button></div></div>${c.sections.map((s,si)=>`<div class="small">${esc(s.title)}</div><div class="subs">${s.items.map((i,ii)=>`<span class="sub">${esc(i.name)} <button style="border:0;background:none;color:#c33;cursor:pointer" onclick="deleteSub('${c.id}',${si},${ii})">×</button></span>`).join("")}</div>`).join("")}</div>`).join("")}
-function clearSub(){subName.value="";subImage.value=""}
-function saveAll(){localStorage.setItem(KEY,JSON.stringify(data));msg("Saved successfully. Categories page ko data mil jayega.",false)}
-function msg(t,e){status.textContent=t;status.className="status "+(e?"err":"saved")}
-render();
+const SUPABASE_URL="https://bszojvhitsoamhksyjul.supabase.co";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let rows=[],editing=null,draft=[];
+const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function msg(t,e=false){status.textContent=t;status.className="status "+(e?"err":"ok")}
+function preview(){let u=catimg.value.trim();document.getElementById("preview").innerHTML=u?'<img src="'+esc(u)+'" onerror="this.style.display=\'none\'">':"Image preview"}
+function newCat(){editing=null;name.value="";catimg.value="";section.value="";subname.value="";subimg.value="";draft=[];preview();renderDraft();msg("")}
+function addSub(){let n=subname.value.trim(),u=subimg.value.trim();if(!n){msg("Subcategory name required.",true);return}draft.push({name:n,image:u});subname.value="";subimg.value="";renderDraft();msg("Subcategory add ho gayi. Save Category dabao.")}
+function renderDraft(){draftEl=document.getElementById("draft");draftEl.innerHTML=draft.map((x,i)=>'<div class="draftrow">'+(x.image?'<img src="'+esc(x.image)+'">':'<div class="ph">'+esc(x.name[0])+'</div>')+'<strong>'+esc(x.name)+'</strong><button class="btn danger" onclick="draft.splice('+i+',1);renderDraft()">×</button></div>').join("")}
+async function load(){let r=await sb.from("categories").select("id,name,image_url,sections,sort_order,is_active,created_at").order("sort_order",{ascending:true}).order("created_at",{ascending:true});if(r.error){msg(r.error.message,true);return}rows=r.data||[];renderList()}
+function renderList(){if(!rows.length){list.innerHTML='<div class="empty">Abhi koi category nahi hai.</div>';return}list.innerHTML=rows.map(c=>'<div class="category"><div class="head">'+(c.image_url?'<img src="'+esc(c.image_url)+'">':'<div class="ph">'+esc((c.name||"")[0])+'</div>')+'<div class="name">'+esc(c.name)+'</div><div class="actions"><button class="secondary" onclick="editCat(\''+c.id+'\')">Edit</button><button class="danger" onclick="delCat(\''+c.id+'\')">Delete</button></div></div>'+((Array.isArray(c.sections)?c.sections:[]).map(s=>'<div class="section">'+esc(s.title||"")+'</div><div class="chips">'+(Array.isArray(s.items)?s.items:[]).map(i=>'<span class="chip">'+esc(i.name)+'</span>').join("")+'</div>').join(""))+'</div>').join("")}
+function editCat(id){let c=rows.find(x=>String(x.id)===String(id));if(!c)return;editing=c.id;name.value=c.name||"";catimg.value=c.image_url||"";let s=(Array.isArray(c.sections)?c.sections:[])[0]||{title:"",items:[]};section.value=s.title||"";draft=Array.isArray(s.items)?s.items.map(x=>({name:x.name||"",image:x.image||""})):[];preview();renderDraft();scrollTo({top:0,behavior:"smooth"});msg("Edit mode")}
+async function saveCat(){let n=name.value.trim(),u=catimg.value.trim(),s=section.value.trim();if(!n)return msg("Category name required.",true);if(!s)return msg("Section name required.",true);let payload={name:n,image_url:u||null,sections:[{title:s,items:draft}],is_active:true};let r=editing?await sb.from("categories").update(payload).eq("id",editing).select().single():await sb.from("categories").insert(payload).select().single();if(r.error){console.error(r.error);msg(r.error.message,true);return}msg("Category Supabase me save ho gayi.");newCat();await load()}
+async function delCat(id){let c=rows.find(x=>String(x.id)===String(id));if(!c||!confirm('"'+c.name+'" delete karni hai?'))return;let r=await sb.from("categories").delete().eq("id",id);if(r.error){msg(r.error.message,true);return}msg("Category delete ho gayi.");await load()}
+load();
 </script>
 </body>
 </html>
