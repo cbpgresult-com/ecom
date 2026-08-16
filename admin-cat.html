@@ -388,6 +388,810 @@ input:focus{
 @media(max-width:850px){.banner-manager-panel.active{grid-template-columns:1fr}.banner-item-grid{grid-template-columns:64px 1fr}.banner-item-preview{width:64px;height:64px}}
 @media(max-width:550px){.top-buttons{flex-wrap:wrap}.top-buttons .btn{flex:1;min-width:110px}.banner-save-row{flex-direction:column}.banner-live-card{flex-basis:100px}.banner-live-img{height:94px}}
 
+
+/* =========================================================
+   CLEAN ADMIN UI REFRESH
+   Functionality unchanged — visual/layout only
+========================================================= */
+
+:root{
+    --admin-primary:#5b45e8;
+    --admin-primary-dark:#4933d4;
+    --admin-bg:#f5f6fa;
+    --admin-card:#ffffff;
+    --admin-border:#e7e8ef;
+    --admin-text:#171827;
+    --admin-muted:#747788;
+    --admin-soft:#f0effa;
+    --admin-danger:#e5484d;
+    --admin-success:#168447;
+}
+
+html{scroll-behavior:smooth;}
+
+body{
+    background:
+        radial-gradient(circle at 8% 0%,rgba(91,69,232,.055),transparent 28%),
+        radial-gradient(circle at 92% 0%,rgba(91,69,232,.035),transparent 25%),
+        var(--admin-bg);
+    color:var(--admin-text);
+}
+
+.wrap{
+    max-width:1280px;
+    margin:0 auto;
+    padding:28px 24px 42px;
+}
+
+.top{
+    position:sticky;
+    top:12px;
+    z-index:50;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid rgba(226,227,237,.95);
+    border-radius:18px;
+    padding:13px 14px 13px 20px;
+    margin-bottom:22px;
+    box-shadow:0 10px 30px rgba(29,25,61,.07);
+}
+
+.top h1{
+    font-size:24px;
+    letter-spacing:-.45px;
+    white-space:nowrap;
+}
+
+.top-buttons{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:4px;
+    border-radius:13px;
+    background:#f1f1f7;
+    border:1px solid #e8e8ef;
+    flex-wrap:nowrap;
+}
+
+.top-buttons .btn{
+    border:0;
+    border-radius:9px;
+    padding:9px 14px;
+    min-height:38px;
+    font-size:13px;
+    transition:all .18s ease;
+}
+
+.top-buttons .btn:hover{
+    transform:translateY(-1px);
+    background:#e7e6f1;
+}
+
+.top-buttons .btn.primary,
+.top-buttons .btn.tab-active{
+    background:var(--admin-primary);
+    color:#fff;
+    box-shadow:0 5px 14px rgba(91,69,232,.22);
+}
+
+.top-buttons .btn.primary:hover,
+.top-buttons .btn.tab-active:hover{
+    background:var(--admin-primary-dark);
+}
+
+.btn{
+    border:1px solid transparent;
+    border-radius:10px;
+    padding:10px 14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .18s ease;
+}
+
+.btn:hover:not(:disabled){
+    transform:translateY(-1px);
+}
+
+.btn:active:not(:disabled){
+    transform:translateY(0);
+}
+
+.btn:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.primary{
+    background:var(--admin-primary);
+    color:#fff;
+    box-shadow:0 4px 12px rgba(91,69,232,.14);
+}
+
+.primary:hover:not(:disabled){
+    background:var(--admin-primary-dark);
+}
+
+.secondary{
+    background:#f5f5f9;
+    color:#292938;
+    border-color:#e5e5ed;
+}
+
+.secondary:hover:not(:disabled){
+    background:#ececf4;
+}
+
+.danger{
+    background:#fff1f2;
+    color:#d3373d;
+    border-color:#ffdadd;
+}
+
+.danger:hover:not(:disabled){
+    background:#ffe7e9;
+}
+
+.layout,
+.slider-layout,
+.banner-manager-panel.active{
+    gap:20px;
+}
+
+.card{
+    background:rgba(255,255,255,.98);
+    border:1px solid var(--admin-border);
+    border-radius:17px;
+    padding:20px;
+    box-shadow:0 5px 20px rgba(25,25,50,.035);
+}
+
+.card h2{
+    color:#151522;
+    letter-spacing:-.2px;
+}
+
+.card > h2,
+.card > .banner-form-title{
+    display:flex;
+    align-items:center;
+    min-height:28px;
+}
+
+input{
+    border:1px solid #dfe0e8;
+    border-radius:10px;
+    background:#fff;
+    color:#202027;
+    transition:border-color .18s ease,box-shadow .18s ease;
+}
+
+input:hover{
+    border-color:#cfcfdb;
+}
+
+input:focus{
+    border-color:var(--admin-primary);
+    box-shadow:0 0 0 3px rgba(91,69,232,.11);
+}
+
+label{
+    color:#343444;
+}
+
+.preview,
+.slider-preview{
+    border:1px dashed #d9dae5;
+    background:#f7f7fa;
+}
+
+.section-box{
+    border-top:1px solid #ececf2;
+}
+
+.addrow{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;
+}
+
+.addrow .btn{
+    min-width:72px;
+}
+
+.note,
+.slider-note,
+.banner-help{
+    color:#77798a;
+}
+
+.status{
+    min-height:0;
+    margin-top:12px;
+    padding:0;
+    font-size:12px;
+    font-weight:700;
+    line-height:1.4;
+    border-radius:10px;
+    transition:all .2s ease;
+}
+
+.status:not(:empty){
+    padding:10px 12px;
+    border:1px solid #e7e7ee;
+    background:#f8f8fb;
+}
+
+.status.ok:not(:empty){
+    color:#12753f;
+    background:#eefaf3;
+    border-color:#d2f0dd;
+}
+
+.status.err:not(:empty){
+    color:#bd2e36;
+    background:#fff1f2;
+    border-color:#ffd8db;
+}
+
+.status.loading:not(:empty){
+    color:#4e3bd0;
+    background:#f2f0ff;
+    border-color:#ddd8ff;
+}
+
+.status.loading:not(:empty)::before{
+    content:"";
+    display:inline-block;
+    width:10px;
+    height:10px;
+    margin-right:7px;
+    vertical-align:-1px;
+    border:2px solid rgba(91,69,232,.2);
+    border-top-color:var(--admin-primary);
+    border-radius:50%;
+    animation:adminSpin .7s linear infinite;
+}
+
+@keyframes adminSpin{
+    to{transform:rotate(360deg);}
+}
+
+.category,
+.slider-row,
+.banner-item-row{
+    border-color:#e4e5ed;
+    box-shadow:0 2px 9px rgba(30,30,55,.025);
+    transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+
+.category:hover,
+.slider-row:hover,
+.banner-item-row:hover{
+    border-color:#d7d7e4;
+    box-shadow:0 7px 18px rgba(30,30,55,.05);
+}
+
+.actions button,
+.slider-actions button{
+    min-height:34px;
+}
+
+.chip{
+    background:#f4f3f8;
+    border:1px solid #e8e7ef;
+    color:#454554;
+}
+
+.empty{
+    background:#fafafd;
+    border:1px dashed #e0e1e9;
+    border-radius:12px;
+}
+
+.manager-panel{
+    animation:panelIn .22s ease;
+}
+
+@keyframes panelIn{
+    from{opacity:0;transform:translateY(4px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+.slider-row{
+    padding:13px;
+}
+
+.slider-thumb{
+    width:158px;
+    border:1px solid #e7e7ee;
+}
+
+.slider-actions{
+    margin-left:auto;
+}
+
+.banner-manager-panel{
+    align-items:start;
+}
+
+.banner-preview-wrap{
+    border-color:#e4e5ed;
+    background:#fafafd;
+}
+
+.banner-live-preview{
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.035);
+}
+
+.banner-save-row{
+    padding-top:2px;
+}
+
+.banner-save-row .btn{
+    min-height:42px;
+}
+
+.banner-add-item{
+    border-style:dashed;
+}
+
+#saveButton,
+#addSliderButton{
+    min-height:44px;
+    font-size:14px;
+    letter-spacing:.05px;
+}
+
+#formTitle{
+    letter-spacing:-.2px;
+}
+
+@media(max-width:850px){
+    .wrap{padding:18px 14px 32px;}
+    .top{
+        position:relative;
+        top:auto;
+        padding:14px;
+    }
+    .top{
+        align-items:stretch;
+    }
+    .top-buttons{
+        width:100%;
+        overflow-x:auto;
+        scrollbar-width:none;
+    }
+    .top-buttons::-webkit-scrollbar{display:none;}
+    .top-buttons .btn{
+        flex:1 0 auto;
+        white-space:nowrap;
+    }
+}
+
+@media(max-width:550px){
+    .wrap{padding:12px 10px 28px;}
+    .top{border-radius:14px;margin-bottom:14px;}
+    .top h1{font-size:20px;}
+    .top-buttons{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        overflow:visible;
+    }
+    .top-buttons .btn{
+        width:100%;
+        min-width:0;
+        padding:9px 8px;
+    }
+    .card{padding:15px;border-radius:14px;}
+    .addrow{grid-template-columns:1fr;}
+    .slider-row{flex-wrap:wrap;}
+    .slider-thumb{width:100%;height:145px;}
+    .slider-row-main{width:calc(100% - 0px);}
+    .slider-actions{width:100%;margin-left:0;display:flex;justify-content:flex-end;flex-direction:row;}
+    .slider-actions button{min-width:82px;}
+    .banner-manager-panel.active{grid-template-columns:1fr;}
+}
+
+
+/* =========================================================
+   NEW CLEAN ADMIN NAV / PANEL SYSTEM
+   Functionality unchanged
+========================================================= */
+
+.manager-panel{display:none !important;}
+.manager-panel.active{display:block !important;animation:adminPanelIn .24s ease both;}
+#categoriesPanel.active,#sliderPanel.active{display:grid !important;}
+.banner-manager-panel.active{display:grid !important;}
+
+@keyframes adminPanelIn{
+    from{opacity:0;transform:translateY(8px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+/* Modern command header */
+.top{
+    position:sticky;
+    top:12px;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:22px;
+    padding:15px 16px 15px 20px;
+    margin-bottom:24px;
+    background:rgba(255,255,255,.94);
+    border:1px solid #e4e5ee;
+    border-radius:20px;
+    box-shadow:0 12px 35px rgba(29,25,61,.08);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+.top h1{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    font-size:23px;
+    font-weight:850;
+    letter-spacing:-.55px;
+}
+
+.top h1::before{
+    content:"";
+    width:9px;
+    height:30px;
+    border-radius:99px;
+    background:linear-gradient(180deg,#7057f4,#4d35d6);
+    box-shadow:0 5px 14px rgba(91,69,232,.25);
+}
+
+.top-buttons{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding:5px;
+    background:#f3f3f8;
+    border:1px solid #e7e7ef;
+    border-radius:15px;
+}
+
+.top-buttons .btn{
+    position:relative;
+    min-height:40px;
+    padding:9px 15px;
+    border:0;
+    border-radius:10px;
+    background:transparent;
+    color:#555668;
+    font-size:13px;
+    font-weight:800;
+    box-shadow:none;
+    transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+
+.top-buttons .btn:hover:not(.tab-active){
+    background:#e9e9f1;
+    color:#252538;
+    transform:none;
+}
+
+.top-buttons .btn.tab-active{
+    background:linear-gradient(135deg,#674ff0,#5238dc);
+    color:#fff;
+    box-shadow:0 6px 16px rgba(91,69,232,.24);
+}
+
+.top-buttons .btn.tab-active::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:3px;
+    width:18px;
+    height:2px;
+    transform:translateX(-50%);
+    border-radius:99px;
+    background:rgba(255,255,255,.9);
+}
+
+/* Panel heading strips */
+.manager-panel > .card > h2,
+.manager-panel > .card .banner-form-title{
+    font-size:18px;
+}
+
+/* Category list gets a slightly stronger hierarchy */
+.category{
+    background:linear-gradient(180deg,#fff,#fcfcfe);
+}
+
+/* Cleaner destructive buttons */
+.actions .danger,
+.slider-actions .danger,
+.banner-save-row .danger{
+    font-weight:800;
+}
+
+/* No accidental panel stacking */
+#categoriesPanel:not(.active),
+#sliderPanel:not(.active),
+#banner1Panel:not(.active),
+#banner2Panel:not(.active){
+    display:none !important;
+}
+
+@media(max-width:850px){
+    .top{
+        position:relative;
+        top:auto;
+        align-items:stretch;
+        flex-direction:column;
+        gap:12px;
+    }
+    .top-buttons{
+        width:100%;
+        overflow-x:auto;
+        scrollbar-width:none;
+    }
+    .top-buttons::-webkit-scrollbar{display:none;}
+    .top-buttons .btn{flex:1 0 auto;white-space:nowrap;}
+}
+
+@media(max-width:550px){
+    .top{padding:14px;border-radius:16px;}
+    .top h1{font-size:20px;}
+    .top h1::before{height:25px;width:8px;}
+    .top-buttons{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        overflow:visible;
+    }
+    .top-buttons .btn{width:100%;min-width:0;padding:9px 7px;}
+}
+
+
+/* =========================================================
+   SLIDER 1 / 2 — CLEAN WIDE MANAGER
+========================================================= */
+.banner-manager-panel.active{
+    grid-template-columns:210px minmax(0,1fr) !important;
+    gap:18px;
+    align-items:start;
+}
+.banner-add-card{
+    position:sticky;
+    top:112px;
+    min-height:250px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    text-align:left;
+    padding:22px;
+    background:linear-gradient(180deg,#fff,#fafaff);
+}
+.banner-add-icon{
+    width:44px;height:44px;border-radius:13px;
+    display:grid;place-items:center;
+    font-size:27px;font-weight:700;
+    color:#fff;background:linear-gradient(135deg,#7057f4,#4d35d6);
+    box-shadow:0 9px 20px rgba(91,69,232,.22);
+    margin-bottom:14px;
+}
+.banner-add-icon.orange{background:linear-gradient(135deg,#ff9a3d,#ff6e22);box-shadow:0 9px 20px rgba(255,126,38,.20)}
+.banner-add-title{font-size:18px;font-weight:850;color:#171827}
+.banner-add-text{font-size:12px;line-height:1.55;color:#77798a;margin:7px 0 17px}
+.banner-add-main{width:100%;min-height:42px}
+.banner-manager-main{min-width:0;padding:22px}
+.banner-manager-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:17px;border-bottom:1px solid #ececf2}
+.banner-kicker{font-size:10px;font-weight:900;letter-spacing:1.1px;color:#5b45e8;margin-bottom:5px}
+.orange-text{color:#e87520}
+.banner-form-title{font-size:20px;font-weight:850;margin:0}
+.banner-manager-sub{font-size:12px;color:#7b7d8d;margin-top:4px}
+.banner-manager-actions{display:flex;align-items:center;gap:9px;flex:none}
+.toggle-wrap{display:flex;align-items:center;gap:7px;padding:5px 8px 5px 10px;border:1px solid #e4e5ed;border-radius:999px;background:#f7f7fa}
+.toggle-wrap span:first-child{font-size:10px;font-weight:900;min-width:24px;text-align:right;color:#8b8c99}
+.switch{width:44px;height:25px;border:0;border-radius:999px;padding:3px;background:#cfd1da;cursor:pointer;transition:.2s;box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.switch span{display:block;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.18);transition:transform .2s}
+.switch.on{background:#16a15d}
+.switch.on span{transform:translateX(19px)}
+.toggle-wrap:has(.switch.on) span:first-child{color:#168447}
+.banner-editor-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:16px;padding:18px 0 5px}
+.banner-after-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.banner-section-head,.banner-preview-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;margin-bottom:10px}
+.banner-section-head strong,.banner-preview-title-row strong{font-size:14px}
+.banner-section-head span,.banner-preview-title-row span{display:block;font-size:11px;color:#858694;margin-top:3px}
+.banner-section-head .btn{min-height:36px;padding:8px 12px}
+.banner-item-list{max-height:520px;overflow:auto;padding-right:3px}
+.banner-item-row{background:#fbfbfe}
+.banner-manager-footer{display:flex;align-items:center;gap:14px;margin-top:15px;padding-top:15px;border-top:1px solid #ececf2}
+.banner-manager-footer .btn{min-width:150px}
+.banner-preview-wrap{min-height:160px}
+@media(max-width:850px){
+    .banner-manager-panel.active{grid-template-columns:1fr !important}
+    .banner-add-card{position:relative;top:auto;min-height:0}
+    .banner-editor-grid{grid-template-columns:1fr}
+    .banner-manager-head{align-items:flex-start;flex-direction:column}
+    .banner-manager-actions{width:100%;justify-content:flex-end}
+}
+@media(max-width:550px){
+    .banner-manager-main{padding:15px}
+    .banner-after-grid{grid-template-columns:1fr}
+    .banner-manager-footer{align-items:stretch;flex-direction:column}
+    .banner-manager-footer .btn{width:100%}
+    .banner-manager-actions{justify-content:space-between}
+}
+
+
+/* =========================================================
+   SLIDER 1 / 2 — ITEM CONTROL LAYOUT
+========================================================= */
+.banner-manager-panel.active{
+    grid-template-columns:330px minmax(0,1fr) !important;
+    gap:18px !important;
+    align-items:start;
+}
+.banner-add-card,
+.banner-item-form-card{
+    min-height:0;
+    position:sticky;
+    top:112px;
+    padding:22px;
+    align-self:start;
+}
+.banner-add-card{
+    min-height:285px;
+    justify-content:center;
+}
+.banner-item-form-card[hidden]{display:none !important;}
+.banner-form-kicker{
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:1.1px;
+    color:var(--admin-primary);
+    margin-bottom:6px;
+}
+.label-soft{font-weight:600;color:#9a9baa;}
+.banner-draft-preview{
+    height:135px;
+    margin:14px 0 14px;
+    border:1px dashed #d9dae5;
+    border-radius:13px;
+    background:#f7f7fa;
+    display:grid;
+    place-items:center;
+    color:#8a8b98;
+    font-size:12px;
+    overflow:hidden;
+}
+.banner-draft-preview img{
+    width:100%;height:100%;object-fit:contain;background:#fff;display:block;
+}
+.draft-form-actions{
+    display:grid;
+    grid-template-columns:1fr 1.25fr;
+    gap:8px;
+    margin-top:16px;
+}
+.draft-form-actions .btn{min-height:42px;}
+.banner-manager-main{min-width:0;padding:18px;}
+.banner-preview-first{
+    padding-bottom:16px;
+    border-bottom:1px solid #ececf2;
+}
+.banner-preview-head{margin-top:0;margin-bottom:9px;}
+.banner-preview-wrap{padding:10px;border-radius:14px;}
+.banner-live-preview{padding:13px;}
+.banner-live-title{font-size:18px;font-weight:850;margin-bottom:10px;}
+.banner-live-track{min-height:118px;}
+.preview-empty{
+    display:flex;align-items:center;justify-content:center;
+    width:100%;min-height:100px;color:#737583;font-size:12px;
+}
+.banner-config-head{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:17px 0 2px;
+}
+.banner-save-top{min-height:40px;white-space:nowrap;}
+.banner-editor-grid{padding:8px 0 2px;}
+.banner-section-head{margin-top:17px;}
+.banner-item-list{
+    max-height:none !important;
+    overflow:visible !important;
+    padding-right:0 !important;
+}
+.banner-item-row{
+    padding:12px;
+    background:#fbfbfe;
+}
+.banner-item-row.item-off{
+    opacity:.62;
+    background:#f5f5f8;
+}
+.banner-item-grid{
+    grid-template-columns:86px minmax(0,1fr);
+}
+.banner-item-preview{
+    width:86px;height:86px;border-radius:11px;
+}
+.banner-item-actions{
+    align-items:center;
+    justify-content:flex-end;
+    margin-top:10px;
+    padding-top:9px;
+    border-top:1px solid #ececf2;
+}
+.item-toggle-box{
+    display:flex;align-items:center;gap:7px;
+    padding:4px 7px 4px 9px;
+    border:1px solid #e2e3eb;
+    border-radius:999px;
+    background:#fff;
+}
+.item-switch-label{
+    min-width:25px;
+    text-align:right;
+    font-size:10px;font-weight:900;color:#8b8c99;
+}
+.item-switch-label.on{color:#168447;}
+.item-switch{width:42px;height:24px;}
+.item-switch span{width:18px;height:18px;}
+.item-switch.on span{transform:translateX(18px);}
+.banner-manager-main > .status{margin-top:15px;}
+
+@media(max-width:900px){
+    .banner-manager-panel.active{grid-template-columns:300px minmax(0,1fr) !important;}
+}
+@media(max-width:760px){
+    .banner-manager-panel.active{grid-template-columns:1fr !important;}
+    .banner-add-card,.banner-item-form-card{position:relative;top:auto;}
+    .banner-config-head{align-items:flex-start;flex-direction:column;}
+    .banner-save-top{width:100%;}
+}
+@media(max-width:550px){
+    .banner-item-grid{grid-template-columns:64px minmax(0,1fr);}
+    .banner-item-preview{width:64px;height:64px;}
+    .banner-item-actions{flex-wrap:wrap;}
+    .item-toggle-box{margin-right:auto;}
+}
+
+
+/* Keep Add Item + Fill Form together on the LEFT */
+.banner-manager-panel.active{
+    grid-template-columns:minmax(330px,380px) minmax(0,1fr) !important;
+    gap:18px !important;
+    align-items:start;
+}
+.banner-left-stack{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:stretch;
+}
+.banner-left-stack .banner-add-card,
+.banner-left-stack .banner-item-form-card{
+    width:100%;
+    position:relative;
+    top:auto;
+    align-self:stretch;
+    box-sizing:border-box;
+}
+.banner-left-stack .banner-add-card{
+    min-height:250px;
+}
+.banner-left-stack .banner-item-form-card{
+    animation:bannerFormIn .2s ease both;
+}
+@keyframes bannerFormIn{
+    from{opacity:0;transform:translateY(-5px);}
+    to{opacity:1;transform:translateY(0);}
+}
+@media(max-width:900px){
+    .banner-manager-panel.active{grid-template-columns:320px minmax(0,1fr) !important;}
+}
+@media(max-width:760px){
+    .banner-manager-panel.active{grid-template-columns:1fr !important;}
+}
 </style>
 </head>
 
@@ -405,16 +1209,16 @@ input:focus{
 
             <button
                 id="categoriesTabBtn"
-                class="btn primary tab-active"
+                class="btn secondary"
                 onclick="showAdminPanel('categories')">
-                Add Categories
+                Categories
             </button>
 
             <button
                 id="sliderTabBtn"
                 class="btn secondary"
                 onclick="showAdminPanel('slider')">
-                Add Slider
+                Hero Slider
             </button>
 
             <button
@@ -436,7 +1240,7 @@ input:focus{
     </div>
 
 
-    <div id="categoriesPanel" class="layout manager-panel active">
+    <div id="categoriesPanel" class="layout manager-panel">
 
         <!-- =========================
              FORM
@@ -626,84 +1430,165 @@ input:focus{
         </div>
     </div>
 
-</div>
 
     <!-- ================= PRODUCT BANNER 1 ================= -->
     <div id="banner1Panel" class="banner-manager-panel manager-panel">
-        <div class="card">
-            <div class="banner-form-title">Slider 1 — Green Banner</div>
-            <div class="banner-color-note"><span class="banner-color-dot green"></span> Green gradient banner</div>
-
-            <label>Banner Title</label>
-            <input id="banner1Title" type="text" placeholder="e.g. Suraj, still looking for these?" oninput="renderBannerLivePreview('banner1')">
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                <div>
-                    <label>Desktop: after products</label>
-                    <input id="banner1DesktopAfter" type="number" min="1" value="8">
-                </div>
-                <div>
-                    <label>Mobile: after products</label>
-                    <input id="banner1MobileAfter" type="number" min="1" value="4">
-                </div>
-            </div>
-
-            <label>Banner Items</label>
-            <div id="banner1Items" class="banner-item-list"></div>
-            <button class="btn secondary banner-add-item" onclick="addBannerItem('banner1')">+ Add Image / Item</button>
-
-            <div class="banner-save-row">
-                <button class="btn primary" onclick="saveProductBanner('banner1')">Save Slider 1</button>
-                <button class="btn danger" onclick="deleteProductBanner('banner1')">Delete Slider 1</button>
-            </div>
-            <div id="banner1Status" class="status"></div>
-            <div class="banner-help">Har item me Image Link, Image Name aur optional Badge bhar sakte ho. Badge khaali rakhenge to image ke upar badge nahi dikhega.</div>
+        <div class="banner-left-stack">
+        <div class="banner-add-card card" id="banner1AddCard">
+            <div class="banner-add-icon">＋</div>
+            <div class="banner-add-title">Slider 1</div>
+            <div class="banner-add-text">Naya item add karne ke liye button dabayein. Fill form isi left side mein khulega.</div>
+            <button class="btn primary banner-add-main" onclick="openBannerItemForm('banner1')">+ Add Item</button>
         </div>
 
-        <div class="card">
-            <div class="banner-form-title">Slider 1 Preview</div>
-            <div id="banner1LivePreview" class="banner-preview-wrap"></div>
+        <div class="banner-item-form-card card" id="banner1ItemFormCard" hidden>
+            <div class="banner-form-kicker">NEW ITEM</div>
+            <div class="banner-add-title">Add to Slider 1</div>
+            <div class="banner-add-text">Image, name aur optional badge fill karke item add karein.</div>
+            <div class="banner-draft-preview" id="banner1DraftPreview">Image preview</div>
+            <label>Image Link</label>
+            <input id="banner1DraftImage" type="text" placeholder="https://..." autocomplete="off">
+            <label>Image Name</label>
+            <input id="banner1DraftName" type="text" placeholder="e.g. ID Holder">
+            <label>Badge <span class="label-soft">optional</span></label>
+            <input id="banner1DraftBadge" type="text" placeholder="e.g. New Arrived">
+            <div class="draft-form-actions">
+                <button class="btn secondary" onclick="closeBannerItemForm('banner1')">Cancel</button>
+                <button class="btn primary" onclick="commitBannerItem('banner1')">Add Item</button>
+            </div>
+            <div id="banner1DraftStatus" class="status"></div>
+        </div>
+
+        </div>
+
+        <div class="banner-manager-main card">
+            <div class="banner-preview-first">
+                <div class="banner-section-head banner-preview-head">
+                    <div>
+                        <strong>Live Preview</strong>
+                        <span>Website par slider kaisa dikhega.</span>
+                    </div>
+                </div>
+                <div id="banner1LivePreview" class="banner-preview-wrap"></div>
+            </div>
+
+            <div class="banner-config-head">
+                <div>
+                    <div class="banner-kicker">GREEN BANNER</div>
+                    <div class="banner-form-title">Slider 1</div>
+                    <div class="banner-manager-sub">Title aur item placement yahin manage karein.</div>
+                </div>
+                <button class="btn primary banner-save-top" onclick="saveProductBanner('banner1')">Save Slider 1</button>
+            </div>
+
+            <div class="banner-editor-grid">
+                <div>
+                    <label>Banner Title</label>
+                    <input id="banner1Title" type="text" placeholder="e.g. Suraj, still looking for these?" oninput="renderBannerLivePreview('banner1')">
+                </div>
+                <div class="banner-after-grid">
+                    <div>
+                        <label>Desktop: after products</label>
+                        <input id="banner1DesktopAfter" type="number" min="1" value="8" oninput="renderBannerLivePreview('banner1')">
+                    </div>
+                    <div>
+                        <label>Mobile: after products</label>
+                        <input id="banner1MobileAfter" type="number" min="1" value="4" oninput="renderBannerLivePreview('banner1')">
+                    </div>
+                </div>
+            </div>
+
+            <div class="banner-section-head">
+                <div>
+                    <strong>Slider Items</strong>
+                    <span>Har item ka ON / OFF aur Remove yahin se karein.</span>
+                </div>
+                <button class="btn secondary" onclick="openBannerItemForm('banner1')">+ Add Item</button>
+            </div>
+            <div id="banner1Items" class="banner-item-list"></div>
+            <div id="banner1Status" class="status"></div>
         </div>
     </div>
 
     <!-- ================= PRODUCT BANNER 2 ================= -->
     <div id="banner2Panel" class="banner-manager-panel manager-panel">
-        <div class="card">
-            <div class="banner-form-title">Slider 2 — Orange Banner</div>
-            <div class="banner-color-note"><span class="banner-color-dot orange"></span> Orange gradient banner</div>
-
-            <label>Banner Title</label>
-            <input id="banner2Title" type="text" placeholder="e.g. Raksha Bandhan Specials" oninput="renderBannerLivePreview('banner2')">
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                <div>
-                    <label>Desktop: after products</label>
-                    <input id="banner2DesktopAfter" type="number" min="1" value="16">
-                </div>
-                <div>
-                    <label>Mobile: after products</label>
-                    <input id="banner2MobileAfter" type="number" min="1" value="8">
-                </div>
-            </div>
-
-            <label>Banner Items</label>
-            <div id="banner2Items" class="banner-item-list"></div>
-            <button class="btn secondary banner-add-item" onclick="addBannerItem('banner2')">+ Add Image / Item</button>
-
-            <div class="banner-save-row">
-                <button class="btn primary" onclick="saveProductBanner('banner2')">Save Slider 2</button>
-                <button class="btn danger" onclick="deleteProductBanner('banner2')">Delete Slider 2</button>
-            </div>
-            <div id="banner2Status" class="status"></div>
-            <div class="banner-help">Har item me Image Link, Image Name aur optional Badge bhar sakte ho. Badge khaali rakhenge to image ke upar badge nahi dikhega.</div>
+        <div class="banner-left-stack">
+        <div class="banner-add-card card" id="banner2AddCard">
+            <div class="banner-add-icon orange">＋</div>
+            <div class="banner-add-title">Slider 2</div>
+            <div class="banner-add-text">Naya item add karne ke liye button dabayein. Fill form isi left side mein khulega.</div>
+            <button class="btn primary banner-add-main" onclick="openBannerItemForm('banner2')">+ Add Item</button>
         </div>
 
-        <div class="card">
-            <div class="banner-form-title">Slider 2 Preview</div>
-            <div id="banner2LivePreview" class="banner-preview-wrap"></div>
+        <div class="banner-item-form-card card" id="banner2ItemFormCard" hidden>
+            <div class="banner-form-kicker orange-text">NEW ITEM</div>
+            <div class="banner-add-title">Add to Slider 2</div>
+            <div class="banner-add-text">Image, name aur optional badge fill karke item add karein.</div>
+            <div class="banner-draft-preview" id="banner2DraftPreview">Image preview</div>
+            <label>Image Link</label>
+            <input id="banner2DraftImage" type="text" placeholder="https://..." autocomplete="off">
+            <label>Image Name</label>
+            <input id="banner2DraftName" type="text" placeholder="e.g. Rakhi">
+            <label>Badge <span class="label-soft">optional</span></label>
+            <input id="banner2DraftBadge" type="text" placeholder="e.g. Best Seller">
+            <div class="draft-form-actions">
+                <button class="btn secondary" onclick="closeBannerItemForm('banner2')">Cancel</button>
+                <button class="btn primary" onclick="commitBannerItem('banner2')">Add Item</button>
+            </div>
+            <div id="banner2DraftStatus" class="status"></div>
+        </div>
+
+        </div>
+
+        <div class="banner-manager-main card">
+            <div class="banner-preview-first">
+                <div class="banner-section-head banner-preview-head">
+                    <div>
+                        <strong>Live Preview</strong>
+                        <span>Website par slider kaisa dikhega.</span>
+                    </div>
+                </div>
+                <div id="banner2LivePreview" class="banner-preview-wrap"></div>
+            </div>
+
+            <div class="banner-config-head">
+                <div>
+                    <div class="banner-kicker orange-text">ORANGE BANNER</div>
+                    <div class="banner-form-title">Slider 2</div>
+                    <div class="banner-manager-sub">Title aur item placement yahin manage karein.</div>
+                </div>
+                <button class="btn primary banner-save-top" onclick="saveProductBanner('banner2')">Save Slider 2</button>
+            </div>
+
+            <div class="banner-editor-grid">
+                <div>
+                    <label>Banner Title</label>
+                    <input id="banner2Title" type="text" placeholder="e.g. Raksha Bandhan Specials" oninput="renderBannerLivePreview('banner2')">
+                </div>
+                <div class="banner-after-grid">
+                    <div>
+                        <label>Desktop: after products</label>
+                        <input id="banner2DesktopAfter" type="number" min="1" value="16" oninput="renderBannerLivePreview('banner2')">
+                    </div>
+                    <div>
+                        <label>Mobile: after products</label>
+                        <input id="banner2MobileAfter" type="number" min="1" value="8" oninput="renderBannerLivePreview('banner2')">
+                    </div>
+                </div>
+            </div>
+
+            <div class="banner-section-head">
+                <div>
+                    <strong>Slider Items</strong>
+                    <span>Har item ka ON / OFF aur Remove yahin se karein.</span>
+                </div>
+                <button class="btn secondary" onclick="openBannerItemForm('banner2')">+ Add Item</button>
+            </div>
+            <div id="banner2Items" class="banner-item-list"></div>
+            <div id="banner2Status" class="status"></div>
         </div>
     </div>
-
+</div>
 
 <!-- SUPABASE -->
 
@@ -757,8 +1642,13 @@ function showAdminPanel(panel){
         if(panels[key]) panels[key].classList.toggle("active",key===panel);
         if(buttons[key]) buttons[key].classList.toggle("tab-active",key===panel);
     });
+
+    /* Only the clicked manager is shown/loaded. */
+    if(panel==="categories") loadCategories();
     if(panel==="slider") loadSliders();
     if(panel==="banner1" || panel==="banner2") loadProductBannerEditor(panel);
+
+    window.scrollTo({top:0,behavior:"smooth"});
 }
 
 function showSliderStatus(message,type="ok"){
@@ -879,7 +1769,14 @@ function bannerSlotElements(slot){
         mobile:document.getElementById(slot+"MobileAfter"),
         items:document.getElementById(slot+"Items"),
         preview:document.getElementById(slot+"LivePreview"),
-        status:document.getElementById(slot+"Status")
+        status:document.getElementById(slot+"Status"),
+        addCard:document.getElementById(slot+"AddCard"),
+        formCard:document.getElementById(slot+"ItemFormCard"),
+        draftImage:document.getElementById(slot+"DraftImage"),
+        draftName:document.getElementById(slot+"DraftName"),
+        draftBadge:document.getElementById(slot+"DraftBadge"),
+        draftPreview:document.getElementById(slot+"DraftPreview"),
+        draftStatus:document.getElementById(slot+"DraftStatus")
     };
 }
 
@@ -890,12 +1787,79 @@ function bannerStatus(slot,message,type="ok"){
     el.className="status "+type;
 }
 
+function draftBannerStatus(slot,message,type="ok"){
+    const el=bannerSlotElements(slot).draftStatus;
+    if(!el)return;
+    el.textContent=message;
+    el.className="status "+type;
+}
+
+function openBannerItemForm(slot){
+    const el=bannerSlotElements(slot);
+    if(!el.formCard || !el.addCard)return;
+    el.addCard.hidden=true;
+    el.formCard.hidden=false;
+    if(el.draftImage)el.draftImage.value="";
+    if(el.draftName)el.draftName.value="";
+    if(el.draftBadge)el.draftBadge.value="";
+    if(el.draftPreview)el.draftPreview.textContent="Image preview";
+    draftBannerStatus(slot,"","ok");
+    setTimeout(()=>el.draftImage?.focus(),100);
+}
+
+function closeBannerItemForm(slot){
+    const el=bannerSlotElements(slot);
+    if(!el.formCard || !el.addCard)return;
+    el.formCard.hidden=true;
+    el.addCard.hidden=false;
+    draftBannerStatus(slot,"","ok");
+}
+
+function updateDraftBannerPreview(slot){
+    const el=bannerSlotElements(slot);
+    if(!el.draftPreview)return;
+    const url=el.draftImage?.value.trim()||"";
+    if(!url){el.draftPreview.textContent="Image preview";return;}
+    el.draftPreview.innerHTML=`<img src="${escapeHTML(url)}" alt="Preview" onerror="this.parentElement.textContent='Image load nahi hui';">`;
+}
+
+function commitBannerItem(slot){
+    const el=bannerSlotElements(slot);
+    const image=el.draftImage?.value.trim()||"";
+    const name=el.draftName?.value.trim()||"";
+    const badge=el.draftBadge?.value.trim()||"";
+    if(!image){draftBannerStatus(slot,"Image link required.","err");el.draftImage?.focus();return;}
+    if(!name){draftBannerStatus(slot,"Image name required.","err");el.draftName?.focus();return;}
+    addBannerItem(slot,{image,name,badge,is_active:true});
+    renderBannerLivePreview(slot);
+    closeBannerItemForm(slot);
+    bannerStatus(slot,"✓ Item add ho gaya. Save Slider dabakar changes save karein.","ok");
+}
+
+function setItemToggle(row,isOn,render=true){
+    row.dataset.active=isOn?"true":"false";
+    const button=row.querySelector(".item-switch");
+    const label=row.querySelector(".item-switch-label");
+    if(button)button.classList.toggle("on",!!isOn);
+    if(label){label.textContent=isOn?"ON":"OFF";label.classList.toggle("on",!!isOn);}
+    row.classList.toggle("item-off",!isOn);
+    if(render)renderBannerLivePreview(row.closest(".banner-manager-panel")?.id?.replace("Panel","")||"");
+}
+
+function toggleBannerItem(button){
+    const row=button.closest(".banner-item-row");
+    if(!row)return;
+    const next=row.dataset.active!=="true";
+    setItemToggle(row,next,true);
+}
+
 function addBannerItem(slot,item={}){
     const el=bannerSlotElements(slot);
     if(!el.items)return;
     const row=document.createElement("div");
     row.className="banner-item-row";
     row.dataset.slot=slot;
+    row.dataset.active=(item.is_active!==false)?"true":"false";
     row.innerHTML=`
       <div class="banner-item-grid">
         <div class="banner-item-preview">Image preview</div>
@@ -906,9 +1870,16 @@ function addBannerItem(slot,item={}){
         </div>
       </div>
       <div class="banner-item-actions">
-        <button type="button" class="btn danger" onclick="this.closest('.banner-item-row').remove();renderBannerLivePreview('${slot}')">Remove</button>
+        <div class="item-toggle-box">
+          <span class="item-switch-label">${item.is_active===false?"OFF":"ON"}</span>
+          <button type="button" class="switch item-switch ${item.is_active===false?"":"on"}" aria-label="Toggle item" onclick="toggleBannerItem(this)">
+            <span></span>
+          </button>
+        </div>
+        <button type="button" class="btn danger" onclick="removeBannerItem(this,'${slot}')">Remove</button>
       </div>`;
     el.items.appendChild(row);
+
     const imageInput=row.querySelector(".banner-item-image");
     imageInput.addEventListener("input",function(){
         updateBannerItemPreview(row);
@@ -918,6 +1889,15 @@ function addBannerItem(slot,item={}){
         input.addEventListener("input",function(){renderBannerLivePreview(slot);});
     });
     updateBannerItemPreview(row);
+    setItemToggle(row,item.is_active!==false,false);
+}
+
+function removeBannerItem(button,slot){
+    const row=button.closest(".banner-item-row");
+    if(!row)return;
+    row.remove();
+    renderBannerLivePreview(slot);
+    bannerStatus(slot,"Item remove ho gaya. Save Slider dabakar changes save karein.","ok");
 }
 
 function updateBannerItemPreview(row){
@@ -933,7 +1913,8 @@ function collectProductBannerItems(slot){
         return {
           image:row.querySelector(".banner-item-image")?.value.trim()||"",
           name:row.querySelector(".banner-item-name")?.value.trim()||"",
-          badge:row.querySelector(".banner-item-badge")?.value.trim()||""
+          badge:row.querySelector(".banner-item-badge")?.value.trim()||"",
+          is_active:row.dataset.active!=="false"
         };
       })
       .filter(function(item){return item.image || item.name;});
@@ -943,11 +1924,11 @@ function renderBannerLivePreview(slot){
     const el=bannerSlotElements(slot);
     if(!el.preview)return;
     const title=el.title?.value.trim()||"Banner Title";
-    const items=collectProductBannerItems(slot);
+    const items=collectProductBannerItems(slot).filter(item=>item.is_active!==false);
     const orange=slot==="banner2";
     el.preview.innerHTML=`
       <div class="banner-live-preview ${orange?'orange':'green'}">
-        <div style="font-size:18px;font-weight:800;margin-bottom:10px;">${escapeHTML(title)}</div>
+        <div class="banner-live-title">${escapeHTML(title)}</div>
         <div class="banner-live-track">
           ${items.length?items.map(function(item){return `
             <div class="banner-live-card">
@@ -956,7 +1937,7 @@ function renderBannerLivePreview(slot){
                 ${item.image?`<img src="${escapeHTML(item.image)}" alt="" onerror="this.style.visibility='hidden'">`:``}
               </div>
               <div class="banner-live-name">${escapeHTML(item.name)}</div>
-            </div>`;}).join(""):`<div style="padding:25px;color:#666;font-size:13px;">Add banner images to see preview.</div>`}
+            </div>`;}).join(""):`<div class="preview-empty">Add items from the left to see preview.</div>`}
         </div>
       </div>`;
 }
@@ -982,9 +1963,9 @@ async function loadProductBannerEditor(slot){
         el.mobile.value=row?.mobile_after ?? defaults.mobile_after;
         el.items.innerHTML="";
         (Array.isArray(items)?items:[]).forEach(function(item){addBannerItem(slot,item);});
-        if(!el.items.children.length)addBannerItem(slot);
         renderBannerLivePreview(slot);
-        bannerStatus(slot,row?"Saved banner loaded.":"New banner — ab images add karke save karein.","ok");
+        closeBannerItemForm(slot);
+        bannerStatus(slot,row?"Saved slider loaded.":"New slider — left se Add Item karein.","ok");
     }catch(error){
         console.error("Product banner editor error:",error);
         bannerStatus(slot,error.message||String(error),"err");
@@ -1007,24 +1988,6 @@ async function saveProductBanner(slot){
         bannerStatus(slot,"✓ Slider successfully save ho gaya.","ok");
     }catch(error){
         console.error("Save product banner error:",error);
-        bannerStatus(slot,error.message||String(error),"err");
-    }
-}
-
-async function deleteProductBanner(slot){
-    if(!confirm("Ye product banner delete karna hai?"))return;
-    const el=bannerSlotElements(slot);
-    try{
-        const {error}=await db.from("product_banner_sets").delete().eq("slot",slot);
-        if(error)throw error;
-        el.title.value=productBannerDefaults[slot].title;
-        el.desktop.value=productBannerDefaults[slot].desktop_after;
-        el.mobile.value=productBannerDefaults[slot].mobile_after;
-        el.items.innerHTML="";
-        addBannerItem(slot);
-        renderBannerLivePreview(slot);
-        bannerStatus(slot,"✓ Slider delete ho gaya.","ok");
-    }catch(error){
         bannerStatus(slot,error.message||String(error),"err");
     }
 }
@@ -2038,9 +3001,8 @@ db.channel("hero-sliders-admin-live")
 document.addEventListener(
     "DOMContentLoaded",
     function(){
-
-        loadCategories();
-
+        /* No manager is opened automatically. Click a top button to open it. */
+        showAdminPanel(null);
     }
 );
 
