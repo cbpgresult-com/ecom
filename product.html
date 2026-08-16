@@ -1259,6 +1259,22 @@ a{text-decoration:none;color:inherit}
   #desktopIndexHeader{display:none!important}
 }
 
+/* PRODUCT PAGE: keep desktop cart visible exactly like Index. */
+@media(min-width:901px){
+  #desktopIndexHeader .header{
+    display:flex !important;
+    align-items:center !important;
+  }
+  #desktopIndexHeader .cart-btn{
+    display:flex !important;
+    flex:0 0 auto !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    position:relative !important;
+    z-index:1001 !important;
+  }
+}
+
 /* ================= HEADER ================= */
 
 .header{
@@ -1394,11 +1410,16 @@ a{text-decoration:none;color:inherit}
   border-radius:12px;
   font-weight:700;
   cursor:pointer;
-  display:flex;
+  display:flex !important;
   align-items:center;
+  justify-content:center;
   gap:8px;
   white-space:nowrap;
   position:relative;
+  flex:0 0 auto;
+  visibility:visible !important;
+  opacity:1 !important;
+  z-index:1001;
 }
 
 .cart-icon{
@@ -4522,63 +4543,94 @@ async function addToCart(){
 
 
 /* =========================================================
-   CART BADGE
+   CART BADGE — PRODUCT COUNT ONLY
+   Qty ka koi effect nahi. 1 product row = badge 1.
+   Cached + realtime, so refresh par flash nahi aur cart change
+   hote hi badge instantly update hota hai.
 ========================================================= */
+const PRODUCT_CART_COUNT_CACHE_KEY="mystore_product_cart_count_v1";
+
+function readProductCartCountCache(userId){
+  try{
+    const raw=localStorage.getItem(
+      PRODUCT_CART_COUNT_CACHE_KEY+"_"+String(userId||"guest")
+    );
+    if(raw==null) return null;
+    const n=Number(raw);
+    return Number.isFinite(n)&&n>=0 ? Math.floor(n) : null;
+  }catch(e){
+    return null;
+  }
+}
+
+function cacheProductCartCount(userId,count){
+  try{
+    localStorage.setItem(
+      PRODUCT_CART_COUNT_CACHE_KEY+"_"+String(userId||"guest"),
+      String(Math.max(0,Math.floor(Number(count)||0)))
+    );
+  }catch(e){}
+}
+
+function paintProductCartCount(count){
+  const total=Math.max(0,Math.floor(Number(count)||0));
+  const desktopBadge=document.getElementById("cartCount");
+
+  if(desktopBadge){
+    if(total>0){
+      desktopBadge.textContent=total>99?"99+":String(total);
+      desktopBadge.classList.add("show");
+    }else{
+      desktopBadge.textContent="";
+      desktopBadge.classList.remove("show");
+    }
+  }
+
+  setMobileProductCartBadge(total);
+}
 
 async function updateCart(){
 
-  const user=
-    await getUser();
+  const user=await getUser();
 
   if(!user){
-
-    const cartBadge=
-      document.getElementById(
-        "cartCount"
-      );
-
-    if(cartBadge)
-      cartBadge.textContent="0";
-
-    setMobileProductCartBadge("");
-
+    paintProductCartCount(0);
     return;
   }
 
-  const {
-    data,
-    error
-  }=
+  /* FIRST PAINT: show cached product count immediately. */
+  const cached=readProductCartCountCache(user.id);
+  if(cached!==null) paintProductCartCount(cached);
+
+  /* Count rows, NOT qty. Every different cart product = 1 badge. */
+  const {count,error}=
     await supabaseClient
       .from("cart_items")
-      .select("qty")
+      .select("id",{count:"exact",head:true})
       .eq("user_id",user.id);
 
   if(error){
-
-    console.error(error);
-
+    console.error("Product cart count:",error);
     return;
   }
 
-  const cartBadge=
-    document.getElementById(
-      "cartCount"
-    );
+  const total=Number(count||0);
+  cacheProductCartCount(user.id,total);
+  paintProductCartCount(total);
+}
 
-  if(cartBadge){
-
-    const total=(data||[])
-      .reduce(
-        (s,x)=>
-          s+
-          (Number(x.qty)||0),
-        0
-      );
-
-    cartBadge.textContent=total;
-    setMobileProductCartBadge(total);
-  }
+/* REALTIME: add/remove/update cart => badge updates instantly.
+   Qty changes still keep the badge at the same product count. */
+if(!window.productCartRealtimeStarted){
+  window.productCartRealtimeStarted=true;
+  supabaseClient
+    .channel("product-cart-count-live")
+    .on(
+      "postgres_changes",
+      {event:"*",schema:"public",table:"cart_items"},
+      function(){updateCart();}
+    )
+    .subscribe();
 }
 
 
