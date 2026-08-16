@@ -1482,6 +1482,174 @@ label{
     .admin-welcome-subtitle{font-size:13px;}
 }
 
+
+/* =========================================================
+   SECURE ADMIN AUTH
+========================================================= */
+.admin-auth-gate{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 18px;
+    box-sizing:border-box;
+    background:
+        radial-gradient(circle at 15% 15%,rgba(103,78,255,.13),transparent 34%),
+        radial-gradient(circle at 85% 80%,rgba(126,99,255,.10),transparent 35%),
+        #f6f6fb;
+}
+.admin-login-card{
+    width:min(430px,100%);
+    box-sizing:border-box;
+    padding:34px;
+    border:1px solid rgba(91,69,232,.12);
+    border-radius:26px;
+    background:rgba(255,255,255,.96);
+    box-shadow:0 25px 80px rgba(39,29,91,.16);
+}
+.admin-login-mark{
+    width:52px;
+    height:52px;
+    display:grid;
+    place-items:center;
+    margin-bottom:18px;
+    border-radius:16px;
+    color:#fff;
+    background:linear-gradient(135deg,#684cf0,#4e36dc);
+    box-shadow:0 12px 25px rgba(91,69,232,.28);
+    font-size:23px;
+}
+.admin-login-kicker{
+    color:#5b45e8;
+    font-size:11px;
+    font-weight:850;
+    letter-spacing:.14em;
+    margin-bottom:7px;
+}
+.admin-login-card h1{
+    margin:0;
+    color:#202134;
+    font-size:30px;
+    line-height:1.1;
+}
+.admin-login-subtitle{
+    margin:10px 0 25px;
+    color:#77788a;
+    font-size:13px;
+    line-height:1.55;
+}
+.admin-login-card label{
+    display:block;
+    margin:14px 0 7px;
+    color:#333447;
+    font-size:13px;
+    font-weight:750;
+}
+.admin-login-card input{
+    width:100%;
+    box-sizing:border-box;
+    min-height:47px;
+    border:1px solid #dedee8;
+    border-radius:12px;
+    background:#fff;
+    color:#242537;
+    padding:0 13px;
+    outline:none;
+    font:inherit;
+    transition:.18s ease;
+}
+.admin-login-card input:focus{
+    border-color:#6249ec;
+    box-shadow:0 0 0 4px rgba(98,73,236,.10);
+}
+.admin-password-wrap{
+    position:relative;
+}
+.admin-password-wrap input{
+    padding-right:72px;
+}
+.admin-password-toggle{
+    position:absolute;
+    top:50%;
+    right:7px;
+    transform:translateY(-50%);
+    border:0;
+    background:#f1efff;
+    color:#5b45e8;
+    border-radius:8px;
+    padding:7px 9px;
+    font-size:11px;
+    font-weight:800;
+    cursor:pointer;
+}
+.admin-login-button{
+    width:100%;
+    min-height:49px;
+    margin-top:22px;
+    border:0;
+    border-radius:12px;
+    color:#fff;
+    background:linear-gradient(135deg,#6249ed,#5138df);
+    box-shadow:0 10px 24px rgba(91,69,232,.23);
+    cursor:pointer;
+    font-size:14px;
+    font-weight:800;
+    transition:.18s ease;
+}
+.admin-login-button:hover{
+    transform:translateY(-1px);
+    box-shadow:0 13px 28px rgba(91,69,232,.28);
+}
+.admin-login-button:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+    transform:none;
+}
+.admin-login-status{
+    min-height:20px;
+    margin-top:13px;
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+}
+.admin-login-status.err{color:#cf3d3d;}
+.admin-login-status.ok{color:#18834a;}
+.admin-login-foot{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+    margin-top:22px;
+    padding-top:17px;
+    border-top:1px solid #ededf3;
+    color:#8a8b98;
+    font-size:11px;
+}
+.admin-logout-btn{
+    margin-left:2px;
+}
+body.admin-authenticated .admin-auth-gate{
+    display:none !important;
+}
+body:not(.admin-authenticated) .wrap{
+    display:none !important;
+}
+body.admin-authenticated .wrap{
+    display:block;
+}
+@media(max-width:550px){
+    .admin-login-card{
+        padding:25px 20px;
+        border-radius:21px;
+    }
+    .admin-login-card h1{
+        font-size:26px;
+    }
+    .admin-logout-btn{
+        flex:1 0 100% !important;
+    }
+}
+
 </style>
 </head>
 
@@ -1494,6 +1662,60 @@ label{
     <button type="button" class="admin-toast-close" onclick="hideAdminToast()" aria-label="Close">×</button>
 </div>
 
+
+
+<!-- ================= ADMIN AUTH GATE ================= -->
+<div id="adminAuthGate" class="admin-auth-gate" aria-label="Admin Login">
+    <div class="admin-login-card">
+        <div class="admin-login-mark">⚡</div>
+        <div class="admin-login-kicker">SECURE ADMIN</div>
+        <h1>Welcome back</h1>
+        <p class="admin-login-subtitle">
+            Email aur password ke bina Admin Panel open nahi hoga.
+        </p>
+
+        <form id="adminLoginForm" autocomplete="on">
+            <label for="adminEmail">Email</label>
+            <input
+                id="adminEmail"
+                type="email"
+                inputmode="email"
+                autocomplete="username"
+                placeholder="admin@mystore.com"
+                required
+            >
+
+            <label for="adminPassword">Password</label>
+            <div class="admin-password-wrap">
+                <input
+                    id="adminPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Enter password"
+                    required
+                >
+                <button
+                    type="button"
+                    class="admin-password-toggle"
+                    onclick="toggleAdminPassword()"
+                    aria-label="Show password"
+                >Show</button>
+            </div>
+
+            <button id="adminLoginButton" class="admin-login-button" type="submit">
+                <span>Login to Admin</span>
+            </button>
+
+            <div id="adminLoginStatus" class="admin-login-status"></div>
+        </form>
+
+        <div class="admin-login-foot">
+            <span>🔒</span>
+            Admin access is protected by Supabase Auth
+        </div>
+    </div>
+</div>
+<!-- ================= END ADMIN AUTH GATE ================= -->
 
 <div class="wrap">
 
@@ -1539,6 +1761,18 @@ label{
                 onclick="showAdminPanel('banner2')">
                 Slider 2
             </button>
+
+
+<button
+    id="adminLogoutBtn"
+    class="btn secondary admin-logout-btn"
+    type="button"
+    onclick="logoutAdmin()"
+    title="Logout"
+>
+    Logout
+</button>
+
 
         </div>
 
@@ -1934,6 +2168,180 @@ const db =
         SUPABASE_KEY
     );
 
+
+/* =========================================================
+   ADMIN AUTHENTICATION
+   Only users whose Supabase Auth app_metadata.admin === true
+   can enter the admin panel.
+========================================================= */
+
+const adminAuthGate = document.getElementById("adminAuthGate");
+const adminLoginForm = document.getElementById("adminLoginForm");
+const adminEmailInput = document.getElementById("adminEmail");
+const adminPasswordInput = document.getElementById("adminPassword");
+const adminLoginButton = document.getElementById("adminLoginButton");
+const adminLoginStatus = document.getElementById("adminLoginStatus");
+
+function setAdminLoginStatus(message,type="err"){
+    if(!adminLoginStatus)return;
+    adminLoginStatus.textContent = message || "";
+    adminLoginStatus.className = "admin-login-status " + type;
+}
+
+function toggleAdminPassword(){
+    if(!adminPasswordInput)return;
+    const show = adminPasswordInput.type === "password";
+    adminPasswordInput.type = show ? "text" : "password";
+
+    const btn = document.querySelector(".admin-password-toggle");
+    if(btn)btn.textContent = show ? "Hide" : "Show";
+}
+
+function setAdminAuthenticated(user){
+    document.body.classList.add("admin-authenticated");
+
+    const logoutBtn = document.getElementById("adminLogoutBtn");
+    if(logoutBtn){
+        logoutBtn.title = user?.email ? "Logout " + user.email : "Logout";
+    }
+
+    /* Always start inside the clean Home / Welcome screen. */
+    if(typeof showAdminPanel === "function"){
+        showAdminPanel(null);
+    }
+}
+
+function setAdminLoggedOut(){
+    document.body.classList.remove("admin-authenticated");
+
+    if(adminPasswordInput)adminPasswordInput.value = "";
+    if(adminLoginStatus)adminLoginStatus.textContent = "";
+
+    window.scrollTo({top:0,behavior:"auto"});
+}
+
+async function isAuthorisedAdmin(user){
+    return !!(
+        user &&
+        user.app_metadata &&
+        user.app_metadata.admin === true
+    );
+}
+
+async function checkAdminSession(){
+    try{
+        const {data,error} = await db.auth.getUser();
+
+        if(error)throw error;
+
+        const user = data?.user || null;
+
+        if(await isAuthorisedAdmin(user)){
+            setAdminAuthenticated(user);
+            return;
+        }
+
+        /* A normal authenticated user is not an admin. */
+        if(user){
+            await db.auth.signOut();
+        }
+
+        setAdminLoggedOut();
+    }catch(error){
+        console.error("Admin session check:",error);
+        setAdminLoggedOut();
+    }
+}
+
+if(adminLoginForm){
+    adminLoginForm.addEventListener("submit",async function(event){
+        event.preventDefault();
+
+        const email = adminEmailInput.value.trim();
+        const password = adminPasswordInput.value;
+
+        if(!email || !password){
+            setAdminLoginStatus("Email aur password dono required hain.","err");
+            return;
+        }
+
+        adminLoginButton.disabled = true;
+        adminLoginButton.innerHTML = "<span>Checking...</span>";
+        setAdminLoginStatus("Secure login check ho raha hai...","ok");
+
+        try{
+            const {data,error} = await db.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if(error)throw error;
+
+            const user = data?.user || null;
+
+            if(!(await isAuthorisedAdmin(user))){
+                await db.auth.signOut();
+                throw new Error("Login sahi hai, lekin is account ko Admin access nahi diya gaya.");
+            }
+
+            setAdminLoginStatus("Login successful. Welcome!","ok");
+
+            setTimeout(function(){
+                setAdminAuthenticated(user);
+                adminPasswordInput.value = "";
+            },250);
+
+        }catch(error){
+            console.error("Admin login:",error);
+            setAdminLoginStatus(error.message || "Login failed.","err");
+        }finally{
+            adminLoginButton.disabled = false;
+            adminLoginButton.innerHTML = "<span>Login to Admin</span>";
+        }
+    });
+}
+
+async function logoutAdmin(){
+    try{
+        await db.auth.signOut();
+    }catch(error){
+        console.error("Admin logout:",error);
+    }
+
+    setAdminLoggedOut();
+    setAdminLoginStatus("You have been logged out.","ok");
+
+    if(adminEmailInput)adminEmailInput.focus();
+}
+
+/* If the Auth session changes in another tab, update this page too. */
+db.auth.onAuthStateChange(async function(event,session){
+    if(event === "SIGNED_OUT"){
+        setAdminLoggedOut();
+        return;
+    }
+
+    if(event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED"){
+        const user = session?.user || null;
+
+        if(await isAuthorisedAdmin(user)){
+            setAdminAuthenticated(user);
+        }else if(user){
+            await db.auth.signOut();
+            setAdminLoggedOut();
+        }
+    }
+});
+
+/* Start locked. Existing admin content remains untouched underneath. */
+checkAdminSession();
+
+
+
+/* Security guard: never expose the admin workspace before authentication. */
+(function(){
+    document.body.classList.remove("admin-authenticated");
+})();
 
 /* =========================================================
    HERO SLIDER ADMIN
