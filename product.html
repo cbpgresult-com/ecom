@@ -1915,61 +1915,89 @@ a{text-decoration:none;color:inherit}
 
 
 /* =========================================================
-   BROUGHT TOGETHER / RELATED PRODUCTS
-   Smart recommendation strip — desktop + mobile
+   BROUGHT TOGETHER / RELATED PRODUCTS — MARKETPLACE RAIL
+   Compact Flipkart-style rail + full Related Products grid.
 ========================================================= */
 .broughtTogetherSection{
   width:min(1450px,100%);
-  margin:24px auto 0;
+  margin:18px auto 0;
   background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:20px;
+  border:0;
+  border-radius:0;
+  padding:14px 0 10px;
   display:none;
   overflow:hidden;
 }
 .broughtTogetherHeader{
   display:flex;
-  align-items:flex-end;
+  align-items:center;
   justify-content:space-between;
-  gap:12px;
-  margin-bottom:16px;
+  gap:10px;
+  margin:0 0 9px;
+  padding:0 2px;
 }
+.broughtTogetherHeaderText{min-width:0}
 .broughtTogetherTitle{
   margin:0;
   font-size:20px;
-  line-height:1.2;
+  line-height:1.15;
   font-weight:800;
-  color:#111827;
+  color:#172033;
 }
 .broughtTogetherSub{
-  margin:5px 0 0;
-  font-size:12px;
+  margin:3px 0 0;
+  font-size:11px;
+  line-height:1.2;
   color:#6b7280;
 }
-.broughtTogetherTrack{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:14px;
+.broughtTogetherViewAll{
+  width:32px;
+  height:32px;
+  flex:0 0 32px;
+  border:0;
+  border-radius:50%;
+  background:#222;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  line-height:1;
+  padding:0;
+  box-shadow:none;
 }
+.broughtTogetherRailWrap{position:relative}
+.broughtTogetherTrack{
+  display:flex;
+  align-items:stretch;
+  gap:10px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+  padding:0 1px 4px;
+}
+.broughtTogetherTrack::-webkit-scrollbar{display:none}
 .broughtProductCard{
-  min-width:0;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
+  flex:0 0 158px;
+  width:158px;
+  min-width:158px;
+  border:1px solid #e1e5eb;
+  border-radius:9px;
   background:#fff;
   overflow:hidden;
   cursor:pointer;
-  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+  transition:box-shadow .16s ease,border-color .16s ease,transform .16s ease;
 }
 .broughtProductCard:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 22px rgba(17,24,39,.09);
-  border-color:#d8b4fe;
+  transform:translateY(-1px);
+  box-shadow:0 4px 14px rgba(17,24,39,.09);
+  border-color:#d4d8de;
 }
 .broughtProductImageWrap{
   width:100%;
-  aspect-ratio:1/1;
-  background:#f8fafc;
+  height:148px;
+  background:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -1981,41 +2009,41 @@ a{text-decoration:none;color:inherit}
   object-fit:contain;
   display:block;
 }
-.broughtProductBody{
-  padding:11px 11px 12px;
-}
+.broughtProductBody{padding:5px 8px 8px}
 .broughtProductName{
-  font-size:13px;
-  line-height:1.35;
-  font-weight:700;
-  color:#111827;
+  font-size:11px;
+  line-height:1.25;
+  font-weight:600;
+  color:#172033;
   display:-webkit-box;
   -webkit-box-orient:vertical;
   -webkit-line-clamp:2;
   overflow:hidden;
-  min-height:35px;
+  min-height:27px;
+  margin:0;
 }
 .broughtProductRatingRow{
   display:flex;
   align-items:center;
-  gap:6px;
-  margin-top:7px;
-  min-height:20px;
+  gap:4px;
+  margin-top:3px;
+  min-height:16px;
 }
 .broughtProductRating{
   display:inline-flex;
   align-items:center;
-  gap:3px;
+  gap:2px;
   background:#16833b;
   color:#fff;
-  border-radius:5px;
-  padding:3px 6px;
-  font-size:10px;
+  border-radius:3px;
+  padding:2px 4px;
+  font-size:8px;
+  line-height:12px;
   font-weight:800;
 }
 .broughtProductReviews{
-  color:#6b7280;
-  font-size:10px;
+  color:#777;
+  font-size:8px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -2024,115 +2052,257 @@ a{text-decoration:none;color:inherit}
   display:flex;
   align-items:center;
   flex-wrap:wrap;
-  gap:7px;
-  margin-top:8px;
+  gap:5px;
+  margin-top:3px;
+  min-height:20px;
 }
 .broughtProductPrice{
-  font-size:16px;
-  font-weight:900;
-  color:#111827;
+  font-size:14px;
+  line-height:18px;
+  font-weight:800;
+  color:#172033;
 }
 .broughtProductMrp{
-  font-size:11px;
+  font-size:9px;
+  line-height:15px;
   color:#777;
   text-decoration:line-through;
 }
 .broughtProductOff{
-  font-size:9px;
-  line-height:16px;
-  padding:0 5px;
-  border-radius:4px;
+  font-size:8px;
+  line-height:15px;
+  padding:0 4px;
+  border-radius:3px;
   background:#16833b;
   color:#fff;
   font-weight:800;
 }
 .broughtProductReason{
-  margin-top:8px;
-  font-size:10px;
+  margin-top:2px;
+  font-size:8px;
+  line-height:13px;
   color:#6d28d9;
-  font-weight:700;
+  font-weight:600;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
+.broughtRailNav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  border:1px solid #ddd;
+  background:#fff;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  line-height:1;
+  box-shadow:0 3px 10px rgba(0,0,0,.12);
+  z-index:4;
+}
+.broughtRailNav.prev{left:5px}
+.broughtRailNav.next{right:5px}
+.broughtRailNav:disabled{opacity:.25;cursor:default}
 .broughtTogetherLoading{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:14px;
+  display:flex;
+  gap:10px;
+  overflow:hidden;
+  padding:0 1px 4px;
 }
 .broughtSkeleton{
-  border:1px solid #e5e7eb;
-  border-radius:12px;
+  flex:0 0 158px;
+  width:158px;
+  border:1px solid #e1e5eb;
+  border-radius:9px;
   overflow:hidden;
   background:#fff;
 }
 .broughtSkeletonImage{
-  aspect-ratio:1/1;
+  height:148px;
   background:linear-gradient(90deg,#f5f5f5 25%,#ececec 37%,#f5f5f5 63%);
   background-size:400% 100%;
   animation:broughtSkeletonMove 1.2s ease infinite;
 }
-.broughtSkeletonBody{padding:11px}
+.broughtSkeletonBody{padding:8px}
 .broughtSkeletonLine{
-  height:10px;
+  height:8px;
   border-radius:6px;
   background:#eeeeee;
-  margin-bottom:8px;
+  margin-bottom:6px;
 }
-.broughtSkeletonLine.short{width:60%}
+.broughtSkeletonLine.short{width:58%}
 @keyframes broughtSkeletonMove{
   0%{background-position:100% 0}
   100%{background-position:-100% 0}
 }
 
+/* Full Related Products view */
+.relatedProductsView{
+  position:fixed;
+  inset:0;
+  z-index:2147483000;
+  display:none;
+  flex-direction:column;
+  background:#f5f6f8;
+  overflow:hidden;
+}
+.relatedProductsView.show{display:flex}
+.relatedProductsHeader{
+  height:58px;
+  min-height:58px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 18px;
+  box-shadow:0 1px 5px rgba(0,0,0,.05);
+}
+.relatedProductsBack{
+  width:38px;
+  height:38px;
+  border:0;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  font-size:26px;
+}
+.relatedProductsBack svg{width:24px;height:24px}
+.relatedProductsHeaderTitle{
+  margin:0;
+  font-size:19px;
+  font-weight:800;
+  color:#172033;
+}
+.relatedProductsHeaderCount{
+  margin-left:3px;
+  color:#777;
+  font-size:11px;
+  font-weight:500;
+}
+.relatedProductsGrid{
+  flex:1;
+  overflow-y:auto;
+  padding:14px 3.5% 28px;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  align-content:start;
+  gap:12px;
+}
+.relatedGridCard{
+  min-width:0;
+  border:1px solid #e1e5eb;
+  border-radius:9px;
+  background:#fff;
+  overflow:hidden;
+  cursor:pointer;
+}
+.relatedGridImage{
+  width:100%;
+  height:210px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.relatedGridImage img{width:100%;height:100%;object-fit:contain;display:block}
+.relatedGridBody{padding:7px 9px 9px}
+.relatedGridTitle{
+  font-size:12px;
+  line-height:1.3;
+  font-weight:600;
+  color:#172033;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  min-height:31px;
+}
+.relatedGridPriceRow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.relatedGridPrice{font-size:15px;font-weight:800}
+.relatedGridMrp{font-size:10px;color:#777;text-decoration:line-through}
+.relatedGridOff{font-size:8px;line-height:15px;padding:0 4px;border-radius:3px;background:#16833b;color:#fff;font-weight:800}
+.relatedGridMeta{display:flex;align-items:center;gap:4px;margin-top:4px;min-height:16px}
+.relatedGridRating{background:#16833b;color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:800}
+.relatedGridReviews{font-size:8px;color:#777}
+
 @media(max-width:1100px) and (min-width:901px){
-  .broughtTogetherTrack,
-  .broughtTogetherLoading{
-    grid-template-columns:repeat(4,minmax(0,1fr));
-  }
+  .relatedProductsGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .relatedGridImage{height:190px}
 }
 
 @media(max-width:900px){
   .broughtTogetherSection{
     width:100%;
-    margin:14px 0 0;
-    padding:16px 12px 18px;
-    border-left:0;
-    border-right:0;
-    border-radius:0;
+    margin:10px 0 0;
+    padding:10px 12px 8px;
+    border:0;
   }
-  .broughtTogetherHeader{
-    margin-bottom:12px;
-    align-items:flex-start;
-  }
-  .broughtTogetherTitle{font-size:18px}
-  .broughtTogetherSub{font-size:11px}
-  .broughtTogetherTrack,
-  .broughtTogetherLoading{
-    display:flex;
-    gap:10px;
-    overflow-x:auto;
-    overflow-y:hidden;
-    padding:2px 1px 6px;
+  .broughtTogetherHeader{margin-bottom:7px;padding:0}
+  .broughtTogetherTitle{font-size:17px}
+  .broughtTogetherSub{font-size:10px}
+  .broughtTogetherViewAll{width:30px;height:30px;flex-basis:30px;font-size:19px}
+  .broughtTogetherTrack{
+    gap:8px;
+    padding:0 0 3px;
     scroll-snap-type:x proximity;
-    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
   }
-  .broughtTogetherTrack::-webkit-scrollbar,
-  .broughtTogetherLoading::-webkit-scrollbar{display:none}
-  .broughtProductCard,
-  .broughtSkeleton{
-    flex:0 0 158px;
+  .broughtProductCard{
+    flex-basis:150px;
+    width:150px;
+    min-width:150px;
     scroll-snap-align:start;
   }
-  .broughtProductBody{padding:9px 9px 11px}
-  .broughtProductName{font-size:12px;min-height:33px}
-  .broughtProductPrice{font-size:15px}
-  .broughtProductReason{font-size:9px}
+  .broughtProductImageWrap{height:132px}
+  .broughtProductBody{padding:5px 7px 7px}
+  .broughtProductName{font-size:10px;min-height:25px;line-height:1.2}
+  .broughtProductRatingRow{margin-top:2px}
+  .broughtProductPriceRow{margin-top:2px;gap:4px}
+  .broughtProductPrice{font-size:13px}
+  .broughtProductMrp{font-size:8px}
+  .broughtProductReason{font-size:7px;line-height:11px}
+  .broughtRailNav{display:none}
+  .broughtTogetherLoading{gap:8px}
+  .broughtSkeleton{flex-basis:150px;width:150px}
+  .broughtSkeletonImage{height:132px}
+
+  .relatedProductsHeader{
+    height:56px;
+    min-height:56px;
+    padding:0 10px;
+  }
+  .relatedProductsBack{width:38px;height:38px}
+  .relatedProductsHeaderTitle{font-size:18px}
+  .relatedProductsGrid{
+    padding:10px 8px 22px;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+  .relatedGridImage{height:165px}
+  .relatedGridBody{padding:6px 7px 8px}
+  .relatedGridTitle{font-size:10px;line-height:1.25;min-height:26px}
+  .relatedGridPrice{font-size:13px}
+  .relatedGridMrp{font-size:8px}
+  .relatedGridOff{font-size:7px}
+  .relatedGridMeta{margin-top:3px}
+  .relatedGridRating,.relatedGridReviews{font-size:7px}
 }
 
 @media(max-width:420px){
-  .broughtProductCard,
-  .broughtSkeleton{flex-basis:150px}
+  .broughtProductCard{flex-basis:146px;width:146px;min-width:146px}
+  .broughtProductImageWrap{height:128px}
+  .broughtSkeleton{flex-basis:146px;width:146px}
+  .broughtSkeletonImage{height:128px}
+  .relatedGridImage{height:150px}
 }
 </style>
 
@@ -2868,10 +3038,11 @@ Buy at <span id="buyPrice"></span>
 <!-- ================= BROUGHT TOGETHER / RELATED PRODUCTS ================= -->
 <section id="broughtTogetherSection" class="broughtTogetherSection" aria-label="Brought Together">
   <div class="broughtTogetherHeader">
-    <div>
+    <div class="broughtTogetherHeaderText">
       <h2 class="broughtTogetherTitle">Brought Together</h2>
       <p class="broughtTogetherSub">Related products you may like</p>
     </div>
+    <button id="broughtTogetherViewAll" class="broughtTogetherViewAll" type="button" aria-label="View all related products" title="View all related products">›</button>
   </div>
 
   <div id="broughtTogetherLoading" class="broughtTogetherLoading" aria-hidden="true">
@@ -2882,9 +3053,24 @@ Buy at <span id="buyPrice"></span>
     <div class="broughtSkeleton"><div class="broughtSkeletonImage"></div><div class="broughtSkeletonBody"><div class="broughtSkeletonLine"></div><div class="broughtSkeletonLine short"></div></div></div>
   </div>
 
-  <div id="broughtTogetherTrack" class="broughtTogetherTrack"></div>
+  <div class="broughtTogetherRailWrap">
+    <button id="broughtRailPrev" class="broughtRailNav prev" type="button" aria-label="Previous related products">‹</button>
+    <div id="broughtTogetherTrack" class="broughtTogetherTrack"></div>
+    <button id="broughtRailNext" class="broughtRailNav next" type="button" aria-label="Next related products">›</button>
+  </div>
 </section>
 
+<!-- ================= FULL RELATED PRODUCTS VIEW ================= -->
+<section id="relatedProductsView" class="relatedProductsView" aria-hidden="true">
+  <header class="relatedProductsHeader">
+    <button id="relatedProductsBack" class="relatedProductsBack" type="button" aria-label="Back to product">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    </button>
+    <h2 class="relatedProductsHeaderTitle">Related Products</h2>
+    <span id="relatedProductsHeaderCount" class="relatedProductsHeaderCount"></span>
+  </header>
+  <div id="relatedProductsGrid" class="relatedProductsGrid"></div>
+</section>
 
 </main>
 
@@ -5467,6 +5653,8 @@ window.addEventListener(
   }
 );
 
+window.addEventListener("resize",()=>{ updateBroughtRailButtons(); });
+
 window.addEventListener(
   "storage",
   ()=>{
@@ -5833,33 +6021,32 @@ window.addEventListener(
 
 
 /* =========================================================
-   BROUGHT TOGETHER — SMART RELATED PRODUCT ENGINE
+   BROUGHT TOGETHER — MARKETPLACE RELATED PRODUCT ENGINE
 
-   Ranking logic:
-   1. Same category = strongest signal
-   2. Shared title/category keywords
-   3. Same brand (when available)
-   4. Similar price range
-   5. Rating + review strength
-   6. In-stock products first
-   7. Never show the current product
-
-   This gives a marketplace-style recommendation without needing
-   a separate recommendation table.
+   Behaviour:
+   - No artificial 10/12 product recommendation limit.
+   - Supabase products are paginated in 1000-row batches until the
+     catalog is exhausted.
+   - Current product is always excluded.
+   - Relevance ranking favours category, keywords, brand, price,
+     rating/reviews and stock.
+   - Mobile: swipe horizontally.
+   - Desktop: previous/next rail buttons.
+   - Top-right arrow opens ALL related products as a home-style grid.
 ========================================================= */
-const BROUGHT_TOGETHER_LIMIT_DESKTOP = 5;
-const BROUGHT_TOGETHER_LIMIT_MOBILE = 10;
-const BROUGHT_TOGETHER_FETCH_LIMIT = 250;
+const BROUGHT_PAGE_SIZE=1000;
+let broughtTogetherProducts=[];
 
 function recommendationText(value){
   return cleanPart(value).toLowerCase();
 }
 
 function recommendationTokens(value){
-  const stop = new Set([
+  const stop=new Set([
     "the","and","for","with","from","this","that","new","best",
     "premium","quality","product","item","set","pack","pcs","piece",
-    "of","to","in","on","by","a","an","is","are","more"
+    "of","to","in","on","by","a","an","is","are","more","made",
+    "use","used","style","design","color","colour","size"
   ]);
 
   return new Set(
@@ -5871,12 +6058,8 @@ function recommendationTokens(value){
   );
 }
 
-function recommendationValue(data,keys,fallback=""){
-  return v(data,keys,fallback);
-}
-
 function recommendationNumber(data,keys,fallback=0){
-  return num(recommendationValue(data,keys,fallback));
+  return num(v(data,keys,fallback));
 }
 
 function recommendationImage(data){
@@ -5884,13 +6067,13 @@ function recommendationImage(data){
 
   if(Array.isArray(data?.images)){
     gallery=data.images;
-  }else if(typeof data?.images === "string"){
+  }else if(typeof data?.images==="string"){
     const parsed=parseJSON(data.images,[]);
     if(Array.isArray(parsed)) gallery=parsed;
   }
 
   gallery=gallery.map(x=>
-    typeof x === "string"
+    typeof x==="string"
       ? x
       : (x?.url || x?.src || x?.image || "")
   ).filter(Boolean);
@@ -5921,81 +6104,70 @@ function recommendationBrand(data){
 }
 
 function recommendationTags(data){
-  const raw=v(
-    data,
-    ["tags","keywords","search_keywords","product_tags"],
-    ""
-  );
-
+  const raw=v(data,["tags","keywords","search_keywords","product_tags"],"");
   if(Array.isArray(raw)) return raw.join(" ");
-  if(typeof raw === "object" && raw) return Object.values(raw).join(" ");
+  if(typeof raw==="object" && raw) return Object.values(raw).join(" ");
   return String(raw || "");
 }
 
 function scoreBroughtTogether(candidate,current){
-  const currentName=recommendationProductName(current.raw || current);
+  const currentRaw=current?.raw || current;
+  const currentName=recommendationProductName(currentRaw);
   const candidateName=recommendationProductName(candidate);
-
-  const currentCategory=recommendationCategory(current.raw || current);
+  const currentCategory=recommendationCategory(currentRaw);
   const candidateCategory=recommendationCategory(candidate);
-
-  const currentBrand=recommendationBrand(current.raw || current);
+  const currentBrand=recommendationBrand(currentRaw);
   const candidateBrand=recommendationBrand(candidate);
 
-  const currentTokens=recommendationTokens(
-    [currentName,currentCategory,recommendationTags(current.raw || current)].join(" ")
-  );
-  const candidateTokens=recommendationTokens(
-    [candidateName,candidateCategory,recommendationTags(candidate)].join(" ")
-  );
+  const currentTokens=recommendationTokens([
+    currentName,currentCategory,currentBrand,recommendationTags(currentRaw)
+  ].join(" "));
+  const candidateTokens=recommendationTokens([
+    candidateName,candidateCategory,candidateBrand,recommendationTags(candidate)
+  ].join(" "));
 
   let score=0;
   let reasons=[];
 
-  /* Same category is the biggest marketplace-style signal. */
-  if(currentCategory && candidateCategory &&
-     currentCategory.toLowerCase()===candidateCategory.toLowerCase()){
-    score+=42;
-    reasons.push("Same category");
-  }else if(currentCategory && candidateCategory){
-    const catOverlap=[...recommendationTokens(currentCategory)]
-      .filter(x=>recommendationTokens(candidateCategory).has(x)).length;
-    if(catOverlap){
-      score+=18;
-      reasons.push("Similar category");
+  if(currentCategory && candidateCategory){
+    const a=currentCategory.toLowerCase();
+    const b=candidateCategory.toLowerCase();
+    if(a===b){
+      score+=50;
+      reasons.push("Same category");
+    }else{
+      const catA=recommendationTokens(currentCategory);
+      const catB=recommendationTokens(candidateCategory);
+      const overlap=[...catA].filter(x=>catB.has(x)).length;
+      if(overlap){
+        score+=20+Math.min(10,overlap*4);
+        reasons.push("Similar category");
+      }
     }
   }
 
-  /* Shared product words help when categories are broad. */
   let shared=0;
   currentTokens.forEach(token=>{
     if(candidateTokens.has(token)) shared++;
   });
   if(shared){
-    score+=Math.min(30,shared*7);
-    reasons.push("Similar product");
+    score+=Math.min(32,shared*6);
+    if(!reasons.length) reasons.push("Similar product");
   }
 
-  /* Same brand is useful but must not overpower category relevance. */
   if(currentBrand && candidateBrand &&
      currentBrand.toLowerCase()===candidateBrand.toLowerCase()){
-    score+=16;
-    reasons.push("Same brand");
+    score+=15;
+    if(!reasons.length) reasons.push("Same brand");
   }
 
   const currentPrice=Math.max(0,Number(current.price)||0);
   const candidatePrice=recommendationNumber(candidate,["price","selling_price","sale_price"],0);
-
   if(currentPrice>0 && candidatePrice>0){
     const ratio=Math.min(currentPrice,candidatePrice)/Math.max(currentPrice,candidatePrice);
-    if(ratio>=0.85){
-      score+=14;
-      reasons.push("Similar price");
-    }else if(ratio>=0.65){
-      score+=8;
-    }else if(ratio>=0.45){
-      score+=3;
-    }
+    if(ratio>=.85) score+=14;
+    else if(ratio>=.65) score+=8;
+    else if(ratio>=.45) score+=3;
   }
 
   const rating=recommendationNumber(candidate,["rating","avg_rating"],0);
@@ -6007,99 +6179,110 @@ function scoreBroughtTogether(candidate,current){
   else if(reviews>=20) score+=2;
 
   const stock=recommendationNumber(candidate,["stock","inventory","available_stock"],0);
-  if(stock>0) score+=5;
-  else score-=18;
+  if(stock>0) score+=6;
+  else score-=10;
 
-  /* Tiny deterministic tie-breaker so the row does not reshuffle randomly. */
-  const idText=String(candidate.id||candidateName);
+  const idText=String(candidate.id || candidateName);
   let tie=0;
   for(let i=0;i<idText.length;i++) tie=(tie+idText.charCodeAt(i)*(i+1))%17;
   score+=tie/100;
 
-  return {
-    score,
-    reason:reasons[0] || "You may also like"
-  };
+  return {score,reason:reasons[0] || "You may also like"};
 }
 
-function renderBroughtTogether(products){
-  const section=document.getElementById("broughtTogetherSection");
-  const loading=document.getElementById("broughtTogetherLoading");
-  const track=document.getElementById("broughtTogetherTrack");
+async function fetchAllRelatedProducts(){
+  const rows=[];
+  let from=0;
 
-  if(!section || !loading || !track) return;
+  while(true){
+    const to=from+BROUGHT_PAGE_SIZE-1;
+    const {data,error}=await supabaseClient
+      .from("products")
+      .select("*")
+      .neq("id",product.id)
+      .range(from,to);
 
-  loading.style.display="none";
-  track.innerHTML="";
+    if(error) throw error;
 
-  if(!Array.isArray(products) || !products.length){
-    section.style.display="none";
-    return;
+    const batch=Array.isArray(data) ? data : [];
+    rows.push(...batch);
+
+    if(batch.length < BROUGHT_PAGE_SIZE) break;
+    from += BROUGHT_PAGE_SIZE;
   }
 
-  const limit=window.innerWidth<=900
-    ? BROUGHT_TOGETHER_LIMIT_MOBILE
-    : BROUGHT_TOGETHER_LIMIT_DESKTOP;
+  return rows;
+}
 
-  track.innerHTML=products.slice(0,limit).map(item=>{
-    const data=item.data;
-    const title=recommendationProductName(data);
-    const image=recommendationImage(data);
-    const price=recommendationNumber(data,["price","selling_price","sale_price"],0);
-    const mrp=recommendationNumber(data,["mrp","original_price","old_price"],0);
-    const rating=recommendationNumber(data,["rating","avg_rating"],0);
-    const reviews=recommendationNumber(data,["review_count","reviews"],0);
+function relatedProductCardHtml(item,grid=false){
+  const data=item.data || item;
+  const id=item.id ?? data.id;
+  const title=recommendationProductName(data);
+  const image=recommendationImage(data);
+  const price=recommendationNumber(data,["price","selling_price","sale_price"],0);
+  const mrp=recommendationNumber(data,["mrp","original_price","old_price"],0);
+  const rating=recommendationNumber(data,["rating","avg_rating"],0);
+  const reviews=recommendationNumber(data,["review_count","reviews"],0);
+  const discount=mrp>price ? Math.round(((mrp-price)/mrp)*100) : 0;
 
-    const discount=mrp>price
-      ? Math.round(((mrp-price)/mrp)*100)
-      : 0;
-
+  if(grid){
     return `
-      <article class="broughtProductCard"
-        role="link"
-        tabindex="0"
-        data-product-id="${escapeHtml(item.id)}"
-        aria-label="${escapeHtml(title)}">
-
-        <div class="broughtProductImageWrap">
+      <article class="relatedGridCard" role="link" tabindex="0" data-product-id="${escapeHtml(id)}" aria-label="${escapeHtml(title)}">
+        <div class="relatedGridImage">
           ${image
             ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.style.display='none'">`
-            : `<div style="font-size:11px;color:#999">Image unavailable</div>`}
+            : `<span style="font-size:11px;color:#999">Image unavailable</span>`}
         </div>
-
-        <div class="broughtProductBody">
-          <div class="broughtProductName">${escapeHtml(title)}</div>
-
-          <div class="broughtProductRatingRow">
-            ${rating>0
-              ? `<span class="broughtProductRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>`
-              : ""}
-            ${reviews>0
-              ? `<span class="broughtProductReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span>`
-              : ""}
+        <div class="relatedGridBody">
+          <div class="relatedGridTitle">${escapeHtml(title)}</div>
+          <div class="relatedGridPriceRow">
+            ${price>0?`<span class="relatedGridPrice">${money(price)}</span>`:""}
+            ${mrp>price?`<span class="relatedGridMrp">${money(mrp)}</span>`:""}
+            ${discount>0?`<span class="relatedGridOff">${discount}% OFF</span>`:""}
           </div>
-
-          <div class="broughtProductPriceRow">
-            ${price>0 ? `<span class="broughtProductPrice">${money(price)}</span>` : ""}
-            ${mrp>price ? `<span class="broughtProductMrp">${money(mrp)}</span>` : ""}
-            ${discount>0 ? `<span class="broughtProductOff">${discount}% OFF</span>` : ""}
+          <div class="relatedGridMeta">
+            ${rating>0?`<span class="relatedGridRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>`:""}
+            ${reviews>0?`<span class="relatedGridReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span>`:""}
           </div>
-
-          <div class="broughtProductReason">${escapeHtml(item.reason)}</div>
         </div>
       </article>
     `;
-  }).join("");
+  }
 
-  section.style.display="block";
+  return `
+    <article class="broughtProductCard" role="link" tabindex="0" data-product-id="${escapeHtml(id)}" aria-label="${escapeHtml(title)}">
+      <div class="broughtProductImageWrap">
+        ${image
+          ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.style.display='none'">`
+          : `<span style="font-size:10px;color:#999">Image unavailable</span>`}
+      </div>
+      <div class="broughtProductBody">
+        <div class="broughtProductName">${escapeHtml(title)}</div>
+        <div class="broughtProductRatingRow">
+          ${rating>0?`<span class="broughtProductRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>`:""}
+          ${reviews>0?`<span class="broughtProductReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span>`:""}
+        </div>
+        <div class="broughtProductPriceRow">
+          ${price>0?`<span class="broughtProductPrice">${money(price)}</span>`:""}
+          ${mrp>price?`<span class="broughtProductMrp">${money(mrp)}</span>`:""}
+          ${discount>0?`<span class="broughtProductOff">${discount}% OFF</span>`:""}
+        </div>
+        <div class="broughtProductReason">${escapeHtml(item.reason || "You may also like")}</div>
+      </div>
+    </article>
+  `;
+}
 
-  track.querySelectorAll(".broughtProductCard").forEach(card=>{
+function bindRelatedProductCards(root,grid=false){
+  if(!root) return;
+  const selector=grid ? ".relatedGridCard" : ".broughtProductCard";
+  root.querySelectorAll(selector).forEach(card=>{
     const open=()=>{
       const pid=card.getAttribute("data-product-id");
       if(!pid) return;
+      closeRelatedProductsView();
       navigateFromProductPage("product.html?id="+encodeURIComponent(pid));
     };
-
     card.addEventListener("click",open);
     card.addEventListener("keydown",e=>{
       if(e.key==="Enter" || e.key===" "){
@@ -6110,27 +6293,128 @@ function renderBroughtTogether(products){
   });
 }
 
+function updateBroughtRailButtons(){
+  const track=document.getElementById("broughtTogetherTrack");
+  const prev=document.getElementById("broughtRailPrev");
+  const next=document.getElementById("broughtRailNext");
+  if(!track || !prev || !next) return;
+
+  const max=Math.max(0,track.scrollWidth-track.clientWidth-2);
+  prev.disabled=track.scrollLeft<=2;
+  next.disabled=track.scrollLeft>=max;
+}
+
+function scrollBroughtRail(direction){
+  const track=document.getElementById("broughtTogetherTrack");
+  if(!track) return;
+  const amount=Math.max(track.clientWidth*.82,300);
+  track.scrollBy({left:direction*amount,behavior:"smooth"});
+  setTimeout(updateBroughtRailButtons,350);
+}
+
+function renderBroughtTogether(products){
+  const section=document.getElementById("broughtTogetherSection");
+  const loading=document.getElementById("broughtTogetherLoading");
+  const track=document.getElementById("broughtTogetherTrack");
+  if(!section || !loading || !track) return;
+
+  loading.style.display="none";
+  track.innerHTML="";
+
+  if(!Array.isArray(products) || !products.length){
+    section.style.display="none";
+    return;
+  }
+
+  broughtTogetherProducts=products;
+  track.innerHTML=products.map(item=>relatedProductCardHtml(item,false)).join("");
+  section.style.display="block";
+
+  bindRelatedProductCards(track,false);
+  updateBroughtRailButtons();
+}
+
+function renderRelatedProductsGrid(){
+  const grid=document.getElementById("relatedProductsGrid");
+  const count=document.getElementById("relatedProductsHeaderCount");
+  if(!grid) return;
+
+  if(count){
+    count.textContent=broughtTogetherProducts.length
+      ? `(${broughtTogetherProducts.length})`
+      : "";
+  }
+
+  grid.innerHTML=broughtTogetherProducts.length
+    ? broughtTogetherProducts.map(item=>relatedProductCardHtml(item,true)).join("")
+    : `<div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:#777">No related products found.</div>`;
+
+  bindRelatedProductCards(grid,true);
+}
+
+function openRelatedProductsView(){
+  const view=document.getElementById("relatedProductsView");
+  if(!view) return;
+  renderRelatedProductsGrid();
+  view.classList.add("show");
+  view.setAttribute("aria-hidden","false");
+  document.body.dataset.relatedScrollY=String(window.scrollY||0);
+  document.body.style.overflow="hidden";
+}
+
+function closeRelatedProductsView(){
+  const view=document.getElementById("relatedProductsView");
+  if(!view) return;
+  view.classList.remove("show");
+  view.setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+}
+
+function setupBroughtTogetherControls(){
+  const viewAll=document.getElementById("broughtTogetherViewAll");
+  const prev=document.getElementById("broughtRailPrev");
+  const next=document.getElementById("broughtRailNext");
+  const track=document.getElementById("broughtTogetherTrack");
+  const back=document.getElementById("relatedProductsBack");
+
+  if(viewAll && !viewAll.dataset.bound){
+    viewAll.dataset.bound="1";
+    viewAll.addEventListener("click",openRelatedProductsView);
+  }
+  if(prev && !prev.dataset.bound){
+    prev.dataset.bound="1";
+    prev.addEventListener("click",()=>scrollBroughtRail(-1));
+  }
+  if(next && !next.dataset.bound){
+    next.dataset.bound="1";
+    next.addEventListener("click",()=>scrollBroughtRail(1));
+  }
+  if(track && !track.dataset.boundScroll){
+    track.dataset.boundScroll="1";
+    track.addEventListener("scroll",updateBroughtRailButtons,{passive:true});
+  }
+  if(back && !back.dataset.bound){
+    back.dataset.bound="1";
+    back.addEventListener("click",closeRelatedProductsView);
+  }
+}
+
 async function loadBroughtTogether(){
   const section=document.getElementById("broughtTogetherSection");
   const loading=document.getElementById("broughtTogetherLoading");
   const track=document.getElementById("broughtTogetherTrack");
-
   if(!section || !loading || !track || !product) return;
 
+  setupBroughtTogetherControls();
   section.style.display="block";
-  loading.style.display="grid";
+  loading.style.display="flex";
   track.innerHTML="";
 
   try{
-    const {data,error}=await supabaseClient
-      .from("products")
-      .select("*")
-      .neq("id",product.id)
-      .limit(BROUGHT_TOGETHER_FETCH_LIMIT);
+    const rows=await fetchAllRelatedProducts();
 
-    if(error) throw error;
-
-    const ranked=(data||[])
+    const ranked=rows
+      .filter(row=>String(row.id)!==String(product.id))
       .map(row=>{
         const scored=scoreBroughtTogether(row,product);
         return {
@@ -6143,14 +6427,13 @@ async function loadBroughtTogether(){
       .filter(item=>recommendationImage(item.data))
       .sort((a,b)=>b.score-a.score);
 
-    /* Avoid weak matches: if the catalog has relevant products, show them.
-       Otherwise fall back to the strongest in-stock products. */
-    let final=ranked.filter(x=>x.score>=8);
-    if(final.length<3){
-      final=ranked
-        .filter(x=>recommendationNumber(x.data,["stock","inventory","available_stock"],0)>0)
-        .slice(0,Math.max(3,window.innerWidth<=900?6:5));
-    }
+    /* Keep every usable related product. There is intentionally no
+       10/12/20 item cap here. Full view gets the complete ranked list. */
+    let final=ranked.filter(x=>x.score>=6);
+
+    /* If the catalog has too little metadata to score products, keep all
+       products with images instead of hiding them. */
+    if(final.length===0) final=ranked;
 
     renderBroughtTogether(final);
   }catch(error){
@@ -6159,6 +6442,7 @@ async function loadBroughtTogether(){
   }
 }
 
+setupBroughtTogetherControls();
 
 /* =========================================================
    START
