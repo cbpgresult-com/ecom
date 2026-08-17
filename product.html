@@ -2092,6 +2092,14 @@ a{text-decoration:none;color:inherit}
   }
 }
 
+/* When there are zero ratings, remove the space reserved for the hidden rating card. */
+.productSections.no-rating{
+  padding-bottom:0 !important;
+}
+.broughtTogetherSection.no-rating-gap{
+  margin-top:0 !important;
+}
+
 @media(max-width:900px){
   .broughtTogetherSection{
     width:100%;
@@ -4740,6 +4748,18 @@ function render(){
   }
   if(mobileRatingCard){
     mobileRatingCard.style.display = ratingCardDisplay;
+  }
+
+  /* Remove the exact space that remains from the hidden rating row/card. */
+  const productSections = document.querySelector(".productSections");
+  const broughtTogetherSection = document.getElementById("broughtTogetherSection");
+  const hasNoRatings = ratingCount <= 0;
+
+  if(productSections){
+    productSections.classList.toggle("no-rating", hasNoRatings);
+  }
+  if(broughtTogetherSection){
+    broughtTogetherSection.classList.toggle("no-rating-gap", hasNoRatings);
   }
 
   let ratingQuality = "Good";
