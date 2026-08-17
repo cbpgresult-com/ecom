@@ -6248,10 +6248,11 @@ document.addEventListener("wheel",function(event){
   const atTop=grid.scrollTop<=0;
   const atBottom=grid.scrollTop+grid.clientHeight>=grid.scrollHeight-1;
 
-  /* If the currently rendered products do not yet overflow the drawer,
-     the first downward wheel must still trigger the next 2-product batch. */
-  if(event.deltaY>0 && atBottom && !relatedLoading && relatedRenderedCount<broughtTogetherProducts.length){
-    event.preventDefault();
+  /* Every downward scroll gesture requests exactly TWO more products.
+     This deliberately does not depend on the grid reaching a native
+     scrollbar bottom, because the first visible row can otherwise fill the
+     drawer exactly and browsers may not expose a useful scroll range. */
+  if(event.deltaY>0 && !relatedLoading && relatedRenderedCount<broughtTogetherProducts.length){
     appendRelatedBatch(RELATED_BATCH_SIZE,true);
     return;
   }
@@ -6285,9 +6286,10 @@ document.addEventListener("touchmove",function(event){
   const atTop=grid.scrollTop<=0;
   const atBottom=grid.scrollTop+grid.clientHeight>=grid.scrollHeight-1;
 
-  /* Mobile: when the first 4 cards exactly fit the drawer, there is no
-     native scroll event yet. A downward swipe at the bottom loads 2 more. */
-  if(dy>0 && atBottom && !relatedLoading && relatedRenderedCount<broughtTogetherProducts.length){
+  /* Mobile: every downward swipe inside the drawer loads exactly TWO more
+     products. Do not wait for native scrollBottom; that is the reason the
+     grid previously stopped after four cards on some devices. */
+  if(dy>0 && !relatedLoading && relatedRenderedCount<broughtTogetherProducts.length){
     event.preventDefault();
     appendRelatedBatch(RELATED_BATCH_SIZE,true);
     return;
