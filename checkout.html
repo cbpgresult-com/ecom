@@ -542,26 +542,32 @@ body{padding:0 !important;margin:0 !important;}
   outline:0;
   background:transparent;
   color:inherit;
-  font-size:12px;
+  font:inherit;
+  font-size:inherit;
   font-weight:800;
-  line-height:1.25;
-  letter-spacing:.1px;
+  line-height:inherit;
+  letter-spacing:inherit;
   box-sizing:border-box;
   cursor:text;
 }
 .ck-detected-pincode-pen{
   position:absolute;
-  right:8px;
+  right:9px;
   bottom:7px;
-  width:13px;
-  height:13px;
-  color:#6f7672;
+  width:14px;
+  height:14px;
+  color:#6d756f;
+  opacity:.95;
   pointer-events:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .ck-detected-pincode-pen svg{
-  width:100%;
-  height:100%;
+  width:14px;
+  height:14px;
   display:block;
+  stroke:currentColor;
 }
 #ckDetectedPincode:focus{text-decoration:none;}
 .ck-detected-pin-loader{
@@ -593,6 +599,69 @@ body{padding:0 !important;margin:0 !important;}
   animation:ckLocationBtnSpin .65s linear infinite;
 }
 @keyframes ckLocationBtnSpin{to{transform:rotate(360deg)}}
+</style>
+
+
+<style id="ckTryAgainStyle">
+#ckUseLocationBtn.ck-try-again{
+  border-color:#7c3aed;
+  color:#7c3aed;
+}
+</style>
+
+
+<style id="ckSavedAddressHeaderStyle">
+.ck-saved-addresses-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  margin-bottom:12px;
+}
+.ck-saved-addresses-head .ck-section-title{
+  margin:0 !important;
+}
+.ck-add-new-address-inline{
+  flex:0 0 auto;
+  margin:0 !important;
+  white-space:nowrap;
+  color:#205d42;
+  font-weight:800;
+  text-decoration:none;
+  cursor:pointer;
+}
+@media(max-width:600px){
+  .ck-saved-addresses-head{
+    gap:8px;
+  }
+  .ck-add-new-address-inline{
+    font-size:12px;
+  }
+}
+</style>
+
+
+<style id="ckOldAddNewAddressPlacementFix">
+/* If the original bottom add-new control is still rendered, keep it hidden
+   because the same control is now represented in the saved-address header. */
+.ck-saved-addresses + .ck-add-new-address,
+.ck-saved-addresses .ck-add-new-address-bottom{
+  display:none !important;
+}
+</style>
+
+
+<style id="ckSavedAddressMobileFinal">
+@media(max-width:420px){
+  .ck-saved-addresses-head .ck-section-title{
+    min-width:0;
+    font-size:11px;
+  }
+  .ck-add-new-address-inline{
+    font-size:11px;
+  }
+}
 </style>
 
 </head>
@@ -747,9 +816,7 @@ body{padding:0 !important;margin:0 !important;}
         </div>
 
         <div id="ckSavedAddrSection" style="display:none;">
-          <p class="ck-saved-title">Saved Addresses</p>
-          <div id="ckSavedAddrList"></div>
-          <div class="ck-addnew-link" onclick="ckShowAddressForm()">+ Add New Address</div>
+          <div class="ck-saved-addresses-head"><p class="ck-saved-title">Saved Addresses</p><span class="ck-add-new-address-inline">+ Add New Address</span></div>
         </div>
 
         <div id="ckAddressFormSection">
@@ -2000,8 +2067,14 @@ body{padding:0 !important;margin:0 !important;}
 
   window.ckUseCurrentLocation=function(){
     if(!currentUser){alert('Please login first.');return;}
-    if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
-    if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
+    if(!navigator.geolocation){
+      setText('ckLocationStatus','GPS is not supported.');
+      return;
+    }
+    if(!window.isSecureContext){
+      setText('ckLocationStatus','Location requires HTTPS.');
+      return;
+    }
 
     var btn=el('ckUseLocationBtn');
     if(btn){
@@ -2011,12 +2084,12 @@ body{padding:0 !important;margin:0 !important;}
     setText('ckLocationStatus','Getting your current location…');
 
     var finished=false;
-    var retryUsed=false;
 
-    function resetButton(){
+    function setTryAgain(){
       if(btn){
         btn.disabled=false;
-        btn.textContent='Use Location';
+        btn.textContent='Try Again';
+        btn.classList.add('ck-try-again');
       }
     }
 
@@ -2024,7 +2097,7 @@ body{padding:0 !important;margin:0 !important;}
       if(finished)return;
       finished=true;
 
-      /* Show the GPS result immediately. Do not wait for reverse geocoding. */
+      /* GPS result is shown immediately; address lookup happens afterwards. */
       currentLocationData={
         latitude:Number(pos.coords.latitude),
         longitude:Number(pos.coords.longitude),
@@ -2048,15 +2121,21 @@ body{padding:0 !important;margin:0 !important;}
 
       window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
 
-      /* Paint the detected-location card immediately. */
       hideAddressInputsAfterLocation();
       showDetectedLocationDetails();
+
       var detected=el('ckCurrentLocationDetected');
       if(detected)detected.style.display='block';
-      setText('ckLocationStatus','✓ Current GPS location detected');
-      resetButton();
 
-      /* Reverse geocode AFTER the location is already visible. */
+      setText('ckLocationStatus','✓ Current GPS location detected');
+
+      if(btn){
+        btn.disabled=false;
+        btn.textContent='Use Location';
+        btn.classList.remove('ck-try-again');
+      }
+
+      /* Reverse geocode in the background. */
       (async function(){
         try{
           var geo=await reverseGeocodeCurrentLocation(
@@ -2076,11 +2155,8 @@ body{padding:0 !important;margin:0 !important;}
           currentLocationData.display=geo.display||'';
           currentLocationData.place_name=geo.place_name||geo.city||geo.area||geo.district||'';
 
-          if(el('ckCity'))el('ckCity').value='';
-
           autofillAccountContact(false);
 
-          /* Postal API gives the most reliable District/State for the pincode. */
           if(currentLocationData.pincode){
             try{
               var pinData=await lookupPincodeDetails(currentLocationData.pincode);
@@ -2101,7 +2177,6 @@ body{padding:0 !important;margin:0 !important;}
           window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
           setText('ckLocationStatus','✓ Current location + address detected');
 
-          /* Save the GPS row once address data is available. */
           try{
             await saveCurrentLocationRow();
           }catch(saveErr){
@@ -2109,60 +2184,43 @@ body{padding:0 !important;margin:0 !important;}
           }
         }catch(e){
           console.warn('Reverse geocoding failed:',e);
-          /* GPS itself is still valid, so do NOT erase it. */
           showDetectedLocationDetails();
           window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
-          setText('ckLocationStatus','✓ GPS location detected. Address details unavailable.');
+          setText('ckLocationStatus','✓ GPS location detected');
         }
       })();
     }
 
-    function requestLocation(useCache){
-      navigator.geolocation.getCurrentPosition(
-        function(pos){
-          showFastGps(pos);
-        },
-        function(err){
-          if(!retryUsed){
-            retryUsed=true;
-            setText('ckLocationStatus','Trying GPS again…');
-            navigator.geolocation.getCurrentPosition(
-              function(pos){showFastGps(pos);},
-              function(err2){
-                resetButton();
-                var m='Location nahi mil payi. Please try again.';
-                if(err2&&err2.code===1)m='Location permission denied. Browser me Allow karein.';
-                else if(err2&&err2.code===2)m='Location unavailable. GPS/Location ON karein.';
-                else if(err2&&err2.code===3)m='Location request timed out. Please try again.';
-                setText('ckLocationStatus',m);
-              },
-              {
-                enableHighAccuracy:true,
-                timeout:9000,
-                maximumAge:0
-              }
-            );
-            return;
-          }
+    /* One clean first attempt:
+       - high accuracy ON
+       - short timeout
+       - no stale cached position
+       This avoids the long wait caused by multiple sequential GPS reads. */
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        showFastGps(pos);
+      },
+      function(err){
+        if(finished)return;
 
-          resetButton();
-          var m='Location nahi mil payi. Please try again.';
-          if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
-          else if(err&&err.code===2)m='Location unavailable. GPS/Location ON karein.';
-          else if(err&&err.code===3)m='Location request timed out. Please try again.';
-          setText('ckLocationStatus',m);
-        },
-        {
-          enableHighAccuracy:true,
-          timeout:useCache ? 5000 : 9000,
-          maximumAge:useCache ? 15000 : 0
+        var message='Location nahi mil payi. Please Try Again.';
+        if(err&&err.code===1){
+          message='Location permission denied. Browser me Allow karein.';
+        }else if(err&&err.code===2){
+          message='Location unavailable. GPS/Location ON karein, phir Try Again.';
+        }else if(err&&err.code===3){
+          message='Location request timed out. Please Try Again.';
         }
-      );
-    }
 
-    /* First try a recent browser GPS fix for a near-instant response.
-       If that fails, automatically retry with a fresh GPS reading. */
-    requestLocation(true);
+        setText('ckLocationStatus',message);
+        setTryAgain();
+      },
+      {
+        enableHighAccuracy:true,
+        timeout:12000,
+        maximumAge:0
+      }
+    );
   };
 
   window.ckUseManualAddress=function(){
@@ -2792,5 +2850,40 @@ body{padding:0 !important;margin:0 !important;}
 
 })();
 </script>
+
+<script id="ckInlineAddAddressLogic">
+(function(){
+  function wireInlineAddAddress(){
+    var inline=document.querySelector('.ck-add-new-address-inline');
+    if(!inline || inline.dataset.wired==='1')return;
+    inline.dataset.wired='1';
+
+    inline.addEventListener('click',function(){
+      /* Prefer the existing original Add New Address control if it still exists. */
+      var original=document.querySelector('.ck-add-new-address:not(.ck-add-new-address-inline), .ck-add-new-address-bottom');
+      if(original){
+        original.click();
+        return;
+      }
+
+      /* Otherwise use the existing page function if available. */
+      if(typeof window.ckShowAddressForm==='function'){
+        window.ckShowAddressForm();
+        return;
+      }
+      if(typeof window.showAddressForm==='function'){
+        window.showAddressForm();
+      }
+    });
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',wireInlineAddAddress);
+  }else{
+    wireInlineAddAddress();
+  }
+})();
+</script>
+
 </body>
 </html>
