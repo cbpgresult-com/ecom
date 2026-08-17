@@ -673,6 +673,16 @@ body{padding:0 !important;margin:0 !important;}
 }
 </style>
 
+
+<style id="ckSavedAddressListRestore">
+#ckSavedAddrList{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+</style>
+
 </head>
 <body>
 <div id="ckInitialVioletLoader" aria-hidden="false">
@@ -825,7 +835,11 @@ body{padding:0 !important;margin:0 !important;}
         </div>
 
         <div id="ckSavedAddrSection" style="display:none;">
-          <div class="ck-saved-addresses-head"><p class="ck-saved-title">Saved Addresses</p><span class="ck-add-new-address-inline">+ Add New Address</span></div>
+          <div class="ck-saved-addresses-head">
+            <p class="ck-saved-title">Saved Addresses</p>
+            <span class="ck-add-new-address-inline">+ Add New Address</span>
+          </div>
+          <div id="ckSavedAddrList" class="ck-saved-address-list"></div>
         </div>
 
         <div id="ckAddressFormSection">
@@ -1345,7 +1359,15 @@ body{padding:0 !important;margin:0 !important;}
     if(main) main.classList.toggle('ck-has-footer',step===3);
 
     if(step===1){
-      try{ renderSavedAddresses(); }catch(e){ console.warn('Saved address render:',e); }
+      try{
+        renderSavedAddresses();
+        if(savedAddresses.length){
+          var savedWrap=el('ckSavedAddrSection');
+          var addressForm=el('ckAddressFormSection');
+          if(savedWrap) savedWrap.style.display='block';
+          if(addressForm) addressForm.style.display='none';
+        }
+      }catch(e){ console.warn('Saved address render:',e); }
     }
     if(step===2 || step===3) renderPriceSummary();
     window._ckCurrentStep=step;
@@ -1543,6 +1565,14 @@ body{padding:0 !important;margin:0 !important;}
     var list=el('ckSavedAddrList');
     var form=el('ckAddressFormSection');
     var back=el('ckBackToSavedLink');
+
+    /* Safety fallback: always create the list inside Saved Addresses. */
+    if(wrap && !list){
+      list=document.createElement('div');
+      list.id='ckSavedAddrList';
+      list.className='ck-saved-address-list';
+      wrap.appendChild(list);
+    }
 
     if(!wrap || !list || !form) return;
 
@@ -2270,11 +2300,8 @@ body{padding:0 !important;margin:0 !important;}
               var bestAcc=bestPosition &&
                 Number(bestPosition.coords.accuracy);
 
-              if(bestPosition && Number.isFinite(bestAcc) && bestAcc<=3000){
-                /*
-                  3km is still much better than the 500km IP result.
-                  Accept only a meaningful improvement on desktop.
-                */
+              if(bestPosition && Number.isFinite(bestAcc) && bestAcc<=1000){
+                /* Accept only a genuinely usable desktop/browser fix. */
                 showFastGps(bestPosition);
               }else{
                 setTryAgain(
@@ -2307,7 +2334,7 @@ body{padding:0 !important;margin:0 !important;}
           var bestAcc=bestPosition &&
             Number(bestPosition.coords.accuracy);
 
-          if(bestPosition && Number.isFinite(bestAcc) && bestAcc<=3000){
+          if(bestPosition && Number.isFinite(bestAcc) && bestAcc<=1000){
             showFastGps(bestPosition);
           }else{
             setTryAgain(
