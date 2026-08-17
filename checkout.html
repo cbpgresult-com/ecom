@@ -2687,7 +2687,8 @@ body{padding:0 !important;margin:0 !important;}
 
       if(value.length!==6){
         if(loader)loader.classList.remove('show');
-        if(editControl)editControl.classList.remove('ck-pin-edit-hidden');
+        /* Pen + edit are shown ONLY when exactly 6 digits are present. */
+        if(editControl)editControl.classList.add('ck-pin-edit-hidden');
         if(district) setText('ckDetectedDistrict','—');
         return;
       }
