@@ -1993,7 +1993,10 @@ html.relatedViewOpen,body.relatedViewOpen{overflow:hidden !important;}
 .relatedProductsHeaderCount{margin-left:2px;color:#777;font-size:10px;font-weight:500}
 .relatedProductsGrid{
   position:absolute;top:58px;right:0;bottom:0;width:480px;background:#fff;overflow-y:auto;overflow-x:hidden;
-  padding:0 0 24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:0
+  padding:0 0 24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:0;
+  overflow-y:scroll;overflow-x:hidden;overscroll-behavior-y:contain;overscroll-behavior-x:hidden;
+  -webkit-overflow-scrolling:touch;touch-action:pan-y;pointer-events:auto;
+  scrollbar-width:auto;
 }
 .relatedGridCard{
   min-width:0;border:0;border-bottom:1px solid #e5e7eb;border-right:1px solid #e5e7eb;border-radius:0;background:#fff;overflow:hidden;cursor:pointer;padding:0 10px 11px
@@ -2026,7 +2029,7 @@ html.relatedViewOpen,body.relatedViewOpen{overflow:hidden !important;}
   .relatedProductsView{background:#fff}
   .relatedProductsHeader{position:relative;top:auto;right:auto;width:100%;height:56px;min-height:56px;padding:0 10px;border-bottom:1px solid #ddd;box-shadow:0 1px 4px rgba(0,0,0,.05)}
   .relatedProductsHeaderTitle{font-size:18px;font-weight:700}.relatedProductsBack{width:38px;height:38px}.relatedProductsBack::before{content:"←";font-size:27px;font-weight:400}
-  .relatedProductsGrid{position:relative;top:auto;right:auto;bottom:auto;width:100%;height:auto;flex:1;padding:0 0 22px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;overflow-y:auto}
+  .relatedProductsGrid{position:relative;top:auto;right:auto;bottom:auto;width:100%;height:auto;min-height:0;flex:1;padding:0 0 22px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;overflow-y:scroll;overflow-x:hidden;overscroll-behavior-y:contain;overscroll-behavior-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;pointer-events:auto;scrollbar-width:auto}
   .relatedGridCard{padding:0 8px 10px}.relatedGridImage{position:relative;height:166px}.relatedGridBody{padding:6px 0 0}.relatedGridTitle{font-size:10px;line-height:1.25;min-height:26px}.relatedGridPrice{font-size:13px}.relatedGridMrp{font-size:8px}.relatedGridOff{font-size:7px}.relatedGridMeta{margin-top:2px}.relatedGridRating,.relatedGridReviews{font-size:7px}
   .relatedProductsLoadRow{padding:12px 8px 14px}.relatedFindingText{font-size:11px}.relatedSkeletonGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.relatedGridSkeleton{padding:0 8px 10px}.relatedSkeletonImage{height:166px}
 }
@@ -6276,7 +6279,65 @@ function setupBroughtTogetherControls(){
   if(next && !next.dataset.bound){next.dataset.bound="1";next.addEventListener("click",()=>scrollBroughtRail(1))}
   if(track && !track.dataset.boundScroll){track.dataset.boundScroll="1";track.addEventListener("scroll",updateBroughtRailButtons,{passive:true})}
   if(back && !back.dataset.bound){back.dataset.bound="1";back.addEventListener("click",closeRelatedProductsView)}
-  if(grid && !grid.dataset.boundScroll){grid.dataset.boundScroll="1";grid.addEventListener("scroll",maybeLoadMoreRelated,{passive:true})}
+  if(grid && !grid.dataset.boundScroll){
+    grid.dataset.boundScroll="1";
+    grid.addEventListener("scroll",maybeLoadMoreRelated,{passive:true});
+
+    /*
+      FORCE the drawer itself to consume mouse-wheel / trackpad scroll.
+      The product page is locked in the background, so wheel movement
+      over the drawer must always move this grid.
+    */
+    grid.addEventListener("wheel",e=>{
+      if(!grid.classList.contains("relatedGridScrollReady")){
+        grid.classList.add("relatedGridScrollReady");
+      }
+      if(grid.scrollHeight > grid.clientHeight){
+        e.preventDefault();
+        e.stopPropagation();
+        grid.scrollTop += e.deltaY;
+        maybeLoadMoreRelated();
+      }
+    },{passive:false});
+
+    /*
+      FALLBACK: if Firefox/trackpad dispatches the wheel event to the
+      drawer overlay instead of the grid, route it directly to the grid.
+      This does not change the layout or product rendering.
+    */
+    const relatedView=document.getElementById("relatedProductsView");
+    if(relatedView && !relatedView.dataset.boundWheelFallback){
+      relatedView.dataset.boundWheelFallback="1";
+      relatedView.addEventListener("wheel",e=>{
+        if(!relatedView.classList.contains("show")) return;
+        if(!grid.contains(e.target)) return;
+        if(grid.scrollHeight<=grid.clientHeight) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        grid.scrollTop += e.deltaY;
+        maybeLoadMoreRelated();
+      },{passive:false});
+    }
+
+    /* Touch scrolling on mobile drawer */
+    let touchStartY=0;
+    grid.addEventListener("touchstart",e=>{
+      if(e.touches && e.touches.length) touchStartY=e.touches[0].clientY;
+    },{passive:true});
+    grid.addEventListener("touchmove",e=>{
+      if(!e.touches || !e.touches.length) return;
+      const currentY=e.touches[0].clientY;
+      const delta=touchStartY-currentY;
+      if(Math.abs(delta)>0 && grid.scrollHeight>grid.clientHeight){
+        e.preventDefault();
+        e.stopPropagation();
+        grid.scrollTop += delta;
+        touchStartY=currentY;
+        maybeLoadMoreRelated();
+      }
+    },{passive:false});
+  }
   if(!document.body.dataset.relatedEscapeBound){
     document.body.dataset.relatedEscapeBound="1";
     document.addEventListener("keydown",e=>{
