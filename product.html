@@ -1951,7 +1951,6 @@ a{text-decoration:none;color:inherit}
   display:grid;
   grid-template-columns:repeat(5,minmax(0,1fr));
   gap:14px;
-  margin-top:-5px !important;
 }
 .broughtProductCard{
   min-width:0;
@@ -2060,7 +2059,6 @@ a{text-decoration:none;color:inherit}
   display:grid;
   grid-template-columns:repeat(5,minmax(0,1fr));
   gap:14px;
-  margin-top:-5px !important;
 }
 .broughtSkeleton{
   border:1px solid #e5e7eb;
@@ -4729,6 +4727,20 @@ function render(){
   const ratingCount = ratingCountMatch
     ? Number(ratingCountMatch[0].replace(/,/g,""))
     : 0;
+
+  /* Hide the entire Ratings & Reviews row/card when there are no ratings.
+     This also removes the blank space above Brought Together.
+     Show it normally as soon as at least one rating exists. */
+  const desktopRatingCard = document.querySelector(".ratingCardDesktop");
+  const mobileRatingCard = document.querySelector(".ratingCardMobile");
+  const ratingCardDisplay = ratingCount > 0 ? "" : "none";
+
+  if(desktopRatingCard){
+    desktopRatingCard.style.display = ratingCardDisplay;
+  }
+  if(mobileRatingCard){
+    mobileRatingCard.style.display = ratingCardDisplay;
+  }
 
   let ratingQuality = "Good";
   if(ratingValue >= 4.5){
