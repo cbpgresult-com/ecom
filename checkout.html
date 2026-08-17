@@ -2603,7 +2603,7 @@ body{padding:0 !important;margin:0 !important;}
         }else if(err&&err.code===2){
           message='Location unavailable. GPS/Location ON karein, phir Try Again.';
         }else if(err&&err.code===3){
-          message='Location request timed out. Please Try Again or Fill Manually.';
+          message='Location request timed out. Please Try Again.';
         }
 
         setTryAgain(message);
@@ -2651,6 +2651,11 @@ body{padding:0 !important;margin:0 !important;}
      The GPS location stays the same, but the delivery pincode
      can be corrected manually. District is fetched automatically.
   ========================================================= */
+  /* Pincode states */
+  .ck-detected-pincode-detail.ck-pin-state-red{border-color:#e05252 !important;background:#fff5f5 !important;box-shadow:0 0 0 3px rgba(224,82,82,.08);}
+  .ck-detected-pincode-detail.ck-pin-state-fetching{border-color:#65b77a !important;background:#f2fbf4 !important;box-shadow:0 0 0 3px rgba(101,183,122,.10);}
+  .ck-detected-pincode-detail.ck-pin-state-normal{border-color:var(--line) !important;background:var(--card) !important;box-shadow:none;}
+
   function setupDetectedLocationPincode(){
     var pin=el('ckDetectedPincode');
     var district=el('ckDetectedDistrict');
@@ -2659,6 +2664,16 @@ body{padding:0 !important;margin:0 !important;}
     if(!pin)return;
 
     var timer=null;
+
+    function setDetectedPinVisualState(state){
+      var wrap=pin ? pin.closest('.ck-detected-pincode-detail') : null;
+      if(!wrap)return;
+      wrap.classList.remove('ck-pin-state-red','ck-pin-state-fetching','ck-pin-state-normal');
+      if(state==='red')wrap.classList.add('ck-pin-state-red');
+      else if(state==='fetching')wrap.classList.add('ck-pin-state-fetching');
+      else wrap.classList.add('ck-pin-state-normal');
+    }
+
     var pinLookupSeq=0;
 
     /* Clicking the pen or the edit text focuses the same pincode input. */
@@ -2687,10 +2702,15 @@ body{padding:0 !important;margin:0 !important;}
 
       if(value.length!==6){
         if(loader)loader.classList.remove('show');
-        if(editControl)editControl.classList.remove('ck-pin-edit-hidden');
+        /* 1-5 digits = invalid/red box. Pen + edit stay hidden. */
+        this.classList.add('ck-pin-invalid');
+        if(editControl)editControl.classList.add('ck-pin-edit-hidden');
         if(district) setText('ckDetectedDistrict','—');
         return;
       }
+
+      /* Exactly 6 digits = normal box while fetching. */
+      this.classList.remove('ck-pin-invalid');
 
       /* While the pincode is being fetched, hide the pen + edit control.
          Show it back immediately when fetching finishes. */
@@ -2712,15 +2732,18 @@ body{padding:0 !important;margin:0 !important;}
             }
 
             setText('ckDetectedDistrict',info.district||'Not available');
+            setDetectedPinVisualState('normal');
           }else{
             currentLocationData.pincode=value;
             currentLocationData.district='';
             setText('ckDetectedDistrict','Not available');
             pin.classList.add('ck-pin-invalid');
+            setDetectedPinVisualState('red');
           }
         }catch(e){
           console.warn('Detected pincode lookup:',e);
           pin.classList.add('ck-pin-invalid');
+          setDetectedPinVisualState('red');
         }finally{
           if(lookupSeq===pinLookupSeq){
             if(loader)loader.classList.remove('show');
