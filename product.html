@@ -1915,8 +1915,7 @@ a{text-decoration:none;color:inherit}
 
 
 /* =========================================================
-   BROUGHT TOGETHER / RELATED PRODUCTS — MARKETPLACE RAIL
-   Compact Flipkart-style rail + full Related Products grid.
+   BROUGHT TOGETHER / RELATED PRODUCTS — MARKETPLACE STYLE
 ========================================================= */
 .broughtTogetherSection{
   width:min(1450px,100%);
@@ -1924,7 +1923,7 @@ a{text-decoration:none;color:inherit}
   background:#fff;
   border:0;
   border-radius:0;
-  padding:14px 0 10px;
+  padding:12px 0 10px;
   display:none;
   overflow:hidden;
 }
@@ -1937,373 +1936,100 @@ a{text-decoration:none;color:inherit}
   padding:0 2px;
 }
 .broughtTogetherHeaderText{min-width:0}
-.broughtTogetherTitle{
-  margin:0;
-  font-size:20px;
-  line-height:1.15;
-  font-weight:800;
-  color:#172033;
-}
-.broughtTogetherSub{
-  margin:3px 0 0;
-  font-size:11px;
-  line-height:1.2;
-  color:#6b7280;
-}
+.broughtTogetherTitle{margin:0;font-size:20px;line-height:1.1;font-weight:800;color:#172033}
+.broughtTogetherSub{margin:3px 0 0;font-size:11px;line-height:1.15;color:#6b7280}
 .broughtTogetherViewAll{
-  width:32px;
-  height:32px;
-  flex:0 0 32px;
-  border:0;
-  border-radius:50%;
-  background:#222;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  line-height:1;
-  padding:0;
-  box-shadow:none;
+  width:32px;height:32px;flex:0 0 32px;border:0;border-radius:50%;background:#222;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:21px;line-height:1;padding:0;cursor:pointer
 }
 .broughtTogetherRailWrap{position:relative}
 .broughtTogetherTrack{
-  display:flex;
-  align-items:stretch;
-  gap:10px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scroll-behavior:smooth;
-  scrollbar-width:none;
-  padding:0 1px 4px;
+  display:flex;align-items:flex-start;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;
+  scrollbar-width:none;padding:0 1px 2px
 }
 .broughtTogetherTrack::-webkit-scrollbar{display:none}
 .broughtProductCard{
-  flex:0 0 158px;
-  width:158px;
-  min-width:158px;
-  border:1px solid #e1e5eb;
-  border-radius:9px;
-  background:#fff;
-  overflow:hidden;
-  cursor:pointer;
-  transition:box-shadow .16s ease,border-color .16s ease,transform .16s ease;
-}
-.broughtProductCard:hover{
-  transform:translateY(-1px);
-  box-shadow:0 4px 14px rgba(17,24,39,.09);
-  border-color:#d4d8de;
+  flex:0 0 205px;width:205px;min-width:205px;border:0;border-radius:0;background:#fff;overflow:hidden;cursor:pointer
 }
 .broughtProductImageWrap{
-  width:100%;
-  height:148px;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+  position:relative;width:100%;height:214px;background:#f1f1f1;border-radius:7px;display:flex;align-items:center;justify-content:center;overflow:hidden
 }
-.broughtProductImageWrap img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
-}
-.broughtProductBody{padding:5px 8px 8px}
+.broughtProductImageWrap img{width:100%;height:100%;object-fit:contain;display:block}
+.broughtProductBody{padding:6px 0 0}
 .broughtProductName{
-  font-size:11px;
-  line-height:1.25;
-  font-weight:600;
-  color:#172033;
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:2;
-  overflow:hidden;
-  min-height:27px;
-  margin:0;
+  font-size:12px;line-height:1.22;font-weight:600;color:#222;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:0;min-height:29px
 }
-.broughtProductRatingRow{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  margin-top:3px;
-  min-height:16px;
-}
-.broughtProductRating{
-  display:inline-flex;
-  align-items:center;
-  gap:2px;
-  background:#16833b;
-  color:#fff;
-  border-radius:3px;
-  padding:2px 4px;
-  font-size:8px;
-  line-height:12px;
-  font-weight:800;
-}
-.broughtProductReviews{
-  color:#777;
-  font-size:8px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.broughtProductPriceRow{
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:5px;
-  margin-top:3px;
-  min-height:20px;
-}
-.broughtProductPrice{
-  font-size:14px;
-  line-height:18px;
-  font-weight:800;
-  color:#172033;
-}
-.broughtProductMrp{
-  font-size:9px;
-  line-height:15px;
-  color:#777;
-  text-decoration:line-through;
-}
-.broughtProductOff{
-  font-size:8px;
-  line-height:15px;
-  padding:0 4px;
-  border-radius:3px;
-  background:#16833b;
-  color:#fff;
-  font-weight:800;
-}
-.broughtProductReason{
-  margin-top:2px;
-  font-size:8px;
-  line-height:13px;
-  color:#6d28d9;
-  font-weight:600;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
+.broughtProductRatingRow{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;gap:3px;margin:0;min-height:0;z-index:2}
+.broughtProductRating{display:inline-flex;align-items:center;gap:2px;background:#fff;color:#111;border-radius:3px;padding:2px 4px;font-size:10px;line-height:13px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.broughtProductReviews{color:#777;font-size:8px;white-space:nowrap;display:none}
+.broughtProductPriceRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;min-height:0;line-height:1}
+.broughtProductPrice{font-size:14px;line-height:17px;font-weight:800;color:#222;order:3}
+.broughtProductMrp{font-size:9px;line-height:15px;color:#777;text-decoration:line-through;order:2}
+.broughtProductOff{font-size:9px;line-height:16px;padding:0 5px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:1}
+.broughtProductReason{margin-top:2px;font-size:8px;line-height:12px;color:#6d28d9;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .broughtRailNav{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  border:1px solid #ddd;
-  background:#fff;
-  color:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  line-height:1;
-  box-shadow:0 3px 10px rgba(0,0,0,.12);
-  z-index:4;
+  position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:1px solid #ddd;background:#fff;color:#111;
+  display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;box-shadow:0 3px 10px rgba(0,0,0,.12);z-index:4;cursor:pointer
 }
-.broughtRailNav.prev{left:5px}
-.broughtRailNav.next{right:5px}
-.broughtRailNav:disabled{opacity:.25;cursor:default}
-.broughtTogetherLoading{
-  display:flex;
-  gap:10px;
-  overflow:hidden;
-  padding:0 1px 4px;
-}
-.broughtSkeleton{
-  flex:0 0 158px;
-  width:158px;
-  border:1px solid #e1e5eb;
-  border-radius:9px;
-  overflow:hidden;
-  background:#fff;
-}
-.broughtSkeletonImage{
-  height:148px;
-  background:linear-gradient(90deg,#f5f5f5 25%,#ececec 37%,#f5f5f5 63%);
-  background-size:400% 100%;
-  animation:broughtSkeletonMove 1.2s ease infinite;
-}
-.broughtSkeletonBody{padding:8px}
-.broughtSkeletonLine{
-  height:8px;
-  border-radius:6px;
-  background:#eeeeee;
-  margin-bottom:6px;
-}
-.broughtSkeletonLine.short{width:58%}
-@keyframes broughtSkeletonMove{
-  0%{background-position:100% 0}
-  100%{background-position:-100% 0}
-}
+.broughtRailNav.prev{left:5px}.broughtRailNav.next{right:5px}.broughtRailNav:disabled{opacity:.25;cursor:default}
+.broughtTogetherLoading{display:none}
+.broughtSkeleton{display:none}
 
-/* Full Related Products view */
+/* Full Related Products: desktop = right drawer, mobile = full screen */
 .relatedProductsView{
-  position:fixed;
-  inset:0;
-  z-index:2147483000;
-  display:none;
-  flex-direction:column;
-  background:#f5f6f8;
-  overflow:hidden;
+  position:fixed;inset:0;z-index:2147483000;display:none;flex-direction:column;background:rgba(0,0,0,.72);overflow:hidden
 }
 .relatedProductsView.show{display:flex}
 .relatedProductsHeader{
-  height:58px;
-  min-height:58px;
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:0 18px;
-  box-shadow:0 1px 5px rgba(0,0,0,.05);
+  position:absolute;top:0;right:0;width:480px;height:58px;min-height:58px;background:#fff;border-bottom:1px solid #e5e7eb;
+  display:flex;align-items:center;gap:10px;padding:0 14px;z-index:3
 }
 .relatedProductsBack{
-  width:38px;
-  height:38px;
-  border:0;
-  background:transparent;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-  font-size:26px;
+  width:34px;height:34px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;font-size:26px;cursor:pointer
 }
-.relatedProductsBack svg{width:24px;height:24px}
-.relatedProductsHeaderTitle{
-  margin:0;
-  font-size:19px;
-  font-weight:800;
-  color:#172033;
-}
-.relatedProductsHeaderCount{
-  margin-left:3px;
-  color:#777;
-  font-size:11px;
-  font-weight:500;
-}
+.relatedProductsBack svg{display:none}.relatedProductsBack::before{content:"×";font-size:30px;font-weight:300;line-height:1;color:#333}.relatedProductsBack:focus-visible{outline:2px solid #111;border-radius:4px}
+.relatedProductsHeaderTitle{margin:0;font-size:18px;font-weight:500;color:#222;white-space:nowrap}
+.relatedProductsHeaderCount{margin-left:2px;color:#777;font-size:10px;font-weight:500}
 .relatedProductsGrid{
-  flex:1;
-  overflow-y:auto;
-  padding:14px 3.5% 28px;
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  align-content:start;
-  gap:12px;
+  position:absolute;top:58px;right:0;bottom:0;width:480px;background:#fff;overflow-y:auto;overflow-x:hidden;
+  padding:0 0 24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:0
 }
 .relatedGridCard{
-  min-width:0;
-  border:1px solid #e1e5eb;
-  border-radius:9px;
-  background:#fff;
-  overflow:hidden;
-  cursor:pointer;
+  min-width:0;border:0;border-bottom:1px solid #e5e7eb;border-right:1px solid #e5e7eb;border-radius:0;background:#fff;overflow:hidden;cursor:pointer;padding:0 10px 11px
 }
-.relatedGridImage{
-  width:100%;
-  height:210px;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
+.relatedGridImage{position:relative;width:100%;height:184px;background:#f2f2f2;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:0}
 .relatedGridImage img{width:100%;height:100%;object-fit:contain;display:block}
-.relatedGridBody{padding:7px 9px 9px}
-.relatedGridTitle{
-  font-size:12px;
-  line-height:1.3;
-  font-weight:600;
-  color:#172033;
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:2;
-  overflow:hidden;
-  min-height:31px;
-}
-.relatedGridPriceRow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
-.relatedGridPrice{font-size:15px;font-weight:800}
-.relatedGridMrp{font-size:10px;color:#777;text-decoration:line-through}
-.relatedGridOff{font-size:8px;line-height:15px;padding:0 4px;border-radius:3px;background:#16833b;color:#fff;font-weight:800}
-.relatedGridMeta{display:flex;align-items:center;gap:4px;margin-top:4px;min-height:16px}
-.relatedGridRating{background:#16833b;color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:800}
-.relatedGridReviews{font-size:8px;color:#777}
-
-@media(max-width:1100px) and (min-width:901px){
-  .relatedProductsGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .relatedGridImage{height:190px}
-}
+.relatedGridBody{padding:7px 0 0}
+.relatedGridTitle{font-size:11px;line-height:1.25;font-weight:500;color:#222;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:28px}
+.relatedGridPriceRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;line-height:1}
+.relatedGridPrice{font-size:14px;line-height:17px;font-weight:800;order:3}.relatedGridMrp{font-size:9px;color:#777;text-decoration:line-through;order:2}.relatedGridOff{font-size:8px;line-height:15px;padding:0 4px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:1}
+.relatedGridMeta{display:flex;align-items:center;gap:4px;margin-top:2px;min-height:15px}.relatedGridRating{background:#16833b;color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:800}.relatedGridReviews{font-size:8px;color:#777}
+.relatedProductsLoadRow{grid-column:1/-1;display:none;padding:12px 10px 14px;background:#fff;text-align:center}
+.relatedProductsLoadRow.show{display:block}
+.relatedFindingText{font-size:12px;color:#555;font-weight:600;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:7px}
+.relatedFindingSpinner{width:15px;height:15px;border:2px solid #ddd;border-top-color:#111;border-radius:50%;animation:relatedSpin .7s linear infinite}
+@keyframes relatedSpin{to{transform:rotate(360deg)}}
+.relatedSkeletonGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
+.relatedGridSkeleton{border-right:1px solid #e5e7eb;border-bottom:1px solid #e5e7eb;padding:0 10px 11px;background:#fff}
+.relatedSkeletonImage{height:184px;background:linear-gradient(90deg,#f1f1f1 25%,#e7e7e7 37%,#f1f1f1 63%);background-size:400% 100%;animation:relatedSkeletonMove 1.15s ease infinite}
+.relatedSkeletonLine{height:9px;border-radius:6px;background:#ececec;margin-top:9px}.relatedSkeletonLine.short{width:58%;margin-top:7px}.relatedSkeletonPrice{height:15px;width:42%;border-radius:6px;background:#ececec;margin-top:9px}
+@keyframes relatedSkeletonMove{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
 @media(max-width:900px){
-  .broughtTogetherSection{
-    width:100%;
-    margin:10px 0 0;
-    padding:10px 12px 8px;
-    border:0;
-  }
-  .broughtTogetherHeader{margin-bottom:7px;padding:0}
-  .broughtTogetherTitle{font-size:17px}
-  .broughtTogetherSub{font-size:10px}
-  .broughtTogetherViewAll{width:30px;height:30px;flex-basis:30px;font-size:19px}
-  .broughtTogetherTrack{
-    gap:8px;
-    padding:0 0 3px;
-    scroll-snap-type:x proximity;
-    -webkit-overflow-scrolling:touch;
-  }
-  .broughtProductCard{
-    flex-basis:150px;
-    width:150px;
-    min-width:150px;
-    scroll-snap-align:start;
-  }
-  .broughtProductImageWrap{height:132px}
-  .broughtProductBody{padding:5px 7px 7px}
-  .broughtProductName{font-size:10px;min-height:25px;line-height:1.2}
-  .broughtProductRatingRow{margin-top:2px}
-  .broughtProductPriceRow{margin-top:2px;gap:4px}
-  .broughtProductPrice{font-size:13px}
-  .broughtProductMrp{font-size:8px}
-  .broughtProductReason{font-size:7px;line-height:11px}
-  .broughtRailNav{display:none}
-  .broughtTogetherLoading{gap:8px}
-  .broughtSkeleton{flex-basis:150px;width:150px}
-  .broughtSkeletonImage{height:132px}
+  .broughtTogetherSection{width:100%;margin:10px 0 0;padding:10px 12px 8px;border:0}
+  .broughtTogetherHeader{margin-bottom:7px;padding:0}.broughtTogetherTitle{font-size:17px}.broughtTogetherSub{font-size:10px}.broughtTogetherViewAll{width:30px;height:30px;flex-basis:30px;font-size:19px}
+  .broughtTogetherTrack{gap:8px;padding:0 0 2px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .broughtProductCard{flex-basis:150px;width:150px;min-width:150px;scroll-snap-align:start}
+  .broughtProductImageWrap{height:132px}.broughtProductBody{padding:5px 0 0}.broughtProductName{font-size:10px;line-height:1.2;min-height:25px}.broughtProductPrice{font-size:13px}.broughtProductMrp{font-size:8px}.broughtProductOff{font-size:8px}.broughtProductReason{font-size:7px;line-height:11px}.broughtRailNav{display:none}
 
-  .relatedProductsHeader{
-    height:56px;
-    min-height:56px;
-    padding:0 10px;
-  }
-  .relatedProductsBack{width:38px;height:38px}
-  .relatedProductsHeaderTitle{font-size:18px}
-  .relatedProductsGrid{
-    padding:10px 8px 22px;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
-  }
-  .relatedGridImage{height:165px}
-  .relatedGridBody{padding:6px 7px 8px}
-  .relatedGridTitle{font-size:10px;line-height:1.25;min-height:26px}
-  .relatedGridPrice{font-size:13px}
-  .relatedGridMrp{font-size:8px}
-  .relatedGridOff{font-size:7px}
-  .relatedGridMeta{margin-top:3px}
-  .relatedGridRating,.relatedGridReviews{font-size:7px}
+  .relatedProductsView{background:#fff}
+  .relatedProductsHeader{position:relative;top:auto;right:auto;width:100%;height:56px;min-height:56px;padding:0 10px;border-bottom:1px solid #ddd;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .relatedProductsHeaderTitle{font-size:18px;font-weight:700}.relatedProductsBack{width:38px;height:38px}.relatedProductsBack::before{content:"←";font-size:27px;font-weight:400}
+  .relatedProductsGrid{position:relative;top:auto;right:auto;bottom:auto;width:100%;height:auto;flex:1;padding:0 0 22px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;overflow-y:auto}
+  .relatedGridCard{padding:0 8px 10px}.relatedGridImage{position:relative;height:166px}.relatedGridBody{padding:6px 0 0}.relatedGridTitle{font-size:10px;line-height:1.25;min-height:26px}.relatedGridPrice{font-size:13px}.relatedGridMrp{font-size:8px}.relatedGridOff{font-size:7px}.relatedGridMeta{margin-top:2px}.relatedGridRating,.relatedGridReviews{font-size:7px}
+  .relatedProductsLoadRow{padding:12px 8px 14px}.relatedFindingText{font-size:11px}.relatedSkeletonGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.relatedGridSkeleton{padding:0 8px 10px}.relatedSkeletonImage{height:166px}
 }
-
-@media(max-width:420px){
-  .broughtProductCard{flex-basis:146px;width:146px;min-width:146px}
-  .broughtProductImageWrap{height:128px}
-  .broughtSkeleton{flex-basis:146px;width:146px}
-  .broughtSkeletonImage{height:128px}
-  .relatedGridImage{height:150px}
-}
+@media(max-width:420px){.broughtProductCard{flex-basis:146px;width:146px;min-width:146px}.broughtProductImageWrap{height:128px}.relatedGridImage{position:relative;height:154px}.relatedSkeletonImage{height:154px}}
 </style>
 
 <style>
@@ -3063,13 +2789,18 @@ Buy at <span id="buyPrice"></span>
 <!-- ================= FULL RELATED PRODUCTS VIEW ================= -->
 <section id="relatedProductsView" class="relatedProductsView" aria-hidden="true">
   <header class="relatedProductsHeader">
-    <button id="relatedProductsBack" class="relatedProductsBack" type="button" aria-label="Back to product">
+    <button id="relatedProductsBack" class="relatedProductsBack" type="button" aria-label="Close related products">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
     </button>
-    <h2 class="relatedProductsHeaderTitle">Related Products</h2>
+    <h2 class="relatedProductsHeaderTitle">View all of All Products</h2>
     <span id="relatedProductsHeaderCount" class="relatedProductsHeaderCount"></span>
   </header>
-  <div id="relatedProductsGrid" class="relatedProductsGrid"></div>
+  <div id="relatedProductsGrid" class="relatedProductsGrid">
+    <div id="relatedProductsLoadRow" class="relatedProductsLoadRow" aria-live="polite">
+      <div class="relatedFindingText"><span class="relatedFindingSpinner"></span><span>Products Finding...</span></div>
+      <div id="relatedSkeletonGrid" class="relatedSkeletonGrid"></div>
+    </div>
+  </div>
 </section>
 
 </main>
@@ -6229,54 +5960,45 @@ function relatedProductCardHtml(item,grid=false){
     return `
       <article class="relatedGridCard" role="link" tabindex="0" data-product-id="${escapeHtml(id)}" aria-label="${escapeHtml(title)}">
         <div class="relatedGridImage">
-          ${image
-            ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.style.display='none'">`
-            : `<span style="font-size:11px;color:#999">Image unavailable</span>`}
+          ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.style.display='none'">` : ""}
+          ${rating>0 ? `<span style="position:absolute;left:6px;bottom:6px;background:#fff;color:#111;border-radius:3px;padding:2px 4px;font-size:9px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>` : ""}
         </div>
         <div class="relatedGridBody">
           <div class="relatedGridTitle">${escapeHtml(title)}</div>
           <div class="relatedGridPriceRow">
-            ${price>0?`<span class="relatedGridPrice">${money(price)}</span>`:""}
-            ${mrp>price?`<span class="relatedGridMrp">${money(mrp)}</span>`:""}
             ${discount>0?`<span class="relatedGridOff">${discount}% OFF</span>`:""}
+            ${mrp>price?`<span class="relatedGridMrp">${money(mrp)}</span>`:""}
+            ${price>0?`<span class="relatedGridPrice">${money(price)}</span>`:""}
           </div>
-          <div class="relatedGridMeta">
-            ${rating>0?`<span class="relatedGridRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>`:""}
-            ${reviews>0?`<span class="relatedGridReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span>`:""}
-          </div>
+          ${reviews>0?`<div class="relatedGridMeta"><span class="relatedGridReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span></div>`:""}
         </div>
-      </article>
-    `;
+      </article>`;
   }
 
   return `
     <article class="broughtProductCard" role="link" tabindex="0" data-product-id="${escapeHtml(id)}" aria-label="${escapeHtml(title)}">
       <div class="broughtProductImageWrap">
-        ${image
-          ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.style.display='none'">`
-          : `<span style="font-size:10px;color:#999">Image unavailable</span>`}
+        ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.style.display='none'">` : ""}
+        ${rating>0 ? `<div class="broughtProductRatingRow"><span class="broughtProductRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span></div>` : ""}
       </div>
       <div class="broughtProductBody">
         <div class="broughtProductName">${escapeHtml(title)}</div>
-        <div class="broughtProductRatingRow">
-          ${rating>0?`<span class="broughtProductRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>`:""}
-          ${reviews>0?`<span class="broughtProductReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span>`:""}
-        </div>
         <div class="broughtProductPriceRow">
-          ${price>0?`<span class="broughtProductPrice">${money(price)}</span>`:""}
-          ${mrp>price?`<span class="broughtProductMrp">${money(mrp)}</span>`:""}
           ${discount>0?`<span class="broughtProductOff">${discount}% OFF</span>`:""}
+          ${mrp>price?`<span class="broughtProductMrp">${money(mrp)}</span>`:""}
+          ${price>0?`<span class="broughtProductPrice">${money(price)}</span>`:""}
         </div>
         <div class="broughtProductReason">${escapeHtml(item.reason || "You may also like")}</div>
       </div>
-    </article>
-  `;
+    </article>`;
 }
 
 function bindRelatedProductCards(root,grid=false){
   if(!root) return;
   const selector=grid ? ".relatedGridCard" : ".broughtProductCard";
   root.querySelectorAll(selector).forEach(card=>{
+    if(card.dataset.bound) return;
+    card.dataset.bound="1";
     const open=()=>{
       const pid=card.getAttribute("data-product-id");
       if(!pid) return;
@@ -6285,10 +6007,7 @@ function bindRelatedProductCards(root,grid=false){
     };
     card.addEventListener("click",open);
     card.addEventListener("keydown",e=>{
-      if(e.key==="Enter" || e.key===" "){
-        e.preventDefault();
-        open();
-      }
+      if(e.key==="Enter" || e.key===" "){e.preventDefault();open();}
     });
   });
 }
@@ -6298,70 +6017,106 @@ function updateBroughtRailButtons(){
   const prev=document.getElementById("broughtRailPrev");
   const next=document.getElementById("broughtRailNext");
   if(!track || !prev || !next) return;
-
   const max=Math.max(0,track.scrollWidth-track.clientWidth-2);
   prev.disabled=track.scrollLeft<=2;
   next.disabled=track.scrollLeft>=max;
 }
-
 function scrollBroughtRail(direction){
   const track=document.getElementById("broughtTogetherTrack");
   if(!track) return;
-  const amount=Math.max(track.clientWidth*.82,300);
-  track.scrollBy({left:direction*amount,behavior:"smooth"});
+  track.scrollBy({left:Math.max(track.clientWidth*.82,300)*direction,behavior:"smooth"});
   setTimeout(updateBroughtRailButtons,350);
 }
-
 function renderBroughtTogether(products){
   const section=document.getElementById("broughtTogetherSection");
   const loading=document.getElementById("broughtTogetherLoading");
   const track=document.getElementById("broughtTogetherTrack");
   if(!section || !loading || !track) return;
-
   loading.style.display="none";
   track.innerHTML="";
-
-  if(!Array.isArray(products) || !products.length){
-    section.style.display="none";
-    return;
-  }
-
+  if(!Array.isArray(products) || !products.length){section.style.display="none";return;}
   broughtTogetherProducts=products;
+  /* Rail shows a useful starting set, while the full drawer/grid keeps every product. */
   track.innerHTML=products.map(item=>relatedProductCardHtml(item,false)).join("");
   section.style.display="block";
-
   bindRelatedProductCards(track,false);
   updateBroughtRailButtons();
 }
 
-function renderRelatedProductsGrid(){
-  const grid=document.getElementById("relatedProductsGrid");
+let relatedRenderedCount=0;
+let relatedLoading=false;
+const RELATED_BATCH_SIZE=2;
+
+function setRelatedHeaderCount(){
   const count=document.getElementById("relatedProductsHeaderCount");
-  if(!grid) return;
-
-  if(count){
-    count.textContent=broughtTogetherProducts.length
-      ? `(${broughtTogetherProducts.length})`
-      : "";
-  }
-
-  grid.innerHTML=broughtTogetherProducts.length
-    ? broughtTogetherProducts.map(item=>relatedProductCardHtml(item,true)).join("")
-    : `<div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:#777">No related products found.</div>`;
-
-  bindRelatedProductCards(grid,true);
+  if(count) count.textContent=broughtTogetherProducts.length ? `(${broughtTogetherProducts.length})` : "";
 }
+function makeRelatedSkeletons(){
+  const wrap=document.getElementById("relatedSkeletonGrid");
+  if(!wrap) return;
+  wrap.innerHTML=`
+    <div class="relatedGridSkeleton"><div class="relatedSkeletonImage"></div><div class="relatedSkeletonLine"></div><div class="relatedSkeletonLine short"></div><div class="relatedSkeletonPrice"></div></div>
+    <div class="relatedGridSkeleton"><div class="relatedSkeletonImage"></div><div class="relatedSkeletonLine"></div><div class="relatedSkeletonLine short"></div><div class="relatedSkeletonPrice"></div></div>`;
+}
+function showRelatedLoader(){
+  const row=document.getElementById("relatedProductsLoadRow");
+  if(!row) return;
+  makeRelatedSkeletons();
+  row.classList.add("show");
+}
+function hideRelatedLoader(){
+  const row=document.getElementById("relatedProductsLoadRow");
+  if(row) row.classList.remove("show");
+}
+async function appendRelatedBatch(){
+  const grid=document.getElementById("relatedProductsGrid");
+  if(!grid || relatedLoading) return;
+  if(relatedRenderedCount>=broughtTogetherProducts.length){hideRelatedLoader();return;}
+  relatedLoading=true;
+  showRelatedLoader();
+  await new Promise(resolve=>setTimeout(resolve,650));
 
+  const end=Math.min(relatedRenderedCount+RELATED_BATCH_SIZE,broughtTogetherProducts.length);
+  const batch=broughtTogetherProducts.slice(relatedRenderedCount,end);
+  const html=batch.map(item=>relatedProductCardHtml(item,true)).join("");
+  const row=document.getElementById("relatedProductsLoadRow");
+  if(row) row.insertAdjacentHTML("beforebegin",html);
+  relatedRenderedCount=end;
+  bindRelatedProductCards(grid,true);
+  hideRelatedLoader();
+  relatedLoading=false;
+}
+function maybeLoadMoreRelated(){
+  const grid=document.getElementById("relatedProductsGrid");
+  if(!grid || !document.getElementById("relatedProductsView")?.classList.contains("show")) return;
+  if(relatedLoading || relatedRenderedCount>=broughtTogetherProducts.length) return;
+  if(grid.scrollTop + grid.clientHeight >= grid.scrollHeight - Math.max(180,grid.clientHeight*.45)){
+    appendRelatedBatch();
+  }
+}
+function resetRelatedGrid(){
+  const grid=document.getElementById("relatedProductsGrid");
+  if(!grid) return;
+  const row=document.getElementById("relatedProductsLoadRow");
+  grid.querySelectorAll(".relatedGridCard").forEach(el=>el.remove());
+  relatedRenderedCount=0;
+  relatedLoading=false;
+  hideRelatedLoader();
+  if(row) grid.appendChild(row);
+  setRelatedHeaderCount();
+}
 function openRelatedProductsView(){
   const view=document.getElementById("relatedProductsView");
-  if(!view) return;
-  renderRelatedProductsGrid();
+  const grid=document.getElementById("relatedProductsGrid");
+  if(!view || !grid) return;
+  setRelatedHeaderCount();
+  resetRelatedGrid();
   view.classList.add("show");
   view.setAttribute("aria-hidden","false");
   document.body.dataset.relatedScrollY=String(window.scrollY||0);
   document.body.style.overflow="hidden";
+  requestAnimationFrame(()=>appendRelatedBatch());
 }
-
 function closeRelatedProductsView(){
   const view=document.getElementById("relatedProductsView");
   if(!view) return;
@@ -6369,34 +6124,19 @@ function closeRelatedProductsView(){
   view.setAttribute("aria-hidden","true");
   document.body.style.overflow="";
 }
-
 function setupBroughtTogetherControls(){
   const viewAll=document.getElementById("broughtTogetherViewAll");
   const prev=document.getElementById("broughtRailPrev");
   const next=document.getElementById("broughtRailNext");
   const track=document.getElementById("broughtTogetherTrack");
   const back=document.getElementById("relatedProductsBack");
-
-  if(viewAll && !viewAll.dataset.bound){
-    viewAll.dataset.bound="1";
-    viewAll.addEventListener("click",openRelatedProductsView);
-  }
-  if(prev && !prev.dataset.bound){
-    prev.dataset.bound="1";
-    prev.addEventListener("click",()=>scrollBroughtRail(-1));
-  }
-  if(next && !next.dataset.bound){
-    next.dataset.bound="1";
-    next.addEventListener("click",()=>scrollBroughtRail(1));
-  }
-  if(track && !track.dataset.boundScroll){
-    track.dataset.boundScroll="1";
-    track.addEventListener("scroll",updateBroughtRailButtons,{passive:true});
-  }
-  if(back && !back.dataset.bound){
-    back.dataset.bound="1";
-    back.addEventListener("click",closeRelatedProductsView);
-  }
+  const grid=document.getElementById("relatedProductsGrid");
+  if(viewAll && !viewAll.dataset.bound){viewAll.dataset.bound="1";viewAll.addEventListener("click",openRelatedProductsView)}
+  if(prev && !prev.dataset.bound){prev.dataset.bound="1";prev.addEventListener("click",()=>scrollBroughtRail(-1))}
+  if(next && !next.dataset.bound){next.dataset.bound="1";next.addEventListener("click",()=>scrollBroughtRail(1))}
+  if(track && !track.dataset.boundScroll){track.dataset.boundScroll="1";track.addEventListener("scroll",updateBroughtRailButtons,{passive:true})}
+  if(back && !back.dataset.bound){back.dataset.bound="1";back.addEventListener("click",closeRelatedProductsView)}
+  if(grid && !grid.dataset.boundScroll){grid.dataset.boundScroll="1";grid.addEventListener("scroll",maybeLoadMoreRelated,{passive:true})}
 }
 
 async function loadBroughtTogether(){
@@ -6404,37 +6144,19 @@ async function loadBroughtTogether(){
   const loading=document.getElementById("broughtTogetherLoading");
   const track=document.getElementById("broughtTogetherTrack");
   if(!section || !loading || !track || !product) return;
-
   setupBroughtTogetherControls();
   section.style.display="block";
   loading.style.display="flex";
   track.innerHTML="";
-
   try{
     const rows=await fetchAllRelatedProducts();
-
     const ranked=rows
       .filter(row=>String(row.id)!==String(product.id))
-      .map(row=>{
-        const scored=scoreBroughtTogether(row,product);
-        return {
-          id:row.id,
-          data:row,
-          score:scored.score,
-          reason:scored.reason
-        };
-      })
+      .map(row=>{const scored=scoreBroughtTogether(row,product);return {id:row.id,data:row,score:scored.score,reason:scored.reason};})
       .filter(item=>recommendationImage(item.data))
       .sort((a,b)=>b.score-a.score);
-
-    /* Keep every usable related product. There is intentionally no
-       10/12/20 item cap here. Full view gets the complete ranked list. */
     let final=ranked.filter(x=>x.score>=6);
-
-    /* If the catalog has too little metadata to score products, keep all
-       products with images instead of hiding them. */
     if(final.length===0) final=ranked;
-
     renderBroughtTogether(final);
   }catch(error){
     console.error("Brought Together:",error);
