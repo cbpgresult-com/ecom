@@ -2418,7 +2418,12 @@ animation:ckSkShimmer 1.35s infinite}
             - Because Step 1 exists in history, Back from Order Summary
               still returns to Address, just like the normal checkout flow.
           */
-          ckShowPanel(1);
+          /* Register Step 1 silently for Back navigation, but do NOT show the Address UI on initial load. */
+          try{
+            historyInitialized = true;
+            history.replaceState({ckStep:1},'',location.href);
+          }catch(e){}
+
           selectedAddress = savedAddresses[0];
 
           if(selectedAddress.isCurrentLocation || selectedAddress.type === 'current location'){
@@ -2435,6 +2440,7 @@ animation:ckSkShimmer 1.35s infinite}
 
           /* fillSummary() opens Step 2 and creates exactly one Step 2 history entry. */
           fillSummary(selectedAddress);
+          if(window.ckRealSkeletonHide) ckRealSkeletonHide();
 
         }else{
           /* No saved address: normal Address Step opens. */
