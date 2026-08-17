@@ -530,6 +530,45 @@ body{padding:0 !important;margin:0 !important;}
 }
 </style>
 
+
+<style id="ckDetectedPincodeStyle">
+.ck-detected-pincode-detail{position:relative}
+#ckDetectedPincode{
+  display:block;
+  width:100%;
+  margin:2px 0 0;
+  padding:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  font-weight:800;
+  line-height:1.25;
+  letter-spacing:.1px;
+  box-sizing:border-box;
+  cursor:text;
+}
+#ckDetectedPincode:focus{
+  text-decoration:underline;
+  text-decoration-color:#7c3aed;
+  text-underline-offset:3px;
+}
+.ck-detected-pin-loader{
+  display:none;
+  position:absolute;
+  right:10px;
+  bottom:8px;
+  font-size:10px;
+  font-weight:700;
+  color:#7c3aed;
+}
+.ck-detected-pin-loader.show{display:block}
+#ckDetectedPincode.ck-pin-invalid{
+  color:#b42318;
+}
+</style>
+
 </head>
 <body>
 <div id="ckInitialVioletLoader" aria-hidden="false">
@@ -720,7 +759,19 @@ body{padding:0 !important;margin:0 !important;}
                 <div class="ck-location-detail ck-plus-code-box ck-location-full"><small>Plus Code</small><strong id="ckDetectedArea">—</strong></div>
                 <div class="ck-location-detail"><small>District</small><strong id="ckDetectedDistrict">—</strong></div>
                 <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
-                <div class="ck-location-detail"><small>Pincode</small><strong id="ckDetectedPincode">—</strong></div>
+                <div class="ck-location-detail ck-detected-pincode-detail">
+  <small>Pincode</small>
+  <input
+    id="ckDetectedPincode"
+    type="tel"
+    inputmode="numeric"
+    maxlength="6"
+    autocomplete="postal-code"
+    value=""
+    aria-label="Delivery pincode"
+  >
+  <span id="ckDetectedPinLoader" class="ck-detected-pin-loader">Fetching…</span>
+</div>
               </div>
               <div class="ck-location-map-row">
                 <span>GPS accuracy: <b id="ckDetectedAccuracy">—</b></span>
@@ -1875,7 +1926,8 @@ body{padding:0 !important;margin:0 !important;}
     setText('ckDetectedDistrict',currentLocationData.district||'Not available');
     setText('ckDetectedCity',currentLocationData.city||'Not available');
     setText('ckDetectedState',currentLocationData.state||'Not available');
-    setText('ckDetectedPincode',currentLocationData.pincode||'Not available');
+    var detectedPin=el('ckDetectedPincode');
+    if(detectedPin) detectedPin.value=currentLocationData.pincode||'';
 
     setText(
       'ckDetectedAccuracy',
@@ -2058,6 +2110,13 @@ body{padding:0 !important;margin:0 !important;}
 
   window.ckUseDetectedLocation=function(){
     if(!currentUser||!currentLocationData){alert('Current location available nahi hai.');return;}
+
+    var detectedPin=el('ckDetectedPincode');
+    var typedPin=(detectedPin?.value||'').replace(/\D/g,'').slice(0,6);
+    if(typedPin.length===6){
+      currentLocationData.pincode=typedPin;
+    }
+
     var p=accountPerson();
     selectedAddress={
       id:null,name:p.name,phone:p.phone,
@@ -2101,6 +2160,76 @@ body{padding:0 !important;margin:0 !important;}
         }catch(e){ console.warn('Pincode lookup:',e); }
         finally{ loader.classList.remove('show'); }
       },180);
+    });
+  }
+
+
+  /* =========================================================
+     CURRENT LOCATION PINCODE EDIT
+     The GPS location stays the same, but the delivery pincode
+     can be corrected manually. District is fetched automatically.
+  ========================================================= */
+  function setupDetectedLocationPincode(){
+    var pin=el('ckDetectedPincode');
+    var district=el('ckDetectedDistrict');
+    var state=el('ckDetectedState');
+    var loader=el('ckDetectedPinLoader');
+    if(!pin)return;
+
+    var timer=null;
+
+    pin.addEventListener('input',function(){
+      var value=this.value.replace(/\D/g,'').slice(0,6);
+      this.value=value;
+      this.classList.remove('ck-pin-invalid');
+
+      if(timer)clearTimeout(timer);
+
+      if(value.length!==6){
+        if(district) setText('ckDetectedDistrict','—');
+        return;
+      }
+
+      if(loader)loader.classList.add('show');
+
+      timer=setTimeout(async function(){
+        try{
+          var info=await lookupPincodeDetails(value);
+
+          if(info){
+            /* Pincode is user-correctable; district follows the new pincode. */
+            currentLocationData.pincode=value;
+            currentLocationData.district=info.district||'';
+
+            if(info.state){
+              currentLocationData.state=info.state;
+              if(state)setText('ckDetectedState',info.state);
+            }
+
+            setText('ckDetectedDistrict',info.district||'Not available');
+          }else{
+            currentLocationData.pincode=value;
+            currentLocationData.district='';
+            setText('ckDetectedDistrict','Not available');
+            pin.classList.add('ck-pin-invalid');
+          }
+        }catch(e){
+          console.warn('Detected pincode lookup:',e);
+          pin.classList.add('ck-pin-invalid');
+        }finally{
+          if(loader)loader.classList.remove('show');
+        }
+      },220);
+    });
+
+    pin.addEventListener('blur',function(){
+      var value=this.value.replace(/\D/g,'').slice(0,6);
+      this.value=value;
+      if(value.length!==6){
+        this.classList.add('ck-pin-invalid');
+        return;
+      }
+      this.classList.remove('ck-pin-invalid');
     });
   }
 
@@ -2623,6 +2752,7 @@ body{padding:0 !important;margin:0 !important;}
 
   document.getElementById('ckBackBtn').addEventListener('click',function(){window.ckGoBack();});
   setupPincode();
+  setupDetectedLocationPincode();
   document.addEventListener('DOMContentLoaded',init);
 
   window.__MY_STORE_SUPABASE__.auth.onAuthStateChange(function(event,session){
