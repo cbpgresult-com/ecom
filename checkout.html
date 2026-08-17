@@ -493,8 +493,44 @@ body{padding:0 !important;margin:0 !important;}
 }
 </style>
 
+
+<style id="ckInitialVioletLoaderStyle">
+#ckInitialVioletLoader{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.94);
+  transition:opacity .18s ease, visibility .18s ease;
+}
+#ckInitialVioletLoader.ck-loader-hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.ck-initial-violet-spinner{
+  width:22px;
+  height:22px;
+  border:3px solid rgba(124,58,237,.18);
+  border-top-color:#7c3aed;
+  border-radius:50%;
+  animation:ckInitialVioletSpin .72s linear infinite;
+}
+@keyframes ckInitialVioletSpin{
+  to{transform:rotate(360deg);}
+}
+</style>
+
 </head>
 <body>
+
+<!-- Tiny violet loader shown before the real address skeleton -->
+<div id="ckInitialVioletLoader" aria-hidden="false">
+  <div class="ck-initial-violet-spinner" aria-label="Loading"></div>
+</div>
+
 
 <div class="ckwrap">
   <div class="ckphone">
@@ -957,6 +993,34 @@ body{padding:0 !important;margin:0 !important;}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+
+<script id="ckInitialVioletLoaderLogic">
+(function(){
+  var hidden=false;
+
+  function hideInitialLoader(){
+    if(hidden) return;
+    hidden=true;
+    var l=document.getElementById('ckInitialVioletLoader');
+    if(!l) return;
+    l.classList.add('ck-loader-hide');
+    setTimeout(function(){
+      if(l && l.parentNode) l.parentNode.removeChild(l);
+    },220);
+  }
+
+  /* Skeleton becomes visible only after this tiny UI loader. */
+  function startSkeletonAfterTinyLoader(){
+    setTimeout(function(){
+      if(window.ckRealSkeletonShow) window.ckRealSkeletonShow();
+    },260);
+  }
+
+  window.ckHideInitialVioletLoader=hideInitialLoader;
+  window.ckStartSkeletonAfterTinyLoader=startSkeletonAfterTinyLoader;
+})();
+</script>
 
 <script id="ckRealSkeletonLogic">
 (function(){
@@ -2463,7 +2527,8 @@ body{padding:0 !important;margin:0 !important;}
     try{
       /* Keep the actual checkout UI hidden until we know whether
          a saved address should open Step 2 directly. */
-      if(window.ckRealSkeletonShow) ckRealSkeletonShow();
+      if(window.ckStartSkeletonAfterTinyLoader) ckStartSkeletonAfterTinyLoader();
+      else if(window.ckRealSkeletonShow) ckRealSkeletonShow();
 
       try{
         var existing=sessionStorage.getItem('ckOriginPage');
@@ -2479,6 +2544,7 @@ body{padding:0 !important;margin:0 !important;}
       var session=sessionRes.data && sessionRes.data.session;
       if(!session){
         if(window.ckRealSkeletonHide) ckRealSkeletonHide();
+        if(window.ckHideInitialVioletLoader) ckHideInitialVioletLoader();
         showOnly('ckPanelLoginGate');
         el('ckStepper').style.display='none';
         setText('ckHeaderTitle','Login required');
@@ -2494,6 +2560,7 @@ body{padding:0 !important;margin:0 !important;}
 
       if(!checkoutItems.length){
         if(window.ckRealSkeletonHide) ckRealSkeletonHide();
+        if(window.ckHideInitialVioletLoader) ckHideInitialVioletLoader();
         showOnly('ckPanelEmpty');
         el('ckStepper').style.display='none';
         setText('ckHeaderTitle','Checkout');
@@ -2533,16 +2600,19 @@ body{padding:0 !important;margin:0 !important;}
           /* fillSummary() opens Step 2 and creates exactly one Step 2 history entry. */
           fillSummary(selectedAddress);
           if(window.ckRealSkeletonHide) ckRealSkeletonHide();
+        if(window.ckHideInitialVioletLoader) ckHideInitialVioletLoader();
 
         }else{
           /* No saved address: normal Address Step opens. */
           ckShowPanel(1);
           renderSavedAddresses();
           if(window.ckRealSkeletonHide) ckRealSkeletonHide();
+        if(window.ckHideInitialVioletLoader) ckHideInitialVioletLoader();
         }
       }catch(addressError){
         console.error('ADDRESS LOAD ERROR:',addressError);
         if(window.ckRealSkeletonHide) ckRealSkeletonHide();
+        if(window.ckHideInitialVioletLoader) ckHideInitialVioletLoader();
         /* Address loading is non-fatal: show the new-address form. */
         el('ckSavedAddrSection').style.display='none';
         el('ckAddressFormSection').style.display='block';
@@ -2552,6 +2622,7 @@ body{padding:0 !important;margin:0 !important;}
     }catch(error){
       console.error('CHECKOUT INIT ERROR:',error);
       if(window.ckRealSkeletonHide) ckRealSkeletonHide();
+        if(window.ckHideInitialVioletLoader) ckHideInitialVioletLoader();
       showOnly('ckPanel1');
       el('ckStepper').style.display='flex';
       setText('ckHeaderTitle','Add delivery address');
