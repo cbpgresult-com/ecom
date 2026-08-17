@@ -411,8 +411,57 @@ body{padding:0 !important;margin:0 !important;}
   .ckfooterbar .ckbtn{max-width:340px;margin-left:auto;display:flex;}
 }
 </style>
+
+<style id="ckRealSkeletonStyle">
+.ck-real-skeleton{display:none;min-height:100%}
+.ck-real-skeleton.show{display:block}
+.ck-sk{position:relative;overflow:hidden;background:#eef1f4;border-radius:8px}
+.ck-sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);
+animation:ckSkShimmer 1.35s infinite}
+@keyframes ckSkShimmer{100%{transform:translateX(100%)}}
+.ck-sk-header{height:58px;border-radius:0;margin-bottom:14px}
+.ck-sk-stepper{height:46px;margin:0 16px 16px}
+.ck-sk-card{margin:0 16px 14px;padding:16px;border:1px solid #eee;border-radius:12px}
+.ck-sk-line{height:13px;margin:10px 0}
+.ck-sk-line.w40{width:40%}.ck-sk-line.w55{width:55%}.ck-sk-line.w70{width:70%}.ck-sk-line.w85{width:85%}
+.ck-sk-product{height:74px;margin:10px 0;border-radius:10px}
+.ck-sk-price{height:18px;margin:12px 0}
+.ck-sk-footer{height:62px;margin:14px 16px;border-radius:12px}
+</style>
+
 </head>
 <body>
+
+<!-- REAL CHECKOUT STRUCTURE SKELETON: shown only while saved address / Step 2 is being resolved -->
+<div id="ckRealSkeleton" class="ck-real-skeleton" aria-hidden="true">
+  <div class="ck-sk ck-sk-header"></div>
+  <div class="ck-sk ck-sk-stepper"></div>
+
+  <div class="ck-sk-card">
+    <div class="ck-sk ck-sk-line w40"></div>
+    <div class="ck-sk ck-sk-line w70"></div>
+    <div class="ck-sk ck-sk-line w55"></div>
+    <div class="ck-sk ck-sk-line w85"></div>
+  </div>
+
+  <div class="ck-sk-card">
+    <div class="ck-sk ck-sk-line w40"></div>
+    <div class="ck-sk ck-sk-product"></div>
+    <div class="ck-sk ck-sk-product"></div>
+  </div>
+
+  <div class="ck-sk-card">
+    <div class="ck-sk ck-sk-line w55"></div>
+    <div class="ck-sk ck-sk-price"></div>
+    <div class="ck-sk ck-sk-price"></div>
+    <div class="ck-sk ck-sk-price"></div>
+    <div class="ck-sk ck-sk-price"></div>
+  </div>
+
+  <div class="ck-sk ck-sk-footer"></div>
+</div>
+
 
 <div class="ckwrap">
   <div class="ckphone">
@@ -831,6 +880,43 @@ body{padding:0 !important;margin:0 !important;}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+<script id="ckRealSkeletonLogic">
+(function(){
+  function ckRealSkeletonShow(){
+    var s=document.getElementById('ckRealSkeleton');
+    if(!s) return;
+    s.classList.add('show');
+    s.setAttribute('aria-hidden','false');
+
+    /* Hide checkout panels while the real-layout skeleton is active. */
+    document.querySelectorAll('[id^="ckPanel"]').forEach(function(p){
+      p.dataset.ckSkeletonHidden = '1';
+      p.style.display='none';
+    });
+    var step= document.getElementById('ckStepper');
+    if(step) step.style.visibility='hidden';
+  }
+
+  function ckRealSkeletonHide(){
+    var s=document.getElementById('ckRealSkeleton');
+    if(s){
+      s.classList.remove('show');
+      s.setAttribute('aria-hidden','true');
+    }
+    document.querySelectorAll('[data-ck-skeleton-hidden="1"]').forEach(function(p){
+      p.style.display='';
+      delete p.dataset.ckSkeletonHidden;
+    });
+    var step=document.getElementById('ckStepper');
+    if(step) step.style.visibility='';
+  }
+
+  window.ckRealSkeletonShow=ckRealSkeletonShow;
+  window.ckRealSkeletonHide=ckRealSkeletonHide;
+})();
+</script>
+
 <script>
 (function(){
   'use strict';
@@ -2278,6 +2364,10 @@ body{padding:0 !important;margin:0 !important;}
   ========================================================= */
   async function init(){
     try{
+      /* Keep the actual checkout UI hidden until we know whether
+         a saved address should open Step 2 directly. */
+      if(window.ckRealSkeletonShow) ckRealSkeletonShow();
+
       try{
         var existing=sessionStorage.getItem('ckOriginPage');
         if(!existing && document.referrer && new URL(document.referrer).origin===location.origin){
@@ -2291,6 +2381,7 @@ body{padding:0 !important;margin:0 !important;}
 
       var session=sessionRes.data && sessionRes.data.session;
       if(!session){
+        if(window.ckRealSkeletonHide) ckRealSkeletonHide();
         showOnly('ckPanelLoginGate');
         el('ckStepper').style.display='none';
         setText('ckHeaderTitle','Login required');
@@ -2305,6 +2396,7 @@ body{padding:0 !important;margin:0 !important;}
       await loadCheckoutItems();
 
       if(!checkoutItems.length){
+        if(window.ckRealSkeletonHide) ckRealSkeletonHide();
         showOnly('ckPanelEmpty');
         el('ckStepper').style.display='none';
         setText('ckHeaderTitle','Checkout');
@@ -2359,6 +2451,7 @@ body{padding:0 !important;margin:0 !important;}
 
     }catch(error){
       console.error('CHECKOUT INIT ERROR:',error);
+      if(window.ckRealSkeletonHide) ckRealSkeletonHide();
       showOnly('ckPanel1');
       el('ckStepper').style.display='flex';
       setText('ckHeaderTitle','Add delivery address');
