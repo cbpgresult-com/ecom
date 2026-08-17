@@ -996,6 +996,37 @@ main{
  .hero-dot{width:7px;height:4px}.hero-dot.active{width:18px}
 }
 
+
+/* =========================================================
+   BOTTOM NAVIGATION - INSTANT VIOLET PAGE LOADER
+   Same violet spinner used by Categories navigation.
+========================================================= */
+#bottomNavLoader{
+  position:fixed;
+  inset:0;
+  z-index:2147483646;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  pointer-events:none;
+}
+#bottomNavLoader.show{
+  display:flex;
+}
+#bottomNavLoader .bottom-nav-spinner{
+  width:34px;
+  height:34px;
+  border:3px solid #e9d5ff;
+  border-top-color:#5b21b6;
+  border-right-color:#6d28d9;
+  border-radius:50%;
+  animation:bottomNavSpin .65s linear infinite;
+}
+@keyframes bottomNavSpin{
+  to{transform:rotate(360deg)}
+}
+
 /* =========================================================
    LAPTOP/DESKTOP PRODUCT NAVIGATION LOADER - SPINNER ONLY
    Do not show back/search/cart header while navigating.
@@ -1294,6 +1325,12 @@ main{
   <div class="nav-body">
     <div class="nav-spinner"></div>
   </div>
+</div>
+
+
+<!-- ================= INSTANT BOTTOM NAV LOADER ================= -->
+<div id="bottomNavLoader" aria-hidden="true">
+  <div class="bottom-nav-spinner"></div>
 </div>
 
 <div class="instantBody">
@@ -1755,7 +1792,7 @@ main{
 
 <nav class="bottom-nav">
 
-  <button class="bottom-item active" onclick="goHome()">
+  <button class="bottom-item active" data-nav="home" aria-current="page" onclick="goHome()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <path d="m3 11 9-8 9 8"/>
       <path d="M5 10v10h14V10"/>
@@ -1764,7 +1801,7 @@ main{
     Home
   </button>
 
-  <button class="bottom-item" onclick="goCategories()">
+  <button class="bottom-item" data-nav="categories" aria-current="false" onclick="goCategories()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <rect x="4" y="4" width="6" height="6" rx="1"/>
       <rect x="14" y="4" width="6" height="6" rx="1"/>
@@ -1774,7 +1811,7 @@ main{
     Categories
   </button>
 
-  <button class="bottom-item" onclick="goAccount()">
+  <button class="bottom-item" data-nav="account" aria-current="false" onclick="goAccount()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <circle cx="12" cy="8" r="3.5"/>
       <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
@@ -1782,7 +1819,7 @@ main{
     Account
   </button>
 
-  <button class="bottom-item" onclick="goOrders()">
+  <button class="bottom-item" data-nav="orders" aria-current="false" onclick="goOrders()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <path d="m4 7 8-4 8 4-8 4z"/>
       <path d="M4 7v10l8 4 8-4V7"/>
@@ -1791,7 +1828,7 @@ main{
     Orders
   </button>
 
-  <button class="bottom-item" onclick="goCart()">
+  <button class="bottom-item" data-nav="cart" aria-current="false" onclick="goCart()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <circle cx="9" cy="20" r="1"/>
       <circle cx="18" cy="20" r="1"/>
@@ -2937,38 +2974,63 @@ function goAddresses(){
 
 }
 
+function showBottomNavLoader(activeKey){
+
+  const nav = document.querySelector(".bottom-nav");
+  if(nav){
+    const items = nav.querySelectorAll(".bottom-item");
+    items.forEach(function(item){
+      item.classList.remove("active");
+      item.setAttribute("aria-current","false");
+    });
+
+    const active = nav.querySelector('[data-nav="'+activeKey+'"]');
+    if(active){
+      active.classList.add("active");
+      active.setAttribute("aria-current","page");
+    }
+  }
+
+  const loader = document.getElementById("bottomNavLoader");
+  if(loader){
+    loader.classList.add("show");
+    loader.setAttribute("aria-hidden","false");
+  }
+}
+
+function navigateFromBottomNav(url, activeKey){
+
+  showBottomNavLoader(activeKey);
+
+  /* Give the browser one paint so the violet spinner is visible
+     immediately before the new document starts loading. */
+  requestAnimationFrame(function(){
+    setTimeout(function(){
+      window.location.href = url;
+    }, 0);
+  });
+}
+
 function goOrders(){
-
-  window.location.href =
-    "my-orders.html";
-
+  navigateFromBottomNav("my-orders.html", "orders");
 }
 
 function goCart(){
-
-  window.location.href =
-    "cart.html";
-
+  navigateFromBottomNav("cart.html", "cart");
 }
 
 function goHome(){
-
-  window.location.href =
-    "index.html";
-
+  navigateFromBottomNav("index.html", "home");
 }
 
 function goCategories(){
-
-  window.location.href =
-    "categories.html";
-
+  navigateFromBottomNav("categories.html", "categories");
 }
 
 function goAccount(){
 
   if(window.innerWidth <= 700){
-    goProfile();
+    navigateFromBottomNav("account.html", "account");
     return;
   }
 
@@ -3349,6 +3411,14 @@ window.addEventListener("pageshow",function(){renderLookingBanner();});
    FIX: RETURN FROM PRODUCT PAGE
    Mobile/browser Back must remove navigation loader.
 ========================================================= */
+function resetBottomNavLoader(){
+  const loader = document.getElementById("bottomNavLoader");
+  if(loader){
+    loader.classList.remove("show");
+    loader.setAttribute("aria-hidden","true");
+  }
+}
+
 function resetProductNavigationState(){
 
   const loader =
@@ -3375,6 +3445,7 @@ function resetProductNavigationState(){
 window.addEventListener(
   "pageshow",
   function(){
+    resetBottomNavLoader();
     resetProductNavigationState();
   }
 );
@@ -3385,6 +3456,7 @@ window.addEventListener(
 window.addEventListener(
   "focus",
   function(){
+    resetBottomNavLoader();
     resetProductNavigationState();
   }
 );
