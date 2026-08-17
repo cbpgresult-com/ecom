@@ -495,6 +495,41 @@ body{padding:0 !important;margin:0 !important;}
 }
 </style>
 
+
+<style id="ckInitialVioletLoaderStyle">
+#ckInitialVioletLoader{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  z-index:2147483647 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:#fff !important;
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+#ckInitialVioletLoader.ck-loader-hide{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:opacity .16s ease,visibility .16s ease;
+}
+.ck-initial-violet-spinner{
+  width:22px;
+  height:22px;
+  border:3px solid rgba(124,58,237,.18);
+  border-top-color:#7c3aed;
+  border-radius:50%;
+  animation:ckInitialVioletSpin .72s linear infinite;
+}
+@keyframes ckInitialVioletSpin{
+  to{transform:rotate(360deg);}
+}
+</style>
+
 </head>
 <body>
 <div id="ckInitialVioletLoader" aria-hidden="false">
@@ -965,6 +1000,20 @@ body{padding:0 !important;margin:0 !important;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
+
+<script id="ckInitialVioletLoaderLogic">
+(function(){
+  window.ckHideInitialVioletLoader=function(){
+    var l=document.getElementById('ckInitialVioletLoader');
+    if(!l) return;
+    l.classList.add('ck-loader-hide');
+    setTimeout(function(){
+      if(l && l.parentNode) l.parentNode.removeChild(l);
+    },180);
+  };
+})();
+</script>
+
 <script id="ckRealSkeletonLogic">
 (function(){
   function ckRealSkeletonShow(){
@@ -985,9 +1034,15 @@ body{padding:0 !important;margin:0 !important;}
       step.style.display='flex';
       step.style.visibility='visible';
     }
+
+    /* The skeleton is now painted; hand off from full-screen spinner to skeleton. */
+    requestAnimationFrame(function(){
+      if(window.ckHideInitialVioletLoader) window.ckHideInitialVioletLoader();
+    });
   }
 
   function ckRealSkeletonHide(){
+    if(window.ckHideInitialVioletLoader) window.ckHideInitialVioletLoader();
     var s=document.getElementById('ckRealSkeleton');
     var main=document.querySelector('.ckmain');
 
