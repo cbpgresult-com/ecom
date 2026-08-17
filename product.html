@@ -29,7 +29,7 @@ a{text-decoration:none;color:inherit}
 .page{
   width:min(1450px,100%);
   margin:auto;
-  padding:22px 4%;
+  padding:4px 4% 22px;
 }
 
 .product{
@@ -1020,7 +1020,7 @@ a{text-decoration:none;color:inherit}
     width:100%;
     max-width:100%;
     margin:0;
-    padding:0 0 90px;
+    padding:66px 0 90px;
   }
 
   .product{
@@ -1551,7 +1551,6 @@ a{text-decoration:none;color:inherit}
 @media(max-width:900px){
 .mobileProductHeader{position:fixed;top:0;left:0;right:0;width:100%;z-index:99999;height:62px;background:#fff;border-bottom:1px solid #e5e7eb;padding:7px 10px;display:none;flex-direction:row;align-items:center;gap:6px}
 .mobileProductHeader.show{display:flex}
-.page{padding-top:66px !important}
 .mobileProductHeader .mpBack{width:38px;height:38px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 38px}
 .mobileProductHeader .mpBack svg{width:25px;height:25px}
 .mobileProductLogo{font-size:20px;font-weight:900;color:#6d28d9;white-space:nowrap;flex:0 0 auto}
@@ -1912,6 +1911,228 @@ a{text-decoration:none;color:inherit}
 .mobileProductCart svg{width:24px;height:24px}
 .mobileProductCartBadge{position:absolute;top:1px;right:-1px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#6d28d9;color:#fff;font-size:10px;line-height:16px;text-align:center;display:none}
 .mobileProductCartBadge.show{display:block}
+}
+
+
+/* =========================================================
+   BROUGHT TOGETHER / RELATED PRODUCTS
+   Smart recommendation strip — desktop + mobile
+========================================================= */
+.broughtTogetherSection{
+  width:min(1450px,100%);
+  margin:24px auto 0;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:20px;
+  display:none;
+  overflow:hidden;
+}
+.broughtTogetherHeader{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+}
+.broughtTogetherTitle{
+  margin:0;
+  font-size:20px;
+  line-height:1.2;
+  font-weight:800;
+  color:#111827;
+}
+.broughtTogetherSub{
+  margin:5px 0 0;
+  font-size:12px;
+  color:#6b7280;
+}
+.broughtTogetherTrack{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:14px;
+}
+.broughtProductCard{
+  min-width:0;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.broughtProductCard:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(17,24,39,.09);
+  border-color:#d8b4fe;
+}
+.broughtProductImageWrap{
+  width:100%;
+  aspect-ratio:1/1;
+  background:#f8fafc;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.broughtProductImageWrap img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+.broughtProductBody{
+  padding:11px 11px 12px;
+}
+.broughtProductName{
+  font-size:13px;
+  line-height:1.35;
+  font-weight:700;
+  color:#111827;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  min-height:35px;
+}
+.broughtProductRatingRow{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:7px;
+  min-height:20px;
+}
+.broughtProductRating{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  background:#16833b;
+  color:#fff;
+  border-radius:5px;
+  padding:3px 6px;
+  font-size:10px;
+  font-weight:800;
+}
+.broughtProductReviews{
+  color:#6b7280;
+  font-size:10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.broughtProductPriceRow{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:8px;
+}
+.broughtProductPrice{
+  font-size:16px;
+  font-weight:900;
+  color:#111827;
+}
+.broughtProductMrp{
+  font-size:11px;
+  color:#777;
+  text-decoration:line-through;
+}
+.broughtProductOff{
+  font-size:9px;
+  line-height:16px;
+  padding:0 5px;
+  border-radius:4px;
+  background:#16833b;
+  color:#fff;
+  font-weight:800;
+}
+.broughtProductReason{
+  margin-top:8px;
+  font-size:10px;
+  color:#6d28d9;
+  font-weight:700;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.broughtTogetherLoading{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:14px;
+}
+.broughtSkeleton{
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+}
+.broughtSkeletonImage{
+  aspect-ratio:1/1;
+  background:linear-gradient(90deg,#f5f5f5 25%,#ececec 37%,#f5f5f5 63%);
+  background-size:400% 100%;
+  animation:broughtSkeletonMove 1.2s ease infinite;
+}
+.broughtSkeletonBody{padding:11px}
+.broughtSkeletonLine{
+  height:10px;
+  border-radius:6px;
+  background:#eeeeee;
+  margin-bottom:8px;
+}
+.broughtSkeletonLine.short{width:60%}
+@keyframes broughtSkeletonMove{
+  0%{background-position:100% 0}
+  100%{background-position:-100% 0}
+}
+
+@media(max-width:1100px) and (min-width:901px){
+  .broughtTogetherTrack,
+  .broughtTogetherLoading{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+}
+
+@media(max-width:900px){
+  .broughtTogetherSection{
+    width:100%;
+    margin:14px 0 0;
+    padding:16px 12px 18px;
+    border-left:0;
+    border-right:0;
+    border-radius:0;
+  }
+  .broughtTogetherHeader{
+    margin-bottom:12px;
+    align-items:flex-start;
+  }
+  .broughtTogetherTitle{font-size:18px}
+  .broughtTogetherSub{font-size:11px}
+  .broughtTogetherTrack,
+  .broughtTogetherLoading{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:2px 1px 6px;
+    scroll-snap-type:x proximity;
+    scrollbar-width:none;
+  }
+  .broughtTogetherTrack::-webkit-scrollbar,
+  .broughtTogetherLoading::-webkit-scrollbar{display:none}
+  .broughtProductCard,
+  .broughtSkeleton{
+    flex:0 0 158px;
+    scroll-snap-align:start;
+  }
+  .broughtProductBody{padding:9px 9px 11px}
+  .broughtProductName{font-size:12px;min-height:33px}
+  .broughtProductPrice{font-size:15px}
+  .broughtProductReason{font-size:9px}
+}
+
+@media(max-width:420px){
+  .broughtProductCard,
+  .broughtSkeleton{flex-basis:150px}
 }
 </style>
 
@@ -2643,6 +2864,27 @@ Buy at <span id="buyPrice"></span>
 
 <!-- OLD DETAILS ELEMENT KE LIYE -->
 <section id="details" style="display:none"></section>
+
+<!-- ================= BROUGHT TOGETHER / RELATED PRODUCTS ================= -->
+<section id="broughtTogetherSection" class="broughtTogetherSection" aria-label="Brought Together">
+  <div class="broughtTogetherHeader">
+    <div>
+      <h2 class="broughtTogetherTitle">Brought Together</h2>
+      <p class="broughtTogetherSub">Related products you may like</p>
+    </div>
+  </div>
+
+  <div id="broughtTogetherLoading" class="broughtTogetherLoading" aria-hidden="true">
+    <div class="broughtSkeleton"><div class="broughtSkeletonImage"></div><div class="broughtSkeletonBody"><div class="broughtSkeletonLine"></div><div class="broughtSkeletonLine short"></div></div></div>
+    <div class="broughtSkeleton"><div class="broughtSkeletonImage"></div><div class="broughtSkeletonBody"><div class="broughtSkeletonLine"></div><div class="broughtSkeletonLine short"></div></div></div>
+    <div class="broughtSkeleton"><div class="broughtSkeletonImage"></div><div class="broughtSkeletonBody"><div class="broughtSkeletonLine"></div><div class="broughtSkeletonLine short"></div></div></div>
+    <div class="broughtSkeleton"><div class="broughtSkeletonImage"></div><div class="broughtSkeletonBody"><div class="broughtSkeletonLine"></div><div class="broughtSkeletonLine short"></div></div></div>
+    <div class="broughtSkeleton"><div class="broughtSkeletonImage"></div><div class="broughtSkeletonBody"><div class="broughtSkeletonLine"></div><div class="broughtSkeletonLine short"></div></div></div>
+  </div>
+
+  <div id="broughtTogetherTrack" class="broughtTogetherTrack"></div>
+</section>
+
 
 </main>
 
@@ -4812,6 +5054,9 @@ function render(){
 
   updateCart();
 
+  /* Load smart related products at the very bottom of the page. */
+  loadBroughtTogether();
+
   if(window.innerWidth > 900){
     const loader = document.getElementById("desktopProductPageLoader");
     if(loader){
@@ -5583,6 +5828,336 @@ window.addEventListener(
 
   }
 );
+
+
+
+
+/* =========================================================
+   BROUGHT TOGETHER — SMART RELATED PRODUCT ENGINE
+
+   Ranking logic:
+   1. Same category = strongest signal
+   2. Shared title/category keywords
+   3. Same brand (when available)
+   4. Similar price range
+   5. Rating + review strength
+   6. In-stock products first
+   7. Never show the current product
+
+   This gives a marketplace-style recommendation without needing
+   a separate recommendation table.
+========================================================= */
+const BROUGHT_TOGETHER_LIMIT_DESKTOP = 5;
+const BROUGHT_TOGETHER_LIMIT_MOBILE = 10;
+const BROUGHT_TOGETHER_FETCH_LIMIT = 250;
+
+function recommendationText(value){
+  return cleanPart(value).toLowerCase();
+}
+
+function recommendationTokens(value){
+  const stop = new Set([
+    "the","and","for","with","from","this","that","new","best",
+    "premium","quality","product","item","set","pack","pcs","piece",
+    "of","to","in","on","by","a","an","is","are","more"
+  ]);
+
+  return new Set(
+    recommendationText(value)
+      .replace(/[^a-z0-9\u0900-\u097f]+/gi," ")
+      .split(/\s+/)
+      .map(x=>x.trim())
+      .filter(x=>x.length>=3 && !stop.has(x))
+  );
+}
+
+function recommendationValue(data,keys,fallback=""){
+  return v(data,keys,fallback);
+}
+
+function recommendationNumber(data,keys,fallback=0){
+  return num(recommendationValue(data,keys,fallback));
+}
+
+function recommendationImage(data){
+  let gallery=[];
+
+  if(Array.isArray(data?.images)){
+    gallery=data.images;
+  }else if(typeof data?.images === "string"){
+    const parsed=parseJSON(data.images,[]);
+    if(Array.isArray(parsed)) gallery=parsed;
+  }
+
+  gallery=gallery.map(x=>
+    typeof x === "string"
+      ? x
+      : (x?.url || x?.src || x?.image || "")
+  ).filter(Boolean);
+
+  return (
+    data?.main_image ||
+    gallery[0] ||
+    v(data,["image","image_url","thumbnail","product_image"],"")
+  );
+}
+
+function recommendationProductName(data){
+  return String(
+    v(data,["name","title","product_name"],"Product")
+  ).trim() || "Product";
+}
+
+function recommendationCategory(data){
+  return String(
+    v(data,["category","category_name","product_category","categoryName"],"")
+  ).trim();
+}
+
+function recommendationBrand(data){
+  return String(
+    v(data,["brand","brand_name","brandName","manufacturer"],"")
+  ).trim();
+}
+
+function recommendationTags(data){
+  const raw=v(
+    data,
+    ["tags","keywords","search_keywords","product_tags"],
+    ""
+  );
+
+  if(Array.isArray(raw)) return raw.join(" ");
+  if(typeof raw === "object" && raw) return Object.values(raw).join(" ");
+  return String(raw || "");
+}
+
+function scoreBroughtTogether(candidate,current){
+  const currentName=recommendationProductName(current.raw || current);
+  const candidateName=recommendationProductName(candidate);
+
+  const currentCategory=recommendationCategory(current.raw || current);
+  const candidateCategory=recommendationCategory(candidate);
+
+  const currentBrand=recommendationBrand(current.raw || current);
+  const candidateBrand=recommendationBrand(candidate);
+
+  const currentTokens=recommendationTokens(
+    [currentName,currentCategory,recommendationTags(current.raw || current)].join(" ")
+  );
+  const candidateTokens=recommendationTokens(
+    [candidateName,candidateCategory,recommendationTags(candidate)].join(" ")
+  );
+
+  let score=0;
+  let reasons=[];
+
+  /* Same category is the biggest marketplace-style signal. */
+  if(currentCategory && candidateCategory &&
+     currentCategory.toLowerCase()===candidateCategory.toLowerCase()){
+    score+=42;
+    reasons.push("Same category");
+  }else if(currentCategory && candidateCategory){
+    const catOverlap=[...recommendationTokens(currentCategory)]
+      .filter(x=>recommendationTokens(candidateCategory).has(x)).length;
+    if(catOverlap){
+      score+=18;
+      reasons.push("Similar category");
+    }
+  }
+
+  /* Shared product words help when categories are broad. */
+  let shared=0;
+  currentTokens.forEach(token=>{
+    if(candidateTokens.has(token)) shared++;
+  });
+  if(shared){
+    score+=Math.min(30,shared*7);
+    reasons.push("Similar product");
+  }
+
+  /* Same brand is useful but must not overpower category relevance. */
+  if(currentBrand && candidateBrand &&
+     currentBrand.toLowerCase()===candidateBrand.toLowerCase()){
+    score+=16;
+    reasons.push("Same brand");
+  }
+
+  const currentPrice=Math.max(0,Number(current.price)||0);
+  const candidatePrice=recommendationNumber(candidate,["price","selling_price","sale_price"],0);
+
+  if(currentPrice>0 && candidatePrice>0){
+    const ratio=Math.min(currentPrice,candidatePrice)/Math.max(currentPrice,candidatePrice);
+    if(ratio>=0.85){
+      score+=14;
+      reasons.push("Similar price");
+    }else if(ratio>=0.65){
+      score+=8;
+    }else if(ratio>=0.45){
+      score+=3;
+    }
+  }
+
+  const rating=recommendationNumber(candidate,["rating","avg_rating"],0);
+  const reviews=recommendationNumber(candidate,["review_count","reviews"],0);
+  if(rating>=4.5) score+=8;
+  else if(rating>=4) score+=5;
+  else if(rating>=3) score+=2;
+  if(reviews>=100) score+=4;
+  else if(reviews>=20) score+=2;
+
+  const stock=recommendationNumber(candidate,["stock","inventory","available_stock"],0);
+  if(stock>0) score+=5;
+  else score-=18;
+
+  /* Tiny deterministic tie-breaker so the row does not reshuffle randomly. */
+  const idText=String(candidate.id||candidateName);
+  let tie=0;
+  for(let i=0;i<idText.length;i++) tie=(tie+idText.charCodeAt(i)*(i+1))%17;
+  score+=tie/100;
+
+  return {
+    score,
+    reason:reasons[0] || "You may also like"
+  };
+}
+
+function renderBroughtTogether(products){
+  const section=document.getElementById("broughtTogetherSection");
+  const loading=document.getElementById("broughtTogetherLoading");
+  const track=document.getElementById("broughtTogetherTrack");
+
+  if(!section || !loading || !track) return;
+
+  loading.style.display="none";
+  track.innerHTML="";
+
+  if(!Array.isArray(products) || !products.length){
+    section.style.display="none";
+    return;
+  }
+
+  const limit=window.innerWidth<=900
+    ? BROUGHT_TOGETHER_LIMIT_MOBILE
+    : BROUGHT_TOGETHER_LIMIT_DESKTOP;
+
+  track.innerHTML=products.slice(0,limit).map(item=>{
+    const data=item.data;
+    const title=recommendationProductName(data);
+    const image=recommendationImage(data);
+    const price=recommendationNumber(data,["price","selling_price","sale_price"],0);
+    const mrp=recommendationNumber(data,["mrp","original_price","old_price"],0);
+    const rating=recommendationNumber(data,["rating","avg_rating"],0);
+    const reviews=recommendationNumber(data,["review_count","reviews"],0);
+
+    const discount=mrp>price
+      ? Math.round(((mrp-price)/mrp)*100)
+      : 0;
+
+    return `
+      <article class="broughtProductCard"
+        role="link"
+        tabindex="0"
+        data-product-id="${escapeHtml(item.id)}"
+        aria-label="${escapeHtml(title)}">
+
+        <div class="broughtProductImageWrap">
+          ${image
+            ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.style.display='none'">`
+            : `<div style="font-size:11px;color:#999">Image unavailable</div>`}
+        </div>
+
+        <div class="broughtProductBody">
+          <div class="broughtProductName">${escapeHtml(title)}</div>
+
+          <div class="broughtProductRatingRow">
+            ${rating>0
+              ? `<span class="broughtProductRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>`
+              : ""}
+            ${reviews>0
+              ? `<span class="broughtProductReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span>`
+              : ""}
+          </div>
+
+          <div class="broughtProductPriceRow">
+            ${price>0 ? `<span class="broughtProductPrice">${money(price)}</span>` : ""}
+            ${mrp>price ? `<span class="broughtProductMrp">${money(mrp)}</span>` : ""}
+            ${discount>0 ? `<span class="broughtProductOff">${discount}% OFF</span>` : ""}
+          </div>
+
+          <div class="broughtProductReason">${escapeHtml(item.reason)}</div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  section.style.display="block";
+
+  track.querySelectorAll(".broughtProductCard").forEach(card=>{
+    const open=()=>{
+      const pid=card.getAttribute("data-product-id");
+      if(!pid) return;
+      navigateFromProductPage("product.html?id="+encodeURIComponent(pid));
+    };
+
+    card.addEventListener("click",open);
+    card.addEventListener("keydown",e=>{
+      if(e.key==="Enter" || e.key===" "){
+        e.preventDefault();
+        open();
+      }
+    });
+  });
+}
+
+async function loadBroughtTogether(){
+  const section=document.getElementById("broughtTogetherSection");
+  const loading=document.getElementById("broughtTogetherLoading");
+  const track=document.getElementById("broughtTogetherTrack");
+
+  if(!section || !loading || !track || !product) return;
+
+  section.style.display="block";
+  loading.style.display="grid";
+  track.innerHTML="";
+
+  try{
+    const {data,error}=await supabaseClient
+      .from("products")
+      .select("*")
+      .neq("id",product.id)
+      .limit(BROUGHT_TOGETHER_FETCH_LIMIT);
+
+    if(error) throw error;
+
+    const ranked=(data||[])
+      .map(row=>{
+        const scored=scoreBroughtTogether(row,product);
+        return {
+          id:row.id,
+          data:row,
+          score:scored.score,
+          reason:scored.reason
+        };
+      })
+      .filter(item=>recommendationImage(item.data))
+      .sort((a,b)=>b.score-a.score);
+
+    /* Avoid weak matches: if the catalog has relevant products, show them.
+       Otherwise fall back to the strongest in-stock products. */
+    let final=ranked.filter(x=>x.score>=8);
+    if(final.length<3){
+      final=ranked
+        .filter(x=>recommendationNumber(x.data,["stock","inventory","available_stock"],0)>0)
+        .slice(0,Math.max(3,window.innerWidth<=900?6:5));
+    }
+
+    renderBroughtTogether(final);
+  }catch(error){
+    console.error("Brought Together:",error);
+    section.style.display="none";
+  }
+}
 
 
 /* =========================================================
