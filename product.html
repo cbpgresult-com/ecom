@@ -2017,21 +2017,21 @@ body.relatedViewOpen{
 .relatedGridCard{
   min-width:0;border:0;border-bottom:1px solid #e5e7eb;border-right:1px solid #e5e7eb;border-radius:0;background:#fff;overflow:hidden;cursor:pointer;padding:0 10px 11px
 }
-.relatedGridImage{position:relative;width:100%;height:184px;background:#f2f2f2;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:0}
+.relatedGridImage{position:relative;width:100%;height:165px;background:#f2f2f2;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:0}
 .relatedGridImage img{width:100%;height:100%;object-fit:contain;display:block}
 .relatedGridBody{padding:7px 0 0}
 .relatedGridTitle{font-size:11px;line-height:1.25;font-weight:500;color:#222;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:28px}
 .relatedGridPriceRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;line-height:1}
 .relatedGridPrice{font-size:14px;line-height:17px;font-weight:800;order:1}.relatedGridMrp{font-size:9px;color:#777;text-decoration:line-through;order:2}.relatedGridOff{font-size:8px;line-height:15px;padding:0 4px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:3;margin-left:auto}
 .relatedGridMeta{display:flex;align-items:center;gap:4px;margin-top:2px;min-height:15px}.relatedGridRating{background:#16833b;color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:800}.relatedGridReviews{font-size:8px;color:#777}
-.relatedProductsLoadRow{grid-column:1/-1;display:none;padding:12px 10px 14px;background:#fff;text-align:center;min-height:0}
+.relatedProductsLoadRow{grid-column:1/-1;display:none;padding:10px 10px 14px;background:#fff;text-align:center;min-height:0;box-sizing:border-box}
 .relatedProductsLoadRow.show{display:block}
 .relatedFindingText{font-size:12px;color:#555;font-weight:600;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:7px}
 .relatedFindingSpinner{width:15px;height:15px;border:2px solid #ddd;border-top-color:#111;border-radius:50%;animation:relatedSpin .7s linear infinite}
 @keyframes relatedSpin{to{transform:rotate(360deg)}}
 .relatedSkeletonGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
 .relatedGridSkeleton{border-right:1px solid #e5e7eb;border-bottom:1px solid #e5e7eb;padding:0 10px 11px;background:#fff}
-.relatedSkeletonImage{height:184px;background:linear-gradient(90deg,#f1f1f1 25%,#e7e7e7 37%,#f1f1f1 63%);background-size:400% 100%;animation:relatedSkeletonMove 1.15s ease infinite}
+.relatedSkeletonImage{height:165px;background:linear-gradient(90deg,#f1f1f1 25%,#e7e7e7 37%,#f1f1f1 63%);background-size:400% 100%;animation:relatedSkeletonMove 1.15s ease infinite}
 .relatedSkeletonLine{height:9px;border-radius:6px;background:#ececec;margin-top:9px}.relatedSkeletonLine.short{width:58%;margin-top:7px}.relatedSkeletonPrice{height:15px;width:42%;border-radius:6px;background:#ececec;margin-top:9px}
 @keyframes relatedSkeletonMove{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
@@ -2046,10 +2046,10 @@ body.relatedViewOpen{
   .relatedProductsHeader{position:relative;top:auto;right:auto;width:100%;height:56px;min-height:56px;padding:0 10px;border-bottom:1px solid #ddd;box-shadow:0 1px 4px rgba(0,0,0,.05)}
   .relatedProductsHeaderTitle{font-size:18px;font-weight:700}.relatedProductsBack{width:38px;height:38px}.relatedProductsBack::before{content:"←";font-size:27px;font-weight:400}
   .relatedProductsGrid{position:relative;top:auto;right:auto;bottom:auto;width:100%;height:auto;min-height:0;flex:1;padding:0 0 22px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;overflow-y:scroll;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}
-  .relatedGridCard{padding:0 8px 10px}.relatedGridImage{position:relative;height:166px}.relatedGridBody{padding:6px 0 0}.relatedGridTitle{font-size:10px;line-height:1.25;min-height:26px}.relatedGridPrice{font-size:13px}.relatedGridMrp{font-size:8px}.relatedGridOff{font-size:7px;margin-left:auto}.relatedGridMeta{margin-top:2px}.relatedGridRating,.relatedGridReviews{font-size:7px}
-  .relatedProductsLoadRow{padding:12px 8px 14px}.relatedFindingText{font-size:11px}.relatedSkeletonGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.relatedGridSkeleton{padding:0 8px 10px}.relatedSkeletonImage{height:166px}
+  .relatedGridCard{padding:0 8px 10px}.relatedGridImage{position:relative;height:150px}.relatedGridBody{padding:6px 0 0}.relatedGridTitle{font-size:10px;line-height:1.25;min-height:26px}.relatedGridPrice{font-size:13px}.relatedGridMrp{font-size:8px}.relatedGridOff{font-size:7px;margin-left:auto}.relatedGridMeta{margin-top:2px}.relatedGridRating,.relatedGridReviews{font-size:7px}
+  .relatedProductsLoadRow{padding:12px 8px 14px}.relatedFindingText{font-size:11px}.relatedSkeletonGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.relatedGridSkeleton{padding:0 8px 10px}.relatedSkeletonImage{height:150px}
 }
-@media(max-width:420px){.broughtProductCard{flex-basis:146px;width:146px;min-width:146px}.broughtProductImageWrap{height:128px}.relatedGridImage{position:relative;height:154px}.relatedSkeletonImage{height:154px}}
+@media(max-width:420px){.broughtProductCard{flex-basis:146px;width:146px;min-width:146px}.broughtProductImageWrap{height:128px}.relatedGridImage{position:relative;height:140px}.relatedSkeletonImage{height:140px}}
 </style>
 
 <style>
@@ -6115,8 +6115,10 @@ function getInitialRelatedCount(){
   const grid=document.getElementById("relatedProductsGrid");
   const mobile=window.matchMedia("(max-width:900px)").matches;
   const viewport=(grid && grid.clientHeight) || (window.innerHeight-(mobile?56:58));
-  const rowHeight=mobile ? 225 : 250;
-  const visibleRows=Math.max(2,Math.ceil(viewport/rowHeight));
+  const rowHeight=mobile ? 225 : 270;
+  /* Only render complete rows that fit on the current screen.
+     After that, scrolling loads exactly 2 more products. */
+  const visibleRows=Math.max(1,Math.floor(viewport/rowHeight));
   return Math.min(broughtTogetherProducts.length,visibleRows*2);
 }
 
@@ -6226,12 +6228,50 @@ function closeRelatedProductsView(){
   unlockRelatedBackground();
 }
 
-/* Drawer scroll isolation: wheel/touch over the drawer must never scroll the product page behind it. */
+/* =========================================================
+   DRAWER SCROLL ISOLATION
+   Desktop + mobile: only the drawer grid may scroll while open.
+========================================================= */
 document.addEventListener("wheel",function(event){
   const view=document.getElementById("relatedProductsView");
+  const grid=document.getElementById("relatedProductsGrid");
+  if(!view?.classList.contains("show") || !grid) return;
+  if(!event.target.closest("#relatedProductsGrid")){
+    event.preventDefault();
+    return;
+  }
+  /* Keep wheel movement inside the drawer at its edges too. */
+  const atTop=grid.scrollTop<=0;
+  const atBottom=grid.scrollTop+grid.clientHeight>=grid.scrollHeight-1;
+  if((event.deltaY<0 && atTop) || (event.deltaY>0 && atBottom)){
+    event.preventDefault();
+  }
+},{passive:false});
+
+let relatedTouchStartY=0;
+document.addEventListener("touchstart",function(event){
+  const view=document.getElementById("relatedProductsView");
   if(!view?.classList.contains("show")) return;
-  if(event.target.closest("#relatedProductsGrid")) return;
-  if(event.target.closest("#relatedProductsHeader")){
+  if(event.target.closest("#relatedProductsGrid")){
+    relatedTouchStartY=event.touches[0]?.clientY||0;
+  }else{
+    event.preventDefault();
+  }
+},{passive:false});
+
+document.addEventListener("touchmove",function(event){
+  const view=document.getElementById("relatedProductsView");
+  const grid=document.getElementById("relatedProductsGrid");
+  if(!view?.classList.contains("show") || !grid) return;
+  if(!event.target.closest("#relatedProductsGrid")){
+    event.preventDefault();
+    return;
+  }
+  const y=event.touches[0]?.clientY||0;
+  const dy=relatedTouchStartY-y;
+  const atTop=grid.scrollTop<=0;
+  const atBottom=grid.scrollTop+grid.clientHeight>=grid.scrollHeight-1;
+  if((dy<0 && atTop) || (dy>0 && atBottom)){
     event.preventDefault();
   }
 },{passive:false});
