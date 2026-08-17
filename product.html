@@ -1919,7 +1919,7 @@ a{text-decoration:none;color:inherit}
 ========================================================= */
 .broughtTogetherSection{
   width:min(1450px,100%);
-  margin:18px auto 0;
+  margin:0 auto 0;
   background:#fff;
   border:0;
   border-radius:0;
@@ -1963,9 +1963,9 @@ a{text-decoration:none;color:inherit}
 .broughtProductRating{display:inline-flex;align-items:center;gap:2px;background:#fff;color:#111;border-radius:3px;padding:2px 4px;font-size:10px;line-height:13px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .broughtProductReviews{color:#777;font-size:8px;white-space:nowrap;display:none}
 .broughtProductPriceRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;min-height:0;line-height:1}
-.broughtProductPrice{font-size:14px;line-height:17px;font-weight:800;color:#222;order:3}
+.broughtProductPrice{font-size:14px;line-height:17px;font-weight:800;color:#222;order:1}
 .broughtProductMrp{font-size:9px;line-height:15px;color:#777;text-decoration:line-through;order:2}
-.broughtProductOff{font-size:9px;line-height:16px;padding:0 5px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:1}
+.broughtProductOff{font-size:9px;line-height:16px;padding:0 5px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:3}
 .broughtProductReason{margin-top:2px;font-size:8px;line-height:12px;color:#6d28d9;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .broughtRailNav{
   position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:1px solid #ddd;background:#fff;color:#111;
@@ -1980,6 +1980,7 @@ a{text-decoration:none;color:inherit}
   position:fixed;inset:0;z-index:2147483000;display:none;flex-direction:column;background:rgba(0,0,0,.72);overflow:hidden
 }
 .relatedProductsView.show{display:flex}
+html.relatedViewOpen,body.relatedViewOpen{overflow:hidden !important;}
 .relatedProductsHeader{
   position:absolute;top:0;right:0;width:480px;height:58px;min-height:58px;background:#fff;border-bottom:1px solid #e5e7eb;
   display:flex;align-items:center;gap:10px;padding:0 14px;z-index:3
@@ -2002,7 +2003,7 @@ a{text-decoration:none;color:inherit}
 .relatedGridBody{padding:7px 0 0}
 .relatedGridTitle{font-size:11px;line-height:1.25;font-weight:500;color:#222;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:28px}
 .relatedGridPriceRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;line-height:1}
-.relatedGridPrice{font-size:14px;line-height:17px;font-weight:800;order:3}.relatedGridMrp{font-size:9px;color:#777;text-decoration:line-through;order:2}.relatedGridOff{font-size:8px;line-height:15px;padding:0 4px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:1}
+.relatedGridPrice{font-size:14px;line-height:17px;font-weight:800;order:1}.relatedGridMrp{font-size:9px;color:#777;text-decoration:line-through;order:2}.relatedGridOff{font-size:8px;line-height:15px;padding:0 4px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:3}
 .relatedGridMeta{display:flex;align-items:center;gap:4px;margin-top:2px;min-height:15px}.relatedGridRating{background:#16833b;color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:800}.relatedGridReviews{font-size:8px;color:#777}
 .relatedProductsLoadRow{grid-column:1/-1;display:none;padding:12px 10px 14px;background:#fff;text-align:center}
 .relatedProductsLoadRow.show{display:block}
@@ -6070,49 +6071,96 @@ function hideRelatedLoader(){
 }
 function getRelatedInitialBatchSize(){
   const grid=document.getElementById("relatedProductsGrid");
-  if(!grid) return RELATED_BATCH_SIZE;
+  if(!grid) return Math.min(4,broughtTogetherProducts.length);
 
-  /* First load fills the visible drawer/screen naturally.
-     Every later load is exactly 2 products. */
+  /*
+    FIRST OPEN: fill the visible drawer/screen naturally.
+    No more products are added automatically after this.
+    Every later scroll adds exactly 2 products.
+  */
   const isMobile=window.innerWidth<=900;
-  const estimatedCardHeight=isMobile ? 236 : 264;
+  const cardHeight=isMobile ? 225 : 255;
   const availableHeight=Math.max(1,grid.clientHeight);
-  const rows=Math.max(1,Math.floor(availableHeight/estimatedCardHeight));
-  return Math.max(RELATED_BATCH_SIZE,rows*2);
+  const rows=Math.max(2,Math.ceil(availableHeight/cardHeight));
+  const firstBatch=rows*2;
+
+  return Math.min(
+    firstBatch,
+    broughtTogetherProducts.length
+  );
 }
 
 function appendRelatedBatch(batchSize=RELATED_BATCH_SIZE){
   const grid=document.getElementById("relatedProductsGrid");
   if(!grid || relatedLoading) return Promise.resolve();
+
   if(relatedRenderedCount>=broughtTogetherProducts.length){
     hideRelatedLoader();
     return Promise.resolve();
   }
 
   relatedLoading=true;
+
+  /*
+    Every load after the first screen shows: 
+    Products Finding... + spinner + 2 skeleton cards.
+  */
   showRelatedLoader();
 
   return new Promise(resolve=>{
     setTimeout(()=>{
       try{
-        const size=Math.max(1,Number(batchSize)||RELATED_BATCH_SIZE);
-        const end=Math.min(relatedRenderedCount+size,broughtTogetherProducts.length);
-        const batch=broughtTogetherProducts.slice(relatedRenderedCount,end);
-        const html=batch.map(item=>relatedProductCardHtml(item,true)).join("");
-        const row=document.getElementById("relatedProductsLoadRow");
+        /*
+          First screen may contain enough cards to fill the visible
+          drawer. Every subsequent lazy-load is EXACTLY 2 products.
+        */
+        const requestedSize=Math.max(
+          1,
+          Number(batchSize)||RELATED_BATCH_SIZE
+        );
+        const size=(relatedRenderedCount===0)
+          ? requestedSize
+          : Math.min(RELATED_BATCH_SIZE,requestedSize);
 
-        if(row && html) row.insertAdjacentHTML("beforebegin",html);
+        const end=Math.min(
+          relatedRenderedCount+size,
+          broughtTogetherProducts.length
+        );
+
+        const batch=broughtTogetherProducts.slice(
+          relatedRenderedCount,
+          end
+        );
+
+        const html=batch
+          .map(item=>relatedProductCardHtml(item,true))
+          .join("");
+
+        const row=document.getElementById(
+          "relatedProductsLoadRow"
+        );
+
+        if(row && html){
+          row.insertAdjacentHTML(
+            "beforebegin",
+            html
+          );
+        }
 
         relatedRenderedCount=end;
         bindRelatedProductCards(grid,true);
+
       }catch(error){
-        console.error("Related products batch:",error);
+        console.error(
+          "Related products batch:",
+          error
+        );
       }finally{
         hideRelatedLoader();
         relatedLoading=false;
         resolve();
       }
-    },650);
+    },700);
   });
 }
 
@@ -6144,6 +6192,39 @@ function resetRelatedGrid(){
   setRelatedHeaderCount();
 }
 
+function lockRelatedPageScroll(){
+  const scrollY=window.scrollY||window.pageYOffset||0;
+
+  document.body.dataset.relatedScrollY=String(scrollY);
+  document.documentElement.classList.add("relatedViewOpen");
+  document.body.classList.add("relatedViewOpen");
+
+  document.body.style.position="fixed";
+  document.body.style.top=`-${scrollY}px`;
+  document.body.style.left="0";
+  document.body.style.right="0";
+  document.body.style.width="100%";
+  document.body.style.overflow="hidden";
+}
+
+function unlockRelatedPageScroll(){
+  const scrollY=Number(
+    document.body.dataset.relatedScrollY||0
+  );
+
+  document.documentElement.classList.remove("relatedViewOpen");
+  document.body.classList.remove("relatedViewOpen");
+
+  document.body.style.position="";
+  document.body.style.top="";
+  document.body.style.left="";
+  document.body.style.right="";
+  document.body.style.width="";
+  document.body.style.overflow="";
+
+  window.scrollTo(0,scrollY);
+}
+
 async function openRelatedProductsView(){
   const view=document.getElementById("relatedProductsView");
   const grid=document.getElementById("relatedProductsGrid");
@@ -6152,31 +6233,36 @@ async function openRelatedProductsView(){
   setRelatedHeaderCount();
   resetRelatedGrid();
 
+  /* Lock the product page completely behind the drawer. */
+  lockRelatedPageScroll();
+
   view.classList.add("show");
   view.setAttribute("aria-hidden","false");
-  document.body.dataset.relatedScrollY=String(window.scrollY||0);
-  document.body.style.overflow="hidden";
 
   requestAnimationFrame(async()=>{
+    /*
+      FIRST SCREEN: ONLY 4 PRODUCTS.
+      Do NOT auto-fill the remaining screen with more batches.
+    */
     const initialCount=getRelatedInitialBatchSize();
     await appendRelatedBatch(initialCount);
 
-    /* Very tall screens: add 2 at a time until scrolling is possible. */
-    let guard=0;
-    while(guard<3 && relatedRenderedCount<broughtTogetherProducts.length && grid.scrollHeight<=grid.clientHeight+8){
-      guard++;
-      await appendRelatedBatch(RELATED_BATCH_SIZE);
-    }
+    /*
+      If there are more products, the loader will appear only
+      when the user actually scrolls near the bottom.
+    */
   });
 }
 
 function closeRelatedProductsView(){
   const view=document.getElementById("relatedProductsView");
   if(!view) return;
+
   view.classList.remove("show");
   view.setAttribute("aria-hidden","true");
   hideRelatedLoader();
-  document.body.style.overflow="";
+
+  unlockRelatedPageScroll();
 }
 function setupBroughtTogetherControls(){
   const viewAll=document.getElementById("broughtTogetherViewAll");
@@ -6191,6 +6277,15 @@ function setupBroughtTogetherControls(){
   if(track && !track.dataset.boundScroll){track.dataset.boundScroll="1";track.addEventListener("scroll",updateBroughtRailButtons,{passive:true})}
   if(back && !back.dataset.bound){back.dataset.bound="1";back.addEventListener("click",closeRelatedProductsView)}
   if(grid && !grid.dataset.boundScroll){grid.dataset.boundScroll="1";grid.addEventListener("scroll",maybeLoadMoreRelated,{passive:true})}
+  if(!document.body.dataset.relatedEscapeBound){
+    document.body.dataset.relatedEscapeBound="1";
+    document.addEventListener("keydown",e=>{
+      if(e.key==="Escape"){
+        const view=document.getElementById("relatedProductsView");
+        if(view && view.classList.contains("show")) closeRelatedProductsView();
+      }
+    });
+  }
 }
 
 async function loadBroughtTogether(){
