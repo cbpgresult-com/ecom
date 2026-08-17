@@ -1008,6 +1008,12 @@ animation:ckSkShimmer 1.35s infinite}
   function applyPanel(step){
     showOnly('ckPanel'+step);
 
+    /* Whenever Step 1 is opened (including Back from Order Summary),
+       rebuild the saved-address list so it is always visible. */
+    if(step===1 && Array.isArray(savedAddresses) && savedAddresses.length){
+      try{ renderSavedAddresses(); }catch(e){ console.warn('Saved address render:',e); }
+    }
+
     var titles={
       1:'Add delivery address',
       2:'Order Summary',
@@ -2418,12 +2424,7 @@ animation:ckSkShimmer 1.35s infinite}
             - Because Step 1 exists in history, Back from Order Summary
               still returns to Address, just like the normal checkout flow.
           */
-          /* Register Step 1 silently for Back navigation, but do NOT show the Address UI on initial load. */
-          try{
-            historyInitialized = true;
-            history.replaceState({ckStep:1},'',location.href);
-          }catch(e){}
-
+          ckShowPanel(1);
           selectedAddress = savedAddresses[0];
 
           if(selectedAddress.isCurrentLocation || selectedAddress.type === 'current location'){
@@ -2440,7 +2441,6 @@ animation:ckSkShimmer 1.35s infinite}
 
           /* fillSummary() opens Step 2 and creates exactly one Step 2 history entry. */
           fillSummary(selectedAddress);
-          if(window.ckRealSkeletonHide) ckRealSkeletonHide();
 
         }else{
           /* No saved address: normal Address Step opens. */
