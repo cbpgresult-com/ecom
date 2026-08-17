@@ -2,6 +2,9 @@
 SUPABASE saved_addresses CURRENT LOCATION COLUMNS REQUIRED:
 
 ALTER TABLE public.saved_addresses
+ADD COLUMN IF NOT EXISTS district text;
+
+ALTER TABLE public.saved_addresses
 ADD COLUMN IF NOT EXISTS village text;
 
 ALTER TABLE public.saved_addresses
@@ -407,47 +410,6 @@ body{padding:0 !important;margin:0 !important;}
   .ckfooterbar{position:static;max-width:1450px;margin:0 auto;border:none;border-top:1px solid var(--line);border-radius:0 0 22px 22px;padding:18px 30px;background:#fff;}
   .ckfooterbar .ckbtn{max-width:340px;margin-left:auto;display:flex;}
 }
-
-/* Current Location: animated border while GPS is detecting */
-#ckCurrentLocationBox.ck-location-detecting{
-  position:relative;
-}
-
-#ckCurrentLocationBox.ck-location-detecting::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  padding:2px;
-  border-radius:inherit;
-  background:conic-gradient(
-    from 0deg,
-    transparent 0deg 305deg,
-    #1f7a52 325deg,
-    #55d79a 345deg,
-    transparent 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite:exclude;
-  animation:ckLocationBorderSpin 1.05s linear infinite;
-  pointer-events:none;
-  z-index:5;
-}
-
-#ckCurrentLocationBox.ck-location-detecting > *{
-  position:relative;
-  z-index:6;
-}
-
-@keyframes ckLocationBorderSpin{
-  to{transform:rotate(360deg);}
-}
-
 </style>
 </head>
 <body>
@@ -569,7 +531,7 @@ body{padding:0 !important;margin:0 !important;}
             </div>
             <div class="ck-current-location-copy">
               <strong>Use Current Location</strong>
-              <span>Use your current GPS location for delivery.</span>
+              <span>Use your current GPS location for Fast delivery.</span>
               <small id="ckLocationStatus"></small>
             </div>
             <button type="button" class="ck-current-location-btn" id="ckUseLocationBtn" onclick="ckUseCurrentLocation()">Use Location</button>
@@ -637,12 +599,8 @@ body{padding:0 !important;margin:0 !important;}
               <input id="ckDistrict" type="text" placeholder="District" autocomplete="address-level2" readonly>
             </div>
             <div class="ckfield">
-              <label for="ckCity">Village *</label>
-              <input id="ckCity" type="text" placeholder="Village / Locality" autocomplete="address-level2">
-            </div>
-            <div class="ckfield full">
-              <label for="ckHouse">House No., Building Name *</label>
-              <input id="ckHouse" type="text" placeholder="e.g. 12-B, Green Residency">
+              <label for="ckCity">Village,House *</label>
+              <input id="ckCity" type="text" placeholder="Village / Locality / City" autocomplete="address-level2">
             </div>
             <div class="ckfield full">
               <label for="ckRoad">Road name, Area, Colony *</label>
@@ -1021,13 +979,39 @@ body{padding:0 !important;margin:0 !important;}
   function navigateOrigin(){
     var target=null;
     try{ target=sessionStorage.getItem('ckOriginPage'); }catch(e){}
-    location.href=target || document.referrer || '/';
+
+    /*
+      IMPORTANT: Do NOT use location.href here.
+      location.href creates a NEW history entry for the Product page.
+      Then Product -> Back -> Checkout happens again, which was the
+      3-4 times Back problem.
+
+      replace() removes the current Checkout document from this history
+      position, so after returning to Product, Back will NOT reopen Checkout.
+    */
+    var destination=target || document.referrer || '/';
+    try{
+      location.replace(destination);
+    }catch(e){
+      location.href=destination;
+    }
   }
 
   window.ckGoBack=function(){
     var step=window._ckCurrentStep||1;
-    if(step>1 && step<4){ history.back(); }
-    else navigateOrigin();
+
+    /*
+      Flipkart-style behaviour:
+      Step 3 -> Step 2 -> Step 1 -> Product/previous page.
+      Internal checkout steps use browser history, while leaving Checkout
+      uses replace() so Checkout cannot remain behind Product in history.
+    */
+    if(step>1 && step<4){
+      history.back();
+      return;
+    }
+
+    navigateOrigin();
   };
 
   /* =========================================================
@@ -1086,9 +1070,9 @@ body{padding:0 !important;margin:0 !important;}
       id:a.id,
       name:a.name || '',
       phone:a.phone || '',
-      email:a.email || '',
       pincode:a.pincode || '',
       state:a.state || '',
+      district:a.district || '',
 
       /* Current Location has its own Village + Plus Code fields. */
       city:a.city || '',
@@ -1124,6 +1108,36 @@ body{padding:0 !important;margin:0 !important;}
     }
 
     savedAddresses=(res.data||[]).map(mapAddress);
+
+    /*
+      Compatibility for old saved addresses:
+      Purane rows me district column blank ho sakta hai. Pincode se district
+      fetch karke memory me fill kar dete hain. New saves DB me district
+      directly store karenge.
+    */
+    await Promise.all(savedAddresses.map(async function(a){
+      if(!a.district && a.pincode){
+        try{
+          var info=await lookupPincodeDetails(a.pincode);
+          if(info && info.district){
+            a.district=info.district;
+
+            /* Best-effort DB backfill for this user's old address. */
+            if(a.id){
+              var upd=await window.__MY_STORE_SUPABASE__
+                .from('saved_addresses')
+                .update({district:info.district})
+                .eq('id',a.id)
+                .eq('user_id',currentUser.id);
+
+              if(upd.error) console.warn('District backfill failed:',upd.error);
+            }
+          }
+        }catch(e){
+          console.warn('Old address district lookup failed:',e);
+        }
+      }
+    }));
   }
 
   function renderSavedAddresses(){
@@ -1143,8 +1157,8 @@ body{padding:0 !important;margin:0 !important;}
 
     list.innerHTML=savedAddresses.map(function(a){
       var addr=a.isCurrentLocation
-        ? [a.village,a.state,a.pincode].filter(Boolean).join(', ')
-        : [a.house,a.road,a.city,a.state,a.pincode].filter(Boolean).join(', ');
+        ? [a.village,a.district,a.state,a.pincode].filter(Boolean).join(', ')
+        : [a.house,a.road,a.city,a.district,a.state,a.pincode].filter(Boolean).join(', ');
 
       var plus=a.isCurrentLocation && a.plus_code
         ? '<br><span style="font-size:12px;color:#52695d;">Plus Code: '+escapeHtml(a.plus_code)+'</span>'
@@ -1171,8 +1185,8 @@ body{padding:0 !important;margin:0 !important;}
     setText('ckSummaryName',addr.name);
     setText('ckSummaryTag',(addr.type||'home').toUpperCase());
     var summaryParts=addr.isCurrentLocation
-      ? [addr.village,addr.state,addr.pincode,addr.plus_code,'Phone: '+addr.phone]
-      : [addr.house,addr.road,addr.city,addr.state,addr.pincode,'Phone: '+addr.phone];
+      ? [addr.village,addr.district,addr.state,addr.pincode,addr.plus_code,'Phone: '+addr.phone]
+      : [addr.house,addr.road,addr.city,addr.district,addr.state,addr.pincode,'Phone: '+addr.phone];
 
     setText('ckSummaryAddr',summaryParts.filter(Boolean).join(', '));
     renderProducts();
@@ -1299,17 +1313,6 @@ body{padding:0 !important;margin:0 !important;}
     };
   }
 
-
-  function startLocationDetectAnimation(){
-    var box=el('ckCurrentLocationBox');
-    if(box) box.classList.add('ck-location-detecting');
-  }
-
-  function stopLocationDetectAnimation(){
-    var box=el('ckCurrentLocationBox');
-    if(box) box.classList.remove('ck-location-detecting');
-  }
-
   function hideAddressInputsAfterLocation(){
     var form=el('ckAddressFormSection'); if(!form)return;
     var grid=form.querySelector('.ckform-grid');
@@ -1322,7 +1325,7 @@ body{padding:0 !important;margin:0 !important;}
       grid.classList.add('ck-location-miniform');
 
       /* Keep only Full Name + Mobile + Village after GPS detection. */
-      ['ckPincode','ckState','ckDistrict','ckHouse','ckRoad'].forEach(function(id){
+      ['ckPincode','ckState','ckDistrict','ckRoad'].forEach(function(id){
         var input=el(id);
         if(input){
           var field=input.closest('.ckfield');
@@ -1352,7 +1355,6 @@ body{padding:0 !important;margin:0 !important;}
   }
 
   function restoreAddressInputs(){
-    stopLocationDetectAnimation();
     var form=el('ckAddressFormSection'); if(!form)return;
     var grid=form.querySelector('.ckform-grid');
     var placeholder=el('ckAddressFormPlaceholder');
@@ -1366,7 +1368,7 @@ body{padding:0 !important;margin:0 !important;}
       grid.style.display='';
       grid.classList.remove('ck-location-miniform');
 
-      ['ckFullName','ckPhone','ckPincode','ckState','ckDistrict','ckCity','ckHouse','ckRoad'].forEach(function(id){
+      ['ckFullName','ckPhone','ckPincode','ckState','ckDistrict','ckCity','ckRoad'].forEach(function(id){
         var input=el(id);
         if(input){
           var field=input.closest('.ckfield');
@@ -1644,7 +1646,7 @@ body{padding:0 !important;margin:0 !important;}
 
     setText(
       'ckDetectedLocationText',
-      'Plus Code: '+(currentLocationData.plus_code||'available')+' · Exact GPS + postal details verified.'
+      'Plus Code: '+(currentLocationData.plus_code||'available')+' · Exact GPS · Fast Delivery Expected.'
     );
 
     setText(
@@ -1675,17 +1677,8 @@ body{padding:0 !important;margin:0 !important;}
 
   window.ckUseCurrentLocation=function(){
     if(!currentUser){alert('Please login first.');return;}
-    startLocationDetectAnimation();
-    if(!navigator.geolocation){
-      stopLocationDetectAnimation();
-      setText('ckLocationStatus','GPS is not supported.');
-      return;
-    }
-    if(!window.isSecureContext){
-      stopLocationDetectAnimation();
-      setText('ckLocationStatus','Location requires HTTPS.');
-      return;
-    }
+    if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
+    if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
 
     var btn=el('ckUseLocationBtn'); if(btn){btn.disabled=true;btn.textContent='Locating…';}
     setText('ckLocationStatus','Finding your most accurate GPS position…');
@@ -1706,7 +1699,6 @@ body{padding:0 !important;margin:0 !important;}
       if(watchId!==null)navigator.geolocation.clearWatch(watchId);
 
       if(!readings.length){
-        stopLocationDetectAnimation();
         if(btn){btn.disabled=false;btn.textContent='Use Location';}
         setText('ckLocationStatus','Exact GPS position could not be obtained. Please try again.');
         return;
@@ -1769,14 +1761,12 @@ body{padding:0 !important;margin:0 !important;}
         await saveCurrentLocationRow();
 
         /* Hide ALL input fields, then show detected location details. */
-        stopLocationDetectAnimation();
         hideAddressInputsAfterLocation();
         showDetectedLocationDetails();
         var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='block';
         setText('ckLocationStatus','✓ Current location + address detected and saved');
         window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
       }catch(e){
-        stopLocationDetectAnimation();
         console.error('CURRENT LOCATION ERROR:',e);
         currentLocationData=null;currentLocationRowId=null;
         setText('ckLocationStatus','Location detected, but address lookup/save failed.');
@@ -1803,7 +1793,6 @@ body{padding:0 !important;margin:0 !important;}
         finishBest();
         return;
       }
-      stopLocationDetectAnimation();
       if(btn){btn.disabled=false;btn.textContent='Use Location';}
       var m='Location nahi mil payi.';
       if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
@@ -1829,8 +1818,11 @@ body{padding:0 !important;margin:0 !important;}
       id:null,name:p.name,phone:p.phone,
       pincode:currentLocationData.pincode||'',
       state:currentLocationData.state||'',
+      district:currentLocationData.district||'',
       city:'',
-      house:'',road:currentLocationData.plus_code||'',
+      village:(el('ckCity')?.value||'').trim(),
+      house:'',road:'',
+      plus_code:currentLocationData.plus_code||'',
       type:'current location',map_link:currentLocationData.map_link,
       latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
       isCurrentLocation:true,location_row_id:currentLocationRowId
@@ -1884,7 +1876,7 @@ body{padding:0 !important;margin:0 !important;}
 
     var ids=gpsMode
       ? ['ckFullName','ckPhone','ckCity']
-      : ['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckHouse','ckRoad'];
+      : ['ckFullName','ckPhone','ckPincode','ckState','ckCity','ckRoad'];
 
     var valid=true;
     ids.forEach(function(id){
@@ -1923,9 +1915,10 @@ body{padding:0 !important;margin:0 !important;}
       phone:phone,
       pincode:gpsMode ? (currentLocationData.pincode||'') : (el('ckPincode')?.value||'').trim(),
       state:gpsMode ? (currentLocationData.state||'') : (el('ckState')?.value||'').trim(),
+      district:gpsMode ? (currentLocationData.district||'') : (el('ckDistrict')?.value||'').trim(),
       city:gpsMode ? '' : village,
       village:gpsMode ? village : '',
-      house:gpsMode ? '' : (el('ckHouse')?.value||'').trim(),
+      house:'',
       road:gpsMode ? '' : (el('ckRoad')?.value||'').trim(),
       plus_code:gpsMode ? (currentLocationData.plus_code||'') : '',
       type:gpsMode ? 'current location' : (addressType || 'home'),
@@ -1943,8 +1936,10 @@ body{padding:0 !important;margin:0 !important;}
         name:addr.name,
         phone:addr.phone,
         email:currentUser.email || '',
+
         pincode:addr.pincode,
         state:addr.state,
+        district:addr.district || '',
 
         /* Manual addresses keep the old fields. */
         city:gpsMode ? null : addr.city,
@@ -1983,6 +1978,7 @@ body{padding:0 !important;margin:0 !important;}
       if(gpsMode){
         selectedAddress.city='';
         selectedAddress.road='';
+        selectedAddress.district=addr.district||'';
         selectedAddress.village=addr.village||'';
         selectedAddress.plus_code=addr.plus_code||'';
         selectedAddress.map_link=addr.map_link||'';
@@ -2009,11 +2005,11 @@ body{padding:0 !important;margin:0 !important;}
         }
       }
 
-      fillSummary(selectedAddress);
-
       /* One button does both jobs:
-         save address + continue to Order. */
-      ckShowPanel(2);
+         save address + continue to Order.
+         fillSummary() already opens Step 2, so do not push a duplicate
+         history entry here. */
+      fillSummary(selectedAddress);
 
     }catch(error){
       console.error('SAVE & CONTINUE ERROR:',error);
@@ -2108,7 +2104,7 @@ body{padding:0 !important;margin:0 !important;}
      out_for_delivery_at, order_number, cancel_requested_at,
      processed_at, picked_up_at, courier_name,
      courier_tracking_id, hub_received_at, advance_status,
-     advance_amount, cod_due, advance_checked_at
+     advance_amount, advance_checked_at
   ========================================================= */
   window.ckPlaceOrder=async function(){
     var btn=el('ckFooterBtn');
@@ -2160,15 +2156,19 @@ body{padding:0 !important;margin:0 !important;}
         saved_addresses ki current selected address ko
         order ke saath snapshot ki tarah save kar rahe hain.
       */
+      /* District orders.address JSON ke andar snapshot hoga; separate orders.district column ki zarurat nahi. */
       var addressForOrder={
         id:selectedAddress.id || null,
         name:selectedAddress.name || '',
         phone:selectedAddress.phone || '',
         pincode:selectedAddress.pincode || '',
         state:selectedAddress.state || '',
+        district:selectedAddress.district || '',
         city:selectedAddress.city || '',
+        village:selectedAddress.village || '',
         house:selectedAddress.house || '',
         road:selectedAddress.road || '',
+        plus_code:selectedAddress.plus_code || '',
         type:selectedAddress.type || 'home',
         map_link:selectedAddress.map_link || '',
         latitude:selectedAddress.latitude || null,
@@ -2188,8 +2188,7 @@ body{padding:0 !important;margin:0 !important;}
         payment_method:'cod',
         total_amount:lastTotal,
         status:'placed',
-        user_email:currentUser.email || '',
-        cod_due:lastTotal
+        user_email:currentUser.email || ''
       };
 
       console.log('Creating order:',orderPayload);
@@ -2223,7 +2222,6 @@ body{padding:0 !important;margin:0 !important;}
       }
 
       try{
-        stopLocationDetectAnimation();
         sessionStorage.removeItem('checkoutItems');
         sessionStorage.setItem('ckOrderJustPlaced','1');
       }catch(e){}
@@ -2313,24 +2311,50 @@ body{padding:0 !important;margin:0 !important;}
         return;
       }
 
-      ckShowPanel(1);
-
       try{
         await loadSavedAddresses();
 
         /* Account Name + Mobile are available before either manual or GPS mode. */
         autofillAccountContact(false);
 
-        renderSavedAddresses();
-        /*
-          Saved address list dikhao.
-          User "Deliver Here" click karke address select karega.
-        */
+        if(savedAddresses.length > 0){
+          /*
+            Saved address available:
+            - Keep Step 1 as the first checkout history state.
+            - Automatically select the latest saved address.
+            - Open Order Summary directly.
+            - Because Step 1 exists in history, Back from Order Summary
+              still returns to Address, just like the normal checkout flow.
+          */
+          ckShowPanel(1);
+          selectedAddress = savedAddresses[0];
+
+          if(selectedAddress.isCurrentLocation || selectedAddress.type === 'current location'){
+            selectedAddress.city='';
+            selectedAddress.road='';
+            selectedAddress.village=selectedAddress.village||'';
+            selectedAddress.plus_code=selectedAddress.plus_code||'';
+            selectedAddress.map_link=selectedAddress.map_link||'';
+            selectedAddress.latitude=selectedAddress.latitude;
+            selectedAddress.longitude=selectedAddress.longitude;
+            selectedAddress.location_row_id=selectedAddress.location_row_id||null;
+            selectedAddress.isCurrentLocation=true;
+          }
+
+          /* fillSummary() opens Step 2 and creates exactly one Step 2 history entry. */
+          fillSummary(selectedAddress);
+
+        }else{
+          /* No saved address: normal Address Step opens. */
+          ckShowPanel(1);
+          renderSavedAddresses();
+        }
       }catch(addressError){
         console.error('ADDRESS LOAD ERROR:',addressError);
         /* Address loading is non-fatal: show the new-address form. */
         el('ckSavedAddrSection').style.display='none';
         el('ckAddressFormSection').style.display='block';
+        ckShowPanel(1);
       }
 
     }catch(error){
