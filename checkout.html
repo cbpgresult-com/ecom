@@ -2014,6 +2014,10 @@ body.relatedViewOpen{
 .relatedProductsGrid::-webkit-scrollbar{width:8px}
 .relatedProductsGrid::-webkit-scrollbar-thumb{background:#bdbdbd;border-radius:8px}
 .relatedProductsGrid::-webkit-scrollbar-track{background:#f4f4f4}
+/* Keep a tiny scrollable tail after the last rendered row. This is important
+   when the first 4 cards exactly fill the drawer: without it there is no
+   native scroll event, so the next 2-product batch can never be requested. */
+.relatedProductsGrid::after{content:"";grid-column:1/-1;height:70px;width:100%;display:block}
 .relatedGridCard{
   min-width:0;border:0;border-bottom:1px solid #e5e7eb;border-right:1px solid #e5e7eb;border-radius:0;background:#fff;overflow:hidden;cursor:pointer;padding:0 10px 11px
 }
@@ -6161,10 +6165,10 @@ function maybeLoadMoreRelated(){
   if(!grid || !view?.classList.contains("show")) return;
   if(relatedLoading || relatedRenderedCount>=broughtTogetherProducts.length) return;
 
-  /* Do not start the next batch until the user actually scrolls near the
-     bottom of the currently rendered grid. */
+  /* The grid always has a small scroll tail, so even when the first 4 cards
+     exactly fill the visible drawer, the user can physically scroll. */
   const distanceFromBottom=grid.scrollHeight-(grid.scrollTop+grid.clientHeight);
-  if(distanceFromBottom <= 70){
+  if(distanceFromBottom <= 120){
     appendRelatedBatch(RELATED_BATCH_SIZE,true);
   }
 }
