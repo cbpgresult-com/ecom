@@ -413,55 +413,88 @@ body{padding:0 !important;margin:0 !important;}
 </style>
 
 <style id="ckRealSkeletonStyle">
-.ck-real-skeleton{display:none;min-height:100%}
-.ck-real-skeleton.show{display:block}
-.ck-sk{position:relative;overflow:hidden;background:#eef1f4;border-radius:8px}
-.ck-sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
-background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);
-animation:ckSkShimmer 1.35s infinite}
-@keyframes ckSkShimmer{100%{transform:translateX(100%)}}
-.ck-sk-header{height:58px;border-radius:0;margin-bottom:14px}
-.ck-sk-stepper{height:46px;margin:0 16px 16px}
-.ck-sk-card{margin:0 16px 14px;padding:16px;border:1px solid #eee;border-radius:12px}
-.ck-sk-line{height:13px;margin:10px 0}
-.ck-sk-line.w40{width:40%}.ck-sk-line.w55{width:55%}.ck-sk-line.w70{width:70%}.ck-sk-line.w85{width:85%}
-.ck-sk-product{height:74px;margin:10px 0;border-radius:10px}
-.ck-sk-price{height:18px;margin:12px 0}
-.ck-sk-footer{height:62px;margin:14px 16px;border-radius:12px}
+/* REAL ADDRESS-STRUCTURE SKELETON
+   It lives INSIDE .ckphone, so it stays visible on desktop + mobile. */
+.ck-real-skeleton{
+  display:none;
+  width:100%;
+  padding:18px 18px 28px;
+  background:var(--bg);
+}
+.ck-real-skeleton.show{display:block;}
+
+.ck-real-sk-title{
+  width:138px;height:14px;border-radius:7px;margin:0 0 15px;
+}
+.ck-real-sk-card{
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px;
+  margin:0 0 12px;
+}
+.ck-real-sk-row{
+  display:flex;align-items:center;gap:8px;
+}
+.ck-real-sk-line{
+  position:relative;
+  overflow:hidden;
+  border-radius:6px;
+  background:#e9eeeb;
+}
+.ck-real-sk-line::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.82),transparent);
+  animation:ckRealAddressShimmer 1.25s ease-in-out infinite;
+}
+@keyframes ckRealAddressShimmer{
+  100%{transform:translateX(100%);}
+}
+.ck-real-sk-name{width:125px;height:15px;}
+.ck-real-sk-tag{width:54px;height:20px;border-radius:20px;}
+.ck-real-sk-address{width:92%;height:12px;margin-top:14px;}
+.ck-real-sk-address2{width:72%;height:12px;margin-top:8px;}
+.ck-real-sk-phone{width:48%;height:12px;margin-top:8px;}
+.ck-real-sk-button{
+  width:118px;height:38px;border-radius:11px;margin-top:15px;
+}
+.ck-real-sk-card2 .ck-real-sk-name{width:108px;}
+.ck-real-sk-card2 .ck-real-sk-address{width:86%;}
+.ck-real-sk-card2 .ck-real-sk-address2{width:64%;}
+.ck-real-sk-card2 .ck-real-sk-phone{width:42%;}
+.ck-real-sk-add{
+  width:148px;height:14px;border-radius:7px;margin:5px 0 22px 2px;
+}
+.ck-real-sk-form{
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px;
+}
+.ck-real-sk-form-title{
+  width:145px;height:14px;border-radius:7px;margin-bottom:17px;
+}
+.ck-real-sk-fields{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+.ck-real-sk-field{height:48px;border-radius:10px;}
+.ck-real-sk-field.full{grid-column:1/-1;}
+.ck-real-sk-save{width:100%;height:48px;border-radius:11px;margin-top:16px;}
+
+@media(max-width:600px){
+  .ck-real-skeleton{padding:15px 14px 24px;}
+  .ck-real-sk-fields{grid-template-columns:1fr;}
+  .ck-real-sk-field.full{grid-column:auto;}
+}
 </style>
 
 </head>
 <body>
-
-<!-- REAL CHECKOUT STRUCTURE SKELETON: shown only while saved address / Step 2 is being resolved -->
-<div id="ckRealSkeleton" class="ck-real-skeleton" aria-hidden="true">
-  <div class="ck-sk ck-sk-header"></div>
-  <div class="ck-sk ck-sk-stepper"></div>
-
-  <div class="ck-sk-card">
-    <div class="ck-sk ck-sk-line w40"></div>
-    <div class="ck-sk ck-sk-line w70"></div>
-    <div class="ck-sk ck-sk-line w55"></div>
-    <div class="ck-sk ck-sk-line w85"></div>
-  </div>
-
-  <div class="ck-sk-card">
-    <div class="ck-sk ck-sk-line w40"></div>
-    <div class="ck-sk ck-sk-product"></div>
-    <div class="ck-sk ck-sk-product"></div>
-  </div>
-
-  <div class="ck-sk-card">
-    <div class="ck-sk ck-sk-line w55"></div>
-    <div class="ck-sk ck-sk-price"></div>
-    <div class="ck-sk ck-sk-price"></div>
-    <div class="ck-sk ck-sk-price"></div>
-    <div class="ck-sk ck-sk-price"></div>
-  </div>
-
-  <div class="ck-sk ck-sk-footer"></div>
-</div>
-
 
 <div class="ckwrap">
   <div class="ckphone">
@@ -499,6 +532,50 @@ animation:ckSkShimmer 1.35s infinite}
         <div class="ckconnector"></div>
         <div class="ckdot">3</div>
         <div class="cksteplabel">Payment</div>
+      </div>
+    </div>
+
+    <!-- REAL ADDRESS-STRUCTURE SKELETON
+         Visible while session/cart/saved-address data is resolving. -->
+    <div id="ckRealSkeleton" class="ck-real-skeleton" aria-hidden="true">
+      <div class="ck-real-sk-line ck-real-sk-title"></div>
+
+      <div class="ck-real-sk-card">
+        <div class="ck-real-sk-row">
+          <div class="ck-real-sk-line ck-real-sk-name"></div>
+          <div class="ck-real-sk-line ck-real-sk-tag"></div>
+        </div>
+        <div class="ck-real-sk-line ck-real-sk-address"></div>
+        <div class="ck-real-sk-line ck-real-sk-address2"></div>
+        <div class="ck-real-sk-line ck-real-sk-phone"></div>
+        <div class="ck-real-sk-line ck-real-sk-button"></div>
+      </div>
+
+      <div class="ck-real-sk-card ck-real-sk-card2">
+        <div class="ck-real-sk-row">
+          <div class="ck-real-sk-line ck-real-sk-name"></div>
+          <div class="ck-real-sk-line ck-real-sk-tag"></div>
+        </div>
+        <div class="ck-real-sk-line ck-real-sk-address"></div>
+        <div class="ck-real-sk-line ck-real-sk-address2"></div>
+        <div class="ck-real-sk-line ck-real-sk-phone"></div>
+        <div class="ck-real-sk-line ck-real-sk-button"></div>
+      </div>
+
+      <div class="ck-real-sk-line ck-real-sk-add"></div>
+
+      <div class="ck-real-sk-form">
+        <div class="ck-real-sk-line ck-real-sk-form-title"></div>
+        <div class="ck-real-sk-fields">
+          <div class="ck-real-sk-line ck-real-sk-field full"></div>
+          <div class="ck-real-sk-line ck-real-sk-field"></div>
+          <div class="ck-real-sk-line ck-real-sk-field"></div>
+          <div class="ck-real-sk-line ck-real-sk-field"></div>
+          <div class="ck-real-sk-line ck-real-sk-field"></div>
+          <div class="ck-real-sk-line ck-real-sk-field"></div>
+          <div class="ck-real-sk-line ck-real-sk-field full"></div>
+        </div>
+        <div class="ck-real-sk-line ck-real-sk-save"></div>
       </div>
     </div>
 
@@ -885,31 +962,42 @@ animation:ckSkShimmer 1.35s infinite}
 (function(){
   function ckRealSkeletonShow(){
     var s=document.getElementById('ckRealSkeleton');
-    if(!s) return;
-    s.classList.add('show');
-    s.setAttribute('aria-hidden','false');
+    var main=document.querySelector('.ckmain');
+    if(s){
+      s.classList.add('show');
+      s.setAttribute('aria-hidden','false');
+    }
+    if(main){
+      main.dataset.ckSkeletonHidden='1';
+      main.style.display='none';
+    }
 
-    /* Hide checkout panels while the real-layout skeleton is active. */
-    document.querySelectorAll('[id^="ckPanel"]').forEach(function(p){
-      p.dataset.ckSkeletonHidden = '1';
-      p.style.display='none';
-    });
-    var step= document.getElementById('ckStepper');
-    if(step) step.style.visibility='hidden';
+    /* Keep the real checkout header + 1/2/3 stepper visible. */
+    var step=document.getElementById('ckStepper');
+    if(step){
+      step.style.display='flex';
+      step.style.visibility='visible';
+    }
   }
 
   function ckRealSkeletonHide(){
     var s=document.getElementById('ckRealSkeleton');
+    var main=document.querySelector('.ckmain');
+
     if(s){
       s.classList.remove('show');
       s.setAttribute('aria-hidden','true');
     }
-    document.querySelectorAll('[data-ck-skeleton-hidden="1"]').forEach(function(p){
-      p.style.display='';
-      delete p.dataset.ckSkeletonHidden;
-    });
+
+    if(main && main.dataset.ckSkeletonHidden==='1'){
+      main.style.display='';
+      delete main.dataset.ckSkeletonHidden;
+    }
+
     var step=document.getElementById('ckStepper');
-    if(step) step.style.visibility='';
+    if(step){
+      step.style.visibility='visible';
+    }
   }
 
   window.ckRealSkeletonShow=ckRealSkeletonShow;
