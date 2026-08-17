@@ -664,6 +664,15 @@ body{padding:0 !important;margin:0 !important;}
 }
 </style>
 
+
+<style id="ckDesktopLocationAccuracyFix">
+@media(min-width:769px){
+  #ckLocationStatus{
+    min-height:18px;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="ckInitialVioletLoader" aria-hidden="false">
@@ -2084,20 +2093,58 @@ body{padding:0 !important;margin:0 !important;}
     setText('ckLocationStatus','Getting your current location…');
 
     var finished=false;
+    var watchId=null;
+    var bestPosition=null;
+    var isDesktop=window.matchMedia('(min-width: 769px)').matches;
 
-    function setTryAgain(){
+    function stopWatch(){
+      if(watchId!==null){
+        try{navigator.geolocation.clearWatch(watchId);}catch(e){}
+        watchId=null;
+      }
+    }
+
+    function setTryAgain(message){
+      stopWatch();
       if(btn){
         btn.disabled=false;
         btn.textContent='Try Again';
         btn.classList.add('ck-try-again');
       }
+      if(message)setText('ckLocationStatus',message);
+    }
+
+    function positionIsGood(pos){
+      var acc=Number(pos && pos.coords && pos.coords.accuracy);
+      return Number.isFinite(acc) && acc>0 && acc<=1000;
     }
 
     function showFastGps(pos){
       if(finished)return;
-      finished=true;
 
-      /* GPS result is shown immediately; address lookup happens afterwards. */
+      var acc=Number(pos && pos.coords && pos.coords.accuracy);
+
+      /*
+        MOBILE IS UNTOUCHED:
+        mobile accepts the first browser GPS result exactly as before.
+
+        LAPTOP/DESKTOP:
+        Windows/Firefox/Chrome can initially return an IP-based location
+        with 100km/500km accuracy. Never use that as the delivery location.
+        Wait for a real improved Wi-Fi/OS location fix instead.
+      */
+      if(isDesktop && !positionIsGood(pos)){
+        if(acc>5000){
+          setText('ckLocationStatus','Improving laptop location accuracy…');
+        }else{
+          setText('ckLocationStatus','Getting a more accurate location…');
+        }
+        return false;
+      }
+
+      finished=true;
+      stopWatch();
+
       currentLocationData={
         latitude:Number(pos.coords.latitude),
         longitude:Number(pos.coords.longitude),
@@ -2135,7 +2182,7 @@ body{padding:0 !important;margin:0 !important;}
         btn.classList.remove('ck-try-again');
       }
 
-      /* Reverse geocode in the background. */
+      /* Reverse geocode in background; GPS card is already visible. */
       (async function(){
         try{
           var geo=await reverseGeocodeCurrentLocation(
@@ -2189,19 +2236,107 @@ body{padding:0 !important;margin:0 !important;}
           setText('ckLocationStatus','✓ GPS location detected');
         }
       })();
+
+      return true;
     }
 
-    /* One clean first attempt:
-       - high accuracy ON
-       - short timeout
-       - no stale cached position
-       This avoids the long wait caused by multiple sequential GPS reads. */
+    function startDesktopAccuracyWatch(){
+      var startedAt=Date.now();
+
+      try{
+        watchId=navigator.geolocation.watchPosition(
+          function(pos){
+            var acc=Number(pos && pos.coords && pos.coords.accuracy);
+
+            if(!bestPosition ||
+               (Number.isFinite(acc) && acc>0 &&
+                Number(pos.coords.accuracy) < Number(bestPosition.coords.accuracy))){
+              bestPosition=pos;
+            }
+
+            if(positionIsGood(pos)){
+              showFastGps(pos);
+            }else{
+              setText(
+                'ckLocationStatus',
+                acc>5000
+                  ? 'Improving laptop location accuracy…'
+                  : 'Getting a more accurate location…'
+              );
+            }
+
+            /* Don't let a broken laptop location hang forever. */
+            if(Date.now()-startedAt>=15000 && !finished){
+              var bestAcc=bestPosition &&
+                Number(bestPosition.coords.accuracy);
+
+              if(bestPosition && Number.isFinite(bestAcc) && bestAcc<=3000){
+                /*
+                  3km is still much better than the 500km IP result.
+                  Accept only a meaningful improvement on desktop.
+                */
+                showFastGps(bestPosition);
+              }else{
+                setTryAgain(
+                  'Laptop ki accurate location nahi mil paayi. Windows Location ON karke Try Again karein.'
+                );
+              }
+            }
+          },
+          function(err){
+            if(finished)return;
+            setTryAgain(
+              err&&err.code===1
+                ? 'Location permission denied. Browser me Allow karein.'
+                : 'Laptop ki accurate location nahi mil paayi. Windows Location ON karke Try Again karein.'
+            );
+          },
+          {
+            enableHighAccuracy:true,
+            timeout:15000,
+            maximumAge:0
+          }
+        );
+      }catch(e){
+        setTryAgain('Laptop ki accurate location nahi mil paayi. Try Again karein.');
+      }
+
+      /* Safety timeout for browsers that stop watch callbacks. */
+      setTimeout(function(){
+        if(!finished && watchId!==null){
+          var bestAcc=bestPosition &&
+            Number(bestPosition.coords.accuracy);
+
+          if(bestPosition && Number.isFinite(bestAcc) && bestAcc<=3000){
+            showFastGps(bestPosition);
+          }else{
+            setTryAgain(
+              'Laptop ki accurate location nahi mil paayi. Windows Location ON karke Try Again karein.'
+            );
+          }
+        }
+      },16000);
+    }
+
+    /*
+      MOBILE: EXACTLY the old single-request behavior.
+      DESKTOP: ignore the first coarse 500km/IP result and wait for a
+      better OS/Wi-Fi location fix.
+    */
     navigator.geolocation.getCurrentPosition(
       function(pos){
-        showFastGps(pos);
+        if(isDesktop){
+          if(showFastGps(pos))return;
+          startDesktopAccuracyWatch();
+        }else{
+          showFastGps(pos);
+        }
       },
       function(err){
-        if(finished)return;
+        if(isDesktop){
+          startDesktopAccuracyWatch();
+          return;
+        }
 
         var message='Location nahi mil payi. Please Try Again.';
         if(err&&err.code===1){
@@ -2211,13 +2346,11 @@ body{padding:0 !important;margin:0 !important;}
         }else if(err&&err.code===3){
           message='Location request timed out. Please Try Again.';
         }
-
-        setText('ckLocationStatus',message);
-        setTryAgain();
+        setTryAgain(message);
       },
       {
         enableHighAccuracy:true,
-        timeout:12000,
+        timeout:isDesktop?8000:12000,
         maximumAge:0
       }
     );
