@@ -535,25 +535,35 @@ body{padding:0 !important;margin:0 !important;}
 .ck-detected-pincode-detail{position:relative}
 #ckDetectedPincode{
   display:block;
-  width:100%;
-  margin:2px 0 0;
+  width:calc(100% - 22px);
+  margin:2px 22px 0 0;
   padding:0;
   border:0;
   outline:0;
   background:transparent;
   color:inherit;
-  font:inherit;
+  font-size:12px;
   font-weight:800;
   line-height:1.25;
   letter-spacing:.1px;
   box-sizing:border-box;
   cursor:text;
 }
-#ckDetectedPincode:focus{
-  text-decoration:underline;
-  text-decoration-color:#7c3aed;
-  text-underline-offset:3px;
+.ck-detected-pincode-pen{
+  position:absolute;
+  right:8px;
+  bottom:7px;
+  width:13px;
+  height:13px;
+  color:#6f7672;
+  pointer-events:none;
 }
+.ck-detected-pincode-pen svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+#ckDetectedPincode:focus{text-decoration:none;}
 .ck-detected-pin-loader{
   display:none;
   position:absolute;
@@ -567,6 +577,22 @@ body{padding:0 !important;margin:0 !important;}
 #ckDetectedPincode.ck-pin-invalid{
   color:#b42318;
 }
+</style>
+
+
+<style id="ckLocationButtonSpinnerStyle">
+.ck-location-btn-spinner{
+  display:inline-block;
+  width:11px;
+  height:11px;
+  margin-right:5px;
+  vertical-align:-1px;
+  border:2px solid currentColor;
+  border-right-color:transparent;
+  border-radius:50%;
+  animation:ckLocationBtnSpin .65s linear infinite;
+}
+@keyframes ckLocationBtnSpin{to{transform:rotate(360deg)}}
 </style>
 
 </head>
@@ -1977,161 +2003,166 @@ body{padding:0 !important;margin:0 !important;}
     if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
     if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
 
-    var btn=el('ckUseLocationBtn'); if(btn){btn.disabled=true;btn.textContent='Locating…';}
-    setText('ckLocationStatus','Finding your most accurate GPS position…');
+    var btn=el('ckUseLocationBtn');
+    if(btn){
+      btn.disabled=true;
+      btn.innerHTML='<span class="ck-location-btn-spinner" aria-hidden="true"></span> Locating…';
+    }
+    setText('ckLocationStatus','Getting your current location…');
 
-    /*
-      Take several fresh GPS readings and keep the one with the
-      smallest accuracy radius. This prevents a stale/coarse reading
-      from being shown as the current exact location.
-    */
-    var readings=[];
-    var watchId=null;
     var finished=false;
-    var started=Date.now();
+    var retryUsed=false;
 
-    function finishBest(){
+    function resetButton(){
+      if(btn){
+        btn.disabled=false;
+        btn.textContent='Use Location';
+      }
+    }
+
+    function showFastGps(pos){
       if(finished)return;
       finished=true;
-      if(watchId!==null)navigator.geolocation.clearWatch(watchId);
 
-      if(!readings.length){
-        if(btn){btn.disabled=false;btn.textContent='Use Location';}
-        setText('ckLocationStatus','Exact GPS position could not be obtained. Please try again.');
-        return;
-      }
+      /* Show the GPS result immediately. Do not wait for reverse geocoding. */
+      currentLocationData={
+        latitude:Number(pos.coords.latitude),
+        longitude:Number(pos.coords.longitude),
+        accuracy:pos.coords.accuracy==null?null:Number(pos.coords.accuracy),
+        map_link:currentLocationMapLink(pos.coords.latitude,pos.coords.longitude),
+        captured_at:new Date().toISOString(),
+        plus_code:getExactPlusCode(
+          Number(pos.coords.latitude),
+          Number(pos.coords.longitude)
+        ),
+        area:'',
+        village:'',
+        post_office:'',
+        district:'',
+        city:'',
+        state:'',
+        pincode:'',
+        display:'',
+        place_name:''
+      };
 
-      readings.sort(function(a,b){
-        return (a.coords.accuracy||999999)-(b.coords.accuracy||999999);
-      });
+      window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
 
-      var pos=readings[0];
+      /* Paint the detected-location card immediately. */
+      hideAddressInputsAfterLocation();
+      showDetectedLocationDetails();
+      var detected=el('ckCurrentLocationDetected');
+      if(detected)detected.style.display='block';
+      setText('ckLocationStatus','✓ Current GPS location detected');
+      resetButton();
 
+      /* Reverse geocode AFTER the location is already visible. */
       (async function(){
-      try{
-        currentLocationData={
-          latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude),
-          accuracy:pos.coords.accuracy==null?null:Number(pos.coords.accuracy),
-          map_link:currentLocationMapLink(pos.coords.latitude,pos.coords.longitude),
-          captured_at:new Date().toISOString()
-        };
+        try{
+          var geo=await reverseGeocodeCurrentLocation(
+            currentLocationData.latitude,
+            currentLocationData.longitude
+          );
 
-        currentLocationData.plus_code=getExactPlusCode(
-          currentLocationData.latitude,
-          currentLocationData.longitude
-        );
+          if(!currentLocationData)return;
 
-        /* Reverse-geocode GPS → real Area/City/District/State/Pincode. */
-        var geo=await reverseGeocodeCurrentLocation(currentLocationData.latitude,currentLocationData.longitude);
-        currentLocationData.area=geo.area;
-        currentLocationData.village=geo.village || '';
-        currentLocationData.post_office=geo.post_office || '';
-        currentLocationData.district=geo.district;
-        currentLocationData.city=geo.city;
-        currentLocationData.state=geo.state;
-        currentLocationData.pincode=geo.pincode;
-        currentLocationData.display=geo.display;
-        currentLocationData.place_name=geo.place_name || geo.city || geo.area || geo.district || '';
+          currentLocationData.area=geo.area||'';
+          currentLocationData.village=geo.village||'';
+          currentLocationData.post_office=geo.post_office||'';
+          currentLocationData.district=geo.district||'';
+          currentLocationData.city=geo.city||'';
+          currentLocationData.state=geo.state||'';
+          currentLocationData.pincode=geo.pincode||'';
+          currentLocationData.display=geo.display||'';
+          currentLocationData.place_name=geo.place_name||geo.city||geo.area||geo.district||'';
 
-        /* Do NOT prefill Village from reverse-geocoder.
-           User enters the Village manually. */
-        if(el('ckCity')) el('ckCity').value='';
+          if(el('ckCity'))el('ckCity').value='';
 
-        /* Always auto-fill Name + Mobile from the account. */
-        autofillAccountContact(false);
+          autofillAccountContact(false);
 
-        /* Pincode is already correct from GPS. Use postal data for exact
-           District/City/State instead of reverse-geocoder county names. */
-        if(currentLocationData.pincode){
-          var pinData=await lookupPincodeDetails(currentLocationData.pincode);
-          if(pinData){
-            currentLocationData.district=pinData.district || currentLocationData.district;
-            /* Village field stays based on GPS/locality; don't replace it with postal city. */
-            currentLocationData.city=currentLocationData.city || '';
-            currentLocationData.state=pinData.state || currentLocationData.state;
-            currentLocationData.pincode=pinData.pincode || currentLocationData.pincode;
-            currentLocationData.post_office=currentLocationData.post_office || ((pinData.post_offices&&pinData.post_offices[0]&&pinData.post_offices[0].Name)||'');
+          /* Postal API gives the most reliable District/State for the pincode. */
+          if(currentLocationData.pincode){
+            try{
+              var pinData=await lookupPincodeDetails(currentLocationData.pincode);
+              if(pinData){
+                currentLocationData.district=pinData.district||currentLocationData.district;
+                currentLocationData.state=pinData.state||currentLocationData.state;
+                currentLocationData.pincode=pinData.pincode||currentLocationData.pincode;
+                currentLocationData.post_office=
+                  currentLocationData.post_office ||
+                  ((pinData.post_offices&&pinData.post_offices[0]&&pinData.post_offices[0].Name)||'');
+              }
+            }catch(pinErr){
+              console.warn('GPS pincode lookup:',pinErr);
+            }
           }
+
+          showDetectedLocationDetails();
+          window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
+          setText('ckLocationStatus','✓ Current location + address detected');
+
+          /* Save the GPS row once address data is available. */
+          try{
+            await saveCurrentLocationRow();
+          }catch(saveErr){
+            console.warn('GPS save:',saveErr);
+          }
+        }catch(e){
+          console.warn('Reverse geocoding failed:',e);
+          /* GPS itself is still valid, so do NOT erase it. */
+          showDetectedLocationDetails();
+          window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
+          setText('ckLocationStatus','✓ GPS location detected. Address details unavailable.');
         }
-
-        /* Save GPS immediately; existing delivery_locations columns stay unchanged. */
-        await saveCurrentLocationRow();
-
-        /* Hide ALL input fields, then show detected location details. */
-        hideAddressInputsAfterLocation();
-        showDetectedLocationDetails();
-        var detected=el('ckCurrentLocationDetected');if(detected)detected.style.display='block';
-        setText('ckLocationStatus','✓ Current location + address detected and saved');
-        window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
-      }catch(e){
-        console.error('CURRENT LOCATION ERROR:',e);
-        currentLocationData=null;currentLocationRowId=null;
-        setText('ckLocationStatus','Location detected, but address lookup/save failed.');
-        alert('Current location save nahi ho paya.\\n\\n'+(e.message||'Supabase/geocoding error'));
-      }finally{
-        if(btn){btn.disabled=false;btn.textContent='Use Location';}
-      }
       })();
     }
 
-    watchId=navigator.geolocation.watchPosition(function(pos){
-      readings.push(pos);
-      var acc=pos.coords.accuracy||999999;
-      setText('ckLocationStatus','GPS accuracy ±'+Math.round(acc)+' m…');
+    function requestLocation(useCache){
+      navigator.geolocation.getCurrentPosition(
+        function(pos){
+          showFastGps(pos);
+        },
+        function(err){
+          if(!retryUsed){
+            retryUsed=true;
+            setText('ckLocationStatus','Trying GPS again…');
+            navigator.geolocation.getCurrentPosition(
+              function(pos){showFastGps(pos);},
+              function(err2){
+                resetButton();
+                var m='Location nahi mil payi. Please try again.';
+                if(err2&&err2.code===1)m='Location permission denied. Browser me Allow karein.';
+                else if(err2&&err2.code===2)m='Location unavailable. GPS/Location ON karein.';
+                else if(err2&&err2.code===3)m='Location request timed out. Please try again.';
+                setText('ckLocationStatus',m);
+              },
+              {
+                enableHighAccuracy:true,
+                timeout:9000,
+                maximumAge:0
+              }
+            );
+            return;
+          }
 
-      /* Excellent fresh GPS reading. */
-      if(acc<=20){
-        finishBest();
-      }else if(Date.now()-started>=12000){
-        finishBest();
-      }
-    },function(err){
-      if(readings.length){
-        finishBest();
-        return;
-      }
-      if(btn){btn.disabled=false;btn.textContent='Use Location';}
-      var m='Location nahi mil payi.';
-      if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
-      else if(err&&err.code===2)m='Location unavailable. GPS/Location ON karein.';
-      else if(err&&err.code===3)m='Location request timed out. GPS ON karke try karein.';
-      setText('ckLocationStatus',m);
-    },{
-      enableHighAccuracy:true,
-      timeout:20000,
-      maximumAge:0
-    });
-
-    /* Give GPS up to 20 seconds to improve the accuracy. */
-    setTimeout(function(){
-      if(!finished)finishBest();
-    },20000);
-  };
-
-  window.ckUseDetectedLocation=function(){
-    if(!currentUser||!currentLocationData){alert('Current location available nahi hai.');return;}
-
-    var detectedPin=el('ckDetectedPincode');
-    var typedPin=(detectedPin?.value||'').replace(/\D/g,'').slice(0,6);
-    if(typedPin.length===6){
-      currentLocationData.pincode=typedPin;
+          resetButton();
+          var m='Location nahi mil payi. Please try again.';
+          if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
+          else if(err&&err.code===2)m='Location unavailable. GPS/Location ON karein.';
+          else if(err&&err.code===3)m='Location request timed out. Please try again.';
+          setText('ckLocationStatus',m);
+        },
+        {
+          enableHighAccuracy:true,
+          timeout:useCache ? 5000 : 9000,
+          maximumAge:useCache ? 15000 : 0
+        }
+      );
     }
 
-    var p=accountPerson();
-    selectedAddress={
-      id:null,name:p.name,phone:p.phone,
-      pincode:currentLocationData.pincode||'',
-      state:currentLocationData.state||'',
-      district:currentLocationData.district||'',
-      city:'',
-      village:(el('ckCity')?.value||'').trim(),
-      house:'',road:'',
-      plus_code:currentLocationData.plus_code||'',
-      type:'current location',map_link:currentLocationData.map_link,
-      latitude:currentLocationData.latitude,longitude:currentLocationData.longitude,
-      isCurrentLocation:true,location_row_id:currentLocationRowId
-    };
-    fillSummary(selectedAddress);
+    /* First try a recent browser GPS fix for a near-instant response.
+       If that fails, automatically retry with a fresh GPS reading. */
+    requestLocation(true);
   };
 
   window.ckUseManualAddress=function(){
