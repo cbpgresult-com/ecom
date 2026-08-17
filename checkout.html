@@ -1041,6 +1041,9 @@ animation:ckSkShimmer 1.35s infinite}
     var main=document.querySelector('.ckmain');
     if(main) main.classList.toggle('ck-has-footer',step===3);
 
+    if(step===1){
+      try{ renderSavedAddresses(); }catch(e){ console.warn('Saved address render:',e); }
+    }
     if(step===2 || step===3) renderPriceSummary();
     window._ckCurrentStep=step;
     window.scrollTo({top:0,behavior:'smooth'});
@@ -2441,14 +2444,17 @@ animation:ckSkShimmer 1.35s infinite}
 
           /* fillSummary() opens Step 2 and creates exactly one Step 2 history entry. */
           fillSummary(selectedAddress);
+          if(window.ckRealSkeletonHide) ckRealSkeletonHide();
 
         }else{
           /* No saved address: normal Address Step opens. */
           ckShowPanel(1);
           renderSavedAddresses();
+          if(window.ckRealSkeletonHide) ckRealSkeletonHide();
         }
       }catch(addressError){
         console.error('ADDRESS LOAD ERROR:',addressError);
+        if(window.ckRealSkeletonHide) ckRealSkeletonHide();
         /* Address loading is non-fatal: show the new-address form. */
         el('ckSavedAddrSection').style.display='none';
         el('ckAddressFormSection').style.display='block';
