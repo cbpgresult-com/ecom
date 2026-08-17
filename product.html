@@ -1919,12 +1919,13 @@ a{text-decoration:none;color:inherit}
    Smart recommendation strip — desktop + mobile
 ========================================================= */
 .broughtTogetherSection{
-  width:min(1450px,100%);
-  margin:24px auto 0;
+  width:100%;
+  margin:0;
   background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:20px;
+  border:0;
+  border-top:1px solid #eee;
+  border-radius:0;
+  padding:20px 28px 24px;
   display:none;
   overflow:hidden;
 }
@@ -2103,10 +2104,10 @@ a{text-decoration:none;color:inherit}
 @media(max-width:900px){
   .broughtTogetherSection{
     width:100%;
-    margin:14px 0 0;
+    margin:0;
     padding:16px 12px 18px;
-    border-left:0;
-    border-right:0;
+    border:0;
+    border-top:1px solid #eee;
     border-radius:0;
   }
   .broughtTogetherHeader{
@@ -2868,10 +2869,7 @@ Buy at <span id="buyPrice"></span>
 
 </div>
 
-</section>
 
-<!-- OLD DETAILS ELEMENT KE LIYE -->
-<section id="details" style="display:none"></section>
 
 <!-- ================= BROUGHT TOGETHER / RELATED PRODUCTS ================= -->
 <section id="broughtTogetherSection" class="broughtTogetherSection" aria-label="Brought Together">
@@ -2892,6 +2890,12 @@ Buy at <span id="buyPrice"></span>
 
   <div id="broughtTogetherTrack" class="broughtTogetherTrack"></div>
 </section>
+
+</section>
+
+<!-- OLD DETAILS ELEMENT KE LIYE -->
+<section id="details" style="display:none"></section>
+
 
 
 </main>
