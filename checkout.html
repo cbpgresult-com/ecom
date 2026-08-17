@@ -595,14 +595,6 @@ body{padding:0 !important;margin:0 !important;}
 @keyframes ckLocationBtnSpin{to{transform:rotate(360deg)}}
 </style>
 
-
-<style id="ckTryAgainStyle">
-#ckUseLocationBtn.ck-try-again{
-  border-color:#7c3aed;
-  color:#7c3aed;
-}
-</style>
-
 </head>
 <body>
 <div id="ckInitialVioletLoader" aria-hidden="false">
@@ -2008,14 +2000,8 @@ body{padding:0 !important;margin:0 !important;}
 
   window.ckUseCurrentLocation=function(){
     if(!currentUser){alert('Please login first.');return;}
-    if(!navigator.geolocation){
-      setText('ckLocationStatus','GPS is not supported.');
-      return;
-    }
-    if(!window.isSecureContext){
-      setText('ckLocationStatus','Location requires HTTPS.');
-      return;
-    }
+    if(!navigator.geolocation){setText('ckLocationStatus','GPS is not supported.');return;}
+    if(!window.isSecureContext){setText('ckLocationStatus','Location requires HTTPS.');return;}
 
     var btn=el('ckUseLocationBtn');
     if(btn){
@@ -2025,12 +2011,12 @@ body{padding:0 !important;margin:0 !important;}
     setText('ckLocationStatus','Getting your current location…');
 
     var finished=false;
+    var retryUsed=false;
 
-    function setTryAgain(){
+    function resetButton(){
       if(btn){
         btn.disabled=false;
-        btn.textContent='Try Again';
-        btn.classList.add('ck-try-again');
+        btn.textContent='Use Location';
       }
     }
 
@@ -2038,7 +2024,7 @@ body{padding:0 !important;margin:0 !important;}
       if(finished)return;
       finished=true;
 
-      /* GPS result is shown immediately; address lookup happens afterwards. */
+      /* Show the GPS result immediately. Do not wait for reverse geocoding. */
       currentLocationData={
         latitude:Number(pos.coords.latitude),
         longitude:Number(pos.coords.longitude),
@@ -2062,21 +2048,15 @@ body{padding:0 !important;margin:0 !important;}
 
       window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
 
+      /* Paint the detected-location card immediately. */
       hideAddressInputsAfterLocation();
       showDetectedLocationDetails();
-
       var detected=el('ckCurrentLocationDetected');
       if(detected)detected.style.display='block';
-
       setText('ckLocationStatus','✓ Current GPS location detected');
+      resetButton();
 
-      if(btn){
-        btn.disabled=false;
-        btn.textContent='Use Location';
-        btn.classList.remove('ck-try-again');
-      }
-
-      /* Reverse geocode in the background. */
+      /* Reverse geocode AFTER the location is already visible. */
       (async function(){
         try{
           var geo=await reverseGeocodeCurrentLocation(
@@ -2096,8 +2076,11 @@ body{padding:0 !important;margin:0 !important;}
           currentLocationData.display=geo.display||'';
           currentLocationData.place_name=geo.place_name||geo.city||geo.area||geo.district||'';
 
+          if(el('ckCity'))el('ckCity').value='';
+
           autofillAccountContact(false);
 
+          /* Postal API gives the most reliable District/State for the pincode. */
           if(currentLocationData.pincode){
             try{
               var pinData=await lookupPincodeDetails(currentLocationData.pincode);
@@ -2118,6 +2101,7 @@ body{padding:0 !important;margin:0 !important;}
           window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
           setText('ckLocationStatus','✓ Current location + address detected');
 
+          /* Save the GPS row once address data is available. */
           try{
             await saveCurrentLocationRow();
           }catch(saveErr){
@@ -2125,43 +2109,60 @@ body{padding:0 !important;margin:0 !important;}
           }
         }catch(e){
           console.warn('Reverse geocoding failed:',e);
+          /* GPS itself is still valid, so do NOT erase it. */
           showDetectedLocationDetails();
           window.__MY_STORE_CURRENT_LOCATION__=currentLocationData;
-          setText('ckLocationStatus','✓ GPS location detected');
+          setText('ckLocationStatus','✓ GPS location detected. Address details unavailable.');
         }
       })();
     }
 
-    /* One clean first attempt:
-       - high accuracy ON
-       - short timeout
-       - no stale cached position
-       This avoids the long wait caused by multiple sequential GPS reads. */
-    navigator.geolocation.getCurrentPosition(
-      function(pos){
-        showFastGps(pos);
-      },
-      function(err){
-        if(finished)return;
+    function requestLocation(useCache){
+      navigator.geolocation.getCurrentPosition(
+        function(pos){
+          showFastGps(pos);
+        },
+        function(err){
+          if(!retryUsed){
+            retryUsed=true;
+            setText('ckLocationStatus','Trying GPS again…');
+            navigator.geolocation.getCurrentPosition(
+              function(pos){showFastGps(pos);},
+              function(err2){
+                resetButton();
+                var m='Location nahi mil payi. Please try again.';
+                if(err2&&err2.code===1)m='Location permission denied. Browser me Allow karein.';
+                else if(err2&&err2.code===2)m='Location unavailable. GPS/Location ON karein.';
+                else if(err2&&err2.code===3)m='Location request timed out. Please try again.';
+                setText('ckLocationStatus',m);
+              },
+              {
+                enableHighAccuracy:true,
+                timeout:9000,
+                maximumAge:0
+              }
+            );
+            return;
+          }
 
-        var message='Location nahi mil payi. Please Try Again.';
-        if(err&&err.code===1){
-          message='Location permission denied. Browser me Allow karein.';
-        }else if(err&&err.code===2){
-          message='Location unavailable. GPS/Location ON karein, phir Try Again.';
-        }else if(err&&err.code===3){
-          message='Location request timed out. Please Try Again.';
+          resetButton();
+          var m='Location nahi mil payi. Please try again.';
+          if(err&&err.code===1)m='Location permission denied. Browser me Allow karein.';
+          else if(err&&err.code===2)m='Location unavailable. GPS/Location ON karein.';
+          else if(err&&err.code===3)m='Location request timed out. Please try again.';
+          setText('ckLocationStatus',m);
+        },
+        {
+          enableHighAccuracy:true,
+          timeout:useCache ? 5000 : 9000,
+          maximumAge:useCache ? 15000 : 0
         }
+      );
+    }
 
-        setText('ckLocationStatus',message);
-        setTryAgain();
-      },
-      {
-        enableHighAccuracy:true,
-        timeout:12000,
-        maximumAge:0
-      }
-    );
+    /* First try a recent browser GPS fix for a near-instant response.
+       If that fails, automatically retry with a fresh GPS reading. */
+    requestLocation(true);
   };
 
   window.ckUseManualAddress=function(){
