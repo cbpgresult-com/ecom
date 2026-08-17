@@ -6104,14 +6104,14 @@ function renderBroughtTogether(products){
         <div class="broughtProductBody">
           <div class="broughtProductName">${escapeHtml(title)}</div>
 
-          <div class="broughtProductRatingRow">
-            ${rating>0
-              ? `<span class="broughtProductRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>`
-              : ""}
-            ${reviews>0
-              ? `<span class="broughtProductReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span>`
-              : ""}
-          </div>
+          ${rating>0
+            ? `<div class="broughtProductRatingRow">
+                <span class="broughtProductRating">★ ${escapeHtml(Number.isInteger(rating)?rating:rating.toFixed(1))}</span>
+                ${reviews>0
+                  ? `<span class="broughtProductReviews">${escapeHtml(reviews.toLocaleString("en-IN"))} reviews</span>`
+                  : ""}
+              </div>`
+            : ""}
 
           <div class="broughtProductPriceRow">
             ${price>0 ? `<span class="broughtProductPrice">${money(price)}</span>` : ""}
