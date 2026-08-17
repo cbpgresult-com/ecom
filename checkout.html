@@ -715,7 +715,7 @@ body{padding:0 !important;margin:0 !important;}
     row-gap:2px;
   }
   #ckAddressFormSection .ckform-grid .ckfield.full{
-    grid-column:1 / -1;
+    grid-column:auto !important;
   }
   #ckLandmark{min-height:48px;}
 }
@@ -732,23 +732,34 @@ body{padding:0 !important;margin:0 !important;}
 
 
 <style id="ckCompactAddressInputsFinal">
-/* Compact, clean address form */
+/* Compact, clean address form — every manual field uses one equal grid cell. */
 #ckAddressFormSection .ckform-grid{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap:14px !important;
   row-gap:8px !important;
-  column-gap:12px !important;
+  align-items:start !important;
 }
 
 #ckAddressFormSection .ckfield{
-  margin:0 0 4px !important;
+  width:100% !important;
+  min-width:0 !important;
+  margin:0 0 2px !important;
+}
+
+#ckAddressFormSection .ckfield.full{
+  grid-column:auto !important;
 }
 
 #ckAddressFormSection .ckfield label{
+  display:block !important;
   margin-bottom:5px !important;
   line-height:1.2 !important;
   font-size:12px !important;
 }
 
 #ckAddressFormSection .ckfield input{
+  display:block !important;
   width:100% !important;
   height:42px !important;
   min-height:42px !important;
@@ -757,36 +768,15 @@ body{padding:0 !important;margin:0 !important;}
   box-sizing:border-box !important;
 }
 
-#ckAddressFormSection .ckform-grid .ckfield.full{
-  grid-column:1 / -1 !important;
-}
-
-/* Laptop / desktop: exactly 2 inputs in one row wherever possible. */
-@media(min-width:900px){
-  #ckAddressFormSection .ckform-grid{
-    display:grid !important;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-    column-gap:14px !important;
-    row-gap:8px !important;
-    align-items:start !important;
-  }
-
-  /* Only the long text fields remain full-width. */
-  #ckAddressFormSection .ckform-grid .ckfield.full{
-    grid-column:1 / -1 !important;
-  }
-}
-
-/* Mobile: one clean full-width field per row, no horizontal overflow. */
+/* Mobile: one input per row, full width, no gaps/overflow. */
 @media(max-width:899px){
   #ckAddressFormSection .ckform-grid{
-    display:grid !important;
     grid-template-columns:minmax(0,1fr) !important;
     column-gap:0 !important;
     row-gap:7px !important;
   }
 
-  #ckAddressFormSection .ckform-grid .ckfield.full{
+  #ckAddressFormSection .ckfield.full{
     grid-column:auto !important;
   }
 
@@ -1043,7 +1033,7 @@ body{padding:0 !important;margin:0 !important;}
           <span id="ckAddressFormPlaceholder" style="display:none;"></span>
 
           <div class="ckform-grid">
-            <div class="ckfield full">
+            <div class="ckfield">
               <label for="ckFullName">Full Name *</label>
               <input id="ckFullName" type="text" placeholder="Your full name" autocomplete="name">
             </div>
@@ -1069,11 +1059,11 @@ body{padding:0 !important;margin:0 !important;}
               <label for="ckCity">Village,House *</label>
               <input id="ckCity" type="text" placeholder="Village / Locality / City" autocomplete="address-level2">
             </div>
-            <div class="ckfield full">
+            <div class="ckfield">
               <label for="ckRoad">Road name, Area, Colony *</label>
               <input id="ckRoad" type="text" placeholder="e.g. MG Road, Shastri Nagar">
             </div>
-            <div class="ckfield full">
+            <div class="ckfield">
               <label for="ckLandmark">Landmark</label>
               <input id="ckLandmark" type="text" placeholder="e.g. Near Temple, School, Market" autocomplete="address-line2">
             </div>
