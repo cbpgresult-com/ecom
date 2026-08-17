@@ -704,6 +704,117 @@ body{padding:0 !important;margin:0 !important;}
 }
 </style>
 
+
+<style id="ckAddressFormLayoutFinal">
+/* Balanced address form: laptop = two columns, mobile = one column.
+   Landmark is kept as a full-width useful address line. */
+@media(min-width:900px){
+  #ckAddressFormSection .ckform-grid{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    column-gap:20px;
+    row-gap:2px;
+  }
+  #ckAddressFormSection .ckform-grid .ckfield.full{
+    grid-column:1 / -1;
+  }
+  #ckLandmark{min-height:48px;}
+}
+@media(max-width:899px){
+  #ckAddressFormSection .ckform-grid{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+  #ckAddressFormSection .ckform-grid .ckfield{
+    width:100%;
+  }
+}
+</style>
+
+
+<style id="ckCompactAddressInputsFinal">
+/* Compact, clean address form */
+#ckAddressFormSection .ckform-grid{
+  row-gap:8px !important;
+  column-gap:12px !important;
+}
+
+#ckAddressFormSection .ckfield{
+  margin:0 0 4px !important;
+}
+
+#ckAddressFormSection .ckfield label{
+  margin-bottom:5px !important;
+  line-height:1.2 !important;
+  font-size:12px !important;
+}
+
+#ckAddressFormSection .ckfield input{
+  width:100% !important;
+  height:42px !important;
+  min-height:42px !important;
+  padding:0 12px !important;
+  border-radius:10px !important;
+  box-sizing:border-box !important;
+}
+
+#ckAddressFormSection .ckform-grid .ckfield.full{
+  grid-column:1 / -1 !important;
+}
+
+/* Laptop / desktop: exactly 2 inputs in one row wherever possible. */
+@media(min-width:900px){
+  #ckAddressFormSection .ckform-grid{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    column-gap:14px !important;
+    row-gap:8px !important;
+    align-items:start !important;
+  }
+
+  /* Only the long text fields remain full-width. */
+  #ckAddressFormSection .ckform-grid .ckfield.full{
+    grid-column:1 / -1 !important;
+  }
+}
+
+/* Mobile: one clean full-width field per row, no horizontal overflow. */
+@media(max-width:899px){
+  #ckAddressFormSection .ckform-grid{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) !important;
+    column-gap:0 !important;
+    row-gap:7px !important;
+  }
+
+  #ckAddressFormSection .ckform-grid .ckfield.full{
+    grid-column:auto !important;
+  }
+
+  #ckAddressFormSection .ckfield input{
+    height:42px !important;
+    min-height:42px !important;
+  }
+}
+
+/* Very small phones */
+@media(max-width:420px){
+  #ckAddressFormSection .ckform-grid{
+    row-gap:6px !important;
+  }
+
+  #ckAddressFormSection .ckfield label{
+    font-size:11.5px !important;
+  }
+
+  #ckAddressFormSection .ckfield input{
+    height:40px !important;
+    min-height:40px !important;
+    padding:0 11px !important;
+    border-radius:9px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="ckInitialVioletLoader" aria-hidden="false">
@@ -961,6 +1072,10 @@ body{padding:0 !important;margin:0 !important;}
             <div class="ckfield full">
               <label for="ckRoad">Road name, Area, Colony *</label>
               <input id="ckRoad" type="text" placeholder="e.g. MG Road, Shastri Nagar">
+            </div>
+            <div class="ckfield full">
+              <label for="ckLandmark">Landmark</label>
+              <input id="ckLandmark" type="text" placeholder="e.g. Near Temple, School, Market" autocomplete="address-line2">
             </div>
           </div>
 
@@ -1520,6 +1635,7 @@ body{padding:0 !important;margin:0 !important;}
       village:a.village || '',
       house:a.house || '',
       road:a.road || '',
+      landmark:a.landmark || '',
       plus_code:a.plus_code || '',
 
       type:a.type || 'home',
@@ -1607,7 +1723,7 @@ body{padding:0 !important;margin:0 !important;}
     list.innerHTML=savedAddresses.map(function(a){
       var addr=a.isCurrentLocation
         ? [a.village,a.district,a.state,a.pincode].filter(Boolean).join(', ')
-        : [a.house,a.road,a.city,a.district,a.state,a.pincode].filter(Boolean).join(', ');
+        : [a.house,a.road,a.landmark,a.city,a.district,a.state,a.pincode].filter(Boolean).join(', ');
 
       var plus=a.isCurrentLocation && a.plus_code
         ? '<br><span style="font-size:12px;color:#52695d;">Plus Code: '+escapeHtml(a.plus_code)+'</span>'
@@ -1635,7 +1751,7 @@ body{padding:0 !important;margin:0 !important;}
     setText('ckSummaryTag',(addr.type||'home').toUpperCase());
     var summaryParts=addr.isCurrentLocation
       ? [addr.village,addr.district,addr.state,addr.pincode,addr.plus_code,'Phone: '+addr.phone]
-      : [addr.house,addr.road,addr.city,addr.district,addr.state,addr.pincode,'Phone: '+addr.phone];
+      : [addr.house,addr.road,addr.landmark,addr.city,addr.district,addr.state,addr.pincode,'Phone: '+addr.phone];
 
     setText('ckSummaryAddr',summaryParts.filter(Boolean).join(', '));
     renderProducts();
@@ -1774,7 +1890,7 @@ body{padding:0 !important;margin:0 !important;}
       grid.classList.add('ck-location-miniform');
 
       /* Keep only Full Name + Mobile + Village after GPS detection. */
-      ['ckPincode','ckState','ckDistrict','ckRoad'].forEach(function(id){
+      ['ckPincode','ckState','ckDistrict','ckRoad','ckLandmark'].forEach(function(id){
         var input=el(id);
         if(input){
           var field=input.closest('.ckfield');
@@ -1817,7 +1933,7 @@ body{padding:0 !important;margin:0 !important;}
       grid.style.display='';
       grid.classList.remove('ck-location-miniform');
 
-      ['ckFullName','ckPhone','ckPincode','ckState','ckDistrict','ckCity','ckRoad'].forEach(function(id){
+      ['ckFullName','ckPhone','ckPincode','ckState','ckDistrict','ckCity','ckRoad','ckLandmark'].forEach(function(id){
         var input=el(id);
         if(input){
           var field=input.closest('.ckfield');
@@ -2640,6 +2756,7 @@ body{padding:0 !important;margin:0 !important;}
       village:gpsMode ? village : '',
       house:'',
       road:gpsMode ? '' : (el('ckRoad')?.value||'').trim(),
+      landmark:gpsMode ? '' : (el('ckLandmark')?.value||'').trim(),
       plus_code:gpsMode ? (currentLocationData.plus_code||'') : '',
       type:gpsMode ? 'current location' : (addressType || 'home'),
       map_link:gpsMode ? (currentLocationData.map_link||'') : '',
@@ -2665,6 +2782,7 @@ body{padding:0 !important;margin:0 !important;}
         city:gpsMode ? null : addr.city,
         house:addr.house,
         road:gpsMode ? null : addr.road,
+        landmark:gpsMode ? null : (addr.landmark||''),
 
         /* Current Location gets separate Village + Plus Code. */
         village:gpsMode ? (addr.village||'') : null,
@@ -2690,9 +2808,27 @@ body{padding:0 !important;margin:0 !important;}
         .select()
         .single();
 
+      /*
+        Backward compatibility:
+        If an older saved_addresses table does not have the optional landmark
+        column yet, retry once without landmark so the existing checkout keeps
+        working instead of failing.
+      */
+      if(res.error && /landmark|column .* does not exist|schema cache/i.test(String(res.error.message||''))){
+        var retryPayload=Object.assign({},insertPayload);
+        delete retryPayload.landmark;
+
+        res=await window.__MY_STORE_SUPABASE__
+          .from('saved_addresses')
+          .insert(retryPayload)
+          .select()
+          .single();
+      }
+
       if(res.error) throw res.error;
 
       selectedAddress=mapAddress(res.data);
+      if(!selectedAddress.landmark) selectedAddress.landmark=addr.landmark||'';
 
       /* Exact GPS location is the address used for this order. */
       if(gpsMode){
@@ -2888,6 +3024,7 @@ body{padding:0 !important;margin:0 !important;}
         village:selectedAddress.village || '',
         house:selectedAddress.house || '',
         road:selectedAddress.road || '',
+        landmark:selectedAddress.landmark || '',
         plus_code:selectedAddress.plus_code || '',
         type:selectedAddress.type || 'home',
         map_link:selectedAddress.map_link || '',
