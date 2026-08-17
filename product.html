@@ -1918,11 +1918,12 @@ a{text-decoration:none;color:inherit}
    BROUGHT TOGETHER / RELATED PRODUCTS — MARKETPLACE STYLE
 ========================================================= */
 .broughtTogetherSection{
-  width:min(1450px,100%);
-  margin:0 auto 0;
-  background:#fff;
+  width:100%;
+  margin:0;
+  background:transparent;
   border:0;
   border-radius:0;
+  border-top:1px solid #eef0f3;
   padding:12px 0 10px;
   display:none;
   overflow:hidden;
@@ -1965,7 +1966,7 @@ a{text-decoration:none;color:inherit}
 .broughtProductPriceRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;min-height:0;line-height:1}
 .broughtProductPrice{font-size:14px;line-height:17px;font-weight:800;color:#222;order:1}
 .broughtProductMrp{font-size:9px;line-height:15px;color:#777;text-decoration:line-through;order:2}
-.broughtProductOff{font-size:9px;line-height:16px;padding:0 5px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:3}
+.broughtProductOff{font-size:9px;line-height:16px;padding:0 5px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:3;margin-left:auto}
 .broughtProductReason{margin-top:2px;font-size:8px;line-height:12px;color:#6d28d9;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .broughtRailNav{
   position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:1px solid #ddd;background:#fff;color:#111;
@@ -1976,11 +1977,24 @@ a{text-decoration:none;color:inherit}
 .broughtSkeleton{display:none}
 
 /* Full Related Products: desktop = right drawer, mobile = full screen */
-.relatedProductsView{
-  position:fixed;inset:0;z-index:2147483000;display:none;flex-direction:column;background:rgba(0,0,0,.72);overflow:hidden
+html.relatedViewOpen,
+html.relatedViewOpen body{
+  overflow:hidden !important;
 }
-.relatedProductsView.show{display:flex}
-html.relatedViewOpen,body.relatedViewOpen{overflow:hidden !important;}
+body.relatedViewOpen{
+  position:fixed !important;
+  left:0;
+  right:0;
+  overflow:hidden !important;
+  overscroll-behavior:none !important;
+}
+.relatedProductsView{
+  position:fixed;inset:0;z-index:2147483000;display:none;flex-direction:column;background:rgba(0,0,0,.72);overflow:hidden;overscroll-behavior:contain;touch-action:auto;
+}
+.relatedProductsView.show{display:flex;pointer-events:auto}
+.relatedProductsView.show .relatedProductsHeader,
+.relatedProductsView.show .relatedProductsGrid{pointer-events:auto}
+
 .relatedProductsHeader{
   position:absolute;top:0;right:0;width:480px;height:58px;min-height:58px;background:#fff;border-bottom:1px solid #e5e7eb;
   display:flex;align-items:center;gap:10px;padding:0 14px;z-index:3
@@ -1992,12 +2006,14 @@ html.relatedViewOpen,body.relatedViewOpen{overflow:hidden !important;}
 .relatedProductsHeaderTitle{margin:0;font-size:18px;font-weight:500;color:#222;white-space:nowrap}
 .relatedProductsHeaderCount{margin-left:2px;color:#777;font-size:10px;font-weight:500}
 .relatedProductsGrid{
-  position:absolute;top:58px;right:0;bottom:0;width:480px;background:#fff;overflow-y:auto;overflow-x:hidden;
-  padding:0 0 24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:0;
-  overflow-y:scroll;overflow-x:hidden;overscroll-behavior-y:contain;overscroll-behavior-x:hidden;
-  -webkit-overflow-scrolling:touch;touch-action:pan-y;pointer-events:auto;
+  position:absolute;top:58px;right:0;bottom:0;width:480px;height:calc(100vh - 58px);min-height:0;background:#fff;overflow-y:scroll;overflow-x:hidden;
+  padding:0 0 24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:0;overscroll-behavior:contain;touch-action:pan-y;
+  -webkit-overflow-scrolling:touch;
   scrollbar-width:auto;
 }
+.relatedProductsGrid::-webkit-scrollbar{width:8px}
+.relatedProductsGrid::-webkit-scrollbar-thumb{background:#bdbdbd;border-radius:8px}
+.relatedProductsGrid::-webkit-scrollbar-track{background:#f4f4f4}
 .relatedGridCard{
   min-width:0;border:0;border-bottom:1px solid #e5e7eb;border-right:1px solid #e5e7eb;border-radius:0;background:#fff;overflow:hidden;cursor:pointer;padding:0 10px 11px
 }
@@ -2006,9 +2022,9 @@ html.relatedViewOpen,body.relatedViewOpen{overflow:hidden !important;}
 .relatedGridBody{padding:7px 0 0}
 .relatedGridTitle{font-size:11px;line-height:1.25;font-weight:500;color:#222;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:28px}
 .relatedGridPriceRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;line-height:1}
-.relatedGridPrice{font-size:14px;line-height:17px;font-weight:800;order:1}.relatedGridMrp{font-size:9px;color:#777;text-decoration:line-through;order:2}.relatedGridOff{font-size:8px;line-height:15px;padding:0 4px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:3}
+.relatedGridPrice{font-size:14px;line-height:17px;font-weight:800;order:1}.relatedGridMrp{font-size:9px;color:#777;text-decoration:line-through;order:2}.relatedGridOff{font-size:8px;line-height:15px;padding:0 4px;border-radius:3px;background:#16833b;color:#fff;font-weight:800;order:3;margin-left:auto}
 .relatedGridMeta{display:flex;align-items:center;gap:4px;margin-top:2px;min-height:15px}.relatedGridRating{background:#16833b;color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:800}.relatedGridReviews{font-size:8px;color:#777}
-.relatedProductsLoadRow{grid-column:1/-1;display:none;padding:12px 10px 14px;background:#fff;text-align:center}
+.relatedProductsLoadRow{grid-column:1/-1;display:none;padding:12px 10px 14px;background:#fff;text-align:center;min-height:0}
 .relatedProductsLoadRow.show{display:block}
 .relatedFindingText{font-size:12px;color:#555;font-weight:600;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:7px}
 .relatedFindingSpinner{width:15px;height:15px;border:2px solid #ddd;border-top-color:#111;border-radius:50%;animation:relatedSpin .7s linear infinite}
@@ -2020,17 +2036,17 @@ html.relatedViewOpen,body.relatedViewOpen{overflow:hidden !important;}
 @keyframes relatedSkeletonMove{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
 @media(max-width:900px){
-  .broughtTogetherSection{width:100%;margin:10px 0 0;padding:10px 12px 8px;border:0}
+  .broughtTogetherSection{width:100%;margin:0;padding:10px 12px 8px;border:0;border-top:1px solid #eef0f3}
   .broughtTogetherHeader{margin-bottom:7px;padding:0}.broughtTogetherTitle{font-size:17px}.broughtTogetherSub{font-size:10px}.broughtTogetherViewAll{width:30px;height:30px;flex-basis:30px;font-size:19px}
   .broughtTogetherTrack{gap:8px;padding:0 0 2px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
   .broughtProductCard{flex-basis:150px;width:150px;min-width:150px;scroll-snap-align:start}
-  .broughtProductImageWrap{height:132px}.broughtProductBody{padding:5px 0 0}.broughtProductName{font-size:10px;line-height:1.2;min-height:25px}.broughtProductPrice{font-size:13px}.broughtProductMrp{font-size:8px}.broughtProductOff{font-size:8px}.broughtProductReason{font-size:7px;line-height:11px}.broughtRailNav{display:none}
+  .broughtProductImageWrap{height:132px}.broughtProductBody{padding:5px 0 0}.broughtProductName{font-size:10px;line-height:1.2;min-height:25px}.broughtProductPrice{font-size:13px}.broughtProductMrp{font-size:8px}.broughtProductOff{font-size:8px;margin-left:auto}.broughtProductReason{font-size:7px;line-height:11px}.broughtRailNav{display:none}
 
   .relatedProductsView{background:#fff}
   .relatedProductsHeader{position:relative;top:auto;right:auto;width:100%;height:56px;min-height:56px;padding:0 10px;border-bottom:1px solid #ddd;box-shadow:0 1px 4px rgba(0,0,0,.05)}
   .relatedProductsHeaderTitle{font-size:18px;font-weight:700}.relatedProductsBack{width:38px;height:38px}.relatedProductsBack::before{content:"←";font-size:27px;font-weight:400}
-  .relatedProductsGrid{position:relative;top:auto;right:auto;bottom:auto;width:100%;height:auto;min-height:0;flex:1;padding:0 0 22px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;overflow-y:scroll;overflow-x:hidden;overscroll-behavior-y:contain;overscroll-behavior-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;pointer-events:auto;scrollbar-width:auto}
-  .relatedGridCard{padding:0 8px 10px}.relatedGridImage{position:relative;height:166px}.relatedGridBody{padding:6px 0 0}.relatedGridTitle{font-size:10px;line-height:1.25;min-height:26px}.relatedGridPrice{font-size:13px}.relatedGridMrp{font-size:8px}.relatedGridOff{font-size:7px}.relatedGridMeta{margin-top:2px}.relatedGridRating,.relatedGridReviews{font-size:7px}
+  .relatedProductsGrid{position:relative;top:auto;right:auto;bottom:auto;width:100%;height:auto;min-height:0;flex:1;padding:0 0 22px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;overflow-y:scroll;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+  .relatedGridCard{padding:0 8px 10px}.relatedGridImage{position:relative;height:166px}.relatedGridBody{padding:6px 0 0}.relatedGridTitle{font-size:10px;line-height:1.25;min-height:26px}.relatedGridPrice{font-size:13px}.relatedGridMrp{font-size:8px}.relatedGridOff{font-size:7px;margin-left:auto}.relatedGridMeta{margin-top:2px}.relatedGridRating,.relatedGridReviews{font-size:7px}
   .relatedProductsLoadRow{padding:12px 8px 14px}.relatedFindingText{font-size:11px}.relatedSkeletonGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.relatedGridSkeleton{padding:0 8px 10px}.relatedSkeletonImage{height:166px}
 }
 @media(max-width:420px){.broughtProductCard{flex-basis:146px;width:146px;min-width:146px}.broughtProductImageWrap{height:128px}.relatedGridImage{position:relative;height:154px}.relatedSkeletonImage{height:154px}}
@@ -2760,11 +2776,6 @@ Buy at <span id="buyPrice"></span>
 
 </div>
 
-</section>
-
-<!-- OLD DETAILS ELEMENT KE LIYE -->
-<section id="details" style="display:none"></section>
-
 <!-- ================= BROUGHT TOGETHER / RELATED PRODUCTS ================= -->
 <section id="broughtTogetherSection" class="broughtTogetherSection" aria-label="Brought Together">
   <div class="broughtTogetherHeader">
@@ -2789,6 +2800,11 @@ Buy at <span id="buyPrice"></span>
     <button id="broughtRailNext" class="broughtRailNav next" type="button" aria-label="Next related products">›</button>
   </div>
 </section>
+
+</section>
+
+<!-- OLD DETAILS ELEMENT KE LIYE -->
+<section id="details" style="display:none"></section>
 
 <!-- ================= FULL RELATED PRODUCTS VIEW ================= -->
 <section id="relatedProductsView" class="relatedProductsView" aria-hidden="true">
@@ -4580,6 +4596,11 @@ function render(){
     "product"
   ).style.display="block";
 
+  const desktopLoader = document.getElementById("desktopProductPageLoader");
+  if(desktopLoader){
+    desktopLoader.classList.add("hide");
+    desktopLoader.setAttribute("aria-hidden","true");
+  }
 
   document.getElementById(
     "title"
@@ -6055,129 +6076,94 @@ function setRelatedHeaderCount(){
   const count=document.getElementById("relatedProductsHeaderCount");
   if(count) count.textContent=broughtTogetherProducts.length ? `(${broughtTogetherProducts.length})` : "";
 }
+
 function makeRelatedSkeletons(){
-  const wrap=document.getElementById("relatedSkeletonGrid");
-  if(!wrap) return;
+  const row=document.getElementById("relatedProductsLoadRow");
+  if(!row) return;
+
+  let wrap=row.querySelector(".relatedSkeletonGrid");
+  if(!wrap){
+    wrap=document.createElement("div");
+    wrap.className="relatedSkeletonGrid";
+    row.appendChild(wrap);
+  }
+
   wrap.innerHTML=`
     <div class="relatedGridSkeleton"><div class="relatedSkeletonImage"></div><div class="relatedSkeletonLine"></div><div class="relatedSkeletonLine short"></div><div class="relatedSkeletonPrice"></div></div>
     <div class="relatedGridSkeleton"><div class="relatedSkeletonImage"></div><div class="relatedSkeletonLine"></div><div class="relatedSkeletonLine short"></div><div class="relatedSkeletonPrice"></div></div>`;
 }
+
 function showRelatedLoader(){
   const row=document.getElementById("relatedProductsLoadRow");
   if(!row) return;
   makeRelatedSkeletons();
   row.classList.add("show");
 }
+
 function hideRelatedLoader(){
   const row=document.getElementById("relatedProductsLoadRow");
-  if(row) row.classList.remove("show");
-}
-function getRelatedInitialBatchSize(){
-  const grid=document.getElementById("relatedProductsGrid");
-  if(!grid) return Math.min(4,broughtTogetherProducts.length);
-
-  /*
-    FIRST OPEN: fill the visible drawer/screen naturally.
-    No more products are added automatically after this.
-    Every later scroll adds exactly 2 products.
-  */
-  const isMobile=window.innerWidth<=900;
-  const cardHeight=isMobile ? 225 : 255;
-  const availableHeight=Math.max(1,grid.clientHeight);
-  const rows=Math.max(2,Math.ceil(availableHeight/cardHeight));
-  const firstBatch=rows*2;
-
-  return Math.min(
-    firstBatch,
-    broughtTogetherProducts.length
-  );
+  if(row){
+    row.classList.remove("show");
+    const skeleton=row.querySelector(".relatedSkeletonGrid");
+    if(skeleton) skeleton.remove();
+  }
 }
 
-function appendRelatedBatch(batchSize=RELATED_BATCH_SIZE){
+function getInitialRelatedCount(){
+  /* First open: fill the visible screen. After this, ONLY TWO products
+     are loaded per user scroll, with Products Finding + skeleton first. */
   const grid=document.getElementById("relatedProductsGrid");
-  if(!grid || relatedLoading) return Promise.resolve();
+  const mobile=window.matchMedia("(max-width:900px)").matches;
+  const viewport=(grid && grid.clientHeight) || (window.innerHeight-(mobile?56:58));
+  const rowHeight=mobile ? 225 : 250;
+  const visibleRows=Math.max(2,Math.ceil(viewport/rowHeight));
+  return Math.min(broughtTogetherProducts.length,visibleRows*2);
+}
+
+async function appendRelatedBatch(count=RELATED_BATCH_SIZE, showLoader=true){
+  const grid=document.getElementById("relatedProductsGrid");
+  if(!grid || relatedLoading) return;
 
   if(relatedRenderedCount>=broughtTogetherProducts.length){
     hideRelatedLoader();
-    return Promise.resolve();
+    return;
   }
 
   relatedLoading=true;
 
-  /*
-    Every load after the first screen shows: 
-    Products Finding... + spinner + 2 skeleton cards.
-  */
-  showRelatedLoader();
+  /* Initial render fills the current screen directly. Loader/skeleton is
+     reserved for the next 2-product batch after the user reaches the end. */
+  if(showLoader){
+    showRelatedLoader();
+    await new Promise(resolve=>setTimeout(resolve,700));
+  }else{
+    hideRelatedLoader();
+  }
 
-  return new Promise(resolve=>{
-    setTimeout(()=>{
-      try{
-        /*
-          First screen may contain enough cards to fill the visible
-          drawer. Every subsequent lazy-load is EXACTLY 2 products.
-        */
-        const requestedSize=Math.max(
-          1,
-          Number(batchSize)||RELATED_BATCH_SIZE
-        );
-        const size=(relatedRenderedCount===0)
-          ? requestedSize
-          : Math.min(RELATED_BATCH_SIZE,requestedSize);
+  const end=Math.min(relatedRenderedCount+count,broughtTogetherProducts.length);
+  const batch=broughtTogetherProducts.slice(relatedRenderedCount,end);
+  const html=batch.map(item=>relatedProductCardHtml(item,true)).join("");
+  const row=document.getElementById("relatedProductsLoadRow");
 
-        const end=Math.min(
-          relatedRenderedCount+size,
-          broughtTogetherProducts.length
-        );
+  if(row) row.insertAdjacentHTML("beforebegin",html);
 
-        const batch=broughtTogetherProducts.slice(
-          relatedRenderedCount,
-          end
-        );
-
-        const html=batch
-          .map(item=>relatedProductCardHtml(item,true))
-          .join("");
-
-        const row=document.getElementById(
-          "relatedProductsLoadRow"
-        );
-
-        if(row && html){
-          row.insertAdjacentHTML(
-            "beforebegin",
-            html
-          );
-        }
-
-        relatedRenderedCount=end;
-        bindRelatedProductCards(grid,true);
-
-      }catch(error){
-        console.error(
-          "Related products batch:",
-          error
-        );
-      }finally{
-        hideRelatedLoader();
-        relatedLoading=false;
-        resolve();
-      }
-    },700);
-  });
+  relatedRenderedCount=end;
+  bindRelatedProductCards(grid,true);
+  relatedLoading=false;
+  hideRelatedLoader();
 }
 
 function maybeLoadMoreRelated(){
   const grid=document.getElementById("relatedProductsGrid");
   const view=document.getElementById("relatedProductsView");
-  if(!grid || !view || !view.classList.contains("show")) return;
+  if(!grid || !view?.classList.contains("show")) return;
   if(relatedLoading || relatedRenderedCount>=broughtTogetherProducts.length) return;
 
-  const remaining=grid.scrollHeight-(grid.scrollTop+grid.clientHeight);
-  const threshold=Math.max(220,grid.clientHeight*.35);
-
-  if(remaining<=threshold){
-    appendRelatedBatch(RELATED_BATCH_SIZE);
+  /* Do not start the next batch until the user actually scrolls near the
+     bottom of the currently rendered grid. */
+  const distanceFromBottom=grid.scrollHeight-(grid.scrollTop+grid.clientHeight);
+  if(distanceFromBottom <= 70){
+    appendRelatedBatch(RELATED_BATCH_SIZE,true);
   }
 }
 
@@ -6190,83 +6176,66 @@ function resetRelatedGrid(){
   relatedRenderedCount=0;
   relatedLoading=false;
   hideRelatedLoader();
+
   if(row) grid.appendChild(row);
-  grid.scrollTop=0;
   setRelatedHeaderCount();
 }
 
-function lockRelatedPageScroll(){
+function lockRelatedBackground(){
   const scrollY=window.scrollY||window.pageYOffset||0;
-
   document.body.dataset.relatedScrollY=String(scrollY);
   document.documentElement.classList.add("relatedViewOpen");
   document.body.classList.add("relatedViewOpen");
-
-  document.body.style.position="fixed";
   document.body.style.top=`-${scrollY}px`;
-  document.body.style.left="0";
-  document.body.style.right="0";
   document.body.style.width="100%";
-  document.body.style.overflow="hidden";
 }
 
-function unlockRelatedPageScroll(){
-  const scrollY=Number(
-    document.body.dataset.relatedScrollY||0
-  );
-
+function unlockRelatedBackground(){
+  const scrollY=Number(document.body.dataset.relatedScrollY||0);
   document.documentElement.classList.remove("relatedViewOpen");
   document.body.classList.remove("relatedViewOpen");
-
-  document.body.style.position="";
   document.body.style.top="";
-  document.body.style.left="";
-  document.body.style.right="";
   document.body.style.width="";
-  document.body.style.overflow="";
-
   window.scrollTo(0,scrollY);
 }
 
-async function openRelatedProductsView(){
+function openRelatedProductsView(){
   const view=document.getElementById("relatedProductsView");
   const grid=document.getElementById("relatedProductsGrid");
   if(!view || !grid) return;
 
   setRelatedHeaderCount();
   resetRelatedGrid();
-
-  /* Lock the product page completely behind the drawer. */
-  lockRelatedPageScroll();
-
+  lockRelatedBackground();
   view.classList.add("show");
   view.setAttribute("aria-hidden","false");
 
-  requestAnimationFrame(async()=>{
-    /*
-      FIRST SCREEN: ONLY 4 PRODUCTS.
-      Do NOT auto-fill the remaining screen with more batches.
-    */
-    const initialCount=getRelatedInitialBatchSize();
-    await appendRelatedBatch(initialCount);
-
-    /*
-      If there are more products, the loader will appear only
-      when the user actually scrolls near the bottom.
-    */
+  /* First screen: render enough cards to fill the visible area. */
+  requestAnimationFrame(()=>{
+    const initialCount=getInitialRelatedCount();
+    appendRelatedBatch(initialCount,false);
   });
 }
 
 function closeRelatedProductsView(){
   const view=document.getElementById("relatedProductsView");
   if(!view) return;
-
   view.classList.remove("show");
   view.setAttribute("aria-hidden","true");
   hideRelatedLoader();
-
-  unlockRelatedPageScroll();
+  unlockRelatedBackground();
 }
+
+/* Drawer scroll isolation: wheel/touch over the drawer must never scroll the product page behind it. */
+document.addEventListener("wheel",function(event){
+  const view=document.getElementById("relatedProductsView");
+  if(!view?.classList.contains("show")) return;
+  if(event.target.closest("#relatedProductsGrid")) return;
+  if(event.target.closest("#relatedProductsHeader")){
+    event.preventDefault();
+  }
+},{passive:false});
+
 function setupBroughtTogetherControls(){
   const viewAll=document.getElementById("broughtTogetherViewAll");
   const prev=document.getElementById("broughtRailPrev");
@@ -6279,74 +6248,7 @@ function setupBroughtTogetherControls(){
   if(next && !next.dataset.bound){next.dataset.bound="1";next.addEventListener("click",()=>scrollBroughtRail(1))}
   if(track && !track.dataset.boundScroll){track.dataset.boundScroll="1";track.addEventListener("scroll",updateBroughtRailButtons,{passive:true})}
   if(back && !back.dataset.bound){back.dataset.bound="1";back.addEventListener("click",closeRelatedProductsView)}
-  if(grid && !grid.dataset.boundScroll){
-    grid.dataset.boundScroll="1";
-    grid.addEventListener("scroll",maybeLoadMoreRelated,{passive:true});
-
-    /*
-      FORCE the drawer itself to consume mouse-wheel / trackpad scroll.
-      The product page is locked in the background, so wheel movement
-      over the drawer must always move this grid.
-    */
-    grid.addEventListener("wheel",e=>{
-      if(!grid.classList.contains("relatedGridScrollReady")){
-        grid.classList.add("relatedGridScrollReady");
-      }
-      if(grid.scrollHeight > grid.clientHeight){
-        e.preventDefault();
-        e.stopPropagation();
-        grid.scrollTop += e.deltaY;
-        maybeLoadMoreRelated();
-      }
-    },{passive:false});
-
-    /*
-      FALLBACK: if Firefox/trackpad dispatches the wheel event to the
-      drawer overlay instead of the grid, route it directly to the grid.
-      This does not change the layout or product rendering.
-    */
-    const relatedView=document.getElementById("relatedProductsView");
-    if(relatedView && !relatedView.dataset.boundWheelFallback){
-      relatedView.dataset.boundWheelFallback="1";
-      relatedView.addEventListener("wheel",e=>{
-        if(!relatedView.classList.contains("show")) return;
-        if(!grid.contains(e.target)) return;
-        if(grid.scrollHeight<=grid.clientHeight) return;
-
-        e.preventDefault();
-        e.stopPropagation();
-        grid.scrollTop += e.deltaY;
-        maybeLoadMoreRelated();
-      },{passive:false});
-    }
-
-    /* Touch scrolling on mobile drawer */
-    let touchStartY=0;
-    grid.addEventListener("touchstart",e=>{
-      if(e.touches && e.touches.length) touchStartY=e.touches[0].clientY;
-    },{passive:true});
-    grid.addEventListener("touchmove",e=>{
-      if(!e.touches || !e.touches.length) return;
-      const currentY=e.touches[0].clientY;
-      const delta=touchStartY-currentY;
-      if(Math.abs(delta)>0 && grid.scrollHeight>grid.clientHeight){
-        e.preventDefault();
-        e.stopPropagation();
-        grid.scrollTop += delta;
-        touchStartY=currentY;
-        maybeLoadMoreRelated();
-      }
-    },{passive:false});
-  }
-  if(!document.body.dataset.relatedEscapeBound){
-    document.body.dataset.relatedEscapeBound="1";
-    document.addEventListener("keydown",e=>{
-      if(e.key==="Escape"){
-        const view=document.getElementById("relatedProductsView");
-        if(view && view.classList.contains("show")) closeRelatedProductsView();
-      }
-    });
-  }
+  if(grid && !grid.dataset.boundScroll){grid.dataset.boundScroll="1";grid.addEventListener("scroll",maybeLoadMoreRelated,{passive:true})}
 }
 
 async function loadBroughtTogether(){
@@ -6376,11 +6278,17 @@ async function loadBroughtTogether(){
 
 setupBroughtTogetherControls();
 
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape" && document.getElementById("relatedProductsView")?.classList.contains("show")){
+    closeRelatedProductsView();
+  }
+});
+
 /* =========================================================
    START
 ========================================================= */
 
-if(window.innerWidth<=900){document.body.style.overflow="hidden";}
+/* Product page remains normally scrollable. The related-products drawer locks the background only while open. */
 
 load();
 
