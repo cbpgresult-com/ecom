@@ -548,19 +548,20 @@ a{
 #globalNavLoader{
   position:fixed;
   inset:0;
-  z-index:99999;
+  z-index:99998;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:rgba(255,255,255,.94);
+  background:#fff;
   opacity:1;
   visibility:visible;
-  transition:opacity .12s ease,visibility .12s ease;
+  transition:none !important;
 }
 #globalNavLoader.hide{
   opacity:0;
   visibility:hidden;
   pointer-events:none;
+  transition:none !important;
 }
 #globalNavLoader .global-loader-spinner{
   width:34px;
@@ -579,38 +580,39 @@ a{
   left:0;
   right:0;
   bottom:0;
-  z-index:9990;
+  z-index:99999;
   display:flex;
-  align-items:stretch;
+  align-items:center;
   justify-content:space-around;
   height:68px;
-  padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));
-  background:rgba(255,255,255,.98);
-  border-top:1px solid #e7e7ec;
-  box-shadow:0 -5px 20px rgba(20,20,40,.08);
-  -webkit-backdrop-filter:blur(14px);
-  backdrop-filter:blur(14px);
+  padding:0;
+  background:#fff;
+  border-top:1px solid #ddd;
+  box-shadow:0 -5px 20px rgba(0,0,0,.08);
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
 }
 #globalBottomNav .bn-item{
   flex:1;
   min-width:0;
-  max-width:120px;
+  max-width:none;
   border:0;
-  background:transparent;
-  color:#777;
+  background:#fff;
+  color:#666;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   gap:3px;
-  padding:4px 2px;
+  padding:0;
   cursor:pointer;
   -webkit-tap-highlight-color:transparent;
-  transition:color .12s ease,transform .12s ease;
+  transition:none !important;
   font-family:inherit;
 }
 #globalBottomNav .bn-item:active{
-  transform:scale(.94);
+  transform:none !important;
+  background:#fff !important;
 }
 #globalBottomNav .bn-icon{
   width:23px;
@@ -624,16 +626,18 @@ a{
   display:block;
 }
 #globalBottomNav .bn-label{
-  font-size:10.5px;
+  font-size:10px;
   line-height:1;
-  font-weight:650;
+  font-weight:400;
   white-space:nowrap;
 }
 #globalBottomNav .bn-item.active{
-  color:#5b45e8;
+  color:#6d28d9;
+  font-weight:700;
 }
 #globalBottomNav .bn-item.active .bn-icon svg{
-  stroke-width:2.5;
+  stroke:#6d28d9;
+  stroke-width:1.8;
 }
 #globalBottomNav .bn-badge{
   position:absolute;
@@ -694,68 +698,58 @@ body.ss-hide-bottom-nav #bottomNav{
      ========================================================= -->
 <nav id="globalBottomNav" aria-label="Main navigation">
 
-  <button class="bn-item" data-page="home" type="button"
-          onclick="globalNavGo('home')">
+  <button class="bn-item" data-page="home" type="button" onclick="globalNavGo('home')">
     <span class="bn-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <path d="m3 10 9-7 9 7"/>
-        <path d="M5 9v11h14V9"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="m3 11 9-8 9 8"/>
+        <path d="M5 10v10h14V10"/>
         <path d="M9 20v-6h6v6"/>
       </svg>
     </span>
     <span class="bn-label">Home</span>
   </button>
 
-  <button class="bn-item" data-page="categories" type="button"
-          onclick="globalNavGo('categories')">
+  <button class="bn-item" data-page="categories" type="button" onclick="globalNavGo('categories')">
     <span class="bn-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/>
-        <rect x="14" y="14" width="7" height="7" rx="1"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="4" y="4" width="6" height="6" rx="1"/>
+        <rect x="14" y="4" width="6" height="6" rx="1"/>
+        <rect x="4" y="14" width="6" height="6" rx="1"/>
+        <rect x="14" y="14" width="6" height="6" rx="1"/>
       </svg>
     </span>
     <span class="bn-label">Categories</span>
   </button>
 
-  <button class="bn-item" data-page="orders" type="button"
-          onclick="globalNavGo('orders')">
+  <button class="bn-item" data-page="account" type="button" onclick="globalNavGo('account')">
     <span class="bn-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 2h9l3 3v17H6z"/>
-        <path d="M14 2v4h4"/>
-        <path d="M9 11h6M9 15h6"/>
-      </svg>
-    </span>
-    <span class="bn-label">Orders</span>
-  </button>
-
-  <button class="bn-item" data-page="account" type="button"
-          onclick="globalNavGo('account')">
-    <span class="bn-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="8" r="4"/>
-        <path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
       </svg>
     </span>
     <span class="bn-label">Account</span>
   </button>
 
-  <button class="bn-item" data-page="cart" type="button"
-          onclick="globalNavGo('cart')">
-    <span class="bn-icon" style="position:relative;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.6L21 8H6"/>
-        <circle cx="10" cy="20" r="1"/>
-        <circle cx="18" cy="20" r="1"/>
+  <button class="bn-item" data-page="orders" type="button" onclick="globalNavGo('orders')">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="m4 7 8-4 8 4-8 4z"/>
+        <path d="M4 7v10l8 4 8-4V7"/>
+        <path d="M12 11v10"/>
       </svg>
-      <span id="globalCartBadge" class="bn-badge" style="display:none;">0</span>
+    </span>
+    <span class="bn-label">Orders</span>
+  </button>
+
+  <button class="bn-item" data-page="cart" type="button" onclick="globalNavGo('cart')">
+    <span class="bn-icon" style="position:relative;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="9" cy="20" r="1"/>
+        <circle cx="18" cy="20" r="1"/>
+        <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+      </svg>
+      <span id="globalCartBadge" class="bn-badge" style="display:none;"></span>
     </span>
     <span class="bn-label">Cart</span>
   </button>
