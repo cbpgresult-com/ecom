@@ -1,121 +1,3507 @@
-\<!DOCTYPE html>
-\<html lang="en"> \<head> \<meta charset="UTF-8"> \<meta name="viewport" content="width=device-width, initial-scale=1.0">
-\<title>MyStore - Online Shopping\</title>
-\<script src="https\://cdn.jsdelivr.net/npm/@supabase/supabase-js\@2">
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MyStore - Online Shopping</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --violet:#6d28d9;
+  --violet2:#7c3aed;
+  --light-violet:#f3e8ff;
+  --green:#dcfce7;
+  --green-dark:#15803d;
+  --white:#fff;
+  --text:#171717;
+  --muted:#737373;
+  --border:#e5e7eb;
+  --bg:#f7f7fb;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:0;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+  height:72px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:22px;
+  padding:0 5%;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  white-space:nowrap;
+}
+
+.logo img{
+  height:54px;
+  width:auto;
+  max-width:240px;
+  display:block;
+  object-fit:contain;
+}
+
+.mobile-header-actions{
+  display:none;
+}
+
+.search{
+  flex:1;
+  position:relative;
+}
+
+.search input{
+  width:100%;
+  height:46px;
+  border:2px solid #dfcaff;
+  border-radius:13px;
+  padding:0 48px 0 18px;
+  outline:none;
+  font-size:15px;
+  background:#fff;
+}
+
+.search input:focus{
+  border-color:var(--violet);
+}
+
+.search-icon{
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
+  width:20px;
+  height:20px;
+}
+
+/* desktop account */
+
+.header-account{
+  position:relative;
+}
+
+.account-btn{
+  border:0;
+  background:#fff;
+  height:44px;
+  padding:0 8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:15px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.account-btn.auth-loading{
+  visibility:hidden;
+}
+
+.account-btn:hover{
+  color:var(--violet);
+}
+
+.account-icon{
+  width:21px;
+  height:21px;
+}
+
+.arrow{
+  width:14px;
+  height:14px;
+  transition:.2s;
+}
+
+.account-btn.open .arrow{
+  transform:rotate(180deg);
+}
+
+.cart-btn{
+  height:44px;
+  border:0;
+  background:var(--violet);
+  color:white;
+  padding:0 17px;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+  position:relative;
+}
+
+.cart-icon{
+  width:20px;
+  height:20px;
+}
+
+.cart-number{
+  position:absolute;
+  top:-7px;
+  right:-7px;
+  min-width:21px;
+  height:21px;
+  padding:0 5px;
+  border-radius:999px;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:#ef4444;
+  color:#fff;
+  border:2px solid #fff;
+  font-size:11px;
+  font-weight:800;
+  line-height:1;
+  box-shadow:0 2px 7px rgba(0,0,0,.2);
+  z-index:3;
+}
+
+.cart-number.cart-loading{
+  display:none !important;
+}
+
+.cart-number.show{
+  display:inline-flex;
+}
+
+/* Mobile bottom Cart badge */
+.bottom-item{
+  position:relative;
+}
+.cart-number-mobile{
+  position:absolute;
+  top:2px;
+  right:calc(50% - 20px);
+  min-width:18px;
+  height:18px;
+  padding:0 4px;
+  border-radius:999px;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:#ef4444;
+  color:#fff;
+  border:2px solid #fff;
+  font-size:9px;
+  font-weight:800;
+  line-height:1;
+  box-shadow:0 2px 6px rgba(0,0,0,.18);
+  z-index:3;
+}
+.cart-number-mobile.show{
+  display:inline-flex;
+}
+
+/* ================= ACCOUNT DROPDOWN ================= */
+
+.account-menu{
+  position:absolute;
+  right:0;
+  top:53px;
+  width:310px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 35px rgba(0,0,0,.20);
+  border:1px solid #ddd;
+  overflow:hidden;
+  display:none;
+  z-index:2000;
+}
+
+.account-menu.show{
+  display:block;
+  animation:menuIn .16s ease;
+}
+
+@keyframes menuIn{
+  from{
+    opacity:0;
+    transform:translateY(-5px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.account-top{
+  padding:18px 20px 10px;
+}
+
+.new-customer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:15px;
+}
+
+.signup{
+  color:#2563eb;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.account-divider{
+  height:1px;
+  background:#eee;
+  margin:8px 0;
+}
+
+.menu-item{
+  height:47px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:0 20px;
+  cursor:pointer;
+  font-size:15px;
+}
+
+.menu-item:hover{
+  background:#f7f7f7;
+  color:var(--violet);
+}
+
+.menu-svg{
+  width:20px;
+  height:20px;
+  flex:none;
+}
+
+.logout{
+  color:#dc2626;
+}
+
+/* ================= CATEGORY ================= */
+
+.categories{
+  height:82px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  gap:30px;
+  padding:0 5%;
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
+}
+
+.category{
+  min-width:64px;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.category-icon{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:var(--light-violet);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.category-icon svg{
+  width:23px;
+  height:23px;
+}
+
+.category.active{
+  color:var(--violet);
+  font-weight:700;
+}
+
+.category.active .category-icon{
+  background:var(--green);
+}
+
+/* ================= MAIN ================= */
+
+main{
+  width:90%;
+  max-width:1250px;
+  margin:auto;
+}
+
+.top-space{
+  height:20px;
+}
+
+/* ================= PRODUCT HEADER ================= */
+
+.product-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin:28px 0 18px;
+}
+
+.product-heading h1{
+  font-size:25px;
+}
+
+.product-heading p{
+  color:var(--muted);
+  margin-top:5px;
+  font-size:14px;
+}
+
+#sortSelect{
+  padding:10px 30px 10px 12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  background:white;
+}
+
+/* ================= PRODUCT GRID ================= */
+
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  padding-bottom:50px;
+}
+
+.product-card{
+  background:white;
+  border:1px solid #e8e8e8;
+  border-radius:14px;
+  overflow:hidden;
+  transition:.2s;
+  cursor:pointer;
+  min-width:0;
+}
+
+.product-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 25px rgba(0,0,0,.09);
+}
+
+.product-image-box{
+  height:250px;
+  background:#fafafa;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.product-image{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:10px;
+  display:block;
+}
+
+.discount{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:var(--green);
+  color:var(--green-dark);
+  padding:6px 8px;
+  border-radius:7px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.product-info{
+  padding:12px;
+}
+
+.rating{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  background:var(--green);
+  color:#166534;
+  padding:4px 7px;
+  border-radius:6px;
+  font-size:11px;
+  margin-bottom:8px;
+}
+
+.product-name{
+  font-size:14px;
+  font-weight:500;
+  line-height:1.35;
+  color:#333;
+
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+
+  min-height:38px;
+}
+
+.price-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:9px;
+}
+
+.price{
+  font-size:20px;
+  font-weight:800;
+}
+
+.mrp{
+  font-size:11px;
+  color:#999;
+  text-decoration:line-through;
+}
+
+.off{
+  font-size:11px;
+  color:var(--green-dark);
+  font-weight:700;
+}
+
+.delivery{
+  color:#15803d;
+  font-size:11px;
+  margin-top:10px;
+  font-weight:600;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+  padding:0;
+  width:100%;
+  color:transparent;
+}
+
+.skeleton-grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+.skeleton-card{
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+
+.skeleton{
+  position:relative;
+  overflow:hidden;
+  background:#e9edf2;
+  border-radius:8px;
+}
+
+.skeleton::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.65),
+    transparent
+  );
+  animation:skeletonShimmer 1.15s infinite;
+}
+
+@keyframes skeletonShimmer{
+  100%{
+    transform:translateX(100%);
+  }
+}
+
+.skeleton-image{
+  width:100%;
+  height:220px;
+  border-radius:0;
+}
+
+.skeleton-info{
+  padding:12px;
+}
+
+.skeleton-rating{
+  width:42px;
+  height:18px;
+  margin-bottom:10px;
+  border-radius:5px;
+}
+
+.skeleton-title{
+  width:92%;
+  height:13px;
+  margin-bottom:7px;
+}
+
+.skeleton-title.short{
+  width:65%;
+}
+
+.skeleton-price{
+  width:72px;
+  height:21px;
+  margin-top:11px;
+}
+
+.skeleton-delivery{
+  width:125px;
+  height:11px;
+  margin-top:11px;
+}
+
+.no-products{
+  text-align:center;
+  padding:60px;
+}
+
+.hidden{
+  display:none;
+}
+
+/* ================= MOBILE BOTTOM NAV ================= */
+
+.bottom-nav{
+  display:none;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+  body{
+    padding-bottom:72px;
+  }
+
+  .header{
+    height:112px;
+    min-height:112px;
+    padding:6px 12px;
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "logo"
+      "search";
+    gap:4px;
+    position:sticky;
+    top:0;
+  }
+
+  .logo{
+    grid-area:logo;
+    height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+  }
+
+  .logo img{
+    height:46px;
+    max-width:205px;
+    width:auto;
+    display:block;
+    object-fit:contain;
+  }
+
+  .mobile-header-actions{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:4px;
+    margin-left:auto;
+  }
+
+  .mobile-header-icon{
+    width:38px;
+    height:38px;
+    border:0;
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#171717;
+    padding:0;
+    cursor:pointer;
+    flex-shrink:0;
+    border-radius:50%;
+  }
+
+  .mobile-header-icon svg{
+    width:22px;
+    height:22px;
+    display:block;
+  }
+
+  .mobile-header-icon:active{
+    transform:scale(.94);
+  }
+
+  .search{
+    grid-area:search;
+  }
+
+  .search input{
+    height:42px;
+    font-size:14px;
+  }
+
+  /* Cart is intentionally removed from mobile header.
+     Cart remains available in the fixed bottom navigation. */
+  .cart-btn{
+    display:none;
+  }
+
+  .header-account{
+    display:none;
+  }
+
+  .categories{
+    height:76px;
+    padding:0 10px;
+    gap:20px;
+  }
+
+  .category{
+    min-width:58px;
+    font-size:11px;
+  }
+
+  .category-icon{
+    width:36px;
+    height:36px;
+  }
+
+  main{
+    width:calc(100% - 20px);
+  }
+
+  .product-heading{
+    margin:20px 0 12px;
+    align-items:center;
+  }
+
+  .product-heading h1{
+    font-size:20px;
+  }
+
+  .product-heading p{
+    font-size:11px;
+  }
+
+  #sortSelect{
+    font-size:11px;
+    padding:8px;
+  }
+
+  .product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    padding-bottom:20px;
+  }
+
+  .skeleton-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+
+  .skeleton-image{
+    height:175px;
+  }
+
+  .skeleton-info{
+    padding:9px;
+  }
+
+  .skeleton-rating{
+    width:36px;
+    height:15px;
+    margin-bottom:8px;
+  }
+
+  .skeleton-title{
+    height:11px;
+    margin-bottom:6px;
+  }
+
+  .skeleton-price{
+    width:62px;
+    height:17px;
+    margin-top:9px;
+  }
+
+  .skeleton-delivery{
+    width:100px;
+    height:9px;
+    margin-top:9px;
+  }
+
+  .product-image-box{
+    height:175px;
+  }
+
+  .product-image{
+    padding:8px;
+  }
+
+  .product-info{
+    padding:9px;
+  }
+
+  .product-name{
+    font-size:12px;
+    line-height:1.3;
+    min-height:31px;
+  }
+
+  .price{
+    font-size:16px;
+  }
+
+  .mrp,
+  .off{
+    font-size:9px;
+  }
+
+  .delivery{
+    font-size:9px;
+  }
+
+  .rating{
+    font-size:9px;
+    padding:3px 5px;
+  }
+
+  .discount{
+    top:7px;
+    left:7px;
+    font-size:9px;
+    padding:5px 6px;
+  }
+
+  /* fixed bottom nav */
+  .bottom-nav{
+    position:fixed !important;
+    display:flex;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    width:100% !important;
+    height:68px;
+    background:#fff;
+    border-top:1px solid #ddd;
+    z-index:99999 !important;
+    box-shadow:0 -5px 20px rgba(0,0,0,.08);
+    justify-content:space-around;
+    align-items:center;
+    transform:translateZ(0);
+    -webkit-transform:translateZ(0);
+    will-change:transform;
+  }
+
+  .bottom-item{
+    flex:1;
+    height:100%;
+    border:0;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    color:#666;
+    font-size:10px;
+    cursor:pointer;
+  }
+
+  .bottom-item svg{
+    width:23px;
+    height:23px;
+  }
+
+  .bottom-item.active{
+    color:var(--violet);
+    font-weight:700;
+  }
+
+  .bottom-item.active svg{
+    stroke:var(--violet);
+  }
+}
+
+@media(min-width:901px){
+  /* Laptop/Desktop: during product navigation show ONLY the real spinner.
+     Mobile loader/header remains completely unchanged. */
+  #productNavLoader .nav-head{
+    display:none;
+  }
+  #productNavLoader{
+    background:#fff;
+  }
+  #productNavLoader .nav-body{
+    align-items:center;
+    justify-content:center;
+  }
+}
+
+@media(min-width:701px){
+  .mobile-only{
+    display:none;
+  }
+}
+
+@media(min-width:701px) and (max-width:1000px){
+  .product-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+
 /* =========================================================
-   MOBILE BOTTOM NAV — FIXED + INSTANT ACTIVE PAGE
-   ========================================================= */
-(function(){
-  const nav = document.querySelector(".bottom-nav");
-  if(!nav) return;
+   INSTANT PRODUCT NAVIGATION LOADER
+   Triggered directly by the product-card click handler.
+========================================================= */
+#productNavLoader{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  display:none;
+  flex-direction:column;
+  background:#f5f6f8;
+  pointer-events:none;
+}
+#productNavLoader.show{
+  display:flex;
+}
+#productNavLoader .nav-head{
+  height:62px;
+  min-height:62px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+}
+#productNavLoader .nav-side{
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#productNavLoader .nav-side svg{
+  width:24px;
+  height:24px;
+}
+#productNavLoader .nav-space{
+  flex:1;
+}
+#productNavLoader .nav-body{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#productNavLoader .nav-spinner{
+  width:48px;
+  height:48px;
+  border:4px solid #dbeafe;
+  border-top-color:#2874f0;
+  border-radius:50%;
+  animation:navLoaderSpin .75s linear infinite;
+}
+@keyframes navLoaderSpin{
+  to{transform:rotate(360deg)}
+}
 
-  const items = Array.from(nav.querySelectorAll(".bottom-item"));
-  const keys = ["home","categories","account","orders","cart"];
 
-  function pageKey(){
-    let page = (window.location.pathname || "").toLowerCase().split("/").pop() || "index.html";
-    if(page === "" || page === "index.html") return "home";
-    if(page === "categories.html") return "categories";
-    if(page === "account.html") return "account";
-    if(page === "my-orders.html") return "orders";
-    if(page === "cart.html") return "cart";
+/* ================= HERO SLIDER ================= */
+.hero-slider{width:90%;max-width:1250px;margin:14px auto 0;overflow:visible;display:none}
+.hero-slider.show{display:block}
+.hero-slider.loading{display:block}
+.hero-loading{width:100%;height:auto;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;background:transparent;position:relative;box-shadow:none}
+.hero-loading::before,.hero-loading::after{content:"";display:block;position:relative;inset:auto;height:auto;aspect-ratio:2.05/1;border-radius:15px;background:#e9edf2;box-shadow:0 2px 8px rgba(0,0,0,.04);animation:none}
+.hero-loading::before{box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.hero-loading{isolation:isolate}
+.hero-loading-dots{position:relative}
+.hero-loading-dots::before{content:"";position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:skeletonShimmer 1.15s infinite}
+.hero-loading-dots{height:13px;display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px;overflow:hidden;position:relative}
+.hero-loading-dots span{width:18px;height:4px;border-radius:99px;background:#e0e3e8;position:relative;overflow:hidden}
+.hero-loading-dots span::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:rgba(255,255,255,.75);animation:skeletonShimmer 1.15s infinite}
+
+.hero-viewport{width:100%;overflow:hidden;border-radius:15px;position:relative;touch-action:pan-y}
+.hero-track{display:flex;gap:14px;transform:translate3d(0,0,0);transition:transform .38s cubic-bezier(.22,.61,.36,1);will-change:transform}
+.hero-slide{flex:0 0 calc((100% - 28px)/3);aspect-ratio:2.05/1;border-radius:15px;overflow:hidden;background:#eee;display:block;border:0;padding:0}
+.hero-slide img{width:100%;height:100%;display:block;object-fit:cover;user-select:none;-webkit-user-drag:none}
+.hero-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.96);box-shadow:0 3px 12px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;color:#111}
+.hero-arrow:hover{background:#fff;box-shadow:0 5px 16px rgba(0,0,0,.23)}
+.hero-arrow svg{width:21px;height:21px}
+.hero-arrow.prev{left:12px}.hero-arrow.next{right:12px}
+.hero-arrow:disabled{opacity:.35;cursor:default}
+.hero-dots{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:7px}
+.hero-dot{width:7px;height:4px;border:0;border-radius:99px;background:#d9d9df;padding:0;cursor:pointer}
+.hero-dot.active{width:18px;background:#111}
+.hero-empty{display:none}
+@media(max-width:700px){
+ .hero-slider{width:calc(100% - 20px);margin:10px auto 0}
+ .hero-loading{grid-template-columns:1fr;gap:0}
+ .hero-loading::before,.hero-loading::after{display:none}
+ .hero-loading::before{content:"";display:block;aspect-ratio:2.05/1;border-radius:14px;background:#e9edf2;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+ .hero-loading::after{display:none}
+ .hero-viewport{border-radius:14px}
+ .hero-track{gap:0;transition:transform .38s cubic-bezier(.22,.61,.36,1)}
+ .hero-slide{flex:0 0 100%;aspect-ratio:2.05/1;border-radius:14px}
+ .hero-arrow{display:none}
+ .hero-dots{margin-top:6px}
+ .hero-dot{width:7px;height:4px}.hero-dot.active{width:18px}
+}
+
+/* =========================================================
+   LAPTOP/DESKTOP PRODUCT NAVIGATION LOADER - SPINNER ONLY
+   Do not show back/search/cart header while navigating.
+   Mobile remains completely untouched.
+========================================================= */
+@media(min-width:901px){
+  #productNavLoader .nav-head{
+    display:none !important;
+  }
+
+  #productNavLoader{
+    background:#fff !important;
+  }
+
+  #productNavLoader .nav-body{
+    flex:1 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+}
+
+
+
+/* =========================================================
+   PRODUCT BANNERS — ADMIN MANAGED
+========================================================= */
+#productBannersRoot{width:100%;overflow-anchor:none;}
+.product-grid{overflow-anchor:none;}
+.product-banner-block{
+  grid-column:1 / -1;
+  overflow-anchor:none;
+  width:100%;
+  margin:0 0 18px;
+  padding:16px 14px 12px;
+  border-radius:16px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
+}
+.product-banner-block.green{
+  background:linear-gradient(135deg,#45e34e 0%,#baf7b4 100%);
+}
+.product-banner-block.orange{
+  background:linear-gradient(135deg,#ff8a1d 0%,#ffd4b1 100%);
+}
+.product-banner-title{
+  font-size:23px;
+  line-height:1.15;
+  font-weight:800;
+  margin:0 0 12px 2px;
+  color:#111;
+}
+.product-banner-viewport{
+  width:100%;
+  overflow:hidden;
+  overflow-anchor:none;
+  position:relative;
+  touch-action:pan-y;
+  border-radius:12px;
+}
+.product-banner-track{
+  display:flex;
+  gap:12px;
+  width:max-content;
+  min-width:100%;
+  transform:translate3d(0,0,0);
+  transition:transform .38s cubic-bezier(.22,.61,.36,1);
+  will-change:transform;
+}
+.product-banner-nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:#fff;
+  color:#111;
+  box-shadow:0 3px 12px rgba(0,0,0,.18);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:5;
+  font-size:26px;
+  line-height:1;
+  transition:transform .18s ease,opacity .18s ease;
+}
+.product-banner-nav:hover{transform:translateY(-50%) scale(1.04);}
+.product-banner-nav.prev{left:8px;}
+.product-banner-nav.next{right:8px;}
+.product-banner-nav[disabled]{opacity:.35;cursor:default;pointer-events:none;}
+.product-banner-card{
+  flex:0 0 calc((100vw - 160px - 72px) / 7);
+  max-width:190px;
+  min-width:135px;
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.10);
+}
+.product-banner-image-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:1 / 1;
+  background:#fff;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.product-banner-image{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:contain;
+  object-position:center;
+  padding:0;
+  background:#fff;
+}
+.product-banner-badge{
+  position:absolute;
+  left:9px;
+  top:9px;
+  z-index:2;
+  max-width:calc(100% - 18px);
+  padding:5px 9px;
+  border-radius:999px;
+  background:#b40052;
+  color:#fff;
+  font-size:11px;
+  line-height:1;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  box-shadow:0 2px 5px rgba(0,0,0,.14);
+}
+.product-banner-name{
+  min-height:43px;
+  padding:8px 10px 10px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  text-align:center;
+  font-size:14px;
+  line-height:1.25;
+  font-weight:600;
+  color:#222;
+  background:#fff;
+}
+.product-banner-block.green .product-banner-card{border:2px solid rgba(255,255,255,.9);}
+.product-banner-block.orange .product-banner-card{border:1px solid rgba(255,255,255,.75);}
+.product-banner-empty{padding:18px;text-align:center;font-size:13px;color:#555;}
+@media(max-width:700px){
+  .product-banner-block{margin:0 0 14px;padding:11px 8px 9px;border-radius:15px;}
+  .product-banner-title{font-size:18px;margin:0 0 9px 3px;}
+  .product-banner-track{gap:8px;}
+  .product-banner-card{
+    flex-basis:calc((100vw - 40px) / 3);
+    min-width:0;
+    max-width:none;
+    border-radius:11px;
+  }
+  .product-banner-image-wrap{aspect-ratio:1 / 1;background:#fff;}
+  .product-banner-image{padding:0;}
+  .product-banner-nav{display:none;}
+  .product-banner-badge{left:6px;top:6px;padding:4px 7px;font-size:8px;}
+  .product-banner-name{min-height:36px;padding:6px 5px 8px;font-size:11px;line-height:1.2;}
+}
+@media(min-width:701px) and (max-width:1100px){
+  .product-banner-card{flex-basis:calc((100vw - 90px - 48px) / 5);}
+}
+
+
+/* =========================================================
+   AUTOMATIC "STILL LOOKING" RECOMMENDATION BANNER
+   Addition only — does not affect existing banners/products.
+========================================================= */
+#lookingForBannerRoot{width:100%;overflow-anchor:none;}
+.looking-banner{
+  width:100%;
+  margin:0 0 18px;
+  padding:15px 14px 12px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#6d28d9 0%,#8b5cf6 42%,#ffffff 100%);
+  box-shadow:0 5px 18px rgba(91,33,182,.14);
+  overflow:hidden;
+  position:relative;
+}
+.looking-banner-title{
+  margin:0 0 11px 2px;
+  font-size:22px;
+  line-height:1.2;
+  font-weight:800;
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.12);
+}
+.looking-banner-viewport{
+  width:100%;
+  overflow:hidden;
+  border-radius:12px;
+  position:relative;
+  touch-action:pan-y;
+}
+.looking-banner-track{
+  display:flex;
+  gap:12px;
+  width:max-content;
+  min-width:100%;
+  transform:translate3d(0,0,0);
+  transition:transform .38s cubic-bezier(.22,.61,.36,1);
+  will-change:transform;
+}
+.looking-banner-card{
+  flex:0 0 calc((100vw - 160px - 72px) / 7);
+  max-width:190px;
+  min-width:135px;
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 2px 7px rgba(0,0,0,.12);
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.9);
+}
+.looking-banner-image-wrap{
+  width:100%;
+  aspect-ratio:1/1;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.looking-banner-image{width:100%;height:100%;object-fit:contain;object-position:center;display:block;}
+.looking-banner-name{
+  min-height:43px;
+  padding:8px 10px 10px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  text-align:center;
+  font-size:14px;
+  line-height:1.25;
+  font-weight:600;
+  color:#222;
+}
+.looking-banner-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:42px;height:42px;border:0;border-radius:50%;
+  background:#fff;color:#5b21b6;box-shadow:0 3px 12px rgba(0,0,0,.18);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:5;font-size:26px;line-height:1;
+}
+.looking-banner-nav.prev{left:8px}.looking-banner-nav.next{right:8px}
+.looking-banner-nav[disabled]{opacity:.35;cursor:default;pointer-events:none}
+@media(max-width:700px){
+  .looking-banner{margin:0 0 14px;padding:11px 8px 9px;border-radius:15px;}
+  .looking-banner-title{font-size:18px;margin:0 0 9px 3px;}
+  .looking-banner-track{gap:8px;}
+  .looking-banner-card{flex-basis:calc((100vw - 40px)/3);min-width:0;max-width:none;border-radius:11px;}
+  .looking-banner-nav{display:none;}
+  .looking-banner-name{min-height:36px;padding:6px 5px 8px;font-size:11px;line-height:1.2;}
+}
+@media(min-width:701px) and (max-width:1100px){
+  .looking-banner-card{flex-basis:calc((100vw - 90px - 48px)/5);}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="productNavLoader" aria-hidden="true">
+  <div class="nav-head">
+    <div class="nav-side">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
+      </svg>
+    </div>
+    <div class="nav-space"></div>
+    <div class="nav-side">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>
+      </svg>
+    </div>
+    <div class="nav-side">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+        <circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/>
+        <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+      </svg>
+    </div>
+  </div>
+  <div class="nav-body">
+    <div class="nav-spinner"></div>
+  </div>
+</div>
+
+<div class="instantBody">
+    <div class="instantSpinner"></div>
+  </div>
+</div>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+  <div class="logo">
+    <img src="https://i.ibb.co/nNwLxx1G/logio-ne-100kb-1.jpg">
+
+<div class="mobile-header-actions">
+
+  <!-- Notification -->
+  <button class="mobile-header-icon" aria-label="Notifications" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+      <path d="M10 21h4"></path>
+    </svg>
+  </button>
+
+  <!-- Wishlist -->
+  <button class="mobile-header-icon" aria-label="Wishlist" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.8 8.8c0 5.5-8.8 10.2-8.8 10.2S3.2 14.3 3.2 8.8A5 5 0 0 1 12 5.7a5 5 0 0 1 8.8 3.1Z"></path>
+    </svg>
+  </button>
+
+</div>
+
+  </div>
+
+  <div class="search">
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Search for Products, Brands and More"
+    >
+
+<svg class="search-icon"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2">
+  <circle cx="11" cy="11" r="7"></circle>
+  <path d="m20 20-4-4"></path>
+</svg>
+
+  </div>
+
+  <!-- DESKTOP ACCOUNT -->
+
+  <div class="header-account" id="accountArea">
+
+<button class="account-btn auth-loading" id="accountBtn">
+
+  <svg class="account-icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8">
+    <circle cx="12" cy="8" r="3.5"></circle>
+    <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"></path>
+    <circle cx="12" cy="12" r="10"></circle>
+  </svg>
+
+  <span id="accountName">Login</span>
+
+  <svg class="arrow"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2">
+    <path d="m6 9 6 6 6-6"></path>
+  </svg>
+
+</button>
+
+
+<!-- ACCOUNT DROPDOWN -->
+
+<div class="account-menu" id="accountMenu">
+
+  <div id="loggedOutMenu">
+
+    <div class="account-top">
+
+      <div class="new-customer">
+        <span>New customer?</span>
+        <span class="signup" onclick="goSignup()">Sign Up</span>
+      </div>
+
+    </div>
+
+    <div class="account-divider"></div>
+
+    <div class="menu-item" onclick="goLogin()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+      </svg>
+      My Profile
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/>
+        <path d="m8 12 2.5 2.5L16 9"/>
+      </svg>
+      MyStore Plus Zone
+    </div>
+
+    <div class="menu-item" onclick="goOrders()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="m4 7 8-4 8 4-8 4z"/>
+        <path d="M4 7v10l8 4 8-4V7"/>
+        <path d="M12 11v10"/>
+      </svg>
+      Orders
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="m20 12-8 8-8-8 8-8z"/>
+        <path d="M9 12h6"/>
+      </svg>
+      Wishlist
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <rect x="3" y="4" width="18" height="16" rx="2"/>
+        <path d="M7 8h10M7 12h10M7 16h6"/>
+      </svg>
+      Become a Seller
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M12 3v18M3 8h18M3 16h18"/>
+      </svg>
+      Rewards
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M20 12a8 8 0 0 1-16 0"/>
+        <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
+        <path d="M4 12h3M17 12h3"/>
+      </svg>
+      Gift Cards
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+      </svg>
+      Notification Preferences
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M8 10a4 4 0 0 1 8 0v2a4 4 0 0 1-8 0z"/>
+        <path d="M8 12H5M19 12h-3"/>
+      </svg>
+      24×7 Customer Care
+    </div>
+
+  </div>
+
+
+  <!-- LOGGED IN -->
+
+  <div id="loggedInMenu" style="display:none">
+
+    <div class="account-top">
+      <strong id="welcomeName">Welcome</strong>
+    </div>
+
+    <div class="account-divider"></div>
+
+    <div class="menu-item" onclick="goProfile()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+      </svg>
+      My Profile
+    </div>
+
+    <div class="menu-item" onclick="goOrders()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="m4 7 8-4 8 4-8 4z"/>
+        <path d="M4 7v10l8 4 8-4V7"/>
+        <path d="M12 11v10"/>
+      </svg>
+      Orders
+    </div>
+
+    <div class="menu-item" onclick="goAddresses()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/>
+        <circle cx="12" cy="9" r="2.5"/>
+      </svg>
+      Saved Addresses
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M20 8a5 5 0 0 0-8-4 5 5 0 0 0-8 4c0 5 8 11 8 11s8-6 8-11z"/>
+      </svg>
+      Wishlist
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+      </svg>
+      Notifications
+    </div>
+
+    <div class="account-divider"></div>
+
+    <div class="menu-item logout" onclick="logoutUser()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M10 17l5-5-5-5"/>
+        <path d="M15 12H3"/>
+        <path d="M21 3v18"/>
+      </svg>
+      Logout
+    </div>
+
+  </div>
+
+</div>
+
+  </div>
+
+  <button class="cart-btn" onclick="goCart()">
+
+<svg class="cart-icon"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8">
+  <circle cx="9" cy="20" r="1"/>
+  <circle cx="18" cy="20" r="1"/>
+  <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+</svg>
+
+Cart
+
+<span class="cart-number cart-loading" id="cartCount">0</span>
+
+  </button>
+
+</header>
+
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<div class="categories">
+
+  <button class="category active">
+    <span class="category-icon">🏠</span>
+    For You
+  </button>
+
+  <button class="category">
+    <span class="category-icon">👕</span>
+    Fashion
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📱</span>
+    Mobiles
+  </button>
+
+  <button class="category">
+    <span class="category-icon">💻</span>
+    Electronics
+  </button>
+
+  <button class="category">
+    <span class="category-icon">💄</span>
+    Beauty
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🏠</span>
+    Home
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📺</span>
+    Appliances
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🎮</span>
+    Toys
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🍔</span>
+    Food
+  </button>
+
+  <button class="category">
+    <span class="category-icon">⚽</span>
+    Sports
+  </button>
+
+  <button class="category">
+    <span class="category-icon">🛋️</span>
+    Furniture
+  </button>
+
+  <button class="category">
+    <span class="category-icon">📚</span>
+    Books
+  </button>
+
+</div>
+
+<!-- ================= HERO SLIDER ================= -->
+
+<section id="heroSlider" class="hero-slider loading" aria-label="Hero Slider">
+  <div id="heroLoading" class="hero-loading-wrap" aria-label="Loading hero slider">
+    <div class="hero-loading"></div>
+    <div class="hero-loading-dots"><span></span><span></span><span></span></div>
+  </div>
+  <div class="hero-viewport" id="heroViewport">
+    <button type="button" class="hero-arrow prev" id="heroPrev" aria-label="Previous banner" onclick="prevHeroSlide()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <div id="heroTrack" class="hero-track"></div>
+    <button type="button" class="hero-arrow next" id="heroNext" aria-label="Next banner" onclick="nextHeroSlide(true)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+  <div id="heroDots" class="hero-dots"></div>
+</section>
+
+<!-- ================= MAIN ================= -->
+
+<main>
+
+  <div class="top-space"></div>
+
+  <div class="product-heading">
+
+<div>
+  <h1>Suggested For You</h1>
+  <p>Discover products you'll love.</p>
+</div>
+
+<select id="sortSelect">
+  <option value="popular">Popular</option>
+  <option value="low">Price: Low to High</option>
+  <option value="high">Price: High to Low</option>
+  <option value="new">Newest</option>
+</select>
+
+  </div>
+
+  <div id="loading" class="loading" aria-label="Loading products">
+    <div class="skeleton-grid">
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-rating"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-title short"></div>
+          <div class="skeleton skeleton-price"></div>
+          <div class="skeleton skeleton-delivery"></div>
+        </div>
+      </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <div id="lookingForBannerRoot"></div>
+
+  <div id="productBannersRoot"></div>
+
+  <section id="productGrid" class="product-grid"></section>
+
+  <div id="noProducts" class="no-products hidden">
+    <h2>No products found</h2>
+    <p>Try another search.</p>
+  </div>
+
+</main>
+
+<!-- ================= MOBILE BOTTOM NAV ================= -->
+
+<nav class="bottom-nav">
+
+  <button class="bottom-item active" data-page="home" onclick="goHome()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m3 11 9-8 9 8"/>
+      <path d="M5 10v10h14V10"/>
+      <path d="M9 20v-6h6v6"/>
+    </svg>
+    Home
+  </button>
+
+  <button class="bottom-item" data-page="categories" onclick="goCategories()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="4" y="4" width="6" height="6" rx="1"/>
+      <rect x="14" y="4" width="6" height="6" rx="1"/>
+      <rect x="4" y="14" width="6" height="6" rx="1"/>
+      <rect x="14" y="14" width="6" height="6" rx="1"/>
+    </svg>
+    Categories
+  </button>
+
+  <button class="bottom-item" data-page="account" onclick="goAccount()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="8" r="3.5"/>
+      <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+    </svg>
+    Account
+  </button>
+
+  <button class="bottom-item" data-page="orders" onclick="goOrders()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m4 7 8-4 8 4-8 4z"/>
+      <path d="M4 7v10l8 4 8-4V7"/>
+      <path d="M12 11v10"/>
+    </svg>
+    Orders
+  </button>
+
+  <button class="bottom-item" data-page="cart" onclick="goCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="18" cy="20" r="1"/>
+      <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+    </svg>
+    Cart
+    <span class="cart-number-mobile" id="cartCountMobile"></span>
+  </button>
+
+</nav>
+
+<script>
+
+/* =========================================
+   SUPABASE CONFIG
+========================================= */
+
+const SUPABASE_URL =
+    "https://bszojvhitsoamhksyjul.supabase.co";
+
+const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =========================================================
+   ACCOUNT
+========================================================= */
+
+const accountBtn =
+  document.getElementById("accountBtn");
+
+const accountMenu =
+  document.getElementById("accountMenu");
+
+const accountName =
+  document.getElementById("accountName");
+
+const loggedOutMenu =
+  document.getElementById("loggedOutMenu");
+
+const loggedInMenu =
+  document.getElementById("loggedInMenu");
+
+const welcomeName =
+  document.getElementById("welcomeName");
+
+
+accountBtn.addEventListener("click", function(e){
+
+  e.stopPropagation();
+
+  accountMenu.classList.toggle("show");
+
+  accountBtn.classList.toggle(
+    "open",
+    accountMenu.classList.contains("show")
+  );
+
+});
+
+
+document.addEventListener("click",function(e){
+
+  if(!document.getElementById("accountArea").contains(e.target)){
+
+    accountMenu.classList.remove("show");
+
+    accountBtn.classList.remove("open");
+
+  }
+
+});
+
+
+/* =========================================================
+   GET FIRST NAME
+========================================================= */
+
+function getFirstName(fullName){
+
+  if(!fullName) return "User";
+
+  fullName =
+    String(fullName).trim();
+
+  return fullName
+    .split(/\s+/)[0];
+
+}
+
+
+/* =========================================================
+   LOGIN NAME CACHE
+   Refresh par cached naam turant dikhega.
+   Cache sirf explicit logout par remove hoga.
+========================================================= */
+const ACCOUNT_CACHE_KEY = "mystore_account_cache_v1";
+
+function readAccountCache(){
+  try{
+    const raw = localStorage.getItem(ACCOUNT_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){
     return null;
   }
+}
 
-  function setActive(key){
-    const index = keys.indexOf(key);
-    if(index < 0) return;
+function writeAccountCache(userId, firstName){
+  try{
+    localStorage.setItem(ACCOUNT_CACHE_KEY, JSON.stringify({
+      userId: userId || "",
+      firstName: firstName || "User"
+    }));
+  }catch(e){}
+}
 
-    items.forEach(function(item,i){
-      item.classList.toggle("active", i === index);
-      if(i === index) item.setAttribute("aria-current","page");
-      else item.removeAttribute("aria-current");
-    });
+function clearAccountCache(){
+  try{ localStorage.removeItem(ACCOUNT_CACHE_KEY); }catch(e){}
+}
 
-    try{
-      sessionStorage.setItem("mystore_active_bottom_nav", key);
-    }catch(e){}
-  }
+function showCachedAccount(){
+  const cached = readAccountCache();
+  if(!cached || !cached.firstName) return false;
 
-  /* Page URL wins: index.html = Home active. */
-  const current = pageKey();
-  if(current){
-    setActive(current);
-  }else{
-    try{
-      const saved = sessionStorage.getItem("mystore_active_bottom_nav");
-      if(saved) setActive(saved);
-    }catch(e){}
-  }
+  accountName.textContent = cached.firstName;
+  welcomeName.textContent = "Welcome, " + cached.firstName + "!";
+  loggedOutMenu.style.display = "none";
+  loggedInMenu.style.display = "block";
+  accountBtn.classList.remove("auth-loading");
+  return true;
+}
 
-  /* Active state changes immediately on touch/click.
-     Existing inline onclick functions remain untouched. */
-  items.forEach(function(item,index){
-    function activate(){
-      setActive(keys[index]);
+/* Cached naam ko FIRST paint se pehle set karo.
+   Isliye refresh par Login -> Pawan flash nahi hoga. */
+showCachedAccount();
+
+async function loadAccount(){
+
+  try{
+
+    const {
+      data:{
+        user
+      }
+    } =
+    await supabaseClient.auth.getUser();
+
+
+    if(!user){
+
+      /* NOT LOGGED IN */
+      accountName.textContent = "Login";
+      loggedOutMenu.style.display = "block";
+      loggedInMenu.style.display = "none";
+      accountBtn.classList.remove("auth-loading");
+      return;
+
     }
-    item.addEventListener("pointerdown",activate,{passive:true});
-    item.addEventListener("click",activate,{passive:true});
+
+
+    /* LOGGED IN */
+
+    let firstName = "";
+
+
+    /*
+      accounts table:
+      id
+      email
+      full_name
+      mobile
+    */
+
+    const {
+      data:account
+    } =
+    await supabaseClient
+      .from("accounts")
+      .select("full_name")
+      .eq("id",user.id)
+      .maybeSingle();
+
+
+    if(account && account.full_name){
+
+      firstName =
+        getFirstName(account.full_name);
+
+    }
+
+
+    /* fallback */
+
+    if(!firstName && user.user_metadata){
+
+      firstName =
+        getFirstName(
+          user.user_metadata.full_name ||
+          user.user_metadata.name ||
+          user.email
+        );
+
+    }
+
+
+    if(!firstName){
+
+      firstName = "User";
+
+    }
+
+
+    accountName.textContent = firstName;
+    welcomeName.textContent = "Welcome, " + firstName + "!";
+
+    loggedOutMenu.style.display = "none";
+    loggedInMenu.style.display = "block";
+    accountBtn.classList.remove("auth-loading");
+
+    /* Naam ko browser me cache karo. */
+    writeAccountCache(user.id, firstName);
+
+  }
+
+  catch(error){
+    /* Network/profile request fail ho to cached naam ko rehne do. */
+    if(!showCachedAccount()){
+      accountName.textContent = "Login";
+      loggedOutMenu.style.display = "block";
+      loggedInMenu.style.display = "none";
+      accountBtn.classList.remove("auth-loading");
+    }
+    console.error("Account error:", error);
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  function(){
+
+    loadAccount();
+    loadCartCount();
+
+  }
+);
+
+
+/* =========================================================
+   IMAGE LOADING HELPERS
+   Skeleton tabhi hide hoga jab visible images browser me load/decode ho jayein.
+========================================================= */
+function preloadImage(url){
+  return new Promise(function(resolve){
+    if(!url){resolve(false);return;}
+    const img=new Image();
+    let done=false;
+    const finish=function(ok){
+      if(done)return;
+      done=true;
+      resolve(ok);
+    };
+    img.onload=function(){
+      if(typeof img.decode === "function"){
+        img.decode().then(function(){finish(true);}).catch(function(){finish(true);});
+      }else{
+        finish(true);
+      }
+    };
+    img.onerror=function(){finish(false);};
+    img.src=url;
+    if(img.complete && img.naturalWidth>0){
+      if(typeof img.decode === "function"){
+        img.decode().then(function(){finish(true);}).catch(function(){finish(true);});
+      }else{
+        finish(true);
+      }
+    }
   });
+}
+
+async function waitForContainerImages(container){
+  if(!container)return;
+  const imgs=Array.from(container.querySelectorAll("img"));
+  await Promise.all(imgs.map(function(img){
+    if(img.complete && img.naturalWidth>0){
+      return typeof img.decode === "function" ? img.decode().catch(function(){}) : Promise.resolve();
+    }
+    return new Promise(function(resolve){
+      const finish=function(){resolve();};
+      img.addEventListener("load",finish,{once:true});
+      img.addEventListener("error",finish,{once:true});
+    });
+  }));
+}
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+async function loadProducts(){
+
+  const loading =
+    document.getElementById("loading");
+
+  const grid =
+    document.getElementById("productGrid");
+
+  const noProducts =
+    document.getElementById("noProducts");
+
+
+  loading.style.display =
+    "block";
+
+  grid.innerHTML =
+    "";
+
+  noProducts.classList.add(
+    "hidden"
+  );
+
+
+let data = null;
+let error = null;
+
+try {
+  const result = await supabaseClient
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .abortSignal(AbortSignal.timeout(12000));
+  data = result.data;
+  error = result.error;
+} catch (err) {
+  error = err;
+  console.error("Products request error:", err);
+}
+
+/* =========================================================
+   LATEST PRODUCT ORDER
+   Updated time change hoga to Index par bhi position change hogi.
+   New product ke liye created_at use hoga.
+========================================================= */
+
+(data || []).sort((a, b) => {
+
+  const timeA = new Date(
+    a.updated_at || a.created_at || 0
+  ).getTime();
+
+  const timeB = new Date(
+    b.updated_at || b.created_at || 0
+  ).getTime();
+
+  return timeB - timeA;
+
+});
+  if(error){
+
+    console.error(error);
+
+    noProducts.classList.remove(
+      "hidden"
+    );
+
+    noProducts.innerHTML =
+      "<h2>Products load nahi ho paaye</h2>";
+
+    return;
+
+  }
+
+
+  if(!data || data.length===0){
+
+    noProducts.classList.remove(
+      "hidden"
+    );
+
+    return;
+
+  }
+
+
+  data.forEach(
+    product => {
+
+      grid.appendChild(
+        createProductCard(product)
+      );
+
+    }
+  );
+
+  /* Products are already rendered here. Hide the skeleton immediately
+     so it never remains above real products on slow/mobile image loads. */
+  loading.style.display = "none";
+
+  /* Product banners are fetched separately and inserted without blocking
+     the product grid or its loading state. */
+  loadProductBanners();
+
+}
+
+
+
+/* =========================================================
+   ADMIN PRODUCT BANNERS
+   Banner 1 = green, Banner 2 = orange.
+   Products are rendered first; banners load independently so the
+   product skeleton never waits for banner images/network.
+========================================================= */
+let productBannerSets = [];
+let productBannerRequest = 0;
+let productBannerLastSignature = "";
+let productBannerLastLayoutMode = window.innerWidth <= 700 ? "mobile" : "desktop";
+let productBannerRenderTimer = null;
+
+function productBannerEscape(value){
+  return String(value ?? "").replace(/[&<>"']/g,function(ch){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#039;"}[ch];
+  });
+}
+
+async function loadProductBanners(){
+  const requestId=++productBannerRequest;
+  try{
+    const {data,error}=await supabaseClient
+      .from("product_banner_sets")
+      .select("id,slot,title,desktop_after,mobile_after,items,is_active,updated_at")
+      .eq("is_active",true)
+      .order("slot",{ascending:true})
+      .abortSignal(AbortSignal.timeout(8000));
+    if(requestId!==productBannerRequest)return;
+    if(error){
+      console.error("Product banner error:",error);
+      return;
+    }
+    productBannerSets=(data||[]).map(function(row){
+      let items=row.items;
+      if(typeof items === "string"){
+        try{items=JSON.parse(items);}catch(e){items=[];}
+      }
+      return {...row,items:Array.isArray(items)?items:[]};
+    }).filter(function(row){return row.items.length;});
+
+    /* Do not rebuild the product grid when Supabase sends a duplicate/live
+       event with exactly the same banner data. Rebuilding DOM while the user
+       is scrolling is what causes the page to jump on mobile. */
+    const signature = JSON.stringify(productBannerSets.map(function(row){
+      return {
+        id:row.id, slot:row.slot, title:row.title,
+        desktop_after:row.desktop_after, mobile_after:row.mobile_after,
+        items:row.items
+      };
+    }));
+    if(signature === productBannerLastSignature)return;
+    productBannerLastSignature = signature;
+    scheduleProductBannerRender(false);
+  }catch(error){
+    console.error("Product banner request error:",error);
+  }
+}
+
+function scheduleProductBannerRender(force){
+  clearTimeout(productBannerRenderTimer);
+  productBannerRenderTimer=setTimeout(function(){
+    renderProductBanners(!!force);
+  }, force ? 0 : 30);
+}
+
+function renderProductBanners(force){
+  const root=document.getElementById("productBannersRoot");
+  const grid=document.getElementById("productGrid");
+  if(!grid)return;
+
+  const isMobile=window.innerWidth<=700;
+  const layoutMode=isMobile ? "mobile" : "desktop";
+
+  /* Most importantly: scrolling on mobile can temporarily change the
+     viewport height when the browser address bar appears/disappears.
+     That is NOT a layout-mode change, so never rebuild the grid for it. */
+  if(!force && layoutMode===productBannerLastLayoutMode){
+    const existing=grid.querySelector(":scope > .product-banner-block");
+    if(existing)return;
+  }
+  productBannerLastLayoutMode=layoutMode;
+
+  const cards=Array.from(grid.querySelectorAll(":scope > .product-card"));
+  if(!cards.length || !productBannerSets.length)return;
+
+  /* Capture a stable point before changing the DOM. This prevents any live
+     update from visibly moving the user's current scroll position. */
+  const anchor = grid.querySelector(":scope > .product-card");
+  const anchorTop = anchor ? anchor.getBoundingClientRect().top : null;
+  const scrollYBefore = window.scrollY;
+
+  grid.querySelectorAll(":scope > .product-banner-block").forEach(function(banner){
+    banner.remove();
+  });
+  if(root) root.innerHTML="";
+
+  const sorted=productBannerSets.slice().sort(function(a,b){
+    const pa=Number(isMobile?a.mobile_after:a.desktop_after)||0;
+    const pb=Number(isMobile?b.mobile_after:b.desktop_after)||0;
+    return pa-pb;
+  });
+
+  const fragment=document.createDocumentFragment();
+  const bannerByPosition={};
+  sorted.forEach(function(banner){
+    const position=Math.max(0,Number(isMobile?banner.mobile_after:banner.desktop_after)||0);
+    if(position>0 && position<=cards.length){
+      (bannerByPosition[position] ||= []).push(banner);
+    }
+  });
+
+  cards.forEach(function(card,index){
+    fragment.appendChild(card);
+    const position=index+1;
+    (bannerByPosition[position]||[]).forEach(function(banner){
+      fragment.appendChild(createProductBanner(banner));
+    });
+  });
+  grid.appendChild(fragment);
+
+  /* Restore the exact scroll position after a genuine layout rebuild. */
+  if(anchor && anchorTop !== null){
+    const anchorTopAfter=anchor.getBoundingClientRect().top;
+    const delta=anchorTopAfter-anchorTop;
+    if(Math.abs(delta)>0.5)window.scrollTo({top:scrollYBefore+delta,behavior:"instant"});
+  }
+}
+
+function createProductBanner(banner){
+  const wrap=document.createElement("section");
+  const green=String(banner.slot||"").toLowerCase()==="banner1" || String(banner.slot||"").toLowerCase()==="slider1";
+  wrap.className="product-banner-block "+(green?"green":"orange");
+  wrap.setAttribute("aria-label",banner.title||"Product banner");
+
+  const items=Array.isArray(banner.items)?banner.items:[];
+  const cardsHTML=items.map(function(item){
+    const image=String(item.image||item.image_url||"").trim();
+    const name=String(item.name||item.title||"").trim();
+    const badge=String(item.badge||"").trim();
+    if(!image && !name)return "";
+    return `
+      <div class="product-banner-card">
+        <div class="product-banner-image-wrap">
+          ${badge?`<div class="product-banner-badge">${productBannerEscape(badge)}</div>`:""}
+          ${image?`<img class="product-banner-image" src="${productBannerEscape(image)}" alt="${productBannerEscape(name||"Banner item")}" loading="lazy" decoding="async" onerror="this.style.visibility='hidden'">`:``}
+        </div>
+        <div class="product-banner-name">${productBannerEscape(name)}</div>
+      </div>`;
+  }).join("");
+
+  wrap.innerHTML=`
+    <h2 class="product-banner-title">${productBannerEscape(banner.title||"")}</h2>
+    <div class="product-banner-viewport">
+      <div class="product-banner-track">${cardsHTML}</div>
+      <button type="button" class="product-banner-nav prev" aria-label="Previous banner items" onclick="productBannerMove(this.closest('.product-banner-block'),-1)">‹</button>
+      <button type="button" class="product-banner-nav next" aria-label="Next banner items" onclick="productBannerMove(this.closest('.product-banner-block'),1)">›</button>
+    </div>`;
+  setupProductBannerSlider(wrap);
+  return wrap;
+}
+
+function productBannerVisibleCount(){
+  return window.innerWidth<=700 ? 3 : (window.innerWidth<=1100 ? 5 : 7);
+}
+
+function setupProductBannerSlider(wrap){
+  const viewport=wrap.querySelector('.product-banner-viewport');
+  const track=wrap.querySelector('.product-banner-track');
+  if(!viewport || !track)return;
+  const cards=Array.from(track.querySelectorAll('.product-banner-card'));
+  if(cards.length<=productBannerVisibleCount()){
+    wrap.dataset.bannerIndex='0';
+    updateProductBannerNav(wrap);
+    return;
+  }
+  wrap.dataset.bannerIndex='0';
+  wrap.dataset.dragging='0';
+  let startX=0,startY=0,deltaX=0,moved=false;
+  viewport.addEventListener('touchstart',function(e){
+    if(window.innerWidth>700 || e.touches.length!==1)return;
+    const t=e.touches[0];
+    startX=t.clientX; startY=t.clientY; deltaX=0; moved=false;
+    track.style.transition='none';
+  },{passive:true});
+  viewport.addEventListener('touchmove',function(e){
+    if(window.innerWidth>700 || !startX || e.touches.length!==1)return;
+    const t=e.touches[0];
+    deltaX=t.clientX-startX;
+    const dy=t.clientY-startY;
+    if(Math.abs(deltaX)>Math.abs(dy) && Math.abs(deltaX)>8){
+      moved=true;
+      const card=cards[0];
+      const gap=parseFloat(getComputedStyle(track).gap)||0;
+      const step=card.getBoundingClientRect().width+gap;
+      const current=Number(wrap.dataset.bannerIndex)||0;
+      const max=Math.max(0,cards.length-productBannerVisibleCount());
+      let dragX=(-current*step)+deltaX;
+      if((current===0 && deltaX>0) || (current===max && deltaX<0)){
+        dragX=(-current*step)+(deltaX*.32);
+      }
+      track.style.transform=`translate3d(${dragX}px,0,0)`;
+    }
+  },{passive:true});
+  viewport.addEventListener('touchend',function(){
+    if(window.innerWidth>700 || !startX)return;
+    if(moved && Math.abs(deltaX)>45){
+      productBannerMove(wrap,deltaX<0?1:-1);
+    }else{
+      productBannerApplyPosition(wrap,true);
+    }
+    startX=0;startY=0;deltaX=0;moved=false;
+  },{passive:true});
+  updateProductBannerNav(wrap);
+}
+
+function productBannerApplyPosition(wrap,animate){
+  const track=wrap.querySelector('.product-banner-track');
+  const viewport=wrap.querySelector('.product-banner-viewport');
+  const cards=track?Array.from(track.querySelectorAll('.product-banner-card')):[];
+  if(!track||!viewport||!cards.length)return;
+  const visible=productBannerVisibleCount();
+  const max=Math.max(0,cards.length-visible);
+  let index=Math.max(0,Math.min(Number(wrap.dataset.bannerIndex)||0,max));
+  wrap.dataset.bannerIndex=String(index);
+  const card=cards[0];
+  const gap=parseFloat(getComputedStyle(track).gap)||0;
+  const step=card.getBoundingClientRect().width+gap;
+  track.style.transition=animate?'transform .38s cubic-bezier(.22,.61,.36,1)':'none';
+  track.style.transform=`translate3d(${-index*step}px,0,0)`;
+  updateProductBannerNav(wrap);
+}
+
+function productBannerMove(wrap,direction){
+  if(!wrap)return;
+  const track=wrap.querySelector('.product-banner-track');
+  const cards=track?Array.from(track.querySelectorAll('.product-banner-card')):[];
+  const max=Math.max(0,cards.length-productBannerVisibleCount());
+  if(max<=0)return;
+  const current=Number(wrap.dataset.bannerIndex)||0;
+  let next=current+(direction>0?1:-1);
+  if(next<0)next=0;
+  if(next>max)next=max;
+  wrap.dataset.bannerIndex=String(next);
+  productBannerApplyPosition(wrap,true);
+}
+
+function updateProductBannerNav(wrap){
+  const track=wrap.querySelector('.product-banner-track');
+  const cards=track?track.querySelectorAll('.product-banner-card'):[];
+  const max=Math.max(0,cards.length-productBannerVisibleCount());
+  const index=Number(wrap.dataset.bannerIndex)||0;
+  const prev=wrap.querySelector('.product-banner-nav.prev');
+  const next=wrap.querySelector('.product-banner-nav.next');
+  if(prev)prev.disabled=index<=0;
+  if(next)next.disabled=index>=max;
+  const showDesktop=window.innerWidth>700 && max>0;
+  if(prev)prev.style.display=showDesktop?'flex':'none';
+  if(next)next.style.display=showDesktop?'flex':'none';
+}
+
+window.addEventListener('resize',function(){
+  document.querySelectorAll('.product-banner-block').forEach(function(wrap){
+    if(window.innerWidth<=700){
+      updateProductBannerNav(wrap);
+      productBannerApplyPosition(wrap,false);
+    }
+  });
+});
+
+/* Recalculate positions ONLY when the device crosses the mobile/desktop
+   breakpoint. Normal mobile browser resize events while scrolling are ignored. */
+let productBannerResizeTimer=null;
+window.addEventListener("resize",function(){
+  clearTimeout(productBannerResizeTimer);
+  productBannerResizeTimer=setTimeout(function(){
+    const mode=window.innerWidth<=700 ? "mobile" : "desktop";
+    if(mode!==productBannerLastLayoutMode){
+      productBannerLastLayoutMode=mode;
+      scheduleProductBannerRender(true);
+    }
+  },180);
+},{passive:true});
+
+supabaseClient
+  .channel("product-banner-sets-live")
+  .on("postgres_changes",{event:"*",schema:"public",table:"product_banner_sets"},function(){
+    loadProductBanners();
+  })
+  .subscribe();
+
+/* =========================================================
+   MAIN IMAGE
+========================================================= */
+
+function getMainImage(product){
+
+  /*
+    IMPORTANT:
+    Main image first priority.
+  */
+
+  return (
+    product.image ||
+    product.image_url ||
+    product.main_image ||
+    product.thumbnail ||
+    product.images?.[0] ||
+    ""
+  );
+
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
+
+function createProductCard(product){
+
+  const card =
+    document.createElement("article");
+
+  card.className =
+    "product-card";
+
+
+  const image =
+    getMainImage(product);
+
+
+  const title =
+    product.title ||
+    product.name ||
+    "Product";
+
+
+  const price =
+    Number(
+      product.price ||
+      product.selling_price ||
+      0
+    );
+
+
+  const mrp =
+    Number(
+      product.mrp ||
+      product.original_price ||
+      0
+    );
+
+
+  let discount = "";
+
+  if(mrp > price && price > 0){
+
+    discount =
+      Math.round(
+        ((mrp-price)/mrp)*100
+      );
+
+  }
+
+
+  card.innerHTML = `
+
+    <div class="product-image-box">
+
+      ${
+        discount
+        ?
+        `<div class="discount">
+          ${discount}% OFF
+        </div>`
+        :
+        ""
+      }
+
+      <img
+        class="product-image"
+        src="${escapeHtml(image)}"
+        alt="${escapeHtml(title)}"
+        loading="eager"
+        decoding="async"
+        onerror="this.style.display='none';"
+      >
+
+    </div>
+
+
+    <div class="product-info">
+
+      <div class="rating">
+        ★ ${product.rating || "4.6"}
+      </div>
+
+
+      <div class="product-name">
+        ${escapeHtml(title)}
+      </div>
+
+
+      <div class="price-row">
+
+        <span class="price">
+          ₹${price.toLocaleString("en-IN")}
+        </span>
+
+        ${
+          mrp > price
+          ?
+          `<span class="mrp">
+            ₹${mrp.toLocaleString("en-IN")}
+          </span>`
+          :
+          ""
+        }
+
+      </div>
+
+
+      ${
+        discount
+        ?
+        `<div class="off">
+          ${discount}% OFF
+        </div>`
+        :
+        ""
+      }
+
+
+      <div class="delivery">
+        ✓ Delivery available
+      </div>
+
+    </div>
+
+  `;
+
+
+  card.addEventListener(
+    "click",
+    function(){
+
+      if(!product.id) return;
+
+      const navLoader =
+        document.getElementById(
+          "productNavLoader"
+        );
+
+      if(navLoader){
+        navLoader.classList.add("show");
+        navLoader.setAttribute(
+          "aria-hidden",
+          "false"
+        );
+      }
+
+      try{
+        sessionStorage.setItem(
+          "mystore_product_navigation",
+          "1"
+        );
+      }catch(e){}
+
+      const productUrl =
+        "product.html?id=" +
+        encodeURIComponent(product.id);
+
+      /* Laptop/Desktop: let the browser paint the real spinner
+         before changing page. Mobile behavior is unchanged. */
+      if(window.innerWidth > 900){
+        requestAnimationFrame(()=>{
+          requestAnimationFrame(()=>{
+            window.location.href = productUrl;
+          });
+        });
+      }else{
+        window.location.href = productUrl;
+      }
+
+    }
+  );
+
+
+  return card;
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document
+  .getElementById("searchInput")
+  .addEventListener(
+    "input",
+    function(){
+
+      const value =
+        this.value
+          .toLowerCase()
+          .trim();
+
+
+      document
+        .querySelectorAll(".product-card")
+        .forEach(card => {
+
+          const title =
+            card
+              .querySelector(".product-name")
+              ?.textContent
+              .toLowerCase() || "";
+
+
+          card.style.display =
+            !value ||
+            title.includes(value)
+            ?
+            ""
+            :
+            "none";
+
+        });
+
+    }
+  );
+
+
+/* =========================================================
+   CART COUNT
+========================================================= */
+
+const CART_COUNT_CACHE_KEY = "mystore_cart_count_v1";
+let cartCountUserId = "";
+
+function readCartCountCache(userId){
+  try{
+    const raw = localStorage.getItem(CART_COUNT_CACHE_KEY);
+    if(!raw) return null;
+    const cached = JSON.parse(raw);
+    if(!cached || String(cached.userId || "") !== String(userId || "")) return null;
+    return Number(cached.count || 0);
+  }catch(e){
+    return null;
+  }
+}
+
+function writeCartCountCache(userId,count){
+  try{
+    localStorage.setItem(CART_COUNT_CACHE_KEY,JSON.stringify({
+      userId:userId || "",
+      count:Number(count || 0)
+    }));
+  }catch(e){}
+}
+
+function clearCartCountCache(){
+  try{ localStorage.removeItem(CART_COUNT_CACHE_KEY); }catch(e){}
+}
+
+function paintCartCount(count){
+  const badge=document.getElementById("cartCount");
+  const mobileBadge=document.getElementById("cartCountMobile");
+  const total=Math.max(0,Number(count || 0));
+  const nextText=total > 99 ? "99+" : String(total);
+
+  [badge,mobileBadge].forEach(function(el){
+    if(!el) return;
+
+    /* Real count milte hi loading state hatao.
+       cart-loading me display:none !important hai, isliye
+       sirf .show add karne se badge visible nahi hota tha. */
+    el.classList.remove("cart-loading");
+
+    const visible=el.classList.contains("show");
+    const current=el.textContent || "";
+
+    /* Same value ho to DOM ko touch mat karo: zero flash. */
+    if(total > 0){
+      if(!visible || current !== nextText){
+        el.textContent=nextText;
+        el.classList.add("show");
+      }
+    }else{
+      if(visible || current){
+        el.textContent="";
+        el.classList.remove("show");
+      }
+    }
+  });
+}
+
+
+async function loadCartCount(){
+
+  const badge=document.getElementById("cartCount");
+  if(!badge) return;
+
+  try{
+    const {data:{user}}=await supabaseClient.auth.getUser();
+
+    if(!user){
+      cartCountUserId="";
+      clearCartCountCache();
+      paintCartCount(0);
+      return;
+    }
+
+    cartCountUserId=user.id;
+
+    /* Refresh par cached count FIRST paint hota hai. */
+    const cached=readCartCountCache(user.id);
+    if(cached !== null){
+      paintCartCount(cached);
+    }
+
+    /* =======================================================
+       BADGE RULE:
+       Quantity ka badge se koi relation nahi hai.
+       1 cart row/product = badge +1.
+       Quantity badhne par badge nahi badhega.
+       Example: Product A qty 5 + Product B qty 2 = badge 2.
+       ======================================================= */
+    const {data,error}=await supabaseClient
+      .from("cart_items")
+      .select("id")
+      .eq("user_id",user.id);
+
+    if(error){
+      console.error("Cart product count:",error);
+      /* Cached value ko error par bhi rehne do; flash nahi hoga. */
+      return;
+    }
+
+    const productCount=(data || []).length;
+    writeCartCountCache(user.id,productCount);
+    paintCartCount(productCount);
+
+  }catch(error){
+    console.error("Cart count error:",error);
+    /* Existing cached badge ko hide mat karo. */
+  }
+}
+
+/* =========================================================
+   CART REALTIME
+   Add/delete hote hi badge bina page refresh ke update.
+========================================================= */
+supabaseClient
+  .channel("cart-count-live")
+  .on(
+    "postgres_changes",
+    {
+      event:"*",
+      schema:"public",
+      table:"cart_items"
+    },
+    function(payload){
+      if(!cartCountUserId) return;
+
+      const changedUserId =
+        payload?.new?.user_id ||
+        payload?.old?.user_id ||
+        "";
+
+      if(changedUserId && String(changedUserId)!==String(cartCountUserId)) return;
+
+      /* Database change ke turant baad authoritative count fetch karo. */
+      loadCartCount();
+    }
+  )
+  .subscribe();
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goLogin(){
+
+  window.location.href =
+    "login.html";
+
+}
+
+function goSignup(){
+
+  window.location.href =
+    "signup.html";
+
+}
+
+function goProfile(){
+
+  window.location.href =
+    "account.html";
+
+}
+
+function goAddresses(){
+
+  window.location.href =
+    "saved-addresses.html";
+
+}
+
+function goOrders(){
+
+  window.location.href =
+    "my-orders.html";
+
+}
+
+function goCart(){
+
+  window.location.href =
+    "cart.html";
+
+}
+
+function goHome(){
+
+  window.location.href =
+    "index.html";
+
+}
+
+function goCategories(){
+
+  window.location.href =
+    "categories.html";
+
+}
+
+function goAccount(){
+
+  if(window.innerWidth <= 700){
+    goProfile();
+    return;
+  }
+
+  const menu =
+    document.getElementById(
+      "accountMenu"
+    );
+
+  menu.classList.toggle(
+    "show"
+  );
+
+}
+
+
+/* =========================================================
+   MOBILE BOTTOM NAV FIX
+   - Mobile only
+   - Fixed to viewport bottom
+   - Correct active item on every nav page
+   - Instant navigation remains unchanged
+   - Desktop completely untouched
+========================================================= */
+(function(){
+
+  function isMobile(){
+    return window.innerWidth <= 700;
+  }
+
+  function getCurrentBottomPage(){
+
+    const file =
+      window.location.pathname
+        .split("/")
+        .pop()
+        .toLowerCase();
+
+    if(file === "" || file === "index.html") return "home";
+    if(file === "categories.html") return "categories";
+    if(
+      file === "account.html" ||
+      file === "login.html" ||
+      file === "signup.html" ||
+      file === "saved-addresses.html"
+    ) return "account";
+    if(file === "my-orders.html") return "orders";
+    if(file === "cart.html") return "cart";
+
+    /* Product / checkout / other pages: keep Home as default. */
+    return "home";
+  }
+
+  function setBottomNavActive(page){
+
+    if(!isMobile()) return;
+
+    const items =
+      document.querySelectorAll(
+        ".bottom-nav .bottom-item"
+      );
+
+    items.forEach(function(item){
+      item.classList.toggle(
+        "active",
+        item.dataset.page === page
+      );
+    });
+  }
+
+  function updateBottomNav(){
+    if(!isMobile()) return;
+    setBottomNavActive(getCurrentBottomPage());
+  }
+
+  function bindBottomNav(){
+
+    const items =
+      document.querySelectorAll(
+        ".bottom-nav .bottom-item"
+      );
+
+    items.forEach(function(item){
+
+      item.addEventListener("click", function(){
+
+        if(!isMobile()) return;
+
+        items.forEach(function(nav){
+          nav.classList.remove("active");
+        });
+
+        this.classList.add("active");
+
+      }, {passive:true});
+
+    });
+  }
+
+  function initBottomNav(){
+    bindBottomNav();
+    updateBottomNav();
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", initBottomNav);
+  }else{
+    initBottomNav();
+  }
+
+  window.addEventListener("pageshow", updateBottomNav);
+
+  window.addEventListener("resize", function(){
+    if(isMobile()) updateBottomNav();
+  });
+
 })();
 
-\</script>
-\<style> \*{   box-sizing\:border-box;   margin:0;   padding:0; }  \:root{   --violet:#6d28d9;   --violet2:#7c3aed;   --light-violet:#f3e8ff;   --green:#dcfce7;   --green-dark:#15803d;   --white:#fff;   --text:#171717;   --muted:#737373;   --border:#e5e7eb;   --bg:#f7f7fb; }  body{   font-family\:Arial,Helvetica,sans-serif;   background\:var(--bg);   color\:var(--text);   padding-bottom:0; }  /\* ================= HEADER ================= \*/  .header{   height:72px;   background:#fff;   border-bottom:1px solid var(--border);   display\:flex;   align-items\:center;   gap:22px;   padding:0 5%;   position\:sticky;   top:0;   z-index:1000; }  .logo{   display\:flex;   align-items\:center;   white-space\:nowrap; }  .logo img{   height:54px;   width\:auto;   max-width:240px;   display\:block;   object-fit\:contain; }  .mobile-header-actions{   display\:none; }  .search{   flex:1;   position\:relative; }  .search input{   width:100%;   height:46px;   border:2px solid #dfcaff;   border-radius:13px;   padding:0 48px 0 18px;   outline\:none;   font-size:15px;   background:#fff; }  .search input\:focus{   border-color\:var(--violet); }  .search-icon{   position\:absolute;   right:16px;   top:50%;   transform\:translateY(-50%);   width:20px;   height:20px; }  /\* desktop account \*/  .header-account{   position\:relative; }  .account-btn{   border:0;   background:#fff;   height:44px;   padding:0 8px;   display\:flex;   align-items\:center;   gap:8px;   font-size:15px;   cursor\:pointer;   white-space\:nowrap; }  .account-btn.auth-loading{   visibility\:hidden; }  .account-btn\:hover{   color\:var(--violet); }  .account-icon{   width:21px;   height:21px; }  .arrow{   width:14px;   height:14px;   transition:.2s; }  .account-btn.open .arrow{   transform\:rotate(180deg); }  .cart-btn{   height:44px;   border:0;   background\:var(--violet);   color\:white;   padding:0 17px;   border-radius:12px;   font-weight:700;   cursor\:pointer;   display\:flex;   align-items\:center;   gap:8px;   white-space\:nowrap;   position\:relative; }  .cart-icon{   width:20px;   height:20px; }  .cart-number{   position\:absolute;   top:-7px;   right:-7px;   min-width:21px;   height:21px;   padding:0 5px;   border-radius:999px;   display\:none;   justify-content\:center;   align-items\:center;   background:#ef4444;   color:#fff;   border:2px solid #fff;   font-size:11px;   font-weight:800;   line-height:1;   box-shadow:0 2px 7px rgba(0,0,0,.2);   z-index:3; }  .cart-number.cart-loading{   display\:none !important; }  .cart-number.show{   display\:inline-flex; }  /\* Mobile bottom Cart badge \*/ .bottom-item{   position\:relative; } .cart-number-mobile{   position\:absolute;   top:2px;   right\:calc(50% - 20px);   min-width:18px;   height:18px;   padding:0 4px;   border-radius:999px;   display\:none;   justify-content\:center;   align-items\:center;   background:#ef4444;   color:#fff;   border:2px solid #fff;   font-size:9px;   font-weight:800;   line-height:1;   box-shadow:0 2px 6px rgba(0,0,0,.18);   z-index:3; } .cart-number-mobile.show{   display\:inline-flex; }  /\* ================= ACCOUNT DROPDOWN ================= \*/  .account-menu{   position\:absolute;   right:0;   top:53px;   width:310px;   background:#fff;   border-radius:14px;   box-shadow:0 12px 35px rgba(0,0,0,.20);   border:1px solid #ddd;   overflow\:hidden;   display\:none;   z-index:2000; }  .account-menu.show{   display\:block;   animation\:menuIn .16s ease; }  @keyframes menuIn{   from{     opacity:0;     transform\:translateY(-5px);   }   to{     opacity:1;     transform\:translateY(0);   } }  .account-top{   padding:18px 20px 10px; }  .new-customer{   display\:flex;   justify-content\:space-between;   align-items\:center;   font-size:15px; }  .signup{   color:#2563eb;   font-weight:700;   cursor\:pointer; }  .account-divider{   height:1px;   background:#eee;   margin:8px 0; }  .menu-item{   height:47px;   display\:flex;   align-items\:center;   gap:14px;   padding:0 20px;   cursor\:pointer;   font-size:15px; }  .menu-item\:hover{   background:#f7f7f7;   color\:var(--violet); }  .menu-svg{   width:20px;   height:20px;   flex\:none; }  .logout{   color:#dc2626; }  /\* ================= CATEGORY ================= \*/  .categories{   height:82px;   background:#fff;   display\:flex;   align-items\:center;   gap:30px;   padding:0 5%;   border-bottom:1px solid var(--border);   overflow-x\:auto;   scrollbar-width\:none; }  .categories::-webkit-scrollbar{   display\:none; }  .category{   min-width:64px;   border:0;   background\:transparent;   cursor\:pointer;   display\:flex;   flex-direction\:column;   align-items\:center;   gap:7px;   font-size:13px;   white-space\:nowrap; }  .category-icon{   width:42px;   height:42px;   border-radius:50%;   background\:var(--light-violet);   display\:flex;   align-items\:center;   justify-content\:center; }  .category-icon svg{   width:23px;   height:23px; }  .category.active{   color\:var(--violet);   font-weight:700; }  .category.active .category-icon{   background\:var(--green); }  /\* ================= MAIN ================= \*/  main{   width:90%;   max-width:1250px;   margin\:auto; }  .top-space{   height:20px; }  /\* ================= PRODUCT HEADER ================= \*/  .product-heading{   display\:flex;   justify-content\:space-between;   align-items\:end;   margin:28px 0 18px; }  .product-heading h1{   font-size:25px; }  .product-heading p{   color\:var(--muted);   margin-top:5px;   font-size:14px; }  #sortSelect{   padding:10px 30px 10px 12px;   border:1px solid #ddd;   border-radius:10px;   background\:white; }  /\* ================= PRODUCT GRID ================= \*/  .product-grid{   display\:grid;   grid-template-columns\:repeat(4,1fr);   gap:18px;   padding-bottom:50px; }  .product-card{   background\:white;   border:1px solid #e8e8e8;   border-radius:14px;   overflow\:hidden;   transition:.2s;   cursor\:pointer;   min-width:0; }  .product-card\:hover{   transform\:translateY(-3px);   box-shadow:0 8px 25px rgba(0,0,0,.09); }  .product-image-box{   height:250px;   background:#fafafa;   position\:relative;   display\:flex;   align-items\:center;   justify-content\:center;   overflow\:hidden; }  .product-image{   width:100%;   height:100%;   object-fit\:contain;   padding:10px;   display\:block; }  .discount{   position\:absolute;   top:10px;   left:10px;   background\:var(--green);   color\:var(--green-dark);   padding:6px 8px;   border-radius:7px;   font-size:11px;   font-weight:700; }  .product-info{   padding:12px; }  .rating{   display\:inline-flex;   align-items\:center;   gap:4px;   background\:var(--green);   color:#166534;   padding:4px 7px;   border-radius:6px;   font-size:11px;   margin-bottom:8px; }  .product-name{   font-size:14px;   font-weight:500;   line-height:1.35;   color:#333;    display:-webkit-box;   -webkit-box-orient\:vertical;   -webkit-line-clamp:2;   overflow\:hidden;    min-height:38px; }  .price-row{   display\:flex;   align-items\:center;   gap:8px;   margin-top:9px; }  .price{   font-size:20px;   font-weight:800; }  .mrp{   font-size:11px;   color:#999;   text-decoration\:line-through; }  .off{   font-size:11px;   color\:var(--green-dark);   font-weight:700; }  .delivery{   color:#15803d;   font-size:11px;   margin-top:10px;   font-weight:600; }  /\* ================= LOADING ================= \*/  .loading{   padding:0;   width:100%;   color\:transparent; }  .skeleton-grid{   width:100%;   display\:grid;   grid-template-columns\:repeat(3,minmax(0,1fr));   gap:14px; }  .skeleton-card{   overflow\:hidden;   background:#fff;   border:1px solid #e5e7eb;   border-radius:14px;   box-shadow:0 2px 8px rgba(0,0,0,.04); }  .skeleton{   position\:relative;   overflow\:hidden;   background:#e9edf2;   border-radius:8px; }  .skeleton::after{   content:"";   position\:absolute;   inset:0;   transform\:translateX(-100%);   background\:linear-gradient(     90deg,     transparent,     rgba(255,255,255,.65),     transparent   );   animation\:skeletonShimmer 1.15s infinite; }  @keyframes skeletonShimmer{   100%{     transform\:translateX(100%);   } }  .skeleton-image{   width:100%;   height:220px;   border-radius:0; }  .skeleton-info{   padding:12px; }  .skeleton-rating{   width:42px;   height:18px;   margin-bottom:10px;   border-radius:5px; }  .skeleton-title{   width:92%;   height:13px;   margin-bottom:7px; }  .skeleton-title.short{   width:65%; }  .skeleton-price{   width:72px;   height:21px;   margin-top:11px; }  .skeleton-delivery{   width:125px;   height:11px;   margin-top:11px; }  .no-products{   text-align\:center;   padding:60px; }  .hidden{   display\:none; }  /\* ================= MOBILE BOTTOM NAV ================= \*/  .bottom-nav{   display\:none; }  /\* ================= MOBILE ================= \*/  @media(max-width:700px){    body{     padding-bottom:calc(68px + env(safe-area-inset-bottom));   }    .header{     height:112px;     min-height:112px;     padding:6px 12px;     display\:grid;     grid-template-columns:1fr;     grid-template-areas:       "logo"       "search";     gap:4px;     position\:sticky;     top:0;   }    .logo{     grid-area\:logo;     height:46px;     display\:flex;     align-items\:center;     justify-content\:space-between;     width:100%;   }    .logo img{     height:46px;     max-width:205px;     width\:auto;     display\:block;     object-fit\:contain;   }    .mobile-header-actions{     display\:flex;     align-items\:center;     justify-content\:flex-end;     gap:4px;     margin-left\:auto;   }    .mobile-header-icon{     width:38px;     height:38px;     border:0;     background\:transparent;     display\:flex;     align-items\:center;     justify-content\:center;     color:#171717;     padding:0;     cursor\:pointer;     flex-shrink:0;     border-radius:50%;   }    .mobile-header-icon svg{     width:22px;     height:22px;     display\:block;   }    .mobile-header-icon\:active{     transform\:scale(.94);   }    .search{     grid-area\:search;   }    .search input{     height:42px;     font-size:14px;   }    /\* Cart is intentionally removed from mobile header.      Cart remains available in the fixed bottom navigation. \*/   .cart-btn{     display\:none;   }    .header-account{     display\:none;   }    .categories{     height:76px;     padding:0 10px;     gap:20px;   }    .category{     min-width:58px;     font-size:11px;   }    .category-icon{     width:36px;     height:36px;   }    main{     width\:calc(100% - 20px);   }    .product-heading{     margin:20px 0 12px;     align-items\:center;   }    .product-heading h1{     font-size:20px;   }    .product-heading p{     font-size:11px;   }    #sortSelect{     font-size:11px;     padding:8px;   }    .product-grid{     grid-template-columns\:repeat(2,minmax(0,1fr));     gap:10px;     padding-bottom:20px;   }    .skeleton-grid{     grid-template-columns\:repeat(2,minmax(0,1fr));     gap:10px;   }    .skeleton-image{     height:175px;   }    .skeleton-info{     padding:9px;   }    .skeleton-rating{     width:36px;     height:15px;     margin-bottom:8px;   }    .skeleton-title{     height:11px;     margin-bottom:6px;   }    .skeleton-price{     width:62px;     height:17px;     margin-top:9px;   }    .skeleton-delivery{     width:100px;     height:9px;     margin-top:9px;   }    .product-image-box{     height:175px;   }    .product-image{     padding:8px;   }    .product-info{     padding:9px;   }    .product-name{     font-size:12px;     line-height:1.3;     min-height:31px;   }    .price{     font-size:16px;   }    .mrp,   .off{     font-size:9px;   }    .delivery{     font-size:9px;   }    .rating{     font-size:9px;     padding:3px 5px;   }    .discount{     top:7px;     left:7px;     font-size:9px;     padding:5px 6px;   }    /* fixed bottom nav — mobile only */
-   .bottom-nav{
-     position\:fixed !important;
-     left\:0 !important;
-     right\:0 !important;
-     bottom\:0 !important;
-     width\:100vw !important;
-     height\:calc(68px + env(safe-area-inset-bottom)) !important;
-     min-height\:calc(68px + env(safe-area-inset-bottom)) !important;
-     padding\:0 0 env(safe-area-inset-bottom) !important;
-     margin\:0 !important;
-     display\:flex !important;
-     background\:#fff;
-     border-top\:1px solid #ddd;
-     z-index\:2147483646 !important;
-     box-shadow\:0 -5px 20px rgba(0,0,0,.08);
-     justify-content\:space-around;
-     align-items\:center;
-     transform\:translate3d(0,0,0);
-     -webkit-transform\:translate3d(0,0,0);
-     backface-visibility\:hidden;
-     -webkit-backface-visibility\:hidden;
-     will-change\:transform;
-   }
 
-   .bottom-item{
-     flex\:1;
-     height\:68px;
-     min-height\:68px;
-     border\:0;
-     background\:#fff;
-     display\:flex;
-     flex-direction\:column;
-     align-items\:center;
-     justify-content\:center;
-     gap\:3px;
-     color\:#666;
-     font-size\:10px;
-     cursor\:pointer;
-     touch-action\:manipulation;
-     -webkit-tap-highlight-color\:transparent;
-     user-select\:none;
-     -webkit-user-select\:none;
-   }
+/* =========================================================
+   LOGOUT
+========================================================= */
 
-   .bottom-item svg{
-     width\:23px;
-     height\:23px;
-     flex\:none;
-   }
+async function logoutUser(){
 
-   .bottom-item.active{
-     color\:var(--violet);
-     font-weight\:700;
-   }
+  clearCartCountCache();
+  cartCountUserId="";
 
-   .bottom-item.active svg{
-     stroke\:var(--violet);
-   } 
+  await supabaseClient.auth.signOut();
+
+  window.location.reload();
+
+}
+
+
+
+/* =========================================================
+   HERO SLIDER
+   Admin panel se image links aate hain.
+   Desktop: 3 banners visible + left/right arrows.
+   Mobile: 1 banner + smooth swipe + automatic slide.
+========================================================= */
+let heroSlides=[];
+let heroIndex=0;
+let heroTimer=null;
+let heroTouchStartX=0;
+let heroTouchStartY=0;
+let heroTouchDeltaX=0;
+let heroTouching=false;
+let heroTouchMoved=false;
+
+function heroEscape(value){return String(value||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
+
+async function loadHeroSliders(){
+  const box=document.getElementById("heroSlider"),track=document.getElementById("heroTrack"),dots=document.getElementById("heroDots"),loader=document.getElementById("heroLoading");
+  if(!box||!track||!dots)return;
+  box.classList.add("loading");
+  box.classList.remove("show");
+  if(loader) loader.style.display="block";
+  let data = null;
+  let error = null;
+  try {
+    const result = await supabaseClient
+      .from("hero_sliders")
+      .select("id,image_url,sort_order,is_active,created_at")
+      .eq("is_active",true)
+      .order("sort_order",{ascending:true})
+      .order("created_at",{ascending:true})
+      .abortSignal(AbortSignal.timeout(10000));
+    data = result.data;
+    error = result.error;
+  } catch(err) {
+    error = err;
+    console.error("Hero slider request error:", err);
+  }
+  if(error){console.error("Hero slider error:",error);box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();return;}
+  heroSlides=(data||[]).filter(x=>x.image_url);
+  heroIndex=Math.max(0,Math.min(heroIndex,Math.max(heroSlides.length-1,0)));
+  if(!heroSlides.length){box.classList.remove("show");box.classList.remove("loading");if(loader) loader.style.display="none";stopHeroAutoSlide();track.innerHTML="";dots.innerHTML="";return;}
+
+  /* First preload the banners. The skeleton stays exactly here until
+     the images are actually available/decoded, so no empty frame flash. */
+  await Promise.all(heroSlides.map(function(slide){return preloadImage(slide.image_url);}));
+
+  track.innerHTML=heroSlides.map((slide,i)=>`<div class="hero-slide"><img src="${heroEscape(slide.image_url)}" alt="Hero banner ${i+1}" loading="eager" decoding="async" draggable="false" onerror="this.parentElement.style.display='none'"></div>`).join("");
+  dots.innerHTML=heroSlides.map((_,i)=>`<button type="button" class="hero-dot ${i===heroIndex?'active':''}" aria-label="Slide ${i+1}" onclick="goHeroSlide(${i},true)"></button>`).join("");
+
+  await waitForContainerImages(track);
+  if(loader) loader.style.display="none";
+  box.classList.remove("loading");
+  box.classList.add("show");
+  applyHeroPosition(false);setupHeroTouch();setupHeroAutoSlide();
+}
+function getHeroMaxIndex(){return window.innerWidth<=700?Math.max(heroSlides.length-1,0):Math.max(heroSlides.length-3,0);}
+function getHeroStepPx(){
+  const viewport=document.getElementById("heroViewport");
+  if(!viewport)return 0;
+  if(window.innerWidth<=700)return viewport.clientWidth;
+  const slide=document.querySelector(".hero-slide");
+  if(!slide)return viewport.clientWidth/3;
+  return slide.getBoundingClientRect().width+14;
+}
+function applyHeroPosition(animate=true){
+  const track=document.getElementById("heroTrack");if(!track)return;
+  heroIndex=Math.max(0,Math.min(heroIndex,getHeroMaxIndex()));
+  track.style.transition=animate ? "transform .38s cubic-bezier(.22,.61,.36,1)" : "none";
+  track.style.transform=`translate3d(-${heroIndex*getHeroStepPx()}px,0,0)`;
+  document.querySelectorAll(".hero-dot").forEach((dot,i)=>dot.classList.toggle("active",i===heroIndex));
+  updateHeroArrows();
+}
+function updateHeroArrows(){
+  const prev=document.getElementById("heroPrev"),next=document.getElementById("heroNext");if(!prev||!next)return;
+  const desktop=window.innerWidth>700&&heroSlides.length>3;
+  prev.style.display=desktop?"flex":"none";next.style.display=desktop?"flex":"none";
+  prev.disabled=heroIndex<=0;next.disabled=heroIndex>=getHeroMaxIndex();
+}
+function goHeroSlide(index,userAction=false){if(!heroSlides.length)return;heroIndex=Math.max(0,Math.min(index,getHeroMaxIndex()));applyHeroPosition(true);if(userAction)restartHeroAutoSlide();}
+function nextHeroSlide(userAction=false){if(heroSlides.length<2)return;const max=getHeroMaxIndex();heroIndex=heroIndex>=max?0:heroIndex+1;applyHeroPosition(true);if(userAction)restartHeroAutoSlide();}
+function prevHeroSlide(){if(heroSlides.length<2)return;heroIndex=heroIndex<=0?getHeroMaxIndex():heroIndex-1;applyHeroPosition(true);restartHeroAutoSlide();}
+function startHeroAutoSlide(){stopHeroAutoSlide();if(heroSlides.length>1)heroTimer=setInterval(()=>nextHeroSlide(false),3200);}
+function stopHeroAutoSlide(){if(heroTimer){clearInterval(heroTimer);heroTimer=null;}}
+function restartHeroAutoSlide(){startHeroAutoSlide();}
+function setupHeroAutoSlide(){startHeroAutoSlide();}
+function setupHeroTouch(){
+  const viewport=document.getElementById("heroViewport");if(!viewport||viewport.dataset.touchReady==="1")return;viewport.dataset.touchReady="1";
+  viewport.addEventListener("touchstart",e=>{if(window.innerWidth>700||heroSlides.length<2)return;const t=e.touches[0];heroTouchStartX=t.clientX;heroTouchStartY=t.clientY;heroTouchDeltaX=0;heroTouching=true;heroTouchMoved=false;stopHeroAutoSlide();},{passive:true});
+  viewport.addEventListener("touchmove",e=>{if(!heroTouching||window.innerWidth>700)return;const t=e.touches[0];heroTouchDeltaX=t.clientX-heroTouchStartX;const dy=t.clientY-heroTouchStartY;if(Math.abs(heroTouchDeltaX)>Math.abs(dy)&&Math.abs(heroTouchDeltaX)>8)heroTouchMoved=true;},{passive:true});
+  viewport.addEventListener("touchend",()=>{if(!heroTouching)return;heroTouching=false;if(window.innerWidth<=700&&heroTouchMoved&&Math.abs(heroTouchDeltaX)>=35){if(heroTouchDeltaX<0)nextHeroSlide(true);else prevHeroSlide();}else restartHeroAutoSlide();heroTouchDeltaX=0;},{passive:true});
+}
+window.addEventListener("resize",()=>{if(!heroSlides.length)return;heroIndex=Math.min(heroIndex,getHeroMaxIndex());applyHeroPosition(false);setupHeroAutoSlide();});
+
+/* HERO REALTIME UPDATE */
+supabaseClient
+  .channel("hero-sliders-live")
+  .on("postgres_changes",{
+    event:"*",
+    schema:"public",
+    table:"hero_sliders"
+  },function(){
+    loadHeroSliders();
+  })
+  .subscribe();
+
+
+/* =========================================================
+   START
+========================================================= */
+
+loadAccount();
+
+loadCartCount();
+loadHeroSliders();
+
+loadProducts();
+
+
+
+/* =========================================================
+   SEARCH QUERY FROM PRODUCT PAGE
+========================================================= */
+(function(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const query =
+    (params.get("search") || "")
+      .trim()
+      .toLowerCase();
+
+  if(!query) return;
+
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
+  if(input){
+    input.value =
+      params.get("search") || "";
+  }
+
+  function applySearch(){
+
+    document
+      .querySelectorAll(".product-card")
+      .forEach(card => {
+
+        const title =
+          card
+            .querySelector(".product-name")
+            ?.textContent
+            .toLowerCase() || "";
+
+        card.style.display =
+          title.includes(query)
+            ? ""
+            : "none";
+
+      });
+
+  }
+
+  /*
+    Products are loaded asynchronously, so wait until cards exist.
+  */
+  let tries = 0;
+
+  const timer =
+    setInterval(
+      function(){
+
+        if(
+          document.querySelector(
+            ".product-card"
+          )
+        ){
+
+          clearInterval(timer);
+          applySearch();
+
+        }
+
+        if(++tries > 100){
+          clearInterval(timer);
+        }
+
+      },
+      50
+    );
+
+})();
+
+
+
+/* =========================================================
+   AUTOMATIC "STILL LOOKING" RECOMMENDATIONS
+   3 different products + same product visited twice +
+   combined time of both visits >= 5 seconds.
+   Images/names come automatically from viewed products.
+========================================================= */
+const LOOKING_DATA_KEY = "mystore_still_looking_v1";
+const LOOKING_MIN_SECONDS = 5;
+const LOOKING_MAX_ITEMS = 10;
+let lookingBannerIndex = 0;
+
+function lookingEscape(value){
+  return String(value ?? "").replace(/[&<>"']/g,function(ch){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch];
+  });
+}
+function readLookingData(){
+  try{
+    const raw=localStorage.getItem(LOOKING_DATA_KEY);
+    const data=raw?JSON.parse(raw):null;
+    if(!data || typeof data!=="object") return {userId:"",items:[],qualified:false};
+    if(!Array.isArray(data.items)) data.items=[];
+    return data;
+  }catch(e){return {userId:"",items:[],qualified:false};}
+}
+function writeLookingData(data){
+  try{localStorage.setItem(LOOKING_DATA_KEY,JSON.stringify(data));}catch(e){}
+}
+function getLookingAccountName(){
+  try{
+    const cache=typeof readAccountCache==="function"?readAccountCache():null;
+    if(cache && cache.firstName) return String(cache.firstName).trim();
+  }catch(e){}
+  const el=document.getElementById("accountName");
+  const text=el?String(el.textContent||"").trim():"";
+  return text && !/^login$/i.test(text) ? text : "You";
+}
+function getLookingUserId(){
+  try{
+    const data=readLookingData();
+    return data.userId||"guest";
+  }catch(e){return "guest";}
+}
+function renderLookingBanner(){
+  const root=document.getElementById("lookingForBannerRoot");
+  if(!root)return;
+  const data=readLookingData();
+  if(!data.qualified || !Array.isArray(data.items) || !data.items.length){root.innerHTML="";return;}
+  const items=data.items.slice(0,LOOKING_MAX_ITEMS);
+  const name=getLookingAccountName();
+  root.innerHTML=`<section class="looking-banner" aria-label="${lookingEscape(name)} still looking for these">
+    <h2 class="looking-banner-title">${lookingEscape(name)} still looking for these?</h2>
+    <div class="looking-banner-viewport">
+      <div class="looking-banner-track">${items.map(function(item){
+        const image=String(item.image||"").trim();
+        const title=String(item.title||"Product").trim();
+        return `<div class="looking-banner-card" data-product-id="${lookingEscape(item.id)}" role="button" tabindex="0">
+          <div class="looking-banner-image-wrap">${image?`<img class="looking-banner-image" src="${lookingEscape(image)}" alt="${lookingEscape(title)}" loading="lazy" decoding="async" onerror="this.style.visibility='hidden'">`:``}</div>
+          <div class="looking-banner-name">${lookingEscape(title)}</div>
+        </div>`;
+      }).join("")}</div>
+      <button type="button" class="looking-banner-nav prev" aria-label="Previous" onclick="moveLookingBanner(-1)">‹</button>
+      <button type="button" class="looking-banner-nav next" aria-label="Next" onclick="moveLookingBanner(1)">›</button>
+    </div>
+  </section>`;
+  root.querySelectorAll(".looking-banner-card").forEach(function(card){
+    const go=function(){
+      const pid=card.getAttribute("data-product-id");
+      if(pid) window.location.href="product.html?id="+encodeURIComponent(pid);
+    };
+    card.addEventListener("click",go);
+    card.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
+  });
+  setupLookingTouch(root.querySelector(".looking-banner"));
+  applyLookingPosition(root.querySelector(".looking-banner"),false);
+}
+function lookingVisibleCount(){return window.innerWidth<=700?3:(window.innerWidth<=1100?5:7);}
+function applyLookingPosition(wrap,animate){
+  if(!wrap)return;
+  const track=wrap.querySelector(".looking-banner-track");
+  const cards=track?Array.from(track.querySelectorAll(".looking-banner-card")):[];
+  if(!track||!cards.length)return;
+  const max=Math.max(0,cards.length-lookingVisibleCount());
+  lookingBannerIndex=Math.max(0,Math.min(lookingBannerIndex,max));
+  const gap=parseFloat(getComputedStyle(track).gap)||0;
+  const step=cards[0].getBoundingClientRect().width+gap;
+  track.style.transition=animate?"transform .38s cubic-bezier(.22,.61,.36,1)":"none";
+  track.style.transform=`translate3d(${-lookingBannerIndex*step}px,0,0)`;
+  const prev=wrap.querySelector(".looking-banner-nav.prev");
+  const next=wrap.querySelector(".looking-banner-nav.next");
+  const desktop=window.innerWidth>700 && max>0;
+  if(prev){prev.style.display=desktop?"flex":"none";prev.disabled=lookingBannerIndex<=0;}
+  if(next){next.style.display=desktop?"flex":"none";next.disabled=lookingBannerIndex>=max;}
+}
+function moveLookingBanner(direction){
+  const wrap=document.querySelector("#lookingForBannerRoot .looking-banner");
+  if(!wrap)return;
+  const track=wrap.querySelector(".looking-banner-track");
+  const cards=track?Array.from(track.querySelectorAll(".looking-banner-card")):[];
+  const max=Math.max(0,cards.length-lookingVisibleCount());
+  lookingBannerIndex=Math.max(0,Math.min(lookingBannerIndex+(direction>0?1:-1),max));
+  applyLookingPosition(wrap,true);
+}
+function setupLookingTouch(wrap){
+  if(!wrap)return;
+  const viewport=wrap.querySelector(".looking-banner-viewport");
+  const track=wrap.querySelector(".looking-banner-track");
+  if(!viewport||!track)return;
+  let startX=0,startY=0,dx=0,moved=false;
+  viewport.addEventListener("touchstart",function(e){
+    if(window.innerWidth>700||e.touches.length!==1)return;
+    startX=e.touches[0].clientX;startY=e.touches[0].clientY;dx=0;moved=false;track.style.transition="none";
+  },{passive:true});
+  viewport.addEventListener("touchmove",function(e){
+    if(window.innerWidth>700||!startX||e.touches.length!==1)return;
+    dx=e.touches[0].clientX-startX;
+    const dy=e.touches[0].clientY-startY;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){
+      moved=true;
+      const cards=track.querySelectorAll(".looking-banner-card");
+      if(!cards.length)return;
+      const gap=parseFloat(getComputedStyle(track).gap)||0;
+      const step=cards[0].getBoundingClientRect().width+gap;
+      const max=Math.max(0,cards.length-lookingVisibleCount());
+      let x=(-lookingBannerIndex*step)+dx;
+      if((lookingBannerIndex===0&&dx>0)||(lookingBannerIndex===max&&dx<0))x=(-lookingBannerIndex*step)+(dx*.3);
+      track.style.transform=`translate3d(${x}px,0,0)`;
+    }
+  },{passive:true});
+  viewport.addEventListener("touchend",function(){
+    if(window.innerWidth>700||!startX)return;
+    if(moved&&Math.abs(dx)>45)moveLookingBanner(dx<0?1:-1);else applyLookingPosition(wrap,true);
+    startX=0;startY=0;dx=0;moved=false;
+  },{passive:true});
+}
+window.addEventListener("resize",function(){
+  const wrap=document.querySelector("#lookingForBannerRoot .looking-banner");
+  if(wrap)applyLookingPosition(wrap,false);
+},{passive:true});
+
+/* Render after account cache/auth and on page return. */
+renderLookingBanner();
+window.addEventListener("pageshow",function(){renderLookingBanner();});
+  /* =========================================================
+   FIX: RETURN FROM PRODUCT PAGE
+   Mobile/browser Back must remove navigation loader.
+========================================================= */
+function resetProductNavigationState(){
+
+  const loader =
+    document.getElementById("productNavLoader");
+
+  if(loader){
+    loader.classList.remove("show");
+    loader.setAttribute("aria-hidden","true");
+    loader.style.display = "none";
+  }
+
+  document.body.style.overflow = "";
+
+  try{
+    sessionStorage.removeItem(
+      "mystore_product_navigation"
+    );
+  }catch(e){}
+}
+
+/*
+   Browser Back / Android Back / BFCache restore
+*/
+window.addEventListener(
+  "pageshow",
+  function(){
+    resetProductNavigationState();
+  }
+);
+
+/*
+   Extra safety when index page becomes active again.
+*/
+window.addEventListener(
+  "focus",
+  function(){
+    resetProductNavigationState();
+  }
+);
+if(typeof supabaseClient!=="undefined" && supabaseClient.auth){
+  supabaseClient.auth.onAuthStateChange(function(){setTimeout(renderLookingBanner,120);});
+}
+
+</script>
+
+</body>
+</html>
