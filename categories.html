@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -349,279 +350,64 @@ body{
         font-size:10.5px;
     }
 }
-
-
-/* =========================================================
-   GLOBAL BOTTOM NAV + INSTANT VIOLET PAGE LOADER
-   ========================================================= */
-
-#globalNavLoader{
-  position:fixed;
-  inset:0;
-  z-index:99998;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#fff;
-  opacity:1;
-  visibility:visible;
-  transition:none !important;
-}
-#globalNavLoader.hide{
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  transition:none !important;
-}
-#globalNavLoader .global-loader-spinner{
-  width:34px;
-  height:34px;
-  border:3px solid #eee;
-  border-top-color:#5b45e8;
-  border-radius:50%;
-  animation:globalNavSpin .65s linear infinite;
-}
-@keyframes globalNavSpin{
-  to{transform:rotate(360deg);}
-}
-
-#globalBottomNav{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:99999;
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  height:68px;
-  padding:0;
-  background:#fff;
-  border-top:1px solid #ddd;
-  box-shadow:0 -5px 20px rgba(0,0,0,.08);
-  -webkit-backdrop-filter:none;
-  backdrop-filter:none;
-}
-#globalBottomNav .bn-item{
-  flex:1;
-  min-width:0;
-  max-width:none;
-  border:0;
-  background:#fff;
-  color:#666;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  padding:0;
-  cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
-  transition:none !important;
-  font-family:inherit;
-}
-#globalBottomNav .bn-item:active{
-  transform:none !important;
-  background:#fff !important;
-}
-#globalBottomNav .bn-icon{
-  width:23px;
-  height:23px;
-  display:grid;
-  place-items:center;
-}
-#globalBottomNav .bn-icon svg{
-  width:22px;
-  height:22px;
-  display:block;
-}
-#globalBottomNav .bn-label{
-  font-size:10px;
-  line-height:1;
-  font-weight:400;
-  white-space:nowrap;
-}
-#globalBottomNav .bn-item.active{
-  color:#6d28d9;
-  font-weight:700;
-}
-#globalBottomNav .bn-item.active .bn-icon svg{
-  stroke:#6d28d9;
-  stroke-width:1.8;
-}
-#globalBottomNav .bn-badge{
-  position:absolute;
-  min-width:15px;
-  height:15px;
-  padding:0 4px;
-  margin-left:16px;
-  margin-top:-6px;
-  border-radius:20px;
-  background:#5b45e8;
-  color:#fff;
-  font-size:8px;
-  line-height:15px;
-  font-weight:800;
-  text-align:center;
-}
-
-@media(min-width:901px){
-  #globalBottomNav{display:none;}
-}
-@media(max-width:900px){
-  body{
-    padding-bottom:78px !important;
-  }
-  .page,
-  .main{
-    padding-bottom:90px !important;
-  }
-}
-
-/* Orders page already has rules intended to hide the nav.
-   Keep the nav permanently visible as requested. */
-body.ss-hide-bottom-nav [data-bottom-nav],
-body.ss-hide-bottom-nav .bottom-nav,
-body.ss-hide-bottom-nav .bottomnav,
-body.ss-hide-bottom-nav .bottom-navigation,
-body.ss-hide-bottom-nav nav.bottom,
-body.ss-hide-bottom-nav #bottom-nav,
-body.ss-hide-bottom-nav #bottomNav{
-  display:flex !important;
-}
-
 </style>
+
 </head>
 
 <body>
-
-
-<!-- =========================================================
-     GLOBAL NAV LOADER
-     ========================================================= -->
-<div id="globalNavLoader" aria-hidden="true">
-  <div class="global-loader-spinner"></div>
-</div>
-
-<!-- =========================================================
-     FIXED BOTTOM NAV
-     ========================================================= -->
-<nav id="globalBottomNav" aria-label="Main navigation">
-
-  <button class="bn-item" data-page="home" type="button" onclick="globalNavGo('home')">
-    <span class="bn-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="m3 11 9-8 9 8"/>
-        <path d="M5 10v10h14V10"/>
-        <path d="M9 20v-6h6v6"/>
-      </svg>
-    </span>
-    <span class="bn-label">Home</span>
-  </button>
-
-  <button class="bn-item" data-page="categories" type="button" onclick="globalNavGo('categories')">
-    <span class="bn-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <rect x="4" y="4" width="6" height="6" rx="1"/>
-        <rect x="14" y="4" width="6" height="6" rx="1"/>
-        <rect x="4" y="14" width="6" height="6" rx="1"/>
-        <rect x="14" y="14" width="6" height="6" rx="1"/>
-      </svg>
-    </span>
-    <span class="bn-label">Categories</span>
-  </button>
-
-  <button class="bn-item" data-page="account" type="button" onclick="globalNavGo('account')">
-    <span class="bn-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <circle cx="12" cy="8" r="3.5"/>
-        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
-      </svg>
-    </span>
-    <span class="bn-label">Account</span>
-  </button>
-
-  <button class="bn-item" data-page="orders" type="button" onclick="globalNavGo('orders')">
-    <span class="bn-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="m4 7 8-4 8 4-8 4z"/>
-        <path d="M4 7v10l8 4 8-4V7"/>
-        <path d="M12 11v10"/>
-      </svg>
-    </span>
-    <span class="bn-label">Orders</span>
-  </button>
-
-  <button class="bn-item" data-page="cart" type="button" onclick="globalNavGo('cart')">
-    <span class="bn-icon" style="position:relative;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <circle cx="9" cy="20" r="1"/>
-        <circle cx="18" cy="20" r="1"/>
-        <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
-      </svg>
-      <span id="globalCartBadge" class="bn-badge" style="display:none;"></span>
-    </span>
-    <span class="bn-label">Cart</span>
-  </button>
-
-</nav>
-
-
 
 <div class="page">
 
 <header class="topbar">
 
+<button
+    class="back"
+    onclick="history.back()"
+    aria-label="Back">
+    ‹
+</button>
+
+<div class="logo">
+    M
+</div>
+
+<div class="title">
+    Categories
+</div>
+
+<div class="actions">
+
     <button
-        class="back"
-        onclick="history.back()"
-        aria-label="Back">
-        ‹
+        class="action"
+        onclick="openSearch()"
+        aria-label="Search">
+        ⌕
     </button>
 
-    <div class="logo">
-        M
-    </div>
+    <button
+        class="action"
+        onclick="openCart()"
+        aria-label="Cart">
+        🛒
+    </button>
 
-    <div class="title">
-        Categories
-    </div>
-
-    <div class="actions">
-
-        <button
-            class="action"
-            onclick="openSearch()"
-            aria-label="Search">
-            ⌕
-        </button>
-
-        <button
-            class="action"
-            onclick="openCart()"
-            aria-label="Cart">
-            🛒
-        </button>
-
-    </div>
+</div>
 
 </header>
 
-
 <main class="main">
 
-    <div
-        id="app"
-        class="loading">
+<div
+    id="app"
+    class="loading">
 
-        <div class="loader"></div>
+    <div class="loader"></div>
 
-    </div>
+</div>
 
 </main>
 
 </div>
-
 
 <!-- SUPABASE -->
 
@@ -987,180 +773,6 @@ document.addEventListener(
     load
 );
 
-</script>
-
-
-
-<script>
-/* =========================================================
-   GLOBAL BOTTOM NAVIGATION
-   - active item always remains visible
-   - instant violet spinner on every nav click
-   - same loader is shown on destination page
-   ========================================================= */
-
-(function(){
-
-  const loader = document.getElementById("globalNavLoader");
-  const nav = document.getElementById("globalBottomNav");
-
-  const NAV_PAGES = {
-    home: "index.html",
-    categories: "categories.html",
-    orders: "my-orders.html",
-    account: "account.html",
-    cart: "cart.html"
-  };
-
-  function currentPage(){
-    const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-
-    if(
-      file === "" ||
-      file === "index.html" ||
-      file === "index.htm"
-    ) return "home";
-
-    if(file === "categories.html") return "categories";
-
-    if(
-      file === "my-orders.html" ||
-      file === "orders.html" ||
-      file === "order.html"
-    ) return "orders";
-
-    if(file === "account.html") return "account";
-
-    if(file === "cart.html") return "cart";
-
-    return "";
-  }
-
-  function setActive(){
-    if(!nav) return;
-
-    const active = currentPage();
-
-    nav.querySelectorAll(".bn-item").forEach(function(item){
-      item.classList.toggle(
-        "active",
-        item.getAttribute("data-page") === active
-      );
-    });
-  }
-
-  function showLoader(){
-    if(!loader) return;
-    loader.classList.remove("hide");
-    loader.setAttribute("aria-hidden","false");
-  }
-
-  function hideLoader(){
-    if(!loader) return;
-    loader.classList.add("hide");
-    loader.setAttribute("aria-hidden","true");
-  }
-
-  window.globalNavGo = function(page){
-
-    const target = NAV_PAGES[page];
-
-    if(!target) return;
-
-    /* Active state changes immediately — before navigation. */
-    if(nav){
-      nav.querySelectorAll(".bn-item").forEach(function(item){
-        item.classList.toggle(
-          "active",
-          item.getAttribute("data-page") === page
-        );
-      });
-    }
-
-    /* Same page = instant jump to top, no unnecessary reload. */
-    const current = currentPage();
-
-    if(current === page){
-      window.scrollTo({
-        top:0,
-        left:0,
-        behavior:"instant"
-      });
-      return;
-    }
-
-    /*
-      Show spinner first, give browser one paint opportunity,
-      then navigate. This makes the violet spinner actually visible
-      immediately instead of appearing only after the next page loads.
-    */
-    showLoader();
-
-    try{
-      sessionStorage.setItem(
-        "__global_nav_loader__",
-        "1"
-      );
-    }catch(e){}
-
-    requestAnimationFrame(function(){
-      setTimeout(function(){
-        window.location.href = target;
-      }, 25);
-    });
-  };
-
-  /* If a normal link/button elsewhere uses data-nav-page, use same loader. */
-  document.addEventListener("click",function(event){
-
-    const el = event.target.closest("[data-nav-page]");
-
-    if(!el) return;
-
-    const page = el.getAttribute("data-nav-page");
-
-    if(!page || !NAV_PAGES[page]) return;
-
-    event.preventDefault();
-    window.globalNavGo(page);
-
-  },true);
-
-  /* Destination page starts with the same violet loader. */
-  document.addEventListener("DOMContentLoaded",function(){
-
-    setActive();
-
-    requestAnimationFrame(function(){
-      setTimeout(function(){
-        hideLoader();
-      },180);
-    });
-
-  });
-
-  /*
-    Keep the nav visible even if the Orders page's existing code
-    adds ss-hide-bottom-nav.
-  */
-  const observer = new MutationObserver(function(){
-    if(nav){
-      nav.style.display = "";
-    }
-    setActive();
-  });
-
-  if(document.body){
-    observer.observe(
-      document.body,
-      {
-        attributes:true,
-        attributeFilter:["class"]
-      }
-    );
-  }
-
-})();
 </script>
 
 </body>
