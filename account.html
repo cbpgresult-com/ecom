@@ -1362,3 +1362,2662 @@ Loading account...
         <div class="setting-name">
           Personal Information
         </div>
+
+        <div class="setting-desc">
+          Name and mobile number
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+
+
+  <div
+    class="setting-row"
+    onclick="scrollToAddresses()">
+
+    <div class="setting-left">
+
+      <div class="setting-icon">
+        📍
+      </div>
+
+      <div>
+
+        <div class="setting-name">
+          Delivery Addresses
+        </div>
+
+        <div class="setting-desc">
+          Manage your saved addresses
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+
+
+  <div
+    class="setting-row"
+    onclick="openSecurity()">
+
+    <div class="setting-left">
+
+      <div class="setting-icon">
+        🔐
+      </div>
+
+      <div>
+
+        <div class="setting-name">
+          Login & Security
+        </div>
+
+        <div class="setting-desc">
+          Manage account security
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+
+
+  <div
+    class="setting-row"
+    onclick="openHelp()">
+
+    <div class="setting-left">
+
+      <div class="setting-icon">
+        💬
+      </div>
+
+      <div>
+
+        <div class="setting-name">
+          Help & Support
+        </div>
+
+        <div class="setting-desc">
+          Need help? Contact support
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+
+
+  <div
+    class="setting-row"
+    onclick="logout()">
+
+    <div class="setting-left">
+
+      <div class="setting-icon">
+        🚪
+      </div>
+
+      <div>
+
+        <div class="setting-name">
+          Logout
+        </div>
+
+        <div class="setting-desc">
+          Sign out of this account
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+
+</div>
+
+  </section>
+
+
+
+  <!-- =========================
+       LOGGED OUT
+  ========================= -->
+
+  <section
+    id="loggedOut"
+    style="display:none;">
+
+<div class="page-heading">
+
+  <h1>
+    My Account
+  </h1>
+
+  <p>
+    Sign in to access your account.
+  </p>
+
+</div>
+
+
+<div class="login-box">
+
+  <div class="login-icon">
+    👤
+  </div>
+
+  <h2>
+    Welcome to MyStore
+  </h2>
+
+  <p>
+    Login to view your orders, manage saved
+    addresses, edit your profile and enjoy
+    a faster checkout experience.
+  </p>
+
+
+  <div class="login-buttons">
+
+    <button
+      class="login-main"
+      onclick="location.href='login.html'">
+
+      LOGIN
+
+    </button>
+
+
+    <button
+      class="register-main"
+      onclick="location.href='register.html'">
+
+      CREATE ACCOUNT
+
+    </button>
+
+  </div>
+
+</div>
+
+  </section>
+
+</main>
+
+
+
+<!-- =========================
+     ADDRESS MODAL
+========================= -->
+
+<div
+  id="addressModal"
+  class="modal">
+
+  <div class="modal-box">
+
+<div class="modal-header">
+
+  <h2 id="addressModalTitle">
+    Add New Address
+  </h2>
+
+
+  <button
+    class="close-btn"
+    onclick="closeAddressModal()">
+
+    ×
+
+  </button>
+
+</div>
+
+
+<div class="form-grid">
+
+
+  <div class="field">
+
+    <label>
+      Full Name *
+    </label>
+
+    <input
+      id="addressName"
+      type="text"
+      placeholder="Full name">
+
+  </div>
+
+
+  <div class="field">
+
+    <label>
+      Mobile Number *
+    </label>
+
+    <input
+      id="addressMobile"
+      type="tel"
+      inputmode="numeric"
+      maxlength="10"
+      placeholder="10-digit mobile">
+
+  </div>
+
+
+  <div class="field">
+
+    <label>
+      Pincode *
+    </label>
+
+
+    <div class="pincode-wrap">
+
+      <input
+        id="addressPincode"
+        type="tel"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="6-digit pincode">
+
+      <span
+        id="pincodeStatus"
+        class="pincode-status">
+
+      </span>
+
+    </div>
+
+
+    <div
+      id="locationInfo"
+      class="location-info">
+
+    </div>
+
+  </div>
+
+
+  <div class="field">
+
+    <label>
+      City *
+    </label>
+
+    <input
+      id="addressCity"
+      type="text"
+      placeholder="Auto-filled">
+
+  </div>
+
+
+  <div class="field">
+
+    <label>
+      District *
+    </label>
+
+    <input
+      id="addressDistrict"
+      type="text"
+      placeholder="Auto-filled">
+
+  </div>
+
+
+  <div class="field">
+
+    <label>
+      State *
+    </label>
+
+    <input
+      id="addressState"
+      type="text"
+      placeholder="Auto-filled">
+
+  </div>
+
+
+  <div class="field">
+
+    <label>
+      Landmark
+    </label>
+
+    <input
+      id="addressLandmark"
+      type="text"
+      placeholder="Nearby landmark">
+
+  </div>
+
+
+  <div class="field full">
+
+    <label>
+      Complete Address *
+    </label>
+
+    <textarea
+      id="addressFull"
+      placeholder="House/Flat No., Street, Area..."></textarea>
+
+  </div>
+
+
+</div>
+
+
+
+<div class="address-types">
+
+
+  <label>
+
+    <input
+      type="radio"
+      name="addressType"
+      value="Home"
+      checked>
+
+    <span>
+      🏠 Home
+    </span>
+
+  </label>
+
+
+  <label>
+
+    <input
+      type="radio"
+      name="addressType"
+      value="Work">
+
+    <span>
+      🏢 Work
+    </span>
+
+  </label>
+
+
+  <label>
+
+    <input
+      type="radio"
+      name="addressType"
+      value="Other">
+
+    <span>
+      📍 Other
+    </span>
+
+  </label>
+
+
+</div>
+
+
+
+<label class="default-row">
+
+  <input
+    id="addressDefault"
+    type="checkbox">
+
+  <span>
+    Make this my default address
+  </span>
+
+</label>
+
+
+
+<div class="modal-actions">
+
+  <button
+    class="cancel-btn"
+    onclick="closeAddressModal()">
+
+    Cancel
+
+  </button>
+
+
+  <button
+    id="saveAddressBtn"
+    class="save-address-btn"
+    onclick="saveAddress()">
+
+    SAVE ADDRESS
+
+  </button>
+
+</div>
+
+
+<div
+  id="addressMessage"
+  class="modal-message">
+
+</div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =========================
+     PROFILE MODAL
+========================= -->
+
+<div
+  id="profileModal"
+  class="modal">
+
+  <div class="modal-box">
+
+<div class="modal-header">
+
+  <h2>
+    Edit Profile
+  </h2>
+
+
+  <button
+    class="close-btn"
+    onclick="closeProfileModal()">
+
+    ×
+
+  </button>
+
+</div>
+
+
+<div class="profile-form">
+
+
+  <div>
+
+    <label>
+      Full Name
+    </label>
+
+    <input
+      id="editName"
+      type="text"
+      placeholder="Your name">
+
+  </div>
+
+
+  <div>
+
+    <label>
+      Mobile Number
+    </label>
+
+    <input
+      id="editMobile"
+      type="tel"
+      inputmode="numeric"
+      maxlength="10"
+      placeholder="10-digit mobile">
+
+  </div>
+
+
+  <div>
+
+    <label>
+      Email
+    </label>
+
+    <input
+      id="editEmail"
+      type="email"
+      disabled>
+
+  </div>
+
+
+  <button
+    id="profileSaveBtn"
+    class="profile-save"
+    onclick="saveProfile()">
+
+    SAVE CHANGES
+
+  </button>
+
+
+</div>
+
+  </div>
+
+</div>
+
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast">
+
+</div>
+
+
+
+<script>
+
+/* =========================================
+   SUPABASE CONFIG
+   ========================================= */
+
+const SUPABASE_URL =
+  "https://bszojvhitsoamhksyjul.supabase.co";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================
+   GLOBAL
+========================================= */
+
+let currentUser = null;
+
+let currentAccount = null;
+
+let addresses = [];
+
+let editingAddressId = null;
+
+
+/* =========================================
+   INIT
+========================================= */
+
+async function init(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.getUser();
+
+
+    if(
+      error ||
+      !data.user
+    ){
+
+      showLoggedOut();
+
+      return;
+
+    }
+
+
+    currentUser =
+      data.user;
+
+
+    await loadAccount();
+
+    await loadAddresses();
+
+
+    document.getElementById(
+      "loading"
+    ).style.display = "none";
+
+
+    document.getElementById(
+      "loggedIn"
+    ).style.display = "block";
+
+
+    updateCartCount();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    showLoggedOut();
+
+  }
+
+}
+
+
+/* =========================================
+   LOGGED OUT
+========================================= */
+
+function showLoggedOut(){
+
+  document.getElementById(
+    "loading"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "loggedIn"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "loggedOut"
+  ).style.display = "block";
+
+
+  updateCartCount();
+
+}
+
+
+/* =========================================
+   ACCOUNT
+========================================= */
+
+async function loadAccount(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("accounts")
+      .select(
+        "id,email,full_name,mobile,avatar_url,created_at"
+      )
+      .eq(
+        "id",
+        currentUser.id
+      )
+      .maybeSingle();
+
+
+  if(error){
+
+    console.error(
+      "Account error:",
+      error
+    );
+
+  }
+
+
+  currentAccount =
+    data || {
+
+      id:
+        currentUser.id,
+
+      email:
+        currentUser.email,
+
+      full_name:
+        currentUser.user_metadata?.full_name ||
+        "Customer",
+
+      mobile:
+        currentUser.user_metadata?.mobile ||
+        ""
+
+    };
+
+
+  renderProfile();
+
+}
+
+
+/* =========================================
+   PROFILE
+========================================= */
+
+function renderProfile(){
+
+  const name =
+    currentAccount.full_name ||
+    "Customer";
+
+
+  const email =
+    currentAccount.email ||
+    currentUser.email ||
+    "";
+
+
+  const mobile =
+    currentAccount.mobile ||
+    "";
+
+
+  document.getElementById(
+    "profileName"
+  ).textContent =
+    name;
+
+
+  document.getElementById(
+    "profileInfo"
+  ).textContent =
+
+    email +
+    (
+      mobile
+        ? " • " + mobile
+        : ""
+    );
+
+
+  document.getElementById(
+    "avatar"
+  ).textContent =
+    name
+      .trim()
+      .charAt(0)
+      .toUpperCase() ||
+    "M";
+
+}
+
+
+/* =========================================
+   LOAD ADDRESSES
+========================================= */
+
+async function loadAddresses(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("customer_addresses")
+      .select("*")
+      .eq(
+        "user_id",
+        currentUser.id
+      )
+      .order(
+        "is_default",
+        {
+          ascending:false
+        }
+      )
+      .order(
+        "updated_at",
+        {
+          ascending:false
+        }
+      );
+
+
+  if(error){
+
+    console.error(
+      "Address load error:",
+      error
+    );
+
+
+    showToast(
+      "Addresses load nahi ho sake."
+    );
+
+
+    addresses = [];
+
+  }else{
+
+    addresses =
+      data || [];
+
+  }
+
+
+  renderAddresses();
+
+}
+
+
+/* =========================================
+   RENDER ADDRESSES
+========================================= */
+
+function renderAddresses(){
+
+  const container =
+    document.getElementById(
+      "addressContainer"
+    );
+
+
+  container.innerHTML = "";
+
+
+  if(!addresses.length){
+
+    container.className =
+      "";
+
+
+    container.innerHTML = `
+
+      <div class="no-address">
+
+        <div class="no-address-icon">
+          📍
+        </div>
+
+        <h3>
+          No saved address
+        </h3>
+
+        <p>
+          Add an address for a faster checkout experience.
+        </p>
+
+        <button
+          class="add-address-btn"
+          onclick="openAddressModal()">
+
+          + Add Your First Address
+
+        </button>
+
+      </div>
+
+    `;
+
+
+    return;
+
+  }
+
+
+  container.className =
+    "address-grid";
+
+
+  addresses.forEach(
+    address => {
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "address-card" +
+        (
+          address.is_default
+            ? " default"
+            : ""
+        );
+
+
+      const typeIcon =
+        address.address_type === "Work"
+          ? "🏢"
+          : address.address_type === "Other"
+            ? "📍"
+            : "🏠";
+
+
+      card.innerHTML = `
+
+        <div class="address-top">
+
+          <span class="address-type">
+
+            ${typeIcon}
+
+            ${escapeHTML(
+              address.address_type ||
+              "Home"
+            )}
+
+          </span>
+
+
+          ${
+            address.is_default
+              ? `
+                <span class="default-badge">
+                  ⭐ Default
+                </span>
+              `
+              : ""
+          }
+
+        </div>
+
+
+        <div class="address-name">
+
+          ${escapeHTML(
+            address.full_name
+          )}
+
+        </div>
+
+
+        <div class="address-mobile">
+
+          📱 ${escapeHTML(
+            address.mobile
+          )}
+
+        </div>
+
+
+        <div class="address-text">
+
+          ${escapeHTML(
+            address.address
+          )}
+
+          <br>
+
+          ${
+            address.landmark
+              ? escapeHTML(
+                  address.landmark
+                ) + "<br>"
+              : ""
+          }
+
+          ${escapeHTML(
+            address.city
+          )},
+
+          ${escapeHTML(
+            address.district
+          )}
+
+          <br>
+
+          ${escapeHTML(
+            address.state
+          )}
+
+          -
+
+          <strong>
+            ${escapeHTML(
+              address.pincode
+            )}
+          </strong>
+
+        </div>
+
+
+        <div class="address-actions">
+
+
+          <button
+            class="address-action"
+            onclick="editAddress(${address.id})">
+
+            ✏️ Edit
+
+          </button>
+
+
+          ${
+            !address.is_default
+              ? `
+                <button
+                  class="address-action default-action"
+                  onclick="makeDefault(${address.id})">
+
+                  ⭐ Default
+
+                </button>
+              `
+              : ""
+          }
+
+
+          <button
+            class="address-action delete"
+            onclick="deleteAddress(${address.id})">
+
+            🗑️ Delete
+
+          </button>
+
+
+        </div>
+
+      `;
+
+
+      container.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================
+   OPEN ADDRESS MODAL
+========================================= */
+
+function openAddressModal(){
+
+  editingAddressId =
+    null;
+
+
+  document.getElementById(
+    "addressModalTitle"
+  ).textContent =
+    "Add New Address";
+
+
+  clearAddressForm();
+
+
+  document.getElementById(
+    "addressDefault"
+  ).checked =
+    addresses.length === 0;
+
+
+  document.getElementById(
+    "addressModal"
+  ).classList.add(
+    "show"
+  );
+
+}
+
+
+/* =========================================
+   EDIT ADDRESS
+========================================= */
+
+function editAddress(id){
+
+  const address =
+    addresses.find(
+      item =>
+        Number(item.id) ===
+        Number(id)
+    );
+
+
+  if(!address){
+
+    return;
+
+  }
+
+
+  editingAddressId =
+    address.id;
+
+
+  document.getElementById(
+    "addressModalTitle"
+  ).textContent =
+    "Edit Address";
+
+
+  document.getElementById(
+    "addressName"
+  ).value =
+    address.full_name || "";
+
+
+  document.getElementById(
+    "addressMobile"
+  ).value =
+    address.mobile || "";
+
+
+  document.getElementById(
+    "addressPincode"
+  ).value =
+    address.pincode || "";
+
+
+  document.getElementById(
+    "addressCity"
+  ).value =
+    address.city || "";
+
+
+  document.getElementById(
+    "addressDistrict"
+  ).value =
+    address.district || "";
+
+
+  document.getElementById(
+    "addressState"
+  ).value =
+    address.state || "";
+
+
+  document.getElementById(
+    "addressLandmark"
+  ).value =
+    address.landmark || "";
+
+
+  document.getElementById(
+    "addressFull"
+  ).value =
+    address.address || "";
+
+
+  document.getElementById(
+    "addressDefault"
+  ).checked =
+    !!address.is_default;
+
+
+  const radio =
+    document.querySelector(
+      `input[name="addressType"][value="${CSS.escape(
+        address.address_type || "Home"
+      )}"]`
+    );
+
+
+  if(radio){
+
+    radio.checked =
+      true;
+
+  }
+
+
+  document.getElementById(
+    "addressModal"
+  ).classList.add(
+    "show"
+  );
+
+}
+
+
+/* =========================================
+   CLEAR ADDRESS FORM
+========================================= */
+
+function clearAddressForm(){
+
+  document.getElementById(
+    "addressName"
+  ).value =
+    currentAccount?.full_name ||
+    "";
+
+
+  document.getElementById(
+    "addressMobile"
+  ).value =
+    currentAccount?.mobile ||
+    "";
+
+
+  document.getElementById(
+    "addressPincode"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "addressCity"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "addressDistrict"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "addressState"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "addressLandmark"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "addressFull"
+  ).value =
+    "";
+
+
+  document.querySelector(
+    'input[name="addressType"][value="Home"]'
+  ).checked =
+    true;
+
+
+  document.getElementById(
+    "addressMessage"
+  ).textContent =
+    "";
+
+
+  document.getElementById(
+    "pincodeStatus"
+  ).textContent =
+    "";
+
+
+  document.getElementById(
+    "locationInfo"
+  ).classList.remove(
+    "show"
+  );
+
+}
+
+
+/* =========================================
+   CLOSE ADDRESS
+========================================= */
+
+function closeAddressModal(){
+
+  document.getElementById(
+    "addressModal"
+  ).classList.remove(
+    "show"
+  );
+
+}
+
+
+/* =========================================
+   PINCODE
+========================================= */
+
+let pincodeTimer;
+
+
+document.getElementById(
+  "addressPincode"
+).addEventListener(
+  "input",
+  function(){
+
+    this.value =
+      this.value
+        .replace(/\D/g,"")
+        .slice(0,6);
+
+
+    clearTimeout(
+      pincodeTimer
+    );
+
+
+    if(
+      this.value.length !== 6
+    ){
+
+      setPincodeStatus(
+        "",
+        ""
+      );
+
+      document.getElementById(
+        "locationInfo"
+      ).classList.remove(
+        "show"
+      );
+
+      return;
+
+    }
+
+
+    pincodeTimer =
+      setTimeout(
+        () => {
+
+          fetchPincode(
+            this.value
+          );
+
+        },
+        250
+      );
+
+  }
+);
+
+
+/* =========================================
+   FETCH PINCODE
+========================================= */
+
+async function fetchPincode(
+  pincode
+){
+
+  setPincodeStatus(
+    "Fetching...",
+    "loading"
+  );
+
+
+  try{
+
+    const response =
+      await fetch(
+        `https://api.postalpincode.in/pincode/${encodeURIComponent(
+          pincode
+        )}`
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Network error"
+      );
+
+    }
+
+
+    const result =
+      await response.json();
+
+
+    if(
+      !Array.isArray(result) ||
+      !result.length ||
+      result[0].Status !== "Success" ||
+      !result[0].PostOffice?.length
+    ){
+
+      setPincodeStatus(
+        "Invalid",
+        "error"
+      );
+
+
+      showToast(
+        "Pincode not found."
+      );
+
+
+      return;
+
+    }
+
+
+    const office =
+      result[0].PostOffice[0];
+
+
+    const city =
+      office.Block ||
+      office.District ||
+      office.Name ||
+      "";
+
+
+    const district =
+      office.District ||
+      "";
+
+
+    const state =
+      office.State ||
+      "";
+
+
+    document.getElementById(
+      "addressCity"
+    ).value =
+      city;
+
+
+    document.getElementById(
+      "addressDistrict"
+    ).value =
+      district;
+
+
+    document.getElementById(
+      "addressState"
+    ).value =
+      state;
+
+
+    setPincodeStatus(
+      "✓",
+      "success"
+    );
+
+
+    const info =
+      document.getElementById(
+        "locationInfo"
+      );
+
+
+    info.textContent =
+      `${office.Name || ""} • ${district}, ${state}`;
+
+
+    info.classList.add(
+      "show"
+    );
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    setPincodeStatus(
+      "Retry",
+      "error"
+    );
+
+
+    showToast(
+      "Pincode service unavailable."
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   PIN STATUS
+========================================= */
+
+function setPincodeStatus(
+  text,
+  type
+){
+
+  const status =
+    document.getElementById(
+      "pincodeStatus"
+    );
+
+
+  status.textContent =
+    text;
+
+
+  status.className =
+    "pincode-status";
+
+
+  if(type){
+
+    status.classList.add(
+      type
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   SAVE ADDRESS
+========================================= */
+
+async function saveAddress(){
+
+  const name =
+    document.getElementById(
+      "addressName"
+    ).value.trim();
+
+
+  const mobile =
+    document.getElementById(
+      "addressMobile"
+    ).value.trim();
+
+
+  const pincode =
+    document.getElementById(
+      "addressPincode"
+    ).value.trim();
+
+
+  const city =
+    document.getElementById(
+      "addressCity"
+    ).value.trim();
+
+
+  const district =
+    document.getElementById(
+      "addressDistrict"
+    ).value.trim();
+
+
+  const state =
+    document.getElementById(
+      "addressState"
+    ).value.trim();
+
+
+  const landmark =
+    document.getElementById(
+      "addressLandmark"
+    ).value.trim();
+
+
+  const address =
+    document.getElementById(
+      "addressFull"
+    ).value.trim();
+
+
+  const addressType =
+    document.querySelector(
+      'input[name="addressType"]:checked'
+    )?.value ||
+    "Home";
+
+
+  const makeDefault =
+    document.getElementById(
+      "addressDefault"
+    ).checked;
+
+
+  const button =
+    document.getElementById(
+      "saveAddressBtn"
+    );
+
+
+  if(name.length < 2){
+
+    showAddressMessage(
+      "Please enter your full name.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !/^[0-9]{10}$/.test(
+      mobile
+    )
+  ){
+
+    showAddressMessage(
+      "Enter a valid 10-digit mobile number.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !/^[0-9]{6}$/.test(
+      pincode
+    )
+  ){
+
+    showAddressMessage(
+      "Enter a valid 6-digit pincode.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  if(!city || !district || !state){
+
+    showAddressMessage(
+      "Please enter a valid pincode so location can be filled.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  if(!address){
+
+    showAddressMessage(
+      "Please enter your complete address.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "SAVING...";
+
+
+  try{
+
+
+    /*
+      If this address becomes default,
+      first remove default from
+      all other addresses.
+    */
+
+
+    if(
+      makeDefault ||
+      addresses.length === 0
+    ){
+
+      const {
+        error:
+          defaultError
+      } =
+        await supabaseClient
+          .from(
+            "customer_addresses"
+          )
+          .update({
+            is_default:false
+          })
+          .eq(
+            "user_id",
+            currentUser.id
+          );
+
+
+      if(defaultError){
+
+        throw defaultError;
+
+      }
+
+    }
+
+
+    const addressData = {
+
+      user_id:
+        currentUser.id,
+
+      full_name:
+        name,
+
+      mobile:
+        mobile,
+
+      pincode:
+        pincode,
+
+      city:
+        city,
+
+      district:
+        district,
+
+      state:
+        state,
+
+      landmark:
+        landmark,
+
+      address:
+        address,
+
+      address_type:
+        addressType,
+
+      is_default:
+        makeDefault ||
+        addresses.length === 0,
+
+      updated_at:
+        new Date().toISOString()
+
+    };
+
+
+    let error;
+
+
+    if(editingAddressId){
+
+      const result =
+        await supabaseClient
+          .from(
+            "customer_addresses"
+          )
+          .update(
+            addressData
+          )
+          .eq(
+            "id",
+            editingAddressId
+          )
+          .eq(
+            "user_id",
+            currentUser.id
+          );
+
+
+      error =
+        result.error;
+
+    }else{
+
+      const result =
+        await supabaseClient
+          .from(
+            "customer_addresses"
+          )
+          .insert(
+            addressData
+          );
+
+
+      error =
+        result.error;
+
+    }
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    /*
+      If edited address was not
+      made default and there is
+      no default left, make it default.
+    */
+
+
+    await ensureDefaultAddress();
+
+
+    await loadAddresses();
+
+
+    closeAddressModal();
+
+
+    showToast(
+      editingAddressId
+        ? "Address updated successfully."
+        : "Address saved successfully."
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "SAVE ADDRESS ERROR:",
+      error
+    );
+
+
+    showAddressMessage(
+      "Address save nahi ho saka. Please try again.",
+      true
+    );
+
+  }
+
+
+  button.disabled =
+    false;
+
+
+  button.textContent =
+    "SAVE ADDRESS";
+
+}
+
+
+/* =========================================
+   ENSURE DEFAULT
+========================================= */
+
+async function ensureDefaultAddress(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from(
+        "customer_addresses"
+      )
+      .select(
+        "id,is_default"
+      )
+      .eq(
+        "user_id",
+        currentUser.id
+      );
+
+
+  if(error || !data?.length){
+
+    return;
+
+  }
+
+
+  const hasDefault =
+    data.some(
+      item =>
+        item.is_default === true
+    );
+
+
+  if(hasDefault){
+
+    return;
+
+  }
+
+
+  await supabaseClient
+    .from(
+      "customer_addresses"
+    )
+    .update({
+      is_default:true
+    })
+    .eq(
+      "id",
+      data[0].id
+    )
+    .eq(
+      "user_id",
+      currentUser.id
+    );
+
+}
+
+
+/* =========================================
+   DEFAULT ADDRESS
+========================================= */
+
+async function makeDefault(
+  id
+){
+
+  try{
+
+    const {
+      error:
+        resetError
+    } =
+      await supabaseClient
+        .from(
+          "customer_addresses"
+        )
+        .update({
+          is_default:false
+        })
+        .eq(
+          "user_id",
+          currentUser.id
+        );
+
+
+    if(resetError){
+
+      throw resetError;
+
+    }
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from(
+          "customer_addresses"
+        )
+        .update({
+          is_default:true,
+          updated_at:
+            new Date().toISOString()
+        })
+        .eq(
+          "id",
+          id
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        );
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    await loadAddresses();
+
+
+    showToast(
+      "Default address updated."
+    );
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    showToast(
+      "Default address update failed."
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   DELETE ADDRESS
+========================================= */
+
+async function deleteAddress(
+  id
+){
+
+  const address =
+    addresses.find(
+      item =>
+        Number(item.id) ===
+        Number(id)
+    );
+
+
+  if(!address){
+
+    return;
+
+  }
+
+
+  const confirmed =
+    confirm(
+      `Delete this ${address.address_type || "address"} address?`
+    );
+
+
+  if(!confirmed){
+
+    return;
+
+  }
+
+
+  try{
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from(
+          "customer_addresses"
+        )
+        .delete()
+        .eq(
+          "id",
+          id
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        );
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    await ensureDefaultAddress();
+
+    await loadAddresses();
+
+
+    showToast(
+      "Address deleted."
+    );
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    showToast(
+      "Address delete failed."
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   ADDRESS MESSAGE
+========================================= */
+
+function showAddressMessage(
+  text,
+  error
+){
+
+  const element =
+    document.getElementById(
+      "addressMessage"
+    );
+
+
+  element.textContent =
+    text;
+
+
+  element.style.color =
+    error
+      ? "#c62828"
+      : "#16803c";
+
+}
+
+
+/* =========================================
+   PROFILE MODAL
+========================================= */
+
+function openProfileModal(){
+
+  document.getElementById(
+    "editName"
+  ).value =
+    currentAccount?.full_name ||
+    "";
+
+
+  document.getElementById(
+    "editMobile"
+  ).value =
+    currentAccount?.mobile ||
+    "";
+
+
+  document.getElementById(
+    "editEmail"
+  ).value =
+    currentAccount?.email ||
+    currentUser.email ||
+    "";
+
+
+  document.getElementById(
+    "profileModal"
+  ).classList.add(
+    "show"
+  );
+
+}
+
+
+function closeProfileModal(){
+
+  document.getElementById(
+    "profileModal"
+  ).classList.remove(
+    "show"
+  );
+
+}
+
+
+/* =========================================
+   SAVE PROFILE
+========================================= */
+
+async function saveProfile(){
+
+  const name =
+    document.getElementById(
+      "editName"
+    ).value.trim();
+
+
+  const mobile =
+    document.getElementById(
+      "editMobile"
+    ).value.trim();
+
+
+  const button =
+    document.getElementById(
+      "profileSaveBtn"
+    );
+
+
+  if(name.length < 2){
+
+    showToast(
+      "Please enter a valid name."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    mobile &&
+    !/^[0-9]{10}$/.test(
+      mobile
+    )
+  ){
+
+    showToast(
+      "Enter a valid 10-digit mobile number."
+    );
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "SAVING...";
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("accounts")
+      .update({
+
+        full_name:
+          name,
+
+        mobile:
+          mobile,
+
+        updated_at:
+          new Date().toISOString()
+
+      })
+      .eq(
+        "id",
+        currentUser.id
+      );
+
+
+  if(error){
+
+    console.error(error);
+
+    showToast(
+      "Profile update failed."
+    );
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "SAVE CHANGES";
+
+    return;
+
+  }
+
+
+  await supabaseClient.auth
+    .updateUser({
+
+      data:{
+        full_name:name,
+        mobile:mobile
+      }
+
+    });
+
+
+  currentAccount.full_name =
+    name;
+
+
+  currentAccount.mobile =
+    mobile;
+
+
+  renderProfile();
+
+
+  button.disabled =
+    false;
+
+  button.textContent =
+    "SAVE CHANGES";
+
+
+  closeProfileModal();
+
+
+  showToast(
+    "Profile updated successfully."
+  );
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+async function logout(){
+
+  const confirmed =
+    confirm(
+      "Do you want to logout?"
+    );
+
+
+  if(!confirmed){
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient.auth
+      .signOut();
+
+
+  if(error){
+
+    showToast(
+      "Logout failed."
+    );
+
+    return;
+
+  }
+
+
+  window.location.href =
+    "account.html";
+
+}
+
+
+/* =========================================
+   SCROLL ADDRESS
+========================================= */
+
+function scrollToAddresses(){
+
+  document.getElementById(
+    "addressesSection"
+  ).scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+
+}
+
+
+/* =========================================
+   QUICK ACTIONS
+========================================= */
+
+function openOrders(){
+
+  showToast(
+    "My Orders will be connected next."
+  );
+
+}
+
+
+function openHelp(){
+
+  showToast(
+    "Help & Support will be connected next."
+  );
+
+}
+
+
+function openSecurity(){
+
+  showToast(
+    "Security settings will be connected next."
+  );
+
+}
+
+
+/* =========================================
+   CART COUNT
+========================================= */
+
+function updateCartCount(){
+
+  const cart =
+    JSON.parse(
+      localStorage.getItem(
+        "cart"
+      ) || "[]"
+    );
+
+
+  const count =
+    cart.reduce(
+      (
+        total,
+        item
+      ) =>
+        total +
+        Number(
+          item.quantity || 0
+        ),
+      0
+    );
+
+
+  document.getElementById(
+    "cartCount"
+  ).textContent =
+    count;
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHTML(
+  value
+){
+
+  return String(
+    value || ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+let toastTimer;
+
+
+function showToast(
+  text
+){
+
+  const toast =
+    document.getElementById(
+      "toast"
+    );
+
+
+  toast.textContent =
+    text;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2500
+    );
+
+}
+
+
+/* =========================================
+   CLOSE MODALS OUTSIDE
+========================================= */
+
+document
+  .getElementById(
+    "addressModal"
+  )
+  .addEventListener(
+    "click",
+    function(event){
+
+      if(
+        event.target === this
+      ){
+
+        closeAddressModal();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "profileModal"
+  )
+  .addEventListener(
+    "click",
+    function(event){
+
+      if(
+        event.target === this
+      ){
+
+        closeProfileModal();
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   MOBILE INPUT
+========================================= */
+
+document
+  .getElementById(
+    "addressMobile"
+  )
+  .addEventListener(
+    "input",
+    function(){
+
+      this.value =
+        this.value
+          .replace(/\D/g,"")
+          .slice(0,10);
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "editMobile"
+  )
+  .addEventListener(
+    "input",
+    function(){
+
+      this.value =
+        this.value
+          .replace(/\D/g,"")
+          .slice(0,10);
+
+    }
+  );
+
+
+/* =========================================
+   START
+========================================= */
+
+init();
+
+</script>
+
+</body>
+</html>
