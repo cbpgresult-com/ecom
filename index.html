@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -996,37 +997,6 @@ main{
  .hero-dot{width:7px;height:4px}.hero-dot.active{width:18px}
 }
 
-
-/* =========================================================
-   BOTTOM NAVIGATION - INSTANT VIOLET PAGE LOADER
-   Same violet spinner used by Categories navigation.
-========================================================= */
-#bottomNavLoader{
-  position:fixed;
-  inset:0;
-  z-index:2147483646;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:#fff;
-  pointer-events:none;
-}
-#bottomNavLoader.show{
-  display:flex;
-}
-#bottomNavLoader .bottom-nav-spinner{
-  width:34px;
-  height:34px;
-  border:3px solid #e9d5ff;
-  border-top-color:#5b21b6;
-  border-right-color:#6d28d9;
-  border-radius:50%;
-  animation:bottomNavSpin .65s linear infinite;
-}
-@keyframes bottomNavSpin{
-  to{transform:rotate(360deg)}
-}
-
 /* =========================================================
    LAPTOP/DESKTOP PRODUCT NAVIGATION LOADER - SPINNER ONLY
    Do not show back/search/cart header while navigating.
@@ -1298,6 +1268,7 @@ main{
 }
 
 </style>
+
 </head>
 
 <body>
@@ -1327,17 +1298,10 @@ main{
   </div>
 </div>
 
-
-<!-- ================= INSTANT BOTTOM NAV LOADER ================= -->
-<div id="bottomNavLoader" aria-hidden="true">
-  <div class="bottom-nav-spinner"></div>
-</div>
-
 <div class="instantBody">
     <div class="instantSpinner"></div>
   </div>
 </div>
-
 
 <!-- ================= HEADER ================= -->
 
@@ -1346,26 +1310,27 @@ main{
   <div class="logo">
     <img src="https://i.ibb.co/nNwLxx1G/logio-ne-100kb-1.jpg">
 
-    <div class="mobile-header-actions">
+<div class="mobile-header-actions">
 
-      <!-- Notification -->
-      <button class="mobile-header-icon" aria-label="Notifications" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-          <path d="M10 21h4"></path>
-        </svg>
-      </button>
+  <!-- Notification -->
+  <button class="mobile-header-icon" aria-label="Notifications" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+      <path d="M10 21h4"></path>
+    </svg>
+  </button>
 
-      <!-- Wishlist -->
-      <button class="mobile-header-icon" aria-label="Wishlist" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.8 8.8c0 5.5-8.8 10.2-8.8 10.2S3.2 14.3 3.2 8.8A5 5 0 0 1 12 5.7a5 5 0 0 1 8.8 3.1Z"></path>
-        </svg>
-      </button>
+  <!-- Wishlist -->
+  <button class="mobile-header-icon" aria-label="Wishlist" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.8 8.8c0 5.5-8.8 10.2-8.8 10.2S3.2 14.3 3.2 8.8A5 5 0 0 1 12 5.7a5 5 0 0 1 8.8 3.1Z"></path>
+    </svg>
+  </button>
 
-    </div>
+</div>
+
   </div>
 
   <div class="search">
@@ -1375,221 +1340,222 @@ main{
       placeholder="Search for Products, Brands and More"
     >
 
-    <svg class="search-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2">
-      <circle cx="11" cy="11" r="7"></circle>
-      <path d="m20 20-4-4"></path>
-    </svg>
+<svg class="search-icon"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2">
+  <circle cx="11" cy="11" r="7"></circle>
+  <path d="m20 20-4-4"></path>
+</svg>
+
   </div>
 
   <!-- DESKTOP ACCOUNT -->
+
   <div class="header-account" id="accountArea">
 
-    <button class="account-btn auth-loading" id="accountBtn">
+<button class="account-btn auth-loading" id="accountBtn">
 
-      <svg class="account-icon"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8">
-        <circle cx="12" cy="8" r="3.5"></circle>
-        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"></path>
-        <circle cx="12" cy="12" r="10"></circle>
-      </svg>
+  <svg class="account-icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8">
+    <circle cx="12" cy="8" r="3.5"></circle>
+    <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"></path>
+    <circle cx="12" cy="12" r="10"></circle>
+  </svg>
 
-      <span id="accountName">Login</span>
+  <span id="accountName">Login</span>
 
-      <svg class="arrow"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2">
-        <path d="m6 9 6 6 6-6"></path>
-      </svg>
+  <svg class="arrow"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2">
+    <path d="m6 9 6 6 6-6"></path>
+  </svg>
 
-    </button>
+</button>
 
 
-    <!-- ACCOUNT DROPDOWN -->
+<!-- ACCOUNT DROPDOWN -->
 
-    <div class="account-menu" id="accountMenu">
+<div class="account-menu" id="accountMenu">
 
-      <div id="loggedOutMenu">
+  <div id="loggedOutMenu">
 
-        <div class="account-top">
+    <div class="account-top">
 
-          <div class="new-customer">
-            <span>New customer?</span>
-            <span class="signup" onclick="goSignup()">Sign Up</span>
-          </div>
-
-        </div>
-
-        <div class="account-divider"></div>
-
-        <div class="menu-item" onclick="goLogin()">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <circle cx="12" cy="8" r="3.5"/>
-            <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
-          </svg>
-          My Profile
-        </div>
-
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/>
-            <path d="m8 12 2.5 2.5L16 9"/>
-          </svg>
-          MyStore Plus Zone
-        </div>
-
-        <div class="menu-item" onclick="goOrders()">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="m4 7 8-4 8 4-8 4z"/>
-            <path d="M4 7v10l8 4 8-4V7"/>
-            <path d="M12 11v10"/>
-          </svg>
-          Orders
-        </div>
-
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="m20 12-8 8-8-8 8-8z"/>
-            <path d="M9 12h6"/>
-          </svg>
-          Wishlist
-        </div>
-
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <rect x="3" y="4" width="18" height="16" rx="2"/>
-            <path d="M7 8h10M7 12h10M7 16h6"/>
-          </svg>
-          Become a Seller
-        </div>
-
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M12 3v18M3 8h18M3 16h18"/>
-          </svg>
-          Rewards
-        </div>
-
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M20 12a8 8 0 0 1-16 0"/>
-            <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
-            <path d="M4 12h3M17 12h3"/>
-          </svg>
-          Gift Cards
-        </div>
-
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
-            <path d="M10 21h4"/>
-          </svg>
-          Notification Preferences
-        </div>
-
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <circle cx="12" cy="12" r="9"/>
-            <path d="M8 10a4 4 0 0 1 8 0v2a4 4 0 0 1-8 0z"/>
-            <path d="M8 12H5M19 12h-3"/>
-          </svg>
-          24×7 Customer Care
-        </div>
-
+      <div class="new-customer">
+        <span>New customer?</span>
+        <span class="signup" onclick="goSignup()">Sign Up</span>
       </div>
 
+    </div>
 
-      <!-- LOGGED IN -->
+    <div class="account-divider"></div>
 
-      <div id="loggedInMenu" style="display:none">
+    <div class="menu-item" onclick="goLogin()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+      </svg>
+      My Profile
+    </div>
 
-        <div class="account-top">
-          <strong id="welcomeName">Welcome</strong>
-        </div>
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/>
+        <path d="m8 12 2.5 2.5L16 9"/>
+      </svg>
+      MyStore Plus Zone
+    </div>
 
-        <div class="account-divider"></div>
+    <div class="menu-item" onclick="goOrders()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="m4 7 8-4 8 4-8 4z"/>
+        <path d="M4 7v10l8 4 8-4V7"/>
+        <path d="M12 11v10"/>
+      </svg>
+      Orders
+    </div>
 
-        <div class="menu-item" onclick="goProfile()">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <circle cx="12" cy="8" r="3.5"/>
-            <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
-          </svg>
-          My Profile
-        </div>
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="m20 12-8 8-8-8 8-8z"/>
+        <path d="M9 12h6"/>
+      </svg>
+      Wishlist
+    </div>
 
-        <div class="menu-item" onclick="goOrders()">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="m4 7 8-4 8 4-8 4z"/>
-            <path d="M4 7v10l8 4 8-4V7"/>
-            <path d="M12 11v10"/>
-          </svg>
-          Orders
-        </div>
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <rect x="3" y="4" width="18" height="16" rx="2"/>
+        <path d="M7 8h10M7 12h10M7 16h6"/>
+      </svg>
+      Become a Seller
+    </div>
 
-        <div class="menu-item" onclick="goAddresses()">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/>
-            <circle cx="12" cy="9" r="2.5"/>
-          </svg>
-          Saved Addresses
-        </div>
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M12 3v18M3 8h18M3 16h18"/>
+      </svg>
+      Rewards
+    </div>
 
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M20 8a5 5 0 0 0-8-4 5 5 0 0 0-8 4c0 5 8 11 8 11s8-6 8-11z"/>
-          </svg>
-          Wishlist
-        </div>
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M20 12a8 8 0 0 1-16 0"/>
+        <path d="M6 12V8a6 6 0 0 1 12 0v4"/>
+        <path d="M4 12h3M17 12h3"/>
+      </svg>
+      Gift Cards
+    </div>
 
-        <div class="menu-item">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
-            <path d="M10 21h4"/>
-          </svg>
-          Notifications
-        </div>
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+      </svg>
+      Notification Preferences
+    </div>
 
-        <div class="account-divider"></div>
-
-        <div class="menu-item logout" onclick="logoutUser()">
-          <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M10 17l5-5-5-5"/>
-            <path d="M15 12H3"/>
-            <path d="M21 3v18"/>
-          </svg>
-          Logout
-        </div>
-
-      </div>
-
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M8 10a4 4 0 0 1 8 0v2a4 4 0 0 1-8 0z"/>
+        <path d="M8 12H5M19 12h-3"/>
+      </svg>
+      24×7 Customer Care
     </div>
 
   </div>
 
 
+  <!-- LOGGED IN -->
+
+  <div id="loggedInMenu" style="display:none">
+
+    <div class="account-top">
+      <strong id="welcomeName">Welcome</strong>
+    </div>
+
+    <div class="account-divider"></div>
+
+    <div class="menu-item" onclick="goProfile()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
+      </svg>
+      My Profile
+    </div>
+
+    <div class="menu-item" onclick="goOrders()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="m4 7 8-4 8 4-8 4z"/>
+        <path d="M4 7v10l8 4 8-4V7"/>
+        <path d="M12 11v10"/>
+      </svg>
+      Orders
+    </div>
+
+    <div class="menu-item" onclick="goAddresses()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/>
+        <circle cx="12" cy="9" r="2.5"/>
+      </svg>
+      Saved Addresses
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M20 8a5 5 0 0 0-8-4 5 5 0 0 0-8 4c0 5 8 11 8 11s8-6 8-11z"/>
+      </svg>
+      Wishlist
+    </div>
+
+    <div class="menu-item">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+      </svg>
+      Notifications
+    </div>
+
+    <div class="account-divider"></div>
+
+    <div class="menu-item logout" onclick="logoutUser()">
+      <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M10 17l5-5-5-5"/>
+        <path d="M15 12H3"/>
+        <path d="M21 3v18"/>
+      </svg>
+      Logout
+    </div>
+
+  </div>
+
+</div>
+
+  </div>
+
   <button class="cart-btn" onclick="goCart()">
 
-    <svg class="cart-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8">
-      <circle cx="9" cy="20" r="1"/>
-      <circle cx="18" cy="20" r="1"/>
-      <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
-    </svg>
+<svg class="cart-icon"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8">
+  <circle cx="9" cy="20" r="1"/>
+  <circle cx="18" cy="20" r="1"/>
+  <path d="M3 4h2l2.4 11.5h10.8L21 8H6"/>
+</svg>
 
-    Cart
+Cart
 
-    <span class="cart-number cart-loading" id="cartCount">0</span>
+<span class="cart-number cart-loading" id="cartCount">0</span>
 
   </button>
 
@@ -1663,8 +1629,8 @@ main{
 
 </div>
 
-
 <!-- ================= HERO SLIDER ================= -->
+
 <section id="heroSlider" class="hero-slider loading" aria-label="Hero Slider">
   <div id="heroLoading" class="hero-loading-wrap" aria-label="Loading hero slider">
     <div class="hero-loading"></div>
@@ -1690,17 +1656,17 @@ main{
 
   <div class="product-heading">
 
-    <div>
-      <h1>Suggested For You</h1>
-      <p>Discover products you'll love.</p>
-    </div>
+<div>
+  <h1>Suggested For You</h1>
+  <p>Discover products you'll love.</p>
+</div>
 
-    <select id="sortSelect">
-      <option value="popular">Popular</option>
-      <option value="low">Price: Low to High</option>
-      <option value="high">Price: High to Low</option>
-      <option value="new">Newest</option>
-    </select>
+<select id="sortSelect">
+  <option value="popular">Popular</option>
+  <option value="low">Price: Low to High</option>
+  <option value="high">Price: High to Low</option>
+  <option value="new">Newest</option>
+</select>
 
   </div>
 
@@ -1717,61 +1683,62 @@ main{
         </div>
       </div>
 
-      <div class="skeleton-card">
-        <div class="skeleton skeleton-image"></div>
-        <div class="skeleton-info">
-          <div class="skeleton skeleton-rating"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-price"></div>
-          <div class="skeleton skeleton-delivery"></div>
-        </div>
-      </div>
-
-      <div class="skeleton-card">
-        <div class="skeleton skeleton-image"></div>
-        <div class="skeleton-info">
-          <div class="skeleton skeleton-rating"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-price"></div>
-          <div class="skeleton skeleton-delivery"></div>
-        </div>
-      </div>
-
-      <div class="skeleton-card">
-        <div class="skeleton skeleton-image"></div>
-        <div class="skeleton-info">
-          <div class="skeleton skeleton-rating"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-price"></div>
-          <div class="skeleton skeleton-delivery"></div>
-        </div>
-      </div>
-
-      <div class="skeleton-card">
-        <div class="skeleton skeleton-image"></div>
-        <div class="skeleton-info">
-          <div class="skeleton skeleton-rating"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-price"></div>
-          <div class="skeleton skeleton-delivery"></div>
-        </div>
-      </div>
-
-      <div class="skeleton-card">
-        <div class="skeleton skeleton-image"></div>
-        <div class="skeleton-info">
-          <div class="skeleton skeleton-rating"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-price"></div>
-          <div class="skeleton skeleton-delivery"></div>
-        </div>
-      </div>
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
     </div>
+  </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton-info">
+      <div class="skeleton skeleton-rating"></div>
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-title short"></div>
+      <div class="skeleton skeleton-price"></div>
+      <div class="skeleton skeleton-delivery"></div>
+    </div>
+  </div>
+</div>
+
   </div>
 
   <div id="lookingForBannerRoot"></div>
@@ -1787,12 +1754,11 @@ main{
 
 </main>
 
-
 <!-- ================= MOBILE BOTTOM NAV ================= -->
 
 <nav class="bottom-nav">
 
-  <button class="bottom-item active" data-nav="home" aria-current="page" onclick="goHome()">
+  <button class="bottom-item active" onclick="goHome()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <path d="m3 11 9-8 9 8"/>
       <path d="M5 10v10h14V10"/>
@@ -1801,7 +1767,7 @@ main{
     Home
   </button>
 
-  <button class="bottom-item" data-nav="categories" aria-current="false" onclick="goCategories()">
+  <button class="bottom-item" onclick="goCategories()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <rect x="4" y="4" width="6" height="6" rx="1"/>
       <rect x="14" y="4" width="6" height="6" rx="1"/>
@@ -1811,7 +1777,7 @@ main{
     Categories
   </button>
 
-  <button class="bottom-item" data-nav="account" aria-current="false" onclick="goAccount()">
+  <button class="bottom-item" onclick="goAccount()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <circle cx="12" cy="8" r="3.5"/>
       <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/>
@@ -1819,7 +1785,7 @@ main{
     Account
   </button>
 
-  <button class="bottom-item" data-nav="orders" aria-current="false" onclick="goOrders()">
+  <button class="bottom-item" onclick="goOrders()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <path d="m4 7 8-4 8 4-8 4z"/>
       <path d="M4 7v10l8 4 8-4V7"/>
@@ -1828,7 +1794,7 @@ main{
     Orders
   </button>
 
-  <button class="bottom-item" data-nav="cart" aria-current="false" onclick="goCart()">
+  <button class="bottom-item" onclick="goCart()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <circle cx="9" cy="20" r="1"/>
       <circle cx="18" cy="20" r="1"/>
@@ -1839,7 +1805,6 @@ main{
   </button>
 
 </nav>
-
 
 <script>
 
@@ -2974,63 +2939,38 @@ function goAddresses(){
 
 }
 
-function showBottomNavLoader(activeKey){
-
-  const nav = document.querySelector(".bottom-nav");
-  if(nav){
-    const items = nav.querySelectorAll(".bottom-item");
-    items.forEach(function(item){
-      item.classList.remove("active");
-      item.setAttribute("aria-current","false");
-    });
-
-    const active = nav.querySelector('[data-nav="'+activeKey+'"]');
-    if(active){
-      active.classList.add("active");
-      active.setAttribute("aria-current","page");
-    }
-  }
-
-  const loader = document.getElementById("bottomNavLoader");
-  if(loader){
-    loader.classList.add("show");
-    loader.setAttribute("aria-hidden","false");
-  }
-}
-
-function navigateFromBottomNav(url, activeKey){
-
-  showBottomNavLoader(activeKey);
-
-  /* Give the browser one paint so the violet spinner is visible
-     immediately before the new document starts loading. */
-  requestAnimationFrame(function(){
-    setTimeout(function(){
-      window.location.href = url;
-    }, 0);
-  });
-}
-
 function goOrders(){
-  navigateFromBottomNav("my-orders.html", "orders");
+
+  window.location.href =
+    "my-orders.html";
+
 }
 
 function goCart(){
-  navigateFromBottomNav("cart.html", "cart");
+
+  window.location.href =
+    "cart.html";
+
 }
 
 function goHome(){
-  navigateFromBottomNav("index.html", "home");
+
+  window.location.href =
+    "index.html";
+
 }
 
 function goCategories(){
-  navigateFromBottomNav("categories.html", "categories");
+
+  window.location.href =
+    "categories.html";
+
 }
 
 function goAccount(){
 
   if(window.innerWidth <= 700){
-    navigateFromBottomNav("account.html", "account");
+    goProfile();
     return;
   }
 
@@ -3411,14 +3351,6 @@ window.addEventListener("pageshow",function(){renderLookingBanner();});
    FIX: RETURN FROM PRODUCT PAGE
    Mobile/browser Back must remove navigation loader.
 ========================================================= */
-function resetBottomNavLoader(){
-  const loader = document.getElementById("bottomNavLoader");
-  if(loader){
-    loader.classList.remove("show");
-    loader.setAttribute("aria-hidden","true");
-  }
-}
-
 function resetProductNavigationState(){
 
   const loader =
@@ -3445,7 +3377,6 @@ function resetProductNavigationState(){
 window.addEventListener(
   "pageshow",
   function(){
-    resetBottomNavLoader();
     resetProductNavigationState();
   }
 );
@@ -3456,7 +3387,6 @@ window.addEventListener(
 window.addEventListener(
   "focus",
   function(){
-    resetBottomNavLoader();
     resetProductNavigationState();
   }
 );
@@ -3465,5 +3395,6 @@ if(typeof supabaseClient!=="undefined" && supabaseClient.auth){
 }
 
 </script>
+
 </body>
 </html>
