@@ -1718,7 +1718,7 @@ function renderDetail(order){
     <button class="ss-action">${ico.share} Share</button>
     <button class="ss-action" onclick="openChat()">${ico.phone} Support</button>
   `:'';
-  const reorderBtn = (order.status==='delivered'||order.status==='cancelled')?`<button class="ss-action primary">${ico.refresh} Reorder</button>`:'';
+  const reorderBtn = (order.status==='delivered'||order.status==='cancelled')?`<button class="ss-action primary" type="button">${ico.refresh} Reorder</button>`:'';
 
   /* ── HELP DROPDOWN ── */
   const canManage = order.status==='placed' && !isPaymentPending;
@@ -1768,7 +1768,7 @@ function renderDetail(order){
 
     ${paymentHtml}
 
-    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}${order.status==='delivered'?'':((order.status==='cancelled'||order.status==='cancel_requested')?`<div class="ss-cancel-reason">Cancel Reason: <strong>${esc(order.cancel_reason||'Cancelled by seller')}</strong></div>`:`<div class="ss-expected-delivery">Expected Delivery <strong>${esc(fmtHdrDate(getEffective(order)))}</strong></div>`)}<div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
+    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}${order.status==='delivered'?'':((order.status==='cancelled'||order.status==='cancel_requested')?`<div class="ss-expected-delivery">Cancel Reason: <strong>${esc(order.cancel_reason||'Cancelled by seller')}</strong></div>`:`<div class="ss-expected-delivery">Expected Delivery <strong>${esc(fmtHdrDate(getEffective(order)))}</strong></div>`)}<div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
 
     <div class="ss-items-box">
       <div class="ss-section-title">Items (${items.length})</div>
