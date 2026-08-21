@@ -203,7 +203,7 @@
       align-items: start;
     }
 
-    /* ─── CLEAN, EQUAL-HEIGHT ORDER CARDS ─── */
+    /* ─── ORDER LIST CARD ─── */
     .ss-card {
       background: #fff;
       border: 1.5px solid #e9ecef;
@@ -211,13 +211,12 @@
       height: 132px;
       min-height: 132px;
       max-height: 132px;
-      padding: 13px 16px;
+      padding: 12px 16px;
       margin-bottom: 10px;
       cursor: pointer;
-      transition: border-color .15s, box-shadow .15s, transform .15s;
+      transition: border-color .15s, box-shadow .15s;
       display: flex;
       flex-direction: column;
-      gap: 0;
       position: relative;
       overflow: hidden;
     }
@@ -234,8 +233,7 @@
 
     .ss-card-top {
       width: 100%;
-      height: 28px;
-      min-height: 28px;
+      min-height: 27px;
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
@@ -263,9 +261,23 @@
       margin-left: 3px;
     }
 
-    .ss-card-top .ss-badge {
+    .ss-card-status {
       flex-shrink: 0;
-      margin-top: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      min-width: 0;
+    }
+    .ss-card-status .ss-badge { margin: 0; }
+
+    .ss-card-status-date {
+      margin-top: 3px;
+      padding-right: 3px;
+      font-size: 10.5px;
+      line-height: 1;
+      font-weight: 700;
+      color: #15803d;
+      white-space: nowrap;
     }
 
     .ss-card-product {
@@ -274,7 +286,7 @@
       gap: 12px;
       min-width: 0;
       flex: 1;
-      padding-top: 5px;
+      padding-top: 4px;
     }
 
     .ss-card-img-wrap {
@@ -322,7 +334,7 @@
     .ss-card-row1 {
       display: block;
       min-width: 0;
-      margin: 0 0 4px;
+      margin: 0;
     }
 
     .ss-card-title {
@@ -332,20 +344,31 @@
       font-size: 14px;
       font-weight: 700;
       color: #111827;
-      line-height: 1.25;
+      line-height: 1.3;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .ss-card-meta { display: none; }
+    /* Price below title is intentionally removed from the list card. */
+    .ss-card-price { display: none; }
 
-    .ss-card-price {
-      font-size: 15.5px;
-      font-weight: 800;
-      color: #111827;
-      line-height: 1.2;
-      margin-top: 1px;
+    .ss-cod {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      gap: 6px;
+      margin-top: 7px;
+      padding: 5px 12px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .ss-badge {
@@ -1007,26 +1030,75 @@
     @media(max-width:420px){
       .ss-page-title { font-size:22px; }
       .ss-tab { padding:6px 12px; font-size:13px; }
+
       .ss-card {
-        height: 122px;
-        min-height: 122px;
-        max-height: 122px;
+        height: 124px;
+        min-height: 124px;
+        max-height: 124px;
         padding: 11px 12px;
+        margin-left: 6px;
+        margin-right: 6px;
+        border-radius: 14px;
       }
-      .ss-card-top { height: 26px; min-height: 26px; }
-      .ss-card-product { gap: 10px; padding-top: 4px; }
+
+      .ss-card-top {
+        min-height: 25px;
+      }
+
+      .ss-card-order-id {
+        max-width: 60%;
+        padding: 4px 7px;
+        font-size: 10.5px;
+      }
+
+      .ss-card-status-date {
+        font-size: 10px;
+        margin-top: 3px;
+      }
+
+      .ss-card-product {
+        gap: 10px;
+        padding-top: 3px;
+      }
+
       .ss-card-img-wrap,
       .ss-card-img,
-      .ss-card-img-placeholder { width:56px; height:56px; }
-      .ss-card-body { height:56px; }
-      .ss-card-order-id { font-size:11px; }
-      .ss-card-title { font-size:13.5px; }
+      .ss-card-img-placeholder {
+        width: 56px;
+        height: 56px;
+      }
+
+      .ss-card-body {
+        height: 56px;
+        justify-content: center;
+      }
+
+      .ss-card-title {
+        font-size: 13.5px;
+        line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .ss-cod {
+        margin-top: 6px;
+        padding: 5px 10px;
+        font-size: 11.5px;
+        max-width: 100%;
+      }
     }
 
     @media(max-width:820px){
       .ss-detail-inner { padding:18px 12px; }
     }
 
+
+    @media(max-width:820px){
+      .ss-list-col { width: 100%; min-width: 0; }
+      .ss-card { box-shadow: 0 1px 3px rgba(0,0,0,.03); }
+      .ss-card.selected { box-shadow: 0 0 0 3px rgba(108,71,255,.09); }
+    }
     @media(min-width:821px){
       .ss-tabs.ss-tabs-desktop { display: none; }
       .ss-tabs.ss-tabs-mobile { display: flex; }
@@ -1447,12 +1519,23 @@ function renderList(){
     const sel=activeOrder&&activeOrder.id===o.id;
     const realId=dispId(o);
 
+    /* Delivered card: show the actual delivered date below the green badge. */
+    const deliveredDate = o.status==='delivered'
+      ? fmtShort(o.delivered_at || o.created_at)
+      : '';
+
     return `<div class="ss-card${sel?' selected':''}" onclick="openOrder('${o.id}')">
       <div class="ss-card-top">
         <div class="ss-card-order-id">
           Order ID #<strong>${esc(realId)}</strong>
         </div>
-        ${badge(o)}
+
+        <div class="ss-card-status">
+          ${badge(o)}
+          ${deliveredDate
+            ? `<div class="ss-card-status-date">${esc(deliveredDate)}</div>`
+            : ''}
+        </div>
       </div>
 
       <div class="ss-card-product">
@@ -1470,7 +1553,7 @@ function renderList(){
               ${esc(first.title||'Order')}
             </div>
           </div>
-          <div class="ss-card-price">${money(o.total_amount)}</div>
+
           ${o.payment_method==='cod'
             ? `<div class="ss-cod">💵 Cash on Delivery · ${money(o.total_amount)}</div>`
             : ''}
