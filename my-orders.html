@@ -258,6 +258,11 @@
     .ss-card-delivery { font-size:9.5px; font-weight:600; color:#9ca3af; text-align:right; white-space:nowrap; line-height:1.2; }
     .ss-card-delivery strong { display:block; font-size:11.5px; color:#374151; margin-top:2px; font-weight:800; }
     .ss-card-delivery.delivered span { color:#15803d; font-weight:800; } .ss-card-delivery.delivered strong { color:#15803d; }
+
+    .ss-upd-shipping { margin:7px 0 5px; padding:7px 8px; border:1px solid #edf1f5; border-radius:8px; background:#fafbfc; }
+    .ss-upd-shipping-row { display:flex; align-items:center; gap:7px; margin:3px 0; }
+    .ss-upd-shipping-label { font-size:9px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.3px; min-width:74px; }
+    .ss-upd-shipping-value { display:inline-block; padding:3px 6px; border:1px solid #e5edf5; border-radius:5px; background:#f4f8fc; color:#475569; font-size:11px; font-weight:700; }
     .ss-shipping-highlight { margin:0 0 20px; padding:11px 13px; border:1px solid #edf1f5; border-radius:11px; background:#fafbfc; display:flex; flex-wrap:wrap; gap:8px 16px; } 
     .ss-shipping-item { min-width:160px; }
     .ss-shipping-label { display:block; font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.35px; margin-bottom:3px; }
@@ -1391,7 +1396,7 @@ function renderList(){
           <div class="ss-card-title">${esc(first.title||'Order')}</div>
           <div class="ss-card-statuscol">
             ${badge(o)}
-            <div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}"><span>${o.status==='delivered'?'Delivered':'Delivery'}</span><strong>${fmtShort(getExpected(o))}</strong></div>
+            <div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}">${o.status==='delivered'?'':`<span>Delivery</span>`}<strong>${fmtShort(getExpected(o))}</strong></div>
           </div>
         </div>
         <div class="ss-card-meta">ORD-${esc(dispId(o))} &nbsp;·&nbsp; ${fmtShort(o.created_at)}</div>
@@ -1716,54 +1721,7 @@ function renderDetail(order){
   /* ── HELP DROPDOWN ── */
   const canManage = order.status==='placed' && !isPaymentPending;
   const helpOptions = canManage
-    ? `<div class="ss-sort-opt" onclick="openCancelModal()">Cancel Order</div>
-       <div class="ss-sort-opt" onclick="openAddrModal()">Change Address</div>`
-    : `<div class="ss-sort-opt" onclick="openChat()">Contact Support</div>`;
-  const helpHtml = `
-    <div class="ss-help-wrap">
-      <button class="ss-sort-btn" onclick="toggleHelp(event)">
-        ${ico.help}
-        Help
-        ${ico.chevDown}
-      </button>
-      <div class="ss-sort-drop" id="ssHelpDrop">
-        ${helpOptions}
-      </div>
-    </div>`;
-
-  /* ── MOBILE: show back btn + hide list ── */
-  const layout=document.getElementById('ssMainLayout');
-  const tabsMobile=document.getElementById('ssTabsMobile');
-  if(layout){ layout.classList.add('detail-open'); }
-  if(tabsMobile){ tabsMobile.style.display='none'; }
-  document.body.classList.add('ss-hide-bottom-nav');
-  document.body.classList.add('ss-detail-open');
-
-  /* ── ASSEMBLE ── */
-  document.getElementById('ssDetailPlaceholder').style.display='none';
-  const inner=document.getElementById('ssDetailInner');
-  inner.style.display='block';
-  inner.innerHTML=`
-    <div class="ss-det-head">
-      <div>
-        <div class="ss-det-id">
-          ORD-${esc(sid)}
-          <button class="ss-copy-btn" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(sid)}')" title="Copy order ID">${ico.copy}</button>
-        </div>
-        <div class="ss-det-title">Order details</div>
-        <div class="ss-det-placed">Placed on ${fmtDate(order.created_at)}</div>
-      </div>
-      <div class="ss-det-right">
-        ${badge(order)}
-        ${helpHtml}
-      </div>
-    </div>
-
-    ${paymentHtml}
-
-    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}<div class="ss-expected-delivery">Expected Delivery <strong>${esc(fmtHdrDate(getExpected(order)))}</strong></div><div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
-
-    ${(order.courier_name||order.courier_tracking_id)?`<div class="ss-shipping-highlight"><div class="ss-shipping-item"><span class="ss-shipping-label">Courier Name</span><span class="ss-shipping-value">${esc(order.courier_name||'—')}</span></div><div class="ss-shipping-item"><span class="ss-shipping-label">Tracking ID</span><span class="ss-shipping-value">${esc(order.courier_tracking_id||'—')}</span></div></div>`:''}
+    ? ``:''}
 
     <div class="ss-items-box">
       <div class="ss-section-title">Items (${items.length})</div>
@@ -1920,6 +1878,11 @@ window.openUpdatesModal = function(){
     const dd=order.status==='delivered';
     stages[0].segPct=sd?100:(order.picked_up_at?75:(order.processed_at?50:0));
     let s2=[];
+    if(sd && (order.courier_name || order.courier_tracking_id)) s2.push({
+      shipping:true,
+      courier:order.courier_name||'—',
+      tracking:order.courier_tracking_id||'—'
+    });
     s2.push({note:sd?'Your item has been shipped.':'Your item will be shipped soon.',time:sd?fmtEntry(order.shipped_at||placed):null});
     if(order.hub_received_at) s2.push({note:'Your item has been received in the hub nearest to you.',time:fmtEntry(order.hub_received_at)});
     stages.push({title:'Shipped',date:sd?fmtHdrDate(order.shipped_at||placed):'',done:sd,pending:!sd,entries:s2,segPct:od?100:(sd?(order.hub_received_at?75:50):0)});
@@ -1939,7 +1902,9 @@ window.openUpdatesModal = function(){
       </div>
       <div class="ss-upd-body">
         <div class="ss-upd-title ${st.pending?'pending':''}">${esc(st.title)}${st.date?`<span class="ss-upd-title-date">· ${esc(st.date)}</span>`:''}</div>
-        ${st.entries.map(e=>`<div class="ss-upd-entry"><div class="ss-upd-note">${esc(e.note)}</div>${e.time?`<div class="ss-upd-time">${esc(e.time)}</div>`:''}</div>`).join('')}
+        ${st.entries.map(e=>e.shipping
+          ? `<div class="ss-upd-entry ss-upd-shipping"><div class="ss-upd-shipping-row"><span class="ss-upd-shipping-label">Courier Name</span><span class="ss-upd-shipping-value">${esc(e.courier)}</span></div><div class="ss-upd-shipping-row"><span class="ss-upd-shipping-label">Tracking ID</span><span class="ss-upd-shipping-value">${esc(e.tracking)}</span></div></div>`
+          : `<div class="ss-upd-entry"><div class="ss-upd-note">${esc(e.note)}</div>${e.time?`<div class="ss-upd-time">${esc(e.time)}</div>`:''}</div>`).join('')}
       </div>
     </div>`;
   });
