@@ -681,6 +681,10 @@ main{
   .mobile-header-icon:active{
     transform:scale(.94);
   }
+  .notification-header-btn{position:relative;}
+  .notification-badge{position:absolute;right:1px;top:0;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:#ef4444;color:#fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid #fff;line-height:12px;}
+  .desktop-notification-badge{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 5px;margin-left:auto;border-radius:99px;background:#ef4444;color:#fff;font-size:9px;font-weight:800;}
+
 
   .search{
     grid-area:search;
@@ -1267,80 +1271,6 @@ main{
   .looking-banner-card{flex-basis:calc((100vw - 90px - 48px)/5);}
 }
 
-
-/* =========================================================
-   REAL NOTIFICATION UI
-========================================================= */
-
-.notification-header-btn{
-  position:relative;
-}
-
-.notification-badge{
-  position:absolute;
-  top:0px;
-  right:0px;
-  min-width:16px;
-  height:16px;
-  padding:0 4px;
-  border-radius:999px;
-  background:#ef4444;
-  color:#fff;
-  border:2px solid #fff;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  font-size:8px;
-  line-height:1;
-  font-weight:800;
-  box-shadow:0 2px 8px rgba(239,68,68,.35);
-  animation:notificationPulse 2s infinite;
-  pointer-events:none;
-}
-
-.notification-badge.show{
-  display:flex;
-}
-
-.desktop-notification-badge{
-  margin-left:auto;
-  min-width:20px;
-  height:20px;
-  padding:0 6px;
-  border-radius:999px;
-  background:#ef4444;
-  color:#fff;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  font-size:10px;
-  line-height:1;
-  font-weight:800;
-  box-shadow:0 2px 8px rgba(239,68,68,.25);
-}
-
-.desktop-notification-badge.show{
-  display:inline-flex;
-}
-
-.notification-menu-item{
-  cursor:pointer;
-}
-
-.notification-menu-item:focus-visible{
-  outline:2px solid var(--violet);
-  outline-offset:-2px;
-}
-
-@keyframes notificationPulse{
-  0%,100%{
-    box-shadow:0 2px 8px rgba(239,68,68,.35);
-  }
-  50%{
-    box-shadow:0 0 0 5px rgba(239,68,68,.08),0 2px 10px rgba(239,68,68,.4);
-  }
-}
-
 </style>
 
 </head>
@@ -1387,19 +1317,13 @@ main{
 <div class="mobile-header-actions">
 
   <!-- Notification -->
-  <button
-    class="mobile-header-icon notification-header-btn"
-    id="notificationHeaderBtn"
-    aria-label="Notifications"
-    type="button"
-    onclick="goNotifications()"
-  >
+  <button class="mobile-header-icon notification-header-btn" aria-label="Notifications" type="button" onclick="goNotifications()">
+    <span class="notification-badge" id="headerNotificationBadge">0</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
          stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
       <path d="M10 21h4"></path>
     </svg>
-    <span id="notificationBadge" class="notification-badge">0</span>
   </button>
 
   <!-- Wishlist -->
@@ -1597,19 +1521,12 @@ main{
       Wishlist
     </div>
 
-    <div
-      class="menu-item notification-menu-item"
-      onclick="goNotifications()"
-      role="button"
-      tabindex="0"
-      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goNotifications();}"
-    >
+    <div class="menu-item" onclick="goNotifications()" style="cursor:pointer;">
       <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
         <path d="M10 21h4"/>
       </svg>
-      <span>Notifications</span>
-      <span id="desktopNotificationBadge" class="desktop-notification-badge">0</span>
+      Notifications <span id="desktopNotificationBadge" class="desktop-notification-badge">0</span>
     </div>
 
     <div class="account-divider"></div>
@@ -2129,6 +2046,27 @@ async function loadAccount(){
 
 
 /* =========================================================
+   NOTIFICATIONS
+========================================================= */
+function goNotifications(){ window.location.href = "notifications.html"; }
+let notificationChannel = null;
+async function loadNotificationBadge(){
+  try{
+    const {data:{user}} = await supabaseClient.auth.getUser();
+    const mobile=document.getElementById("headerNotificationBadge");
+    const desktop=document.getElementById("desktopNotificationBadge");
+    if(!user){ if(mobile)mobile.style.display="none"; if(desktop)desktop.style.display="none"; return; }
+    const {count,error}=await supabaseClient.from("notifications").select("id",{count:"exact",head:true}).eq("user_id",user.id).eq("is_read",false);
+    if(error) throw error;
+    const n=Number(count||0);
+    if(mobile){mobile.textContent=n>99?"99+":String(n);mobile.style.display=n?"flex":"none";}
+    if(desktop){desktop.textContent=n>99?"99+":String(n);desktop.style.display=n?"inline-flex":"none";}
+    if(notificationChannel) supabaseClient.removeChannel(notificationChannel);
+    notificationChannel=supabaseClient.channel("header-notifications-"+user.id).on("postgres_changes",{event:"*",schema:"public",table:"notifications",filter:"user_id=eq."+user.id},()=>loadNotificationBadge()).subscribe();
+  }catch(e){ console.warn("Notification badge error",e); }
+}
+
+/* =========================================================
    AUTH STATE
 ========================================================= */
 
@@ -2137,6 +2075,7 @@ supabaseClient.auth.onAuthStateChange(
 
     loadAccount();
     loadCartCount();
+    loadNotificationBadge();
 
   }
 );
@@ -3204,6 +3143,7 @@ supabaseClient
 ========================================================= */
 
 loadAccount();
+loadNotificationBadge();
 
 loadCartCount();
 loadHeroSliders();
@@ -3481,147 +3421,6 @@ window.addEventListener(
 if(typeof supabaseClient!=="undefined" && supabaseClient.auth){
   supabaseClient.auth.onAuthStateChange(function(){setTimeout(renderLookingBanner,120);});
 }
-
-
-/* =========================================================
-   REAL NOTIFICATIONS
-   Mobile bell + desktop account menu + realtime unread badge
-========================================================= */
-
-(function(){
-
-  const mobileBadge =
-    document.getElementById("notificationBadge");
-
-  const desktopBadge =
-    document.getElementById("desktopNotificationBadge");
-
-  let notificationChannel = null;
-
-  function setBadge(el, count){
-    if(!el) return;
-
-    if(count > 0){
-      el.textContent = count > 99 ? "99+" : String(count);
-      el.classList.add("show");
-    }else{
-      el.classList.remove("show");
-    }
-  }
-
-  window.goNotifications = function(){
-    window.location.href = "notifications.html";
-  };
-
-  async function updateNotificationBadges(){
-
-    try{
-
-      const { data: sessionData } =
-        await supabaseClient.auth.getSession();
-
-      const userId =
-        sessionData?.session?.user?.id;
-
-      if(!userId){
-        setBadge(mobileBadge, 0);
-        setBadge(desktopBadge, 0);
-        return;
-      }
-
-      const { count, error } =
-        await supabaseClient
-          .from("notifications")
-          .select("id", { count:"exact", head:true })
-          .eq("user_id", userId)
-          .eq("is_read", false);
-
-      if(error) throw error;
-
-      setBadge(mobileBadge, count || 0);
-      setBadge(desktopBadge, count || 0);
-
-    }catch(error){
-
-      console.error(
-        "Notification badge error:",
-        error
-      );
-
-    }
-  }
-
-  async function startNotificationRealtime(){
-
-    try{
-
-      const { data: sessionData } =
-        await supabaseClient.auth.getSession();
-
-      const userId =
-        sessionData?.session?.user?.id;
-
-      if(!userId) return;
-
-      if(notificationChannel){
-        await supabaseClient.removeChannel(
-          notificationChannel
-        );
-      }
-
-      notificationChannel =
-        supabaseClient
-          .channel("header-notifications-" + userId)
-          .on(
-            "postgres_changes",
-            {
-              event:"*",
-              schema:"public",
-              table:"notifications",
-              filter:"user_id=eq." + userId
-            },
-            function(){
-              updateNotificationBadges();
-
-              if(
-                navigator.vibrate
-              ){
-                navigator.vibrate([50,30,50]);
-              }
-            }
-          )
-          .subscribe();
-
-    }catch(error){
-
-      console.error(
-        "Notification realtime error:",
-        error
-      );
-
-    }
-  }
-
-  updateNotificationBadges();
-  startNotificationRealtime();
-
-  supabaseClient.auth.onAuthStateChange(
-    function(){
-      setTimeout(function(){
-        updateNotificationBadges();
-        startNotificationRealtime();
-      }, 300);
-    }
-  );
-
-  window.addEventListener(
-    "focus",
-    function(){
-      updateNotificationBadges();
-    }
-  );
-
-})();
 
 </script>
 
