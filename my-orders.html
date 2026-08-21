@@ -289,7 +289,27 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .ss-card-meta {
+        .ss-card-orderid {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      width: fit-content;
+      margin: 0 0 7px 0;
+      padding: 3px 7px;
+      border-radius: 5px;
+      background: #f3f6fa;
+      color: #6b7280;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 500;
+      letter-spacing: .1px;
+    }
+    .ss-card-orderid strong {
+      color: #374151;
+      font-weight: 700;
+    }
+
+.ss-card-meta {
       font-size: 12px;
       color: #9ca3af;
       margin-bottom: 8px;
@@ -1394,6 +1414,7 @@ function renderList(){
         ${extra?`<div class="ss-extra-badge">+${extra}</div>`:''}
       </div>
       <div class="ss-card-body">
+        <div class="ss-card-orderid">Order ID #<strong>${esc(dispId(o))}</strong></div>
         <div class="ss-card-row1">
           <div class="ss-card-title">${esc(first.title||'Order')}</div>
           <div class="ss-card-statuscol">
@@ -1401,7 +1422,6 @@ function renderList(){
             ${(o.status==='cancelled'||o.status==='cancel_requested')?'':`<div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}">${o.status==='delivered'?'':`<span>Delivery</span>`}<strong>${fmtShort(getExpected(o))}</strong></div>`}
           </div>
         </div>
-        <div class="ss-card-orderid">Order ID #<strong>${esc(dispId(o))}</strong></div>
         <div class="ss-card-price">${money(o.total_amount)}</div>
         ${o.payment_method==='cod'?`<div class="ss-cod">💵 Cash on Delivery · ${money(o.total_amount)}</div>`:''}
       </div>
