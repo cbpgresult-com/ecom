@@ -203,40 +203,96 @@
       align-items: start;
     }
 
+    /* ─── CLEAN, EQUAL-HEIGHT ORDER CARDS ─── */
     .ss-card {
       background: #fff;
       border: 1.5px solid #e9ecef;
       border-radius: 16px;
-      padding: 14px 16px 15px;
+      height: 132px;
+      min-height: 132px;
+      max-height: 132px;
+      padding: 13px 16px;
       margin-bottom: 10px;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: border-color .15s, box-shadow .15s, transform .15s;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      align-items: stretch;
+      gap: 0;
       position: relative;
+      overflow: hidden;
     }
     .ss-card:last-child { margin-bottom: 0; }
-    .ss-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-color: #d1d5db; }
-    .ss-card.selected { border-color: #6c47ff; border-width: 2px; box-shadow: 0 0 0 3px rgba(108,71,255,0.09); }
+    .ss-card:hover {
+      box-shadow: 0 3px 14px rgba(0,0,0,.06);
+      border-color: #d1d5db;
+    }
+    .ss-card.selected {
+      border-color: #6c47ff;
+      border-width: 2px;
+      box-shadow: 0 0 0 3px rgba(108,71,255,.09);
+    }
 
-    .ss-card-img-wrap { position: relative; flex-shrink: 0; }
-    .ss-card-img {
-      width: 68px;
-      height: 68px;
-      border-radius: 12px;
+    .ss-card-top {
+      width: 100%;
+      height: 28px;
+      min-height: 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .ss-card-order-id {
+      display: inline-flex;
+      align-items: center;
+      max-width: 58%;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #f7f8fa;
+      color: #374151;
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ss-card-order-id strong {
+      color: #111827;
+      font-weight: 800;
+      margin-left: 3px;
+    }
+
+    .ss-card-top .ss-badge {
+      flex-shrink: 0;
+      margin-top: 0;
+    }
+
+    .ss-card-product {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+      padding-top: 5px;
+    }
+
+    .ss-card-img-wrap {
+      position: relative;
+      flex: 0 0 62px;
+      width: 62px;
+      height: 62px;
+    }
+    .ss-card-img,
+    .ss-card-img-placeholder {
+      width: 62px;
+      height: 62px;
+      border-radius: 11px;
       object-fit: cover;
       background: #f3f4f6;
       display: block;
     }
-    .ss-card-img-placeholder {
-      width: 68px;
-      height: 68px;
-      border-radius: 12px;
-      background: #f3f4f6;
-      flex-shrink: 0;
-    }
+
     .ss-extra-badge {
       position: absolute;
       top: -5px;
@@ -254,97 +310,42 @@
       border: 2px solid #fff;
     }
 
-    .ss-card-body { flex: 1; min-width: 0; }
-    .ss-card-top {
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      width:100%;
-      margin-bottom:11px;
-    }
-    .ss-card-top .ss-card-orderid {
-      margin:0;
-    }
-    .ss-card-main {
-      display:flex;
-      align-items:flex-start;
-      gap:14px;
-      width:100%;
-      min-width:0;
-    }
-    .ss-card-main .ss-card-body {
-      min-width:0;
-    }
-    .ss-card-top .ss-card-statuscol {
-      min-width:112px;
-      margin-top:-1px;
-    }
-    .ss-card-statuscol { display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; min-width:112px; }
-    .ss-card-delivery { font-size:9.5px; font-weight:600; color:#9ca3af; text-align:right; white-space:nowrap; line-height:1.2; }
-    .ss-card-delivery strong { display:block; font-size:11.5px; color:#374151; margin-top:2px; font-weight:800; }
-    .ss-card-delivery.delivered span { color:#15803d; font-weight:800; } .ss-card-delivery.delivered strong { color:#15803d; }
-
-    .ss-upd-shipping { margin:6px 0 6px; padding:0; border:0; background:transparent; }
-    .ss-upd-shipping-row { display:flex; align-items:baseline; gap:4px; margin:4px 0; }
-    .ss-upd-shipping-label { font-size:12.5px; font-weight:500; color:#111827; min-width:0; }
-    .ss-upd-shipping-value { display:inline; padding:0 2px; border:0; border-radius:0; background:linear-gradient(transparent 58%, #eaf3ff 58%); color:#111827; font-size:12.5px; font-weight:700; }
-    .ss-shipping-highlight { margin:0 0 20px; padding:11px 13px; border:1px solid #edf1f5; border-radius:11px; background:#fafbfc; display:flex; flex-wrap:wrap; gap:8px 16px; } 
-    .ss-shipping-item { min-width:160px; }
-    .ss-shipping-label { display:block; font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.35px; margin-bottom:3px; }
-    .ss-shipping-value { display:inline-block; font-size:12px; font-weight:700; color:#475569; background:#f4f8fc; border:1px solid #e5edf5; border-radius:7px; padding:5px 8px; box-shadow:0 1px 2px rgba(15,23,42,.03); }
-    .ss-expected-delivery { margin-top:13px; padding:9px 12px; border-radius:10px; background:#f8fafc; border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; gap:5px; font-size:11px; color:#6b7280; }
-    .ss-expected-delivery strong { color:#374151; font-size:12px; font-weight:800; }
-    .ss-cancel-reason { margin-top:13px; text-align:center; font-size:11px; color:#6b7280; }
-    .ss-cancel-reason strong { color:#dc2626; font-size:12px; font-weight:800; }
-    .ss-card-row1 {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-    .ss-card-title {
-      font-size: 14.5px;
-      font-weight: 700;
-      color: #111827;
-      line-height: 1.3;
+    .ss-card-body {
       flex: 1;
       min-width: 0;
+      height: 62px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .ss-card-row1 {
+      display: block;
+      min-width: 0;
+      margin: 0 0 4px;
+    }
+
+    .ss-card-title {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.25;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-        .ss-card-orderid {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      width: fit-content;
-      margin: 0 0 7px 0;
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: #f5f7fa;
-      color: #6b7280;
-      font-size: 11px;
-      line-height: 1.25;
-      font-weight: 500;
-      letter-spacing: .1px;
-    }
-    .ss-card-orderid strong {
-      color: #374151;
-      font-weight: 700;
-    }
 
-.ss-card-meta {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 8px;
-      line-height: 1.4;
-    }
+    .ss-card-meta { display: none; }
+
     .ss-card-price {
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 15.5px;
+      font-weight: 800;
       color: #111827;
+      line-height: 1.2;
+      margin-top: 1px;
     }
 
     .ss-badge {
@@ -981,8 +982,6 @@
         overflow: hidden;
       }
       .ss-card-row1 { flex-wrap: wrap; }
-      .ss-card-statuscol { min-width:82px; }
-      .ss-card-delivery { font-size:9.5px; }
       .ss-badge { margin-top: 2px; }
 
       .ss-overlay { align-items: flex-end; padding: 0; }
@@ -1008,8 +1007,20 @@
     @media(max-width:420px){
       .ss-page-title { font-size:22px; }
       .ss-tab { padding:6px 12px; font-size:13px; }
-      .ss-card { padding:12px; gap:10px; }
-      .ss-card-img, .ss-card-img-placeholder { width:58px; height:58px; }
+      .ss-card {
+        height: 122px;
+        min-height: 122px;
+        max-height: 122px;
+        padding: 11px 12px;
+      }
+      .ss-card-top { height: 26px; min-height: 26px; }
+      .ss-card-product { gap: 10px; padding-top: 4px; }
+      .ss-card-img-wrap,
+      .ss-card-img,
+      .ss-card-img-placeholder { width:56px; height:56px; }
+      .ss-card-body { height:56px; }
+      .ss-card-order-id { font-size:11px; }
+      .ss-card-title { font-size:13.5px; }
     }
 
     @media(max-width:820px){
@@ -1320,10 +1331,7 @@ function fmtOrd(n){ const s=['th','st','nd','rd'],v=n%100; return n+(s[(v-20)%10
 function fmtHdrDate(d){ const dt=new Date(d),days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mos=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],yr=String(dt.getFullYear()).slice(-2); return days[dt.getDay()]+', '+fmtOrd(dt.getDate())+' '+mos[dt.getMonth()]+" '"+yr; }
 function fmtEntry(d){ return fmtHdrDate(d)+' - '+fmtShortTime(d); }
 const dispId = o => o.order_number || String(o.id||'').slice(0,8).toUpperCase();
-function getExpected(o){
-  // Admin-set delivery_date always wins; otherwise default is 6 days after order creation.
-  return o.delivery_date ? new Date(o.delivery_date) : addDays(o.created_at,6);
-}
+function getExpected(o){ return o.delivery_date?new Date(o.delivery_date):addDays(o.created_at,5); }
 function getEffective(o){
   if(o.status==='delivered') return o.delivered_at?new Date(o.delivered_at):getExpected(o);
   let exp=getExpected(o); const now=new Date();
@@ -1432,25 +1440,40 @@ function renderList(){
   }
 
   col.innerHTML = orders.map(o=>{
-    o=normalizeOrder(o); const items=o.items||[], first=items[0]||{}, extra=items.length>1?items.length-1:0;
+    o=normalizeOrder(o);
+    const items=o.items||[];
+    const first=items[0]||{};
+    const extra=items.length>1?items.length-1:0;
     const sel=activeOrder&&activeOrder.id===o.id;
+    const realId=dispId(o);
+
     return `<div class="ss-card${sel?' selected':''}" onclick="openOrder('${o.id}')">
       <div class="ss-card-top">
-        <div class="ss-card-orderid">Order ID #<strong>${esc(dispId(o))}</strong></div>
-        <div class="ss-card-statuscol">
-          ${badge(o)}
-          ${(o.status==='cancelled'||o.status==='cancel_requested')?'':`<div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}">${o.status==='delivered'?'':`<span>Delivery</span>`}<strong>${fmtShort(getExpected(o))}</strong></div>`}
+        <div class="ss-card-order-id">
+          Order ID #<strong>${esc(realId)}</strong>
         </div>
+        ${badge(o)}
       </div>
-      <div class="ss-card-main">
+
+      <div class="ss-card-product">
         <div class="ss-card-img-wrap">
-          <img class="ss-card-img" src="${esc(first.image||'')}" alt="" onerror="this.style.background='#f3f4f6'">
+          <img class="ss-card-img"
+               src="${esc(first.image||'')}"
+               alt=""
+               onerror="this.style.background='#f3f4f6'">
           ${extra?`<div class="ss-extra-badge">+${extra}</div>`:''}
         </div>
+
         <div class="ss-card-body">
-          <div class="ss-card-title">${esc(first.title||'Order')}</div>
+          <div class="ss-card-row1">
+            <div class="ss-card-title" title="${esc(first.title||'Order')}">
+              ${esc(first.title||'Order')}
+            </div>
+          </div>
           <div class="ss-card-price">${money(o.total_amount)}</div>
-          ${o.payment_method==='cod'?`<div class="ss-cod">💵 Cash on Delivery · ${money(o.total_amount)}</div>`:''}
+          ${o.payment_method==='cod'
+            ? `<div class="ss-cod">💵 Cash on Delivery · ${money(o.total_amount)}</div>`
+            : ''}
         </div>
       </div>
     </div>`;
@@ -1649,8 +1672,6 @@ function renderDetail(order){
       const shippedDone = ['shipped','out_for_delivery','delivered'].includes(order.status);
       const outDone = ['out_for_delivery','delivered'].includes(order.status);
       const delDone = order.status==='delivered';
-      const pickedUpDone = !!order.picked_up_at;
-      const hubReceivedDone = !!order.hub_received_at;
 
       const placedTime = fmtTime(placed);
       const placedD = fmtShort(placed);
@@ -1709,7 +1730,7 @@ function renderDetail(order){
           <div class="ss-step-text">
             <div class="ss-step-label ${outDone?'done':''}">Out for<br>Delivery</div>
             <div class="ss-step-date">${outD}<br>${outT}</div>
-            ${mkStepLine('Out for Delivery', outDone, outD, outDone?fmtTime(outDate||placed):'')}
+            ${mkStepLine('Out for Delivery', outDone, outD, outDone?fmtTime(outDate||placed):'', delExpectedD)}
           </div>
         </div>
         <div class="ss-step">
@@ -1766,7 +1787,7 @@ function renderDetail(order){
     <button class="ss-action">${ico.share} Share</button>
     <button class="ss-action" onclick="openChat()">${ico.phone} Support</button>
   `:'';
-  const reorderBtn = (order.status==='delivered'||order.status==='cancelled')?`<button class="ss-action primary" type="button">${ico.refresh} Reorder</button>`:'';
+  const reorderBtn = (order.status==='delivered'||order.status==='cancelled')?`<button class="ss-action primary">${ico.refresh} Reorder</button>`:'';
 
   /* ── HELP DROPDOWN ── */
   const canManage = order.status==='placed' && !isPaymentPending;
@@ -1816,7 +1837,7 @@ function renderDetail(order){
 
     ${paymentHtml}
 
-    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}${order.status==='delivered'?'':((order.status==='cancelled'||order.status==='cancel_requested')?`<div class="ss-expected-delivery">Cancel Reason: <strong>${esc(order.cancel_reason||'Cancelled by seller')}</strong></div>`:`<div class="ss-expected-delivery">Expected Delivery <strong>${esc(fmtHdrDate(getEffective(order)))}</strong></div>`)}<div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
+    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}<div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
 
     <div class="ss-items-box">
       <div class="ss-section-title">Items (${items.length})</div>
@@ -1973,11 +1994,8 @@ window.openUpdatesModal = function(){
     const dd=order.status==='delivered';
     stages[0].segPct=sd?100:(order.picked_up_at?75:(order.processed_at?50:0));
     let s2=[];
-    if(sd && (order.courier_name || order.courier_tracking_id)) s2.push({
-      shipping:true,
-      courier:order.courier_name||'—',
-      tracking:order.courier_tracking_id||'—'
-    });
+    const cl=(order.courier_name||'')+(order.courier_tracking_id?' - '+order.courier_tracking_id:'');
+    if(sd&&cl) s2.push({note:cl,time:null});
     s2.push({note:sd?'Your item has been shipped.':'Your item will be shipped soon.',time:sd?fmtEntry(order.shipped_at||placed):null});
     if(order.hub_received_at) s2.push({note:'Your item has been received in the hub nearest to you.',time:fmtEntry(order.hub_received_at)});
     stages.push({title:'Shipped',date:sd?fmtHdrDate(order.shipped_at||placed):'',done:sd,pending:!sd,entries:s2,segPct:od?100:(sd?(order.hub_received_at?75:50):0)});
@@ -1997,9 +2015,7 @@ window.openUpdatesModal = function(){
       </div>
       <div class="ss-upd-body">
         <div class="ss-upd-title ${st.pending?'pending':''}">${esc(st.title)}${st.date?`<span class="ss-upd-title-date">· ${esc(st.date)}</span>`:''}</div>
-        ${st.entries.map(e=>e.shipping
-          ? `<div class="ss-upd-entry ss-upd-shipping"><div class="ss-upd-shipping-row"><span class="ss-upd-shipping-label">Courier Name</span><span class="ss-upd-shipping-value">${esc(e.courier)}</span></div><div class="ss-upd-shipping-row"><span class="ss-upd-shipping-label">Tracking ID</span><span class="ss-upd-shipping-value">${esc(e.tracking)}</span></div></div>`
-          : `<div class="ss-upd-entry"><div class="ss-upd-note">${esc(e.note)}</div>${e.time?`<div class="ss-upd-time">${esc(e.time)}</div>`:''}</div>`).join('')}
+        ${st.entries.map(e=>`<div class="ss-upd-entry"><div class="ss-upd-note">${esc(e.note)}</div>${e.time?`<div class="ss-upd-time">${esc(e.time)}</div>`:''}</div>`).join('')}
       </div>
     </div>`;
   });
