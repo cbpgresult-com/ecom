@@ -259,10 +259,10 @@
     .ss-card-delivery strong { display:block; font-size:11.5px; color:#374151; margin-top:2px; font-weight:800; }
     .ss-card-delivery.delivered span { color:#15803d; font-weight:800; } .ss-card-delivery.delivered strong { color:#15803d; }
 
-    .ss-upd-shipping { margin:7px 0 5px; padding:7px 8px; border:1px solid #edf1f5; border-radius:8px; background:#fafbfc; }
-    .ss-upd-shipping-row { display:flex; align-items:center; gap:7px; margin:3px 0; }
-    .ss-upd-shipping-label { font-size:9px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.3px; min-width:74px; }
-    .ss-upd-shipping-value { display:inline-block; padding:3px 6px; border:1px solid #e5edf5; border-radius:5px; background:#f4f8fc; color:#475569; font-size:11px; font-weight:700; }
+    .ss-upd-shipping { margin:6px 0 6px; padding:0; border:0; background:transparent; }
+    .ss-upd-shipping-row { display:flex; align-items:baseline; gap:4px; margin:4px 0; }
+    .ss-upd-shipping-label { font-size:12.5px; font-weight:500; color:#111827; min-width:0; }
+    .ss-upd-shipping-value { display:inline; padding:0 2px; border:0; border-radius:0; background:linear-gradient(transparent 58%, #eaf3ff 58%); color:#111827; font-size:12.5px; font-weight:700; }
     .ss-shipping-highlight { margin:0 0 20px; padding:11px 13px; border:1px solid #edf1f5; border-radius:11px; background:#fafbfc; display:flex; flex-wrap:wrap; gap:8px 16px; } 
     .ss-shipping-item { min-width:160px; }
     .ss-shipping-label { display:block; font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.35px; margin-bottom:3px; }
@@ -1396,7 +1396,7 @@ function renderList(){
           <div class="ss-card-title">${esc(first.title||'Order')}</div>
           <div class="ss-card-statuscol">
             ${badge(o)}
-            <div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}">${o.status==='delivered'?'':`<span>Delivery</span>`}<strong>${fmtShort(getExpected(o))}</strong></div>
+            ${(o.status==='cancelled'||o.status==='cancel_requested')?'':`<div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}">${o.status==='delivered'?'':`<span>Delivery</span>`}<strong>${fmtShort(getExpected(o))}</strong></div>`}
           </div>
         </div>
         <div class="ss-card-meta">ORD-${esc(dispId(o))} &nbsp;·&nbsp; ${fmtShort(o.created_at)}</div>
@@ -1766,7 +1766,7 @@ function renderDetail(order){
 
     ${paymentHtml}
 
-    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}<div class="ss-expected-delivery">Expected Delivery <strong>${esc(fmtHdrDate(getEffective(order)))}</strong></div><div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
+    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}${(order.status==='cancelled'||order.status==='cancel_requested')?'':`<div class="ss-expected-delivery">Expected Delivery <strong>${esc(fmtHdrDate(getEffective(order)))}</strong></div>`}<div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
 
     <div class="ss-items-box">
       <div class="ss-section-title">Items (${items.length})</div>
