@@ -254,6 +254,30 @@
     }
 
     .ss-card-body { flex: 1; min-width: 0; }
+    .ss-card-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      width:100%;
+      margin-bottom:11px;
+    }
+    .ss-card-top .ss-card-orderid {
+      margin:0;
+    }
+    .ss-card-main {
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      width:100%;
+    }
+    .ss-card-main .ss-card-body {
+      min-width:0;
+    }
+    .ss-card-top .ss-card-statuscol {
+      min-width:112px;
+      margin-top:-1px;
+    }
     .ss-card-statuscol { display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; min-width:112px; }
     .ss-card-delivery { font-size:9.5px; font-weight:600; color:#9ca3af; text-align:right; white-space:nowrap; line-height:1.2; }
     .ss-card-delivery strong { display:block; font-size:11.5px; color:#374151; margin-top:2px; font-weight:800; }
@@ -1409,21 +1433,23 @@ function renderList(){
     o=normalizeOrder(o); const items=o.items||[], first=items[0]||{}, extra=items.length>1?items.length-1:0;
     const sel=activeOrder&&activeOrder.id===o.id;
     return `<div class="ss-card${sel?' selected':''}" onclick="openOrder('${o.id}')">
-      <div class="ss-card-img-wrap">
-        <img class="ss-card-img" src="${esc(first.image||'')}" alt="" onerror="this.style.background='#f3f4f6'">
-        ${extra?`<div class="ss-extra-badge">+${extra}</div>`:''}
-      </div>
-      <div class="ss-card-body">
+      <div class="ss-card-top">
         <div class="ss-card-orderid">Order ID #<strong>${esc(dispId(o))}</strong></div>
-        <div class="ss-card-row1">
-          <div class="ss-card-title">${esc(first.title||'Order')}</div>
-          <div class="ss-card-statuscol">
-            ${badge(o)}
-            ${(o.status==='cancelled'||o.status==='cancel_requested')?'':`<div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}">${o.status==='delivered'?'':`<span>Delivery</span>`}<strong>${fmtShort(getExpected(o))}</strong></div>`}
-          </div>
+        <div class="ss-card-statuscol">
+          ${badge(o)}
+          ${(o.status==='cancelled'||o.status==='cancel_requested')?'':`<div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}">${o.status==='delivered'?'':`<span>Delivery</span>`}<strong>${fmtShort(getExpected(o))}</strong></div>`}
         </div>
-        <div class="ss-card-price">${money(o.total_amount)}</div>
-        ${o.payment_method==='cod'?`<div class="ss-cod">💵 Cash on Delivery · ${money(o.total_amount)}</div>`:''}
+      </div>
+      <div class="ss-card-main">
+        <div class="ss-card-img-wrap">
+          <img class="ss-card-img" src="${esc(first.image||'')}" alt="" onerror="this.style.background='#f3f4f6'">
+          ${extra?`<div class="ss-extra-badge">+${extra}</div>`:''}
+        </div>
+        <div class="ss-card-body">
+          <div class="ss-card-title">${esc(first.title||'Order')}</div>
+          <div class="ss-card-price">${money(o.total_amount)}</div>
+          ${o.payment_method==='cod'?`<div class="ss-cod">💵 Cash on Delivery · ${money(o.total_amount)}</div>`:''}
+        </div>
       </div>
     </div>`;
   }).join('');
