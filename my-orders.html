@@ -1654,7 +1654,7 @@ function renderDetail(order){
           <div class="ss-step-text">
             <div class="ss-step-label ${outDone?'done':''}">Out for<br>Delivery</div>
             <div class="ss-step-date">${outD}<br>${outT}</div>
-            ${mkStepLine('Out for Delivery', outDone, outD, outDone?fmtTime(outDate||placed):'', delExpectedD)}
+            ${mkStepLine('Out for Delivery', outDone, outD, outDone?fmtTime(outDate||placed):'')}
           </div>
         </div>
         <div class="ss-step">
@@ -1920,8 +1920,6 @@ window.openUpdatesModal = function(){
     const dd=order.status==='delivered';
     stages[0].segPct=sd?100:(order.picked_up_at?75:(order.processed_at?50:0));
     let s2=[];
-    const cl=(order.courier_name||'')+(order.courier_tracking_id?' - '+order.courier_tracking_id:'');
-    if(sd&&cl) s2.push({note:cl,time:null});
     s2.push({note:sd?'Your item has been shipped.':'Your item will be shipped soon.',time:sd?fmtEntry(order.shipped_at||placed):null});
     if(order.hub_received_at) s2.push({note:'Your item has been received in the hub nearest to you.',time:fmtEntry(order.hub_received_at)});
     stages.push({title:'Shipped',date:sd?fmtHdrDate(order.shipped_at||placed):'',done:sd,pending:!sd,entries:s2,segPct:od?100:(sd?(order.hub_received_at?75:50):0)});
