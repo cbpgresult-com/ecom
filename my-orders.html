@@ -1401,7 +1401,7 @@ function renderList(){
             ${(o.status==='cancelled'||o.status==='cancel_requested')?'':`<div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}">${o.status==='delivered'?'':`<span>Delivery</span>`}<strong>${fmtShort(getExpected(o))}</strong></div>`}
           </div>
         </div>
-        <div class="ss-card-meta">ORD-${esc(dispId(o))} &nbsp;·&nbsp; ${fmtShort(o.created_at)}</div>
+        <div class="ss-card-orderid">Order ID #<strong>${esc(dispId(o))}</strong></div>
         <div class="ss-card-price">${money(o.total_amount)}</div>
         ${o.payment_method==='cod'?`<div class="ss-cod">💵 Cash on Delivery · ${money(o.total_amount)}</div>`:''}
       </div>
