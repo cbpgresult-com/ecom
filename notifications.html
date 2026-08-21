@@ -160,6 +160,23 @@ function fmt(d){const x=new Date(d);return x.toLocaleString('en-IN',{day:'2-digi
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)}
 function goBack(){if(history.length>1)history.back();else location.href='index.html'}
 function getRows(){let rows=all.slice();if(filter==='unread')rows=rows.filter(x=>!x.is_read);else if(filter!=='all')rows=rows.filter(x=>(x.type||'').toLowerCase()===filter);return rows}
+function realEmoji(value){
+  if(value==null)return '🔔';
+  let v=String(value).trim();
+  if(!v)return '🔔';
+
+  // Force emoji presentation for characters that can otherwise render
+  // as monochrome text glyphs (especially ❤ on Windows/Firefox).
+  const emojiVS={
+    '❤':'❤️','♥':'♥️','♡':'♡️','❣':'❣️','❗':'❗️','❓':'❓️',
+    '‼':'‼️','⁉':'⁉️','⚠':'⚠️','☀':'☀️','☁':'☁️','☔':'☔️',
+    '☕':'☕️','⭐':'⭐️','✨':'✨️','✔':'✔️','✖':'✖️','✉':'✉️',
+    '☎':'☎️','⚡':'⚡️','☘':'☘️','☮':'☮️','☯':'☯️','♻':'♻️',
+    '⚙':'⚙️','⚓':'⚓️','✈':'✈️','⌚':'⌚️','⏰':'⏰️','☑':'☑️',
+    '🔴':'🔴','🟢':'🟢','🔵':'🔵','🟡':'🟡'
+  };
+  return [...v].map(ch=>emojiVS[ch]||ch).join('');
+}
 function getNotificationLink(n){
   return String(n.link||n.download_link||n.link_url||n.receipt_url||n.receipt_download_link||'').trim();
 }
@@ -176,7 +193,7 @@ function openNotification(id){
 }
 function showDetail(n,link){
   document.getElementById('detailTitle').textContent=n.title||'Notification';
-  document.getElementById('detailIcon').textContent=n.icon||'🔔';
+  document.getElementById('detailIcon').textContent=realEmoji(n.icon);
   document.getElementById('detailMessage').textContent=n.message||'';
   document.getElementById('detailType').textContent=n.type||'general';
   document.getElementById('detailTime').textContent=fmt(n.created_at);
@@ -200,7 +217,7 @@ function render(){
     return;
   }
   c.innerHTML='<div class="list">'+rows.map(n=>{
-    const icon=n.icon||'🔔';
+    const icon=realEmoji(n.icon);
     const link=getNotificationLink(n);
     const hasLink=!!link;
     return `<article class="notice ${n.is_read?'':'unread'} ${hasLink?'has-link':''}" ${hasLink?`onclick="openNotification('${esc(n.id)}')"`:''} data-id="${esc(n.id)}">
