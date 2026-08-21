@@ -32,17 +32,116 @@ async function loadOrders(){busy(true);let r=await sb.from('orders').select('*')
 function stats(){let c=s=>orders.filter(o=>(o.status||'placed')===s).length;$('a').textContent=orders.length;$('b').textContent=c('placed');$('c').textContent=c('shipped');$('d').textContent=c('out_for_delivery');$('e').textContent=c('delivered')}
 function setFilter(f,b){filter=f;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()}
 function render(){let q=$('search').value.trim().toLowerCase(),list=orders.filter(o=>{let a=addr(o),s=o.status||'placed';if(filter!=='all'&&s!==filter)return false;if(!q)return true;return [idof(o),o.id,o.user_email,a.name,a.phone,a.city,a.pincode].join(' ').toLowerCase().includes(q)});if(!list.length){$('orders').innerHTML='<div class="empty">No orders found.</div>';return}$('orders').innerHTML=list.map(card).join('')}
-function card(o){let a=addr(o),ar=its(o),s=o.status||'placed',imgs=ar.slice(0,8).map(x=>'<div class="item"><img src="'+esc(iimg(x))+'" onerror="this.style.visibility=\'hidden\'"><span>'+esc(iname(x))+' &times;'+qty(x)+'</span></div>').join(''),act='';if(s==='placed')act='<button class="btn blue" onclick="processOrder(\''+o.id+'\')">Process</button><button class="btn blue" onclick="ship(\''+o.id+'\')">Ship</button><button class="btn red" onclick="cancelOrder(\''+o.id+'\')">Cancel</button>';else if(s==='processed')act='<button class="btn blue" onclick="ship(\''+o.id+'\')">Mark Shipped</button><button class="btn red" onclick="cancelOrder(\''+o.id+'\')">Cancel</button>';else if(s==='shipped')act='<button class="btn blue" onclick="status(\''+o.id+'\',\'out_for_delivery\')">Out for Delivery</button>';else if(s==='out_for_delivery')act='<button class="btn green" onclick="status(\''+o.id+'\',\'delivered\')">Mark Delivered</button>';else if(s==='cancel_requested')act='<button class="btn red" onclick="confirmCancel(\''+o.id+'\')">Confirm Cancel</button><button class="btn" onclick="rejectCancel(\''+o.id+'\')">Keep Order</button>';return '<article class="card"><div class="head"><div><div class="oid">#'+esc(idof(o))+'</div><div class="uuid">'+esc(o.id)+'</div><div class="date">'+dt(o.created_at)+'</div></div><span class="status '+esc(s)+'">'+esc(s.replaceAll('_',' '))+'</span></div><div class="items">'+(imgs||'<span class="muted">No items</span>')+'</div><div class="info"><b>'+esc(a.name||'Customer')+'</b> · '+esc(a.phone||'—')+'<br>Email: <b>'+esc(o.user_email||'—')+'</b><br>'+esc([a.house,a.road,a.city,a.district,a.state,a.pincode].filter(Boolean).join(', ')||'Address not available')+'</div><div class="chips"><span class="chip">'+esc((o.payment_method||'').toUpperCase())+'</span><span class="chip">'+ar.length+' item'+(ar.length===1?'':'s')+'</span>'+(o.courier_name?'<span class="chip">'+esc(o.courier_name)+'</span>':'')+(o.courier_tracking_id?'<span class="chip">Track: '+esc(o.courier_tracking_id)+'</span>':'')+'</div><div class="total">'+money(o.total_amount)+'</div>'+(o.cancel_reason?'<div class="info" style="color:#b45309;margin-top:6px"><b>Cancel reason:</b> '+esc(o.cancel_reason)+'</div>':'')+'<div class="cardactions"><button class="btn" onclick="details(\''+o.id+'\')">View Details</button><button class="btn" onclick="openChat(\''+o.id+'\')">💬 Chat</button>'+act+'</div></article>'}
+function card(o){
+  let a=addr(o),ar=its(o),s=o.status||'placed',
+      imgs=ar.slice(0,8).map(x=>'<div class="item"><img src="'+esc(iimg(x))+'" onerror="this.style.visibility=\'hidden\'"><span>'+esc(iname(x))+' &times;'+qty(x)+'</span></div>').join(''),
+      act='';
+
+  if(s==='placed'){
+    act='<button class="btn blue" onclick="processOrder(\''+o.id+'\')">Process</button>'+
+        '<button class="btn red" onclick="cancelOrder(\''+o.id+'\')">Cancel</button>';
+  }else if(s==='processed' && !o.picked_up_at){
+    act='<button class="btn blue" onclick="markPickedUp(\''+o.id+'\')">Mark Picked Up</button>'+
+        '<button class="btn red" onclick="cancelOrder(\''+o.id+'\')">Cancel</button>';
+  }else if(s==='processed' && o.picked_up_at){
+    act='<button class="btn blue" onclick="ship(\''+o.id+'\')">Mark Shipped</button>'+
+        '<button class="btn red" onclick="cancelOrder(\''+o.id+'\')">Cancel</button>';
+  }else if(s==='shipped' && !o.hub_received_at){
+    act='<button class="btn blue" onclick="markHubReceived(\''+o.id+'\')">Received at Nearest Hub</button>';
+  }else if(s==='shipped' && o.hub_received_at){
+    act='<button class="btn blue" onclick="status(\''+o.id+'\',\'out_for_delivery\')">Out for Delivery</button>';
+  }else if(s==='out_for_delivery'){
+    act='<button class="btn green" onclick="status(\''+o.id+'\',\'delivered\')">Mark Delivered</button>';
+  }else if(s==='cancel_requested'){
+    act='<button class="btn red" onclick="confirmCancel(\''+o.id+'\')">Confirm Cancel</button><button class="btn" onclick="rejectCancel(\''+o.id+'\')">Keep Order</button>';
+  }
+
+  const statusLabel=s==='processed'?(o.picked_up_at?'picked up':'processed'):s.replaceAll('_',' ');
+  const eta=o.delivery_date?new Date(o.delivery_date):new Date(new Date(o.created_at).getTime()+6*86400000);
+
+  return '<article class="card"><div class="head"><div><div class="oid">#'+esc(idof(o))+'</div><div class="uuid">'+esc(o.id)+'</div><div class="date">'+dt(o.created_at)+'</div></div><span class="status '+esc(s)+'">'+esc(statusLabel)+'</span></div>'+
+    '<div class="items">'+(imgs||'<span class="muted">No items</span>')+'</div>'+
+    '<div class="info"><b>'+esc(a.name||'Customer')+'</b> · '+esc(a.phone||'—')+'<br>Email: <b>'+esc(o.user_email||'—')+'</b><br>'+esc([a.house,a.road,a.city,a.district,a.state,a.pincode].filter(Boolean).join(', ')||'Address not available')+'</div>'+
+    '<div class="chips"><span class="chip">'+esc((o.payment_method||'').toUpperCase())+'</span><span class="chip">'+ar.length+' item'+(ar.length===1?'':'s')+'</span>'+
+    '<span class="chip">Delivery: '+esc(dt(eta).split(',')[0])+'</span>'+
+    (o.courier_name?'<span class="chip">'+esc(o.courier_name)+'</span>':'')+
+    (o.courier_tracking_id?'<span class="chip">Track: '+esc(o.courier_tracking_id)+'</span>':'')+
+    '</div><div class="total">'+money(o.total_amount)+'</div>'+
+    (o.cancel_reason?'<div class="info" style="color:#b45309;margin-top:6px"><b>Cancel reason:</b> '+esc(o.cancel_reason)+'</div>':'')+
+    '<div class="cardactions"><button class="btn" onclick="details(\''+o.id+'\')">View Details</button><button class="btn" onclick="openChat(\''+o.id+'\')">💬 Chat</button>'+act+'</div></article>';
+}
 function get(id){return orders.find(o=>o.id===id)}
-async function status(id,s,extra={}){busy(true);let p={status:s,...extra},now=new Date().toISOString();if(s==='processed')p.processed_at=now;if(s==='shipped')p.shipped_at=now;if(s==='out_for_delivery')p.out_for_delivery_at=now;if(s==='delivered')p.delivered_at=now;let r=await sb.from('orders').update(p).eq('id',id);busy(false);if(r.error)toast(r.error.message,true);else{toast('Order updated');loadOrders()}}
-function processOrder(id){status(id,'processed')}
-function ship(id){$('actionTitle').textContent='Mark as Shipped';$('actionBody').innerHTML='<div class="field"><label>Courier Name</label><input id="courier" placeholder="Ekart / Delhivery"></div><div class="field"><label>Tracking ID</label><input id="tracking" placeholder="Tracking number"></div><button class="primary" style="width:100%" onclick="submitShip(\''+id+'\')">Confirm Shipped</button>';showM('action')}
-async function submitShip(id){let c=$('courier').value.trim(),t=$('tracking').value.trim();if(!c||!t){toast('Courier and tracking ID required',true);return}closeM('action');await status(id,'shipped',{courier_name:c,courier_tracking_id:t})}
+async function status(id,s,extra={}){
+  busy(true);
+  let p={status:s,...extra},now=new Date().toISOString();
+  if(s==='processed') p.processed_at=now;
+  if(s==='shipped') p.shipped_at=now;
+  if(s==='out_for_delivery') p.out_for_delivery_at=now;
+  if(s==='delivered') p.delivered_at=now;
+  let r=await sb.from('orders').update(p).eq('id',id);
+  busy(false);
+  if(r.error) toast(r.error.message,true);
+  else { toast('Order updated'); loadOrders(); }
+}
+
+function processOrder(id){
+  const o=get(id);
+  const extra={};
+  if(o && !o.delivery_date){
+    extra.delivery_date=new Date(new Date(o.created_at).getTime()+6*86400000).toISOString();
+  }
+  status(id,'processed',extra);
+}
+
+function markPickedUp(id){
+  status(id,'processed',{picked_up_at:new Date().toISOString()});
+}
+
+function ship(id){
+  $('actionTitle').textContent='Mark as Shipped';
+  $('actionBody').innerHTML='<div class="field"><label>Courier Name</label><input id="courier" placeholder="Ekart / Delhivery"></div><div class="field"><label>Tracking ID</label><input id="tracking" placeholder="Tracking number"></div><button class="primary" style="width:100%" onclick="submitShip(\''+id+'\')">Confirm Shipped</button>';
+  showM('action');
+}
+
+async function submitShip(id){
+  let c=$('courier').value.trim(),t=$('tracking').value.trim();
+  if(!c||!t){toast('Courier and tracking ID required',true);return}
+  closeM('action');
+  await status(id,'shipped',{courier_name:c,courier_tracking_id:t});
+}
+
+function markHubReceived(id){
+  status(id,'shipped',{hub_received_at:new Date().toISOString()});
+}
+
 function cancelOrder(id){$('actionTitle').textContent='Cancel Order';$('actionBody').innerHTML='<div class="field"><label>Reason</label><select id="reason"><option>Out of stock</option><option>Customer requested</option><option>Address not serviceable</option><option>Payment issue</option><option>Duplicate order</option><option>Other</option></select></div><div class="field"><textarea id="reasonText" rows="3" placeholder="Details"></textarea></div><button class="primary" style="width:100%;background:#e11d48" onclick="submitCancel(\''+id+'\')">Cancel Order</button>';showM('action')}
 async function submitCancel(id){let r=$('reason').value,t=$('reasonText').value.trim();if(r==='Other'&&t)r=t;closeM('action');await status(id,'cancelled',{cancelled_by:'admin',cancelled_at:new Date().toISOString(),cancel_reason:r})}
 async function confirmCancel(id){if(confirm('Confirm cancellation?'))await status(id,'cancelled',{cancelled_by:'customer',cancelled_at:new Date().toISOString()})}async function rejectCancel(id){await status(id,'placed',{cancel_requested_at:null})}
-function details(id){let o=get(id),a=addr(o),ar=its(o);if(!o)return;$('detailTitle').textContent='Order #'+idof(o);$('detailBody').innerHTML='<div class="grid"><div class="detail"><small>Status</small><b>'+esc(o.status)+'</b></div><div class="detail"><small>Total</small><b>'+money(o.total_amount)+'</b></div><div class="detail"><small>Payment</small><b>'+esc(o.payment_method||'—')+'</b></div><div class="detail"><small>Email</small><b>'+esc(o.user_email||'—')+'</b></div><div class="detail"><small>Customer</small><b>'+esc(a.name||'—')+'</b></div><div class="detail"><small>Mobile</small><b>'+esc(a.phone||'—')+'</b></div><div class="detail"><small>Courier</small><b>'+esc(o.courier_name||'—')+'</b></div><div class="detail"><small>Tracking</small><b>'+esc(o.courier_tracking_id||'—')+'</b></div></div><h4>Delivery Date</h4><div class="field"><input id="delivery" type="date" value="'+(o.delivery_date?new Date(o.delivery_date).toISOString().slice(0,10):'')+'"></div><button class="btn green" onclick="saveDelivery(\''+o.id+'\')">Save Delivery Date</button><h4>Items</h4><div class="items">'+ar.map(x=>'<div class="item"><img src="'+esc(iimg(x))+'"><span>'+esc(iname(x))+' &times;'+qty(x)+'<br>'+money(price(x))+'</span></div>').join('')+'</div><h4>Address</h4><div class="detail">'+esc([a.name,a.phone,a.house,a.road,a.landmark,a.city,a.district,a.state,a.pincode].filter(Boolean).join(', ')||'—')+'</div>';showM('detail')}
-async function saveDelivery(id){let v=$('delivery').value;if(!v)return;let r=await sb.from('orders').update({delivery_date:new Date(v+'T12:00:00').toISOString()}).eq('id',id);if(r.error)toast(r.error.message,true);else{toast('Delivery date saved');closeM('detail');loadOrders()}}
+function dateInputValue(v){
+  if(!v) return '';
+  const d=new Date(v);
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+function defaultDeliveryDate(o){
+  return o.delivery_date ? new Date(o.delivery_date) : new Date(new Date(o.created_at).getTime()+6*86400000);
+}
+function details(id){
+  let o=get(id),a=addr(o),ar=its(o);
+  if(!o)return;
+  const delivery=dateInputValue(defaultDeliveryDate(o));
+  $('detailTitle').textContent='Order #'+idof(o);
+  $('detailBody').innerHTML='<div class="grid"><div class="detail"><small>Status</small><b>'+esc(o.status||'placed')+'</b></div><div class="detail"><small>Total</small><b>'+money(o.total_amount)+'</b></div><div class="detail"><small>Payment</small><b>'+esc(o.payment_method||'—')+'</b></div><div class="detail"><small>Email</small><b>'+esc(o.user_email||'—')+'</b></div><div class="detail"><small>Customer</small><b>'+esc(a.name||'—')+'</b></div><div class="detail"><small>Mobile</small><b>'+esc(a.phone||'—')+'</b></div><div class="detail"><small>Courier</small><b>'+esc(o.courier_name||'—')+'</b></div><div class="detail"><small>Tracking</small><b>'+esc(o.courier_tracking_id||'—')+'</b></div></div><h4>Delivery Date</h4><div class="muted" style="margin:-6px 0 8px">Default: 6 days after order · Admin changes sync to customer automatically.</div><div class="field"><input id="delivery" type="date" value="'+delivery+'"></div><button class="btn green" onclick="saveDelivery(\''+o.id+'\')">Save Delivery Date</button><h4>Items</h4><div class="items">'+ar.map(x=>'<div class="item"><img src="'+esc(iimg(x))+'"><span>'+esc(iname(x))+' &times;'+qty(x)+'<br>'+money(price(x))+'</span></div>').join('')+'</div><h4>Address</h4><div class="detail">'+esc([a.name,a.phone,a.house,a.road,a.landmark,a.city,a.district,a.state,a.pincode].filter(Boolean).join(', ')||'—')+'</div>';
+  showM('detail');
+}
+async function saveDelivery(id){
+  let v=$('delivery').value;
+  if(!v){toast('Select a delivery date',true);return}
+  let r=await sb.from('orders').update({delivery_date:new Date(v+'T12:00:00').toISOString()}).eq('id',id);
+  if(r.error)toast(r.error.message,true);
+  else{toast('Delivery date saved');closeM('detail');loadOrders();}
+}
+
 async function openChat(id){chatId=id;let o=get(id),a=addr(o);$('chatTitle').textContent='Chat — #'+idof(o)+' · '+(a.name||'Customer');showM('chat');await loadChat()}
 async function loadChat(){let r=await sb.from('order_messages').select('*').eq('order_id',chatId).order('created_at',{ascending:true});if(r.error){$('chatMsgs').innerHTML='<div class="empty">'+esc(r.error.message)+'</div>';return}$('chatMsgs').innerHTML=(r.data||[]).map(m=>'<div class="bubble '+(m.sender_type==='admin'?'admin':'user')+'">'+esc(m.message)+'<div style="font-size:9px;opacity:.7">'+dt(m.created_at)+'</div></div>').join('')||'<div class="empty">No messages</div>';$('chatMsgs').scrollTop=$('chatMsgs').scrollHeight;await sb.from('order_messages').update({is_read:true}).eq('order_id',chatId).eq('sender_type','customer')}
 async function sendChat(){let m=$('chatInput').value.trim();if(!m||!chatId)return;$('chatInput').value='';let r=await sb.from('order_messages').insert({order_id:chatId,sender_type:'admin',message:m,is_read:true});if(r.error)toast(r.error.message,true);else loadChat()}
