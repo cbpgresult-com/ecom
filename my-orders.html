@@ -269,6 +269,8 @@
     .ss-shipping-value { display:inline-block; font-size:12px; font-weight:700; color:#475569; background:#f4f8fc; border:1px solid #e5edf5; border-radius:7px; padding:5px 8px; box-shadow:0 1px 2px rgba(15,23,42,.03); }
     .ss-expected-delivery { margin-top:13px; padding:9px 12px; border-radius:10px; background:#f8fafc; border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; gap:5px; font-size:11px; color:#6b7280; }
     .ss-expected-delivery strong { color:#374151; font-size:12px; font-weight:800; }
+    .ss-cancel-reason { margin-top:13px; text-align:center; font-size:11px; color:#6b7280; }
+    .ss-cancel-reason strong { color:#dc2626; font-size:12px; font-weight:800; }
     .ss-card-row1 {
       display: flex;
       align-items: flex-start;
@@ -1766,7 +1768,7 @@ function renderDetail(order){
 
     ${paymentHtml}
 
-    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}${(order.status==='cancelled'||order.status==='cancel_requested')?'':`<div class="ss-expected-delivery">Expected Delivery <strong>${esc(fmtHdrDate(getEffective(order)))}</strong></div>`}<div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
+    ${stepperHtml ? `<div class="ss-stepper">${stepperHtml}${order.status==='delivered'?'':((order.status==='cancelled'||order.status==='cancel_requested')?`<div class="ss-cancel-reason">Cancel Reason: <strong>${esc(order.cancel_reason||'Cancelled by seller')}</strong></div>`:`<div class="ss-expected-delivery">Expected Delivery <strong>${esc(fmtHdrDate(getEffective(order)))}</strong></div>`)}<div class="ss-see-updates" onclick="openUpdatesModal()">See All Updates ›</div></div>` : ''}
 
     <div class="ss-items-box">
       <div class="ss-section-title">Items (${items.length})</div>
