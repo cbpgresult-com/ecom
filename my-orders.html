@@ -258,10 +258,10 @@
     .ss-card-delivery { font-size:9.5px; font-weight:600; color:#9ca3af; text-align:right; white-space:nowrap; line-height:1.2; }
     .ss-card-delivery strong { display:block; font-size:11.5px; color:#374151; margin-top:2px; font-weight:800; }
     .ss-card-delivery.delivered span { color:#15803d; font-weight:800; } .ss-card-delivery.delivered strong { color:#15803d; }
-    .ss-shipping-highlight { margin:0 0 20px; padding:12px 14px; border:1px solid #e2e8f0; border-radius:12px; background:linear-gradient(180deg,#fbfdff,#f8fafc); display:flex; flex-wrap:wrap; gap:9px 18px; }
+    .ss-shipping-highlight { margin:0 0 20px; padding:11px 13px; border:1px solid #edf1f5; border-radius:11px; background:#fafbfc; display:flex; flex-wrap:wrap; gap:8px 16px; } 
     .ss-shipping-item { min-width:160px; }
     .ss-shipping-label { display:block; font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.35px; margin-bottom:3px; }
-    .ss-shipping-value { display:inline-block; font-size:12px; font-weight:700; color:#334155; background:#eef5ff; border:1px solid #dbeafe; border-radius:7px; padding:5px 8px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+    .ss-shipping-value { display:inline-block; font-size:12px; font-weight:700; color:#475569; background:#f4f8fc; border:1px solid #e5edf5; border-radius:7px; padding:5px 8px; box-shadow:0 1px 2px rgba(15,23,42,.03); }
     .ss-expected-delivery { margin-top:13px; padding:9px 12px; border-radius:10px; background:#f8fafc; border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; gap:5px; font-size:11px; color:#6b7280; }
     .ss-expected-delivery strong { color:#374151; font-size:12px; font-weight:800; }
     .ss-card-row1 {
@@ -1391,7 +1391,7 @@ function renderList(){
           <div class="ss-card-title">${esc(first.title||'Order')}</div>
           <div class="ss-card-statuscol">
             ${badge(o)}
-            <div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}"><span>${o.status==='delivered'?'Delivered':'Delivery date'}</span><strong>${fmtShort(getExpected(o))}</strong></div>
+            <div class="ss-card-delivery ${o.status==='delivered'?'delivered':''}"><span>${o.status==='delivered'?'Delivered':'Delivery'}</span><strong>${fmtShort(getExpected(o))}</strong></div>
           </div>
         </div>
         <div class="ss-card-meta">ORD-${esc(dispId(o))} &nbsp;·&nbsp; ${fmtShort(o.created_at)}</div>
