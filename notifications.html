@@ -1,390 +1,2639 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0,viewport-fit=cover"
+>
+
+<meta
+  name="theme-color"
+  content="#ffffff"
+>
+
 <title>Notifications</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+
+html{
+  scroll-behavior:smooth;
+}
+
+
 body{
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:#f6f7fb;color:#111827;min-height:100vh;
+
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background:#f6f7fb;
+
+  color:#111827;
+
+  min-height:100vh;
+
   -webkit-font-smoothing:antialiased;
+
 }
-button{font:inherit}
+
+
+button{
+  font:inherit;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
 .top-header{
-  position:sticky;top:0;z-index:50;height:68px;
-  background:rgba(255,255,255,.92);backdrop-filter:blur(18px);
-  border-bottom:1px solid #e9ebef;
+
+  position:sticky;
+
+  top:0;
+
+  z-index:50;
+
+  height:68px;
+
+  background:
+    rgba(255,255,255,.94);
+
+  backdrop-filter:
+    blur(18px);
+
+  border-bottom:
+    1px solid #e9ebef;
+
 }
+
+
 .header-inner{
-  width:min(1000px,calc(100% - 32px));height:100%;margin:auto;
-  display:flex;align-items:center;justify-content:space-between;
+
+  width:
+    min(1000px,calc(100% - 32px));
+
+  height:100%;
+
+  margin:auto;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
 }
+
+
 .back-btn{
-  width:42px;height:42px;border:0;border-radius:50%;background:#f2f3f5;
-  display:grid;place-items:center;cursor:pointer;transition:.2s;
+
+  width:42px;
+
+  height:42px;
+
+  border:0;
+
+  border-radius:50%;
+
+  background:#f2f3f5;
+
+  display:grid;
+
+  place-items:center;
+
+  cursor:pointer;
+
+  transition:.2s;
+
 }
-.back-btn:hover{background:#e7e9ed} .back-btn:active{transform:scale(.92)}
-.back-btn svg{width:21px;height:21px}
+
+
+.back-btn:hover{
+  background:#e7e9ed;
+}
+
+
+.back-btn:active{
+  transform:scale(.92);
+}
+
+
+.back-btn svg{
+
+  width:21px;
+
+  height:21px;
+
+}
+
+
 .header-title{
-  position:absolute;left:50%;transform:translateX(-50%);
-  font-size:18px;font-weight:800;letter-spacing:-.35px;
+
+  position:absolute;
+
+  left:50%;
+
+  transform:translateX(-50%);
+
+  font-size:18px;
+
+  font-weight:800;
+
+  letter-spacing:-.35px;
+
 }
+
+
 .mark-all{
-  border:0;background:transparent;color:#2563eb;font-size:13px;
-  font-weight:700;padding:9px;border-radius:9px;cursor:pointer;
+
+  border:0;
+
+  background:transparent;
+
+  color:#2563eb;
+
+  font-size:13px;
+
+  font-weight:700;
+
+  padding:9px;
+
+  border-radius:9px;
+
+  cursor:pointer;
+
 }
-.mark-all:hover{background:#eff6ff}
-.container{width:min(900px,calc(100% - 28px));margin:auto;padding:30px 0 80px}
+
+
+.mark-all:hover{
+  background:#eff6ff;
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.container{
+
+  width:
+    min(900px,calc(100% - 28px));
+
+  margin:auto;
+
+  padding:
+    30px 0 80px;
+
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
 .summary{
-  background:#fff;border:1px solid #e8eaf0;border-radius:20px;padding:20px;
-  display:flex;align-items:center;justify-content:space-between;
-  box-shadow:0 8px 30px rgba(15,23,42,.045);animation:fadeUp .4s ease both;
+
+  background:#fff;
+
+  border:
+    1px solid #e8eaf0;
+
+  border-radius:20px;
+
+  padding:20px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  box-shadow:
+    0 8px 30px rgba(15,23,42,.045);
+
+  animation:
+    fadeUp .4s ease both;
+
 }
-.summary-left{display:flex;align-items:center;gap:14px}
+
+
+.summary-left{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:14px;
+
+}
+
+
 .summary-icon{
-  width:50px;height:50px;border-radius:16px;background:#eef4ff;
-  display:grid;place-items:center;font-size:23px;
+
+  width:50px;
+
+  height:50px;
+
+  border-radius:16px;
+
+  background:#eef4ff;
+
+  display:grid;
+
+  place-items:center;
+
+  font-size:23px;
+
 }
-.summary-title{font-size:15px;font-weight:800}
-.summary-sub{font-size:12px;color:#8a93a3;margin-top:4px}
+
+
+.summary-title{
+
+  font-size:15px;
+
+  font-weight:800;
+
+}
+
+
+.summary-sub{
+
+  font-size:12px;
+
+  color:#8a93a3;
+
+  margin-top:4px;
+
+}
+
+
 .count{
-  min-width:32px;height:32px;padding:0 9px;border-radius:99px;background:#2563eb;
-  color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800;
-  box-shadow:0 5px 15px rgba(37,99,235,.25);
+
+  min-width:32px;
+
+  height:32px;
+
+  padding:0 9px;
+
+  border-radius:99px;
+
+  background:#2563eb;
+
+  color:#fff;
+
+  display:grid;
+
+  place-items:center;
+
+  font-size:12px;
+
+  font-weight:800;
+
+  box-shadow:
+    0 5px 15px rgba(37,99,235,.25);
+
 }
-.filters{display:flex;gap:8px;overflow:auto;padding:16px 1px 12px;scrollbar-width:none}
-.filters::-webkit-scrollbar{display:none}
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
+.filters{
+
+  display:flex;
+
+  gap:8px;
+
+  overflow:auto;
+
+  padding:
+    16px 1px 12px;
+
+  scrollbar-width:none;
+
+}
+
+
+.filters::-webkit-scrollbar{
+  display:none;
+}
+
+
 .filter{
-  flex:0 0 auto;border:1px solid #e2e5ea;background:#fff;color:#687386;
-  border-radius:99px;padding:9px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;
+
+  flex:0 0 auto;
+
+  border:
+    1px solid #e2e5ea;
+
+  background:#fff;
+
+  color:#687386;
+
+  border-radius:99px;
+
+  padding:
+    9px 15px;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+  transition:.2s;
+
 }
-.filter.active{background:#111827;color:#fff;border-color:#111827}
-.list{display:flex;flex-direction:column;gap:10px}
+
+
+.filter.active{
+
+  background:#111827;
+
+  color:#fff;
+
+  border-color:#111827;
+
+}
+
+
+/* =====================================================
+   LIST
+===================================================== */
+
+.list{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:10px;
+
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
 .card{
-  position:relative;background:#fff;border:1px solid #e8eaf0;border-radius:18px;
-  padding:16px;display:flex;gap:13px;cursor:pointer;overflow:hidden;
-  transition:transform .2s,box-shadow .2s,border-color .2s;
-  animation:fadeUp .35s ease both;
+
+  position:relative;
+
+  background:#fff;
+
+  border:
+    1px solid #e8eaf0;
+
+  border-radius:18px;
+
+  padding:16px;
+
+  display:flex;
+
+  gap:13px;
+
+  overflow:hidden;
+
+  transition:
+    transform .2s,
+    box-shadow .2s,
+    border-color .2s;
+
+  animation:
+    fadeUp .35s ease both;
+
 }
-.card:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(15,23,42,.07);border-color:#dce1e8}
-.card.unread{background:linear-gradient(90deg,#f8fbff,#fff);border-color:#d8e7ff}
-.card.unread:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#2563eb}
+
+
+.card:hover{
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 12px 32px rgba(15,23,42,.07);
+
+  border-color:#dce1e8;
+
+}
+
+
+.card.unread{
+
+  background:
+    linear-gradient(
+      90deg,
+      #f8fbff,
+      #fff
+    );
+
+  border-color:#d8e7ff;
+
+}
+
+
+.card.unread:before{
+
+  content:"";
+
+  position:absolute;
+
+  left:0;
+
+  top:0;
+
+  bottom:0;
+
+  width:3px;
+
+  background:#2563eb;
+
+}
+
+
+/* =====================================================
+   ICON
+===================================================== */
+
 .icon{
-  flex:0 0 46px;width:46px;height:46px;border-radius:14px;background:#f2f4f7;
-  display:grid;place-items:center;font-size:21px;transition:.2s;
+
+  flex:
+    0 0 46px;
+
+  width:46px;
+
+  height:46px;
+
+  border-radius:14px;
+
+  background:#f2f4f7;
+
+  display:grid;
+
+  place-items:center;
+
+  font-size:21px;
+
+  transition:.2s;
+
 }
-.card:hover .icon{transform:scale(1.06)}
-.card[data-type="offer"] .icon{background:#fff7ed}
-.card[data-type="order"] .icon{background:#eff6ff}
-.card[data-type="payment"] .icon{background:#ecfdf5}
-.card[data-type="account"] .icon{background:#f5f3ff}
-.content{min-width:0;flex:1}
-.top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.title{font-size:14px;font-weight:800;line-height:1.35}
-.time{font-size:10px;color:#9aa2af;white-space:nowrap}
-.message{font-size:12px;line-height:1.55;color:#697386;margin-top:5px}
-.dot{width:7px;height:7px;flex:0 0 7px;background:#2563eb;border-radius:50%;margin-top:7px;box-shadow:0 0 0 4px rgba(37,99,235,.08)}
+
+
+.card:hover .icon{
+  transform:scale(1.06);
+}
+
+
+.card[data-type="offer"] .icon{
+  background:#fff7ed;
+}
+
+
+.card[data-type="order"] .icon{
+  background:#eff6ff;
+}
+
+
+.card[data-type="payment"] .icon{
+  background:#ecfdf5;
+}
+
+
+.card[data-type="account"] .icon{
+  background:#f5f3ff;
+}
+
+
+.card[data-type="delivery"] .icon{
+  background:#fdf4ff;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.content{
+
+  min-width:0;
+
+  flex:1;
+
+}
+
+
+.top{
+
+  display:flex;
+
+  align-items:flex-start;
+
+  justify-content:space-between;
+
+  gap:10px;
+
+}
+
+
+.title{
+
+  font-size:14px;
+
+  font-weight:800;
+
+  line-height:1.35;
+
+}
+
+
+.time{
+
+  font-size:10px;
+
+  color:#9aa2af;
+
+  white-space:nowrap;
+
+}
+
+
+.message{
+
+  font-size:12px;
+
+  line-height:1.55;
+
+  color:#697386;
+
+  margin-top:5px;
+
+  white-space:pre-wrap;
+
+  word-break:break-word;
+
+}
+
+
+.dot{
+
+  width:7px;
+
+  height:7px;
+
+  flex:
+    0 0 7px;
+
+  background:#2563eb;
+
+  border-radius:50%;
+
+  margin-top:7px;
+
+  box-shadow:
+    0 0 0 4px rgba(37,99,235,.08);
+
+}
+
+
+/* =====================================================
+   DOWNLOAD
+===================================================== */
+
+.download-btn{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:6px;
+
+  margin-top:11px;
+
+  padding:
+    7px 11px;
+
+  border:
+    1px solid #dbeafe;
+
+  background:#eff6ff;
+
+  color:#2563eb;
+
+  border-radius:8px;
+
+  font-size:11px;
+
+  font-weight:800;
+
+  text-decoration:none;
+
+  transition:
+    background .2s,
+    transform .15s;
+
+}
+
+
+.download-btn:hover{
+
+  background:#dbeafe;
+
+  transform:
+    translateY(-1px);
+
+}
+
+
+.download-btn:active{
+
+  transform:
+    scale(.97);
+
+}
+
+
+/* =====================================================
+   DELETE
+===================================================== */
+
 .delete{
-  position:absolute;right:10px;bottom:9px;width:29px;height:29px;border:0;
-  border-radius:9px;background:#f8f9fb;color:#9aa2af;display:grid;place-items:center;
-  cursor:pointer;opacity:0;transition:.2s;
+
+  position:absolute;
+
+  right:10px;
+
+  bottom:9px;
+
+  width:29px;
+
+  height:29px;
+
+  border:0;
+
+  border-radius:9px;
+
+  background:#f8f9fb;
+
+  color:#9aa2af;
+
+  display:grid;
+
+  place-items:center;
+
+  cursor:pointer;
+
+  opacity:0;
+
+  transition:.2s;
+
 }
-.card:hover .delete{opacity:1} .delete:hover{color:#ef4444;background:#fff1f2}
-.delete svg{width:15px;height:15px}
+
+
+.card:hover .delete{
+  opacity:1;
+}
+
+
+.delete:hover{
+
+  color:#ef4444;
+
+  background:#fff1f2;
+
+}
+
+
+.delete svg{
+
+  width:15px;
+
+  height:15px;
+
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
 .empty{
-  min-height:320px;background:#fff;border:1px solid #e8eaf0;border-radius:20px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  padding:30px;box-shadow:0 8px 30px rgba(15,23,42,.035);
+
+  min-height:320px;
+
+  background:#fff;
+
+  border:
+    1px solid #e8eaf0;
+
+  border-radius:20px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  text-align:center;
+
+  padding:30px;
+
+  box-shadow:
+    0 8px 30px rgba(15,23,42,.035);
+
 }
+
+
 .empty-icon{
-  width:76px;height:76px;border-radius:25px;background:#f1f3f6;display:grid;place-items:center;
-  font-size:35px;margin-bottom:16px;animation:float 3s ease-in-out infinite;
+
+  width:76px;
+
+  height:76px;
+
+  border-radius:25px;
+
+  background:#f1f3f6;
+
+  display:grid;
+
+  place-items:center;
+
+  font-size:35px;
+
+  margin-bottom:16px;
+
+  animation:
+    float 3s ease-in-out infinite;
+
 }
-.empty h2{font-size:18px;margin-bottom:7px} .empty p{max-width:340px;color:#99a1ae;font-size:12px;line-height:1.6}
-.skeleton{height:80px;background:#fff;border:1px solid #e8eaf0;border-radius:18px;position:relative;overflow:hidden}
-.skeleton:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);transform:translateX(-100%);animation:shimmer 1.2s infinite}
-.skel-inner{height:100%;padding:16px;display:flex;gap:13px}
-.skel-icon{width:46px;height:46px;border-radius:14px;background:#edf0f4}
-.skel-lines{flex:1;padding-top:3px} .skel-line{height:10px;width:75%;background:#edf0f4;border-radius:5px;margin-bottom:9px} .skel-line.short{width:48%}
+
+
+.empty h2{
+
+  font-size:18px;
+
+  margin-bottom:7px;
+
+}
+
+
+.empty p{
+
+  max-width:340px;
+
+  color:#99a1ae;
+
+  font-size:12px;
+
+  line-height:1.6;
+
+}
+
+
+/* =====================================================
+   SKELETON
+===================================================== */
+
+.skeleton{
+
+  height:80px;
+
+  background:#fff;
+
+  border:
+    1px solid #e8eaf0;
+
+  border-radius:18px;
+
+  position:relative;
+
+  overflow:hidden;
+
+}
+
+
+.skeleton:after{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.8),
+      transparent
+    );
+
+  transform:
+    translateX(-100%);
+
+  animation:
+    shimmer 1.2s infinite;
+
+}
+
+
+.skel-inner{
+
+  height:100%;
+
+  padding:16px;
+
+  display:flex;
+
+  gap:13px;
+
+}
+
+
+.skel-icon{
+
+  width:46px;
+
+  height:46px;
+
+  border-radius:14px;
+
+  background:#edf0f4;
+
+}
+
+
+.skel-lines{
+
+  flex:1;
+
+  padding-top:3px;
+
+}
+
+
+.skel-line{
+
+  height:10px;
+
+  width:75%;
+
+  background:#edf0f4;
+
+  border-radius:5px;
+
+  margin-bottom:9px;
+
+}
+
+
+.skel-line.short{
+  width:48%;
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
 .toast{
-  position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);
-  background:#111827;color:#fff;padding:12px 17px;border-radius:12px;font-size:12px;font-weight:700;
-  opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:0 10px 35px rgba(0,0,0,.2)
+
+  position:fixed;
+
+  left:50%;
+
+  bottom:25px;
+
+  transform:
+    translate(-50%,20px);
+
+  background:#111827;
+
+  color:#fff;
+
+  padding:
+    12px 17px;
+
+  border-radius:12px;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.25s;
+
+  z-index:100;
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.2);
+
 }
-.toast.show{opacity:1;transform:translate(-50%,0)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
-@keyframes shimmer{to{transform:translateX(100%)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+
+.toast.show{
+
+  opacity:1;
+
+  transform:
+    translate(-50%,0);
+
+}
+
+
+/* =====================================================
+   ANIMATION
+===================================================== */
+
+@keyframes fadeUp{
+
+  from{
+
+    opacity:0;
+
+    transform:
+      translateY(9px);
+
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:
+      translateY(0);
+
+  }
+
+}
+
+
+@keyframes shimmer{
+
+  to{
+
+    transform:
+      translateX(100%);
+
+  }
+
+}
+
+
+@keyframes float{
+
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-6px);
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
 @media(max-width:700px){
-  .top-header{height:62px}
-  .header-inner{width:calc(100% - 18px)}
-  .header-title{font-size:16px}
-  .back-btn{width:39px;height:39px}
-  .mark-all{font-size:11px;padding:8px 5px}
-  .container{width:calc(100% - 18px);padding:14px 0 calc(80px + env(safe-area-inset-bottom))}
-  .summary{padding:15px;border-radius:16px}
-  .summary-icon{width:43px;height:43px;border-radius:13px;font-size:20px}
-  .summary-title{font-size:14px} .summary-sub{font-size:10px}
-  .count{min-width:29px;height:29px;font-size:11px}
-  .filter{padding:8px 13px;font-size:11px}
-  .list{gap:8px}
-  .card{padding:13px;border-radius:15px;gap:11px}
-  .icon{width:42px;height:42px;flex-basis:42px;border-radius:13px;font-size:19px}
-  .title{font-size:13px} .message{font-size:11px} .time{font-size:9px}
-  .delete{opacity:1}
+
+  .top-header{
+    height:62px;
+  }
+
+
+  .header-inner{
+
+    width:
+      calc(100% - 18px);
+
+  }
+
+
+  .header-title{
+
+    font-size:16px;
+
+  }
+
+
+  .back-btn{
+
+    width:39px;
+
+    height:39px;
+
+  }
+
+
+  .mark-all{
+
+    font-size:11px;
+
+    padding:
+      8px 5px;
+
+  }
+
+
+  .container{
+
+    width:
+      calc(100% - 18px);
+
+    padding:
+      14px 0
+      calc(80px + env(safe-area-inset-bottom));
+
+  }
+
+
+  .summary{
+
+    padding:15px;
+
+    border-radius:16px;
+
+  }
+
+
+  .summary-icon{
+
+    width:43px;
+
+    height:43px;
+
+    border-radius:13px;
+
+    font-size:20px;
+
+  }
+
+
+  .summary-title{
+    font-size:14px;
+  }
+
+
+  .summary-sub{
+    font-size:10px;
+  }
+
+
+  .count{
+
+    min-width:29px;
+
+    height:29px;
+
+    font-size:11px;
+
+  }
+
+
+  .filter{
+
+    padding:
+      8px 13px;
+
+    font-size:11px;
+
+  }
+
+
+  .list{
+    gap:8px;
+  }
+
+
+  .card{
+
+    padding:13px;
+
+    border-radius:15px;
+
+    gap:11px;
+
+  }
+
+
+  .icon{
+
+    width:42px;
+
+    height:42px;
+
+    flex-basis:42px;
+
+    border-radius:13px;
+
+    font-size:19px;
+
+  }
+
+
+  .title{
+    font-size:13px;
+  }
+
+
+  .message{
+    font-size:11px;
+  }
+
+
+  .time{
+    font-size:9px;
+  }
+
+
+  .delete{
+    opacity:1;
+  }
+
+
 }
+
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
 @media(max-width:380px){
-  .card{padding:11px} .icon{width:39px;height:39px;flex-basis:39px}
-  .title{font-size:12px} .message{font-size:10.5px} .time{display:none}
+
+  .card{
+    padding:11px;
+  }
+
+
+  .icon{
+
+    width:39px;
+
+    height:39px;
+
+    flex-basis:39px;
+
+  }
+
+
+  .title{
+    font-size:12px;
+  }
+
+
+  .message{
+    font-size:10.5px;
+  }
+
+
+  .time{
+    display:none;
+  }
+
 }
+
 </style>
+
 </head>
+
+
 <body>
 
+
 <header class="top-header">
+
   <div class="header-inner">
-    <button class="back-btn" id="backBtn" aria-label="Back">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+
+
+    <button
+      class="back-btn"
+      id="backBtn"
+      aria-label="Back"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+
+        <path d="m15 18-6-6 6-6"/>
+
+      </svg>
+
     </button>
-    <div class="header-title">Notifications</div>
-    <button class="mark-all" id="markAllBtn">Mark all read</button>
+
+
+    <div class="header-title">
+      Notifications
+    </div>
+
+
+    <button
+      class="mark-all"
+      id="markAllBtn"
+    >
+      Mark all read
+    </button>
+
+
   </div>
+
 </header>
 
+
+
 <main class="container">
+
+
   <section class="summary">
+
     <div class="summary-left">
-      <div class="summary-icon">🔔</div>
-      <div>
-        <div class="summary-title">Your Notifications</div>
-        <div class="summary-sub" id="summaryText">Stay updated with your latest activity</div>
+
+
+      <div class="summary-icon">
+        🔔
       </div>
+
+
+      <div>
+
+        <div class="summary-title">
+          Your Notifications
+        </div>
+
+        <div
+          class="summary-sub"
+          id="summaryText"
+        >
+          Stay updated with your latest activity
+        </div>
+
+      </div>
+
+
     </div>
-    <div class="count" id="unreadCount">0</div>
+
+
+    <div
+      class="count"
+      id="unreadCount"
+    >
+      0
+    </div>
+
+
   </section>
 
+
+
   <div class="filters">
-    <button class="filter active" data-filter="all">All</button>
-    <button class="filter" data-filter="unread">Unread</button>
-    <button class="filter" data-filter="order">Orders</button>
-    <button class="filter" data-filter="offer">Offers</button>
-    <button class="filter" data-filter="account">Account</button>
+
+    <button
+      class="filter active"
+      data-filter="all"
+    >
+      All
+    </button>
+
+
+    <button
+      class="filter"
+      data-filter="unread"
+    >
+      Unread
+    </button>
+
+
+    <button
+      class="filter"
+      data-filter="order"
+    >
+      Orders
+    </button>
+
+
+    <button
+      class="filter"
+      data-filter="offer"
+    >
+      Offers
+    </button>
+
+
+    <button
+      class="filter"
+      data-filter="payment"
+    >
+      Payment
+    </button>
+
+
+    <button
+      class="filter"
+      data-filter="delivery"
+    >
+      Delivery
+    </button>
+
+
+    <button
+      class="filter"
+      data-filter="account"
+    >
+      Account
+    </button>
+
+
   </div>
 
-  <div class="list" id="notificationList">
-    <div class="skeleton"><div class="skel-inner"><div class="skel-icon"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line short"></div></div></div></div>
-    <div class="skeleton"><div class="skel-inner"><div class="skel-icon"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line short"></div></div></div></div>
+
+
+  <div
+    class="list"
+    id="notificationList"
+  >
+
+    <div class="skeleton">
+
+      <div class="skel-inner">
+
+        <div class="skel-icon"></div>
+
+        <div class="skel-lines">
+
+          <div class="skel-line"></div>
+
+          <div class="skel-line short"></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="skeleton">
+
+      <div class="skel-inner">
+
+        <div class="skel-icon"></div>
+
+        <div class="skel-lines">
+
+          <div class="skel-line"></div>
+
+          <div class="skel-line short"></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
+
+
 </main>
 
-<div class="toast" id="toast"></div>
+
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
 
 <script>
-const SUPABASE_URL = "https://bszojvhitsoamhksyjul.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzem9qdmhpdHNvYW1oa3N5anVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1OTY0OTMsImV4cCI6MjEwMjE3MjQ5M30.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+  "https://bszojvhitsoamhksyjul.supabase.co";
+
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6MTc4NjU5NjQ5MywiZXhwIjoyMTAyMTcyNDkzfQ.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================================
+   STATE
+===================================================== */
 
 let notifications = [];
+
 let activeFilter = "all";
+
 let realtimeChannel = null;
 
-const list = document.getElementById("notificationList");
-const unreadCount = document.getElementById("unreadCount");
-const summaryText = document.getElementById("summaryText");
-const toast = document.getElementById("toast");
 
-function showToast(message){
-  toast.textContent = message;
-  toast.classList.add("show");
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(()=>toast.classList.remove("show"),2200);
-}
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const list =
+  document.getElementById(
+    "notificationList"
+  );
+
+
+const unreadCount =
+  document.getElementById(
+    "unreadCount"
+  );
+
+
+const summaryText =
+  document.getElementById(
+    "summaryText"
+  );
+
+
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
 
 function escapeHtml(value){
-  return String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    function(char){
+
+      return {
+
+        "&":"&amp;",
+
+        "<":"&lt;",
+
+        ">":"&gt;",
+
+        '"':"&quot;",
+
+        "'":"&#039;"
+
+      }[char];
+
+    }
+  );
+
 }
+
+
+/* =====================================================
+   DATE
+===================================================== */
 
 function timeAgo(date){
-  const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  if(seconds < 10) return "Just now";
-  if(seconds < 60) return seconds + " sec ago";
-  const minutes = Math.floor(seconds/60);
-  if(minutes < 60) return minutes + " min ago";
-  const hours = Math.floor(minutes/60);
-  if(hours < 24) return hours + " hr ago";
-  const days = Math.floor(hours/24);
-  if(days < 7) return days + (days>1?" days ago":" day ago");
-  return new Date(date).toLocaleDateString("en-IN",{day:"numeric",month:"short"});
+
+  const now =
+    Date.now();
+
+  const time =
+    new Date(date).getTime();
+
+
+  const seconds =
+    Math.max(
+      0,
+      Math.floor(
+        (now - time) / 1000
+      )
+    );
+
+
+  if(seconds < 60)
+    return "Just now";
+
+
+  const minutes =
+    Math.floor(
+      seconds / 60
+    );
+
+
+  if(minutes < 60)
+    return minutes +
+      "m ago";
+
+
+  const hours =
+    Math.floor(
+      minutes / 60
+    );
+
+
+  if(hours < 24)
+    return hours +
+      "h ago";
+
+
+  const days =
+    Math.floor(
+      hours / 24
+    );
+
+
+  if(days < 7)
+    return days +
+      "d ago";
+
+
+  return new Date(date)
+    .toLocaleDateString(
+      "en-IN",
+      {
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+      }
+    );
+
 }
 
-function iconFor(type){
-  return {order:"📦",offer:"🎁",payment:"💳",account:"👤",system:"⚙️",general:"🔔"}[type] || "🔔";
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+let toastTimer = null;
+
+
+function showToast(message){
+
+  toast.textContent =
+    message;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toastTimer =
+    setTimeout(
+      function(){
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2500
+    );
+
 }
 
-function filtered(){
-  if(activeFilter==="unread") return notifications.filter(n=>!n.is_read);
-  if(["order","offer","account"].includes(activeFilter)) return notifications.filter(n=>n.type===activeFilter);
-  return notifications;
-}
+
+/* =====================================================
+   RENDER
+===================================================== */
 
 function render(){
-  const unread = notifications.filter(n=>!n.is_read).length;
-  unreadCount.textContent = unread;
-  summaryText.textContent = unread ? `${unread} unread notification${unread>1?"s":""}` : "You're all caught up";
 
-  const data = filtered();
-  if(!data.length){
-    list.innerHTML = `<div class="empty"><div class="empty-icon">${activeFilter==="unread"?"🎉":"🔔"}</div>
-      <h2>${activeFilter==="unread"?"You're all caught up!":"No notifications"}</h2>
-      <p>${activeFilter==="unread"?"There are no unread notifications right now.":"When something important happens, it will appear here."}</p></div>`;
-    return;
+  let visible =
+    notifications.slice();
+
+
+  if(
+    activeFilter ===
+    "unread"
+  ){
+
+    visible =
+      visible.filter(
+        function(n){
+
+          return !n.is_read;
+
+        }
+      );
+
   }
 
-  list.innerHTML = data.map((n,i)=>`
-    <article class="card ${!n.is_read?"unread":""}" data-id="${escapeHtml(n.id)}" data-type="${escapeHtml(n.type||"general")}" style="animation-delay:${Math.min(i*45,300)}ms">
-      <div class="icon">${escapeHtml(n.icon || iconFor(n.type))}</div>
-      <div class="content">
-        <div class="top"><div class="title">${escapeHtml(n.title)}</div><div class="time">${timeAgo(n.created_at)}</div></div>
-        <div class="message">${escapeHtml(n.message)}</div>
-      </div>
-      ${!n.is_read?'<span class="dot"></span>':""}
-      <button class="delete" data-id="${escapeHtml(n.id)}" aria-label="Delete">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 15H6L5 6"/></svg>
-      </button>
-    </article>`).join("");
+  else if(
+    activeFilter !== "all"
+  ){
 
-  list.querySelectorAll(".card").forEach(card=>card.addEventListener("click",e=>{
-    if(e.target.closest(".delete")) return;
-    openNotification(card.dataset.id);
-  }));
-  list.querySelectorAll(".delete").forEach(btn=>btn.addEventListener("click",e=>{
-    e.stopPropagation(); deleteNotification(btn.dataset.id);
-  }));
+    visible =
+      visible.filter(
+        function(n){
+
+          return (
+            n.type ===
+            activeFilter
+          );
+
+        }
+      );
+
+  }
+
+
+  const unread =
+    notifications.filter(
+      function(n){
+
+        return !n.is_read;
+
+      }
+    ).length;
+
+
+  unreadCount.textContent =
+    unread;
+
+
+  if(unread){
+
+    summaryText.textContent =
+      unread +
+      " unread notification" +
+      (
+        unread === 1
+          ? ""
+          : "s"
+      );
+
+  }else{
+
+    summaryText.textContent =
+      "You're all caught up";
+
+  }
+
+
+  if(!visible.length){
+
+    list.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          🔔
+        </div>
+
+        <h2>
+          No notifications
+        </h2>
+
+        <p>
+          When something important happens,
+          it will appear here.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    visible.map(
+      function(n){
+
+        const icon =
+          n.icon ||
+          "🔔";
+
+
+        const type =
+          escapeHtml(
+            n.type ||
+            "general"
+          );
+
+
+        let downloadHtml =
+          "";
+
+
+        if(n.link){
+
+          const safeLink =
+            escapeHtml(
+              n.link
+            );
+
+
+          downloadHtml = `
+
+            <a
+              class="download-btn"
+              href="${safeLink}"
+              target="_blank"
+              rel="noopener noreferrer"
+              download
+              onclick="
+                event.stopPropagation();
+                markRead('${escapeHtml(n.id)}');
+              "
+            >
+
+              ↓ Download
+
+            </a>
+
+          `;
+
+        }
+
+
+        return `
+
+          <article
+            class="card ${n.is_read ? "" : "unread"}"
+            data-type="${type}"
+            data-id="${escapeHtml(n.id)}"
+          >
+
+
+            <div class="icon">
+
+              ${escapeHtml(icon)}
+
+            </div>
+
+
+            <div class="content">
+
+
+              <div class="top">
+
+                <div class="title">
+
+                  ${escapeHtml(n.title)}
+
+                </div>
+
+
+                <div class="time">
+
+                  ${timeAgo(
+                    n.created_at
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <div class="message">
+
+                ${escapeHtml(
+                  n.message
+                )}
+
+              </div>
+
+
+              ${downloadHtml}
+
+
+            </div>
+
+
+            ${
+              !n.is_read
+                ? '<span class="dot"></span>'
+                : ''
+            }
+
+
+            <button
+              class="delete"
+              data-id="${escapeHtml(n.id)}"
+              aria-label="Delete notification"
+              title="Delete"
+            >
+
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              >
+
+                <path d="M3 6h18"/>
+
+                <path d="M8 6V4h8v2"/>
+
+                <path d="M19 6l-1 15H6L5 6"/>
+
+              </svg>
+
+            </button>
+
+
+          </article>
+
+        `;
+
+      }
+    ).join("");
+
+
+  /* card click */
+
+  list
+    .querySelectorAll(".card")
+    .forEach(
+      function(card){
+
+        card.addEventListener(
+          "click",
+          function(event){
+
+            if(
+              event.target.closest(
+                ".delete"
+              )
+            ) return;
+
+
+            if(
+              event.target.closest(
+                ".download-btn"
+              )
+            ) return;
+
+
+            openNotification(
+              card.dataset.id
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+  /* delete */
+
+  list
+    .querySelectorAll(".delete")
+    .forEach(
+      function(btn){
+
+        btn.addEventListener(
+          "click",
+          function(event){
+
+            event.stopPropagation();
+
+            deleteNotification(
+              btn.dataset.id
+            );
+
+          }
+        );
+
+      }
+    );
+
 }
 
-document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
-  document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  activeFilter = btn.dataset.filter;
-  render();
-}));
+
+/* =====================================================
+   LOAD
+===================================================== */
 
 async function loadNotifications(){
+
   try{
-    const {data:sessionData} = await supabaseClient.auth.getSession();
-    const userId = sessionData?.session?.user?.id;
+
+    const {
+      data:sessionData
+    } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    const userId =
+      sessionData
+        ?.session
+        ?.user
+        ?.id;
+
+
     if(!userId){
-      list.innerHTML = `<div class="empty"><div class="empty-icon">🔐</div><h2>Login required</h2><p>Please login to view your notifications.</p></div>`;
+
+      list.innerHTML = `
+
+        <div class="empty">
+
+          <div class="empty-icon">
+            🔐
+          </div>
+
+          <h2>
+            Login required
+          </h2>
+
+          <p>
+            Please login to view your notifications.
+          </p>
+
+        </div>
+
+      `;
+
       return;
+
     }
 
-    const {data,error} = await supabaseClient.from("notifications")
-      .select("id,user_id,title,message,type,icon,link,is_read,created_at")
-      .eq("user_id",userId).order("created_at",{ascending:false});
-    if(error) throw error;
-    notifications = data || [];
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("notifications")
+        .select(
+          "id,user_id,title,message,type,icon,link,is_read,created_at"
+        )
+        .eq(
+          "user_id",
+          userId
+        )
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(error)
+      throw error;
+
+
+    notifications =
+      data || [];
+
+
     render();
-    setupRealtime(userId);
+
+
+    setupRealtime(
+      userId
+    );
+
+
   }catch(error){
-    console.error(error);
-    list.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><h2>Couldn't load notifications</h2><p>Please refresh and try again.</p></div>`;
+
+    console.error(
+      "Notification load error:",
+      error
+    );
+
+
+    list.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          ⚠️
+        </div>
+
+        <h2>
+          Couldn't load notifications
+        </h2>
+
+        <p>
+          ${escapeHtml(
+            error.message ||
+            "Please refresh and try again."
+          )}
+        </p>
+
+      </div>
+
+    `;
+
   }
+
 }
+
+
+/* =====================================================
+   MARK ONE READ
+===================================================== */
+
+async function markRead(id){
+
+  const notification =
+    notifications.find(
+      function(n){
+
+        return n.id === id;
+
+      }
+    );
+
+
+  if(!notification)
+    return;
+
+
+  if(notification.is_read)
+    return;
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("notifications")
+      .update({
+        is_read:true
+      })
+      .eq(
+        "id",
+        id
+      );
+
+
+  if(!error){
+
+    notification.is_read =
+      true;
+
+    render();
+
+  }
+
+}
+
+
+/* =====================================================
+   OPEN
+===================================================== */
 
 async function openNotification(id){
-  const n = notifications.find(x=>x.id===id);
-  if(!n) return;
 
-  if(!n.is_read){
-    const {error} = await supabaseClient.from("notifications").update({is_read:true}).eq("id",id);
-    if(!error){
-      n.is_read = true;
-      render();
-    }
-  }
+  const n =
+    notifications.find(
+      function(x){
 
-  if(n.link) window.location.href = n.link;
+        return x.id === id;
+
+      }
+    );
+
+
+  if(!n)
+    return;
+
+
+  await markRead(
+    id
+  );
+
+
+  /*
+     Link exists:
+     do not automatically navigate here.
+     User can click Download.
+  */
+
 }
+
+
+/* =====================================================
+   DELETE
+===================================================== */
 
 async function deleteNotification(id){
-  const old = notifications;
-  notifications = notifications.filter(n=>n.id!==id);
+
+  const old =
+    notifications.slice();
+
+
+  notifications =
+    notifications.filter(
+      function(n){
+
+        return n.id !== id;
+
+      }
+    );
+
+
   render();
 
-  const {error} = await supabaseClient.from("notifications").delete().eq("id",id);
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("notifications")
+      .delete()
+      .eq(
+        "id",
+        id
+      );
+
+
   if(error){
-    notifications = old;
+
+    notifications =
+      old;
+
     render();
-    showToast("Could not delete notification");
+
+    showToast(
+      "Could not delete notification"
+    );
+
   }else{
-    showToast("Notification deleted");
+
+    showToast(
+      "Notification deleted"
+    );
+
   }
+
 }
 
-document.getElementById("markAllBtn").addEventListener("click",async()=>{
-  const {data:sessionData} = await supabaseClient.auth.getSession();
-  const userId = sessionData?.session?.user?.id;
-  if(!userId) return;
 
-  if(!notifications.some(n=>!n.is_read)){
-    showToast("All notifications are already read");
-    return;
+/* =====================================================
+   MARK ALL READ
+===================================================== */
+
+document
+  .getElementById(
+    "markAllBtn"
+  )
+  .addEventListener(
+    "click",
+    async function(){
+
+      const {
+        data:sessionData
+      } =
+        await supabaseClient
+          .auth
+          .getSession();
+
+
+      const userId =
+        sessionData
+          ?.session
+          ?.user
+          ?.id;
+
+
+      if(!userId)
+        return;
+
+
+      const unread =
+        notifications.some(
+          function(n){
+
+            return !n.is_read;
+
+          }
+        );
+
+
+      if(!unread){
+
+        showToast(
+          "All notifications are already read"
+        );
+
+        return;
+
+      }
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("notifications")
+          .update({
+            is_read:true
+          })
+          .eq(
+            "user_id",
+            userId
+          )
+          .eq(
+            "is_read",
+            false
+          );
+
+
+      if(error){
+
+        showToast(
+          "Something went wrong"
+        );
+
+        return;
+
+      }
+
+
+      notifications =
+        notifications.map(
+          function(n){
+
+            return {
+              ...n,
+              is_read:true
+            };
+
+          }
+        );
+
+
+      render();
+
+
+      showToast(
+        "All notifications marked as read"
+      );
+
+    }
+  );
+
+
+/* =====================================================
+   FILTER
+===================================================== */
+
+document
+  .querySelectorAll(
+    ".filter"
+  )
+  .forEach(
+    function(btn){
+
+      btn.addEventListener(
+        "click",
+        function(){
+
+          document
+            .querySelectorAll(
+              ".filter"
+            )
+            .forEach(
+              function(b){
+
+                b.classList.remove(
+                  "active"
+                );
+
+              }
+            );
+
+
+          btn.classList.add(
+            "active"
+          );
+
+
+          activeFilter =
+            btn.dataset.filter;
+
+
+          render();
+
+        }
+      );
+
+    }
+  );
+
+
+/* =====================================================
+   REALTIME
+===================================================== */
+
+function setupRealtime(
+  userId
+){
+
+  if(realtimeChannel){
+
+    supabaseClient
+      .removeChannel(
+        realtimeChannel
+      );
+
   }
 
-  const {error} = await supabaseClient.from("notifications").update({is_read:true})
-    .eq("user_id",userId).eq("is_read",false);
 
-  if(error){
-    showToast("Something went wrong");
-    return;
-  }
+  realtimeChannel =
+    supabaseClient
+      .channel(
+        "notifications-page-" +
+        userId +
+        "-" +
+        Date.now()
+      )
 
-  notifications = notifications.map(n=>({...n,is_read:true}));
-  render();
-  showToast("All notifications marked as read");
-});
 
-function setupRealtime(userId){
-  if(realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
+      /* INSERT */
 
-  realtimeChannel = supabaseClient.channel("notifications-page-"+userId)
-    .on("postgres_changes",
-      {event:"INSERT",schema:"public",table:"notifications",filter:"user_id=eq."+userId},
-      payload=>{
-        notifications.unshift(payload.new);
-        render();
-        showToast("🔔 New notification");
-        if(navigator.vibrate) navigator.vibrate([60,30,60]);
-      })
-    .on("postgres_changes",
-      {event:"UPDATE",schema:"public",table:"notifications",filter:"user_id=eq."+userId},
-      payload=>{
-        const i=notifications.findIndex(n=>n.id===payload.new.id);
-        if(i!==-1){notifications[i]=payload.new;render();}
-      })
-    .on("postgres_changes",
-      {event:"DELETE",schema:"public",table:"notifications"},
-      payload=>{
-        notifications=notifications.filter(n=>n.id!==payload.old.id);
-        render();
-      })
-    .subscribe();
+      .on(
+        "postgres_changes",
+        {
+          event:"INSERT",
+
+          schema:"public",
+
+          table:"notifications",
+
+          filter:
+            "user_id=eq." +
+            userId
+
+        },
+
+        function(payload){
+
+          const incoming =
+            payload.new;
+
+
+          if(!incoming)
+            return;
+
+
+          const exists =
+            notifications.some(
+              function(n){
+
+                return n.id ===
+                  incoming.id;
+
+              }
+            );
+
+
+          if(!exists){
+
+            notifications.unshift(
+              incoming
+            );
+
+          }
+
+
+          render();
+
+
+          showToast(
+            "🔔 New notification"
+          );
+
+
+          if(
+            navigator.vibrate
+          ){
+
+            navigator.vibrate(
+              [60,30,60]
+            );
+
+          }
+
+        }
+      )
+
+
+      /* UPDATE */
+
+      .on(
+        "postgres_changes",
+        {
+          event:"UPDATE",
+
+          schema:"public",
+
+          table:"notifications",
+
+          filter:
+            "user_id=eq." +
+            userId
+
+        },
+
+        function(payload){
+
+          const index =
+            notifications.findIndex(
+              function(n){
+
+                return n.id ===
+                  payload.new.id;
+
+              }
+            );
+
+
+          if(index !== -1){
+
+            notifications[index] =
+              payload.new;
+
+            render();
+
+          }
+
+        }
+      )
+
+
+      /* DELETE */
+
+      .on(
+        "postgres_changes",
+        {
+          event:"DELETE",
+
+          schema:"public",
+
+          table:"notifications"
+
+        },
+
+        function(payload){
+
+          notifications =
+            notifications.filter(
+              function(n){
+
+                return n.id !==
+                  payload.old.id;
+
+              }
+            );
+
+
+          render();
+
+        }
+      )
+
+
+      .subscribe(
+        function(status){
+
+          console.log(
+            "Notification realtime:",
+            status
+          );
+
+        }
+      );
+
 }
 
-document.getElementById("backBtn").addEventListener("click",()=>{
-  if(document.referrer && document.referrer.includes(location.hostname)) history.back();
-  else location.href="index.html";
-});
+
+/* =====================================================
+   BACK
+===================================================== */
+
+document
+  .getElementById(
+    "backBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      if(
+        document.referrer &&
+        document.referrer.includes(
+          location.hostname
+        )
+      ){
+
+        history.back();
+
+      }else{
+
+        location.href =
+          "index.html";
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   AUTH CHANGE
+===================================================== */
+
+supabaseClient
+  .auth
+  .onAuthStateChange(
+    function(){
+
+      setTimeout(
+        loadNotifications,
+        100
+      );
+
+    }
+  );
+
+
+/* =====================================================
+   START
+===================================================== */
 
 loadNotifications();
-setInterval(()=>{if(notifications.length) render()},60000);
+
+
+/* refresh relative time */
+
+setInterval(
+  function(){
+
+    if(
+      notifications.length
+    ){
+
+      render();
+
+    }
+
+  },
+  60000
+);
+
 </script>
+
 </body>
+
 </html>
