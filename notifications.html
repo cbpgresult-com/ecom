@@ -6,9 +6,120 @@
 <title>Notifications</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--blue:#2563eb;--blue2:#4f46e5;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f7fb;--card:#fff;--green:#16a34a}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}.page{max-width:980px;margin:auto;padding:18px 18px 50px}.top{height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px}.back{width:42px;height:42px;border:0;border-radius:50%;background:#fff;box-shadow:0 5px 20px #1111110d;cursor:pointer;font-size:22px}.top h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-.3px}.top-actions{display:flex;gap:8px;align-items:center}.readall{border:0;background:none;color:var(--blue);font-weight:700;font-size:13px;cursor:pointer}.hero{margin-top:14px;background:linear-gradient(135deg,#eef4ff,#f7f4ff);border:1px solid #e7eaf4;border-radius:22px;padding:20px;display:flex;align-items:center;gap:15px;box-shadow:0 14px 40px #1d4ed80c}.bell{width:54px;height:54px;border-radius:17px;background:#fff;display:grid;place-items:center;font-size:27px;box-shadow:0 8px 25px #1111110d}.hero-title{font-size:16px;font-weight:800}.hero-sub{font-size:12.5px;color:var(--muted);margin-top:4px}.count{margin-left:auto;min-width:34px;height:34px;padding:0 9px;border-radius:18px;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800;box-shadow:0 7px 18px #2563eb44}.filters{display:flex;gap:8px;overflow:auto;padding:16px 0 12px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.filter{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:#667085;border-radius:999px;padding:9px 15px;font-size:12.5px;font-weight:700;cursor:pointer}.filter.active{background:#111827;border-color:#111827;color:#fff}.list{display:grid;gap:10px}.notice{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;display:flex;gap:13px;position:relative;transition:.2s;box-shadow:0 5px 20px #11182705;animation:rise .28s ease both}.notice.unread{border-color:#c7d7ff;box-shadow:0 8px 28px #2563eb10}.notice.unread:before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:0 4px 4px 0;background:var(--blue)}.nicon{width:45px;height:45px;border-radius:14px;background:#f1f5ff;display:grid;place-items:center;font-size:22px;flex:0 0 45px}.nbody{min-width:0;flex:1}.ntop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.title{font-size:14px;font-weight:800;line-height:1.35}.time{font-size:10.5px;color:#9ca3af;white-space:nowrap}.msg{font-size:13px;line-height:1.55;color:#5f6673;margin-top:5px;white-space:pre-wrap;overflow-wrap:anywhere}.meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px}.type{font-size:10px;text-transform:uppercase;letter-spacing:.5px;font-weight:800;padding:4px 8px;border-radius:999px;background:#f3f4f6;color:#6b7280}.download{border:0;background:#111827;color:#fff;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;gap:6px;align-items:center}.download:hover{background:#000}.mark{border:1px solid var(--line);background:#fff;color:#667085;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:700;cursor:pointer}.empty,.error,.login{background:#fff;border:1px solid var(--line);border-radius:20px;min-height:300px;display:grid;place-items:center;text-align:center;padding:35px}.empty-icon{font-size:45px}.empty h3,.error h3{margin:10px 0 5px}.empty p,.error p{color:#9ca3af;font-size:13px;margin:0}.loader{display:flex;justify-content:center;padding:45px}.spinner{width:34px;height:34px;border:3px solid #dbe4ff;border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;background:#111827;color:#fff;padding:11px 15px;border-radius:11px;font-size:12.5px;font-weight:700;z-index:20;transition:.25s}.toast.show{opacity:1;transform:translate(-50%,0)}@keyframes spin{to{transform:rotate(360deg)}}@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-@media(max-width:700px){.page{padding:10px 11px 35px}.top{height:54px}.top h1{font-size:18px}.back{width:38px;height:38px}.readall{font-size:12px}.hero{border-radius:18px;padding:15px}.bell{width:48px;height:48px;border-radius:15px;font-size:24px}.hero-title{font-size:14px}.hero-sub{font-size:11.5px}.count{min-width:30px;height:30px}.notice{padding:13px 12px;border-radius:15px;gap:10px}.nicon{width:40px;height:40px;flex-basis:40px;border-radius:12px;font-size:20px}.title{font-size:13px}.msg{font-size:12.5px}.time{font-size:9.5px}.download{font-size:10.5px;padding:7px 9px}.filter{padding:8px 13px}.empty,.error{min-height:260px}}
+:root{
+  --blue:#2563eb;--blue2:#4f46e5;--ink:#101828;--muted:#667085;
+  --line:#e6eaf0;--bg:#f6f8fc;--card:#fff;--shadow:0 12px 35px rgba(16,24,40,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% -10%,#eef4ff 0,#f7f8fc 38%,#f6f8fc 100%);
+font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);
+-webkit-font-smoothing:antialiased}
+button{font:inherit}
+.page{max-width:980px;margin:auto;padding:18px 18px 55px}
+.top{height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{width:42px;height:42px;border:1px solid #edf0f5;border-radius:50%;background:#fff;box-shadow:0 6px 20px rgba(16,24,40,.07);cursor:pointer;font-size:25px;line-height:1;transition:.2s}
+.back:hover{transform:translateX(-2px);box-shadow:0 9px 25px rgba(16,24,40,.11)}
+.top h1{font-size:20px;margin:0;font-weight:850;letter-spacing:-.35px}
+.top-actions{display:flex;gap:8px;align-items:center}
+.readall{border:0;background:transparent;color:var(--blue);font-weight:800;font-size:13px;cursor:pointer;padding:8px}
+.readall:hover{text-decoration:underline}
+.hero{margin-top:14px;background:linear-gradient(135deg,#eef4ff 0%,#f7f3ff 100%);
+border:1px solid #e4e9f5;border-radius:23px;padding:20px;display:flex;align-items:center;gap:15px;
+box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-65px;top:-80px;background:#fff8;filter:blur(2px)}
+.bell{width:56px;height:56px;border-radius:18px;background:#fff;display:grid;place-items:center;
+box-shadow:0 8px 25px rgba(16,24,40,.08);font-size:28px;flex:0 0 56px}
+.hero-title{font-size:16px;font-weight:850}
+.hero-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.count{margin-left:auto;min-width:36px;height:36px;padding:0 10px;border-radius:18px;background:linear-gradient(135deg,var(--blue),var(--blue2));
+color:#fff;display:grid;place-items:center;font-size:12px;font-weight:850;box-shadow:0 8px 20px rgba(37,99,235,.28);z-index:1}
+.count.pulse{animation:badgePulse .7s ease}
+.filters{display:flex;gap:8px;overflow:auto;padding:17px 0 12px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filter{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:#667085;border-radius:999px;
+padding:9px 15px;font-size:12.5px;font-weight:750;cursor:pointer;transition:.2s}
+.filter:hover{border-color:#c8d5f4;transform:translateY(-1px)}
+.filter.active{background:#101828;border-color:#101828;color:#fff;box-shadow:0 7px 18px rgba(16,24,40,.12)}
+.list{display:grid;gap:11px}
+.notice{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;display:flex;gap:13px;
+position:relative;transition:transform .2s,box-shadow .2s,border-color .2s;box-shadow:0 5px 20px rgba(16,24,40,.045);animation:rise .3s ease both}
+.notice:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(16,24,40,.075)}
+.notice.unread{border-color:#bfd2ff;box-shadow:0 9px 28px rgba(37,99,235,.09)}
+.notice.unread:before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:0 5px 5px 0;background:linear-gradient(#2563eb,#4f46e5)}
+.nicon{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#f1f5ff,#eef2ff);
+display:grid;place-items:center;font-size:23px;flex:0 0 46px;box-shadow:inset 0 0 0 1px #e4eaff}
+.nbody{min-width:0;flex:1}
+.ntop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.title{font-size:14px;font-weight:850;line-height:1.35}
+.time{font-size:10.5px;color:#98a2b3;white-space:nowrap}
+.msg{font-size:13px;line-height:1.58;color:#596273;margin-top:5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.type{font-size:10px;text-transform:uppercase;letter-spacing:.55px;font-weight:850;padding:4px 8px;border-radius:999px;background:#f2f4f7;color:#667085}
+.open-hint{font-size:10.5px;font-weight:850;color:var(--blue);display:inline-flex;align-items:center;gap:4px}
+.mark{border:1px solid var(--line);background:#fff;color:#667085;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:750;cursor:pointer}
+.mark:hover{background:#f8fafc}
+.has-link{cursor:pointer}
+.has-link:hover{border-color:#b9ccff}
+.detail-arrow{margin-left:auto;color:#98a2b3;font-size:20px;font-weight:900;line-height:14px}
+.empty,.error,.login{background:#fff;border:1px solid var(--line);border-radius:20px;min-height:300px;display:grid;place-items:center;text-align:center;padding:35px;box-shadow:var(--shadow)}
+.empty-icon{font-size:46px}
+.empty h3,.error h3{margin:10px 0 5px}
+.empty p,.error p{color:#98a2b3;font-size:13px;margin:0}
+.loader{display:flex;justify-content:center;padding:50px}
+.spinner{width:34px;height:34px;border:3px solid #dbe4ff;border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;background:#101828;color:#fff;
+padding:11px 15px;border-radius:11px;font-size:12.5px;font-weight:750;z-index:100;transition:.25s;box-shadow:0 10px 30px rgba(16,24,40,.22)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* Full-screen notification detail popup */
+.detail-overlay{position:fixed;inset:0;background:rgba(10,18,35,.54);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+z-index:1000;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:0 14px 28px}
+.detail-overlay.show{display:flex;animation:fadeIn .2s ease}
+.detail-modal{width:min(760px,100%);margin-top:0;background:#fff;min-height:calc(100vh - 28px);
+border-radius:0 0 24px 24px;box-shadow:0 25px 80px rgba(0,0,0,.25);overflow:hidden;animation:modalDrop .28s cubic-bezier(.2,.8,.2,1)}
+.detail-head{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+border-bottom:1px solid #eef0f4;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:2}
+.detail-head-title{font-size:15px;font-weight:850}
+.close-detail{width:38px;height:38px;border:0;border-radius:50%;background:#f2f4f7;color:#344054;cursor:pointer;
+font-size:22px;line-height:1;display:grid;place-items:center;transition:.2s}
+.close-detail:hover{background:#e4e7ec;transform:rotate(4deg)}
+.detail-body{max-width:650px;margin:auto;padding:38px 25px 48px}
+.detail-icon{width:74px;height:74px;border-radius:22px;background:linear-gradient(145deg,#eef4ff,#f3efff);
+display:grid;place-items:center;font-size:36px;box-shadow:inset 0 0 0 1px #e4e9fa,0 12px 30px rgba(37,99,235,.08);margin-bottom:20px}
+.detail-title{font-size:27px;line-height:1.22;font-weight:900;letter-spacing:-.6px}
+.detail-message{margin-top:12px;color:#596273;font-size:15px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}
+.detail-info{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:18px}
+.detail-type{font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:850;padding:6px 9px;border-radius:999px;background:#f2f4f7;color:#667085}
+.detail-time{font-size:11px;color:#98a2b3}
+.download-area{margin-top:30px;padding-top:23px;border-top:1px solid #eef0f4}
+.download-btn{border:0;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;border-radius:11px;
+padding:10px 15px;font-size:12px;font-weight:850;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+box-shadow:0 9px 23px rgba(37,99,235,.25);transition:.2s}
+.download-btn:hover{transform:translateY(-1px);box-shadow:0 12px 27px rgba(37,99,235,.32)}
+.download-btn:active{transform:scale(.98)}
+.download-note{margin-top:9px;color:#98a2b3;font-size:10.5px}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes modalDrop{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+@keyframes badgePulse{0%,100%{transform:scale(1)}45%{transform:scale(1.13)}}
+
+@media(max-width:700px){
+  .page{padding:10px 11px 35px}.top{height:54px}.top h1{font-size:18px}.back{width:38px;height:38px}
+  .readall{font-size:12px}.hero{border-radius:18px;padding:15px}.bell{width:48px;height:48px;border-radius:15px;font-size:24px;flex-basis:48px}
+  .hero-title{font-size:14px}.hero-sub{font-size:11.5px}.count{min-width:30px;height:30px}
+  .notice{padding:13px 12px;border-radius:15px;gap:10px}.nicon{width:40px;height:40px;flex-basis:40px;border-radius:12px;font-size:20px}
+  .title{font-size:13px}.msg{font-size:12.5px}.time{font-size:9.5px}.filter{padding:8px 13px}
+  .empty,.error{min-height:260px}
+  .detail-overlay{padding:0}
+  .detail-modal{width:100%;min-height:100vh;border-radius:0}
+  .detail-head{height:58px;padding:0 13px}.detail-body{padding:30px 19px 38px}
+  .detail-icon{width:62px;height:62px;border-radius:18px;font-size:30px;margin-bottom:17px}
+  .detail-title{font-size:22px}.detail-message{font-size:14px;line-height:1.7}
+  .download-btn{padding:10px 14px}
+}
 </style>
 </head>
 <body>
@@ -17,6 +128,27 @@
   <section class="hero"><div class="bell">🔔</div><div><div class="hero-title">Your Notifications</div><div class="hero-sub" id="heroSub">Stay updated with your latest activity</div></div><div class="count" id="count">0</div></section>
   <div class="filters"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="unread">Unread</button><button class="filter" data-filter="order">Orders</button><button class="filter" data-filter="offer">Offers</button><button class="filter" data-filter="account">Account</button></div>
   <main id="content"><div class="loader"><div class="spinner"></div></div></main>
+</div>
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <section class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="detail-head">
+      <div class="detail-head-title">Notification</div>
+      <button class="close-detail" onclick="closeDetail()" aria-label="Close">×</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-icon" id="detailIcon">🔔</div>
+      <div class="detail-title" id="detailTitle"></div>
+      <div class="detail-message" id="detailMessage"></div>
+      <div class="detail-info">
+        <span class="detail-type" id="detailType"></span>
+        <span class="detail-time" id="detailTime"></span>
+      </div>
+      <div class="download-area">
+        <button class="download-btn" id="detailDownload">📥 Download</button>
+        <div class="download-note">Tap to start downloading the file.</div>
+      </div>
+    </div>
+  </section>
 </div>
 <div class="toast" id="toast"></div>
 <script>
@@ -28,12 +160,90 @@ function fmt(d){const x=new Date(d);return x.toLocaleString('en-IN',{day:'2-digi
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)}
 function goBack(){if(history.length>1)history.back();else location.href='index.html'}
 function getRows(){let rows=all.slice();if(filter==='unread')rows=rows.filter(x=>!x.is_read);else if(filter!=='all')rows=rows.filter(x=>(x.type||'').toLowerCase()===filter);return rows}
-function render(){const c=document.getElementById('content');const rows=getRows();const unread=all.filter(x=>!x.is_read).length;document.getElementById('count').textContent=unread;document.getElementById('heroSub').textContent=unread?`${unread} unread notification${unread>1?'s':''}`:'You\'re all caught up';if(!rows.length){c.innerHTML=`<div class="empty"><div><div class="empty-icon">🔔</div><h3>${filter==='unread'?'No unread notifications':'No notifications'}</h3><p>When something important happens, it will appear here.</p></div></div>`;return}c.innerHTML='<div class="list">'+rows.map(n=>{const icon=n.icon||'🔔';const receipt=n.receipt_url||n.receipt_download_link||'';return `<article class="notice ${n.is_read?'':'unread'}" data-id="${esc(n.id)}"><div class="nicon">${esc(icon)}</div><div class="nbody"><div class="ntop"><div class="title">${esc(n.title||'Notification')}</div><div class="time">${fmt(n.created_at)}</div></div><div class="msg">${esc(n.message||'')}</div><div class="meta"><span class="type">${esc(n.type||'general')}</span>${receipt?`<button class="download" onclick="downloadReceipt('${esc(receipt)}')">⇩ Download</button>`:''}${!n.is_read?`<button class="mark" onclick="markRead('${esc(n.id)}')">Mark read</button>`:''}</div></div></article>`}).join('')+'</div>'}
+function getNotificationLink(n){
+  return String(n.link||n.download_link||n.link_url||n.receipt_url||n.receipt_download_link||'').trim();
+}
+function openNotification(id){
+  const n=all.find(x=>String(x.id)===String(id));
+  if(!n)return;
+  const link=getNotificationLink(n);
+  if(!link)return; // No admin link = normal notification, no popup.
+  if(!n.is_read){
+    n.is_read=true;
+    sb.from('notifications').update({is_read:true}).eq('id',id).then(()=>render());
+  }
+  showDetail(n,link);
+}
+function showDetail(n,link){
+  document.getElementById('detailTitle').textContent=n.title||'Notification';
+  document.getElementById('detailIcon').textContent=n.icon||'🔔';
+  document.getElementById('detailMessage').textContent=n.message||'';
+  document.getElementById('detailType').textContent=n.type||'general';
+  document.getElementById('detailTime').textContent=fmt(n.created_at);
+  document.getElementById('detailDownload').onclick=()=>downloadReceipt(link);
+  document.getElementById('detailOverlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeDetail(){
+  document.getElementById('detailOverlay').classList.remove('show');
+  document.body.style.overflow='';
+}
+function render(){
+  const c=document.getElementById('content');
+  const rows=getRows();
+  const unread=all.filter(x=>!x.is_read).length;
+  const count=document.getElementById('count');
+  count.textContent=unread;
+  document.getElementById('heroSub').textContent=unread?`${unread} unread notification${unread>1?'s':''}`:'You\'re all caught up';
+  if(!rows.length){
+    c.innerHTML=`<div class="empty"><div><div class="empty-icon">🔔</div><h3>${filter==='unread'?'No unread notifications':'No notifications'}</h3><p>When something important happens, it will appear here.</p></div></div>`;
+    return;
+  }
+  c.innerHTML='<div class="list">'+rows.map(n=>{
+    const icon=n.icon||'🔔';
+    const link=getNotificationLink(n);
+    const hasLink=!!link;
+    return `<article class="notice ${n.is_read?'':'unread'} ${hasLink?'has-link':''}" ${hasLink?`onclick="openNotification('${esc(n.id)}')"`:''} data-id="${esc(n.id)}">
+      <div class="nicon">${esc(icon)}</div>
+      <div class="nbody">
+        <div class="ntop"><div class="title">${esc(n.title||'Notification')}</div><div class="time">${fmt(n.created_at)}</div></div>
+        <div class="msg">${esc(n.message||'')}</div>
+        <div class="meta">
+          <span class="type">${esc(n.type||'general')}</span>
+          ${hasLink?`<span class="open-hint">View &amp; Download →</span>`:''}
+          ${!n.is_read?`<button class="mark" onclick="event.stopPropagation();markRead('${esc(n.id)}')">Mark read</button>`:''}
+          ${hasLink?`<span class="detail-arrow">›</span>`:''}
+        </div>
+      </div>
+    </article>`;
+  }).join('')+'</div>';
+}
 async function load(){const {data:session}=await sb.auth.getSession();const user=session?.session?.user;if(!user){document.getElementById('content').innerHTML='<div class="login"><div><h3>Please login</h3><p>Login to see your notifications.</p><br><button class="download" onclick="location.href=\'login.html\'">Login</button></div></div>';return}const {data,error}=await sb.from('notifications').select('*').eq('user_id',user.id).order('created_at',{ascending:false});if(error){document.getElementById('content').innerHTML=`<div class="error"><div><div class="empty-icon">⚠️</div><h3>Couldn't load notifications</h3><p>${esc(error.message)}</p></div></div>`;return}all=data||[];render();subscribe(user.id)}
 function subscribe(uid){if(channel)sb.removeChannel(channel);channel=sb.channel('notifications-'+uid).on('postgres_changes',{event:'*',schema:'public',table:'notifications',filter:'user_id=eq.'+uid},p=>{if(p.eventType==='INSERT')all=[p.new,...all];else if(p.eventType==='UPDATE'){const i=all.findIndex(x=>x.id===p.new.id);if(i>-1)all[i]=p.new}else if(p.eventType==='DELETE')all=all.filter(x=>x.id!==p.old.id);render()}).subscribe()}
 async function markRead(id){const {error}=await sb.from('notifications').update({is_read:true}).eq('id',id);if(error)toast(error.message);else{const n=all.find(x=>x.id===id);if(n)n.is_read=true;render()}}
 async function markAllRead(){const {data:session}=await sb.auth.getSession();const uid=session?.session?.user?.id;if(!uid)return;const unread=all.filter(x=>!x.is_read).map(x=>x.id);if(!unread.length){toast('Already all read');return}const {error}=await sb.from('notifications').update({is_read:true}).eq('user_id',uid).eq('is_read',false);if(error)toast(error.message);else{all.forEach(x=>x.is_read=true);render();toast('All notifications marked read')}}
-async function downloadReceipt(url){try{const r=await fetch(url);if(!r.ok)throw new Error('Download failed');const blob=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(url.split('/').pop()||'receipt').split('?')[0];document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000)}catch(e){const a=document.createElement('a');a.href=url;a.download='receipt';a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();toast('Opening download link...')}}
-document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));render()});load();
+async function downloadReceipt(url){
+  try{
+    const r=await fetch(url,{mode:'cors'});
+    if(!r.ok)throw new Error('Download failed');
+    const blob=await r.blob();
+    const objectUrl=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=objectUrl;
+    a.download=(new URL(url,location.href).pathname.split('/').pop()||'download');
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(objectUrl),4000);
+    toast('Download started');
+  }catch(e){
+    const a=document.createElement('a');
+    a.href=url;a.target='_blank';a.rel='noopener';
+    document.body.appendChild(a);a.click();a.remove();
+    toast('Download link opened');
+  }
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
+document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
+document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));render()});load();
 </script>
 </body></html>
