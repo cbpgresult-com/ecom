@@ -1255,7 +1255,10 @@ function fmtOrd(n){ const s=['th','st','nd','rd'],v=n%100; return n+(s[(v-20)%10
 function fmtHdrDate(d){ const dt=new Date(d),days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mos=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],yr=String(dt.getFullYear()).slice(-2); return days[dt.getDay()]+', '+fmtOrd(dt.getDate())+' '+mos[dt.getMonth()]+" '"+yr; }
 function fmtEntry(d){ return fmtHdrDate(d)+' - '+fmtShortTime(d); }
 const dispId = o => o.order_number || String(o.id||'').slice(0,8).toUpperCase();
-function getExpected(o){ return o.delivery_date?new Date(o.delivery_date):addDays(o.created_at,5); }
+function getExpected(o){
+  // Admin-set delivery_date always wins; otherwise default is 6 days after order creation.
+  return o.delivery_date ? new Date(o.delivery_date) : addDays(o.created_at,6);
+}
 function getEffective(o){
   if(o.status==='delivered') return o.delivered_at?new Date(o.delivered_at):getExpected(o);
   let exp=getExpected(o); const now=new Date();
@@ -1576,6 +1579,8 @@ function renderDetail(order){
       const shippedDone = ['shipped','out_for_delivery','delivered'].includes(order.status);
       const outDone = ['out_for_delivery','delivered'].includes(order.status);
       const delDone = order.status==='delivered';
+      const pickedUpDone = !!order.picked_up_at;
+      const hubReceivedDone = !!order.hub_received_at;
 
       const placedTime = fmtTime(placed);
       const placedD = fmtShort(placed);
@@ -1617,6 +1622,7 @@ function renderDetail(order){
             <div class="ss-step-label done">Placed</div>
             <div class="ss-step-date">${placedD}<br>${placedTime}</div>
             ${mkStepLine('Placed', true, placedD, placedTime)}
+            ${pickedUpDone ? mkStepLine('Picked up', true, fmtShort(order.picked_up_at), fmtTime(order.picked_up_at)) : ''}
           </div>
         </div>
         <div class="ss-step">
@@ -1626,6 +1632,7 @@ function renderDetail(order){
             <div class="ss-step-label ${shippedDone?'done':''}">Shipped</div>
             <div class="ss-step-date">${shippedD}<br>${shippedT}</div>
             ${mkStepLine('Shipped', shippedDone, shippedD, shippedDone?fmtTime(shippedDate||placed):'', shippedExpectedD)}
+            ${hubReceivedDone ? mkStepLine('Nearest Hub', true, fmtShort(order.hub_received_at), fmtTime(order.hub_received_at)) : ''}
           </div>
         </div>
         <div class="ss-step">
