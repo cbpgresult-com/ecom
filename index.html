@@ -604,74 +604,6 @@ main{
   display:none;
 }
 
-
-/* =========================================================
-   REAL MOBILE NOTIFICATION BADGE
-   Live unread count from Supabase.
-========================================================= */
-.notification-header-btn{
-  position:relative;
-  overflow:visible;
-}
-
-.notification-header-btn svg{
-  transition:transform .2s ease;
-}
-
-.notification-header-btn:hover svg{
-  transform:translateY(-1px) rotate(-4deg);
-}
-
-.notification-header-btn:active svg{
-  transform:scale(.9) rotate(-8deg);
-}
-
-.notification-badge{
-  position:absolute;
-  top:0px;
-  right:0px;
-  min-width:16px;
-  height:16px;
-  padding:0 4px;
-  border-radius:999px;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:#ef4444;
-  color:#fff;
-  border:2px solid #fff;
-  font-size:8px;
-  font-weight:800;
-  line-height:12px;
-  letter-spacing:-.1px;
-  box-shadow:0 2px 7px rgba(239,68,68,.35);
-  z-index:5;
-  animation:notificationBadgePulse 2s ease-in-out infinite;
-}
-
-.notification-badge.show{
-  display:flex;
-}
-
-@keyframes notificationBadgePulse{
-  0%,100%{
-    box-shadow:0 2px 7px rgba(239,68,68,.35);
-  }
-  50%{
-    box-shadow:0 0 0 4px rgba(239,68,68,.08),0 3px 10px rgba(239,68,68,.42);
-  }
-}
-
-@media(max-width:380px){
-  .notification-badge{
-    top:1px;
-    right:1px;
-    min-width:15px;
-    height:15px;
-    font-size:7px;
-  }
-}
-
 /* ================= MOBILE BOTTOM NAV ================= */
 
 .bottom-nav{
@@ -1335,6 +1267,80 @@ main{
   .looking-banner-card{flex-basis:calc((100vw - 90px - 48px)/5);}
 }
 
+
+/* =========================================================
+   REAL NOTIFICATION UI
+========================================================= */
+
+.notification-header-btn{
+  position:relative;
+}
+
+.notification-badge{
+  position:absolute;
+  top:0px;
+  right:0px;
+  min-width:16px;
+  height:16px;
+  padding:0 4px;
+  border-radius:999px;
+  background:#ef4444;
+  color:#fff;
+  border:2px solid #fff;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-size:8px;
+  line-height:1;
+  font-weight:800;
+  box-shadow:0 2px 8px rgba(239,68,68,.35);
+  animation:notificationPulse 2s infinite;
+  pointer-events:none;
+}
+
+.notification-badge.show{
+  display:flex;
+}
+
+.desktop-notification-badge{
+  margin-left:auto;
+  min-width:20px;
+  height:20px;
+  padding:0 6px;
+  border-radius:999px;
+  background:#ef4444;
+  color:#fff;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  line-height:1;
+  font-weight:800;
+  box-shadow:0 2px 8px rgba(239,68,68,.25);
+}
+
+.desktop-notification-badge.show{
+  display:inline-flex;
+}
+
+.notification-menu-item{
+  cursor:pointer;
+}
+
+.notification-menu-item:focus-visible{
+  outline:2px solid var(--violet);
+  outline-offset:-2px;
+}
+
+@keyframes notificationPulse{
+  0%,100%{
+    box-shadow:0 2px 8px rgba(239,68,68,.35);
+  }
+  50%{
+    box-shadow:0 0 0 5px rgba(239,68,68,.08),0 2px 10px rgba(239,68,68,.4);
+  }
+}
+
 </style>
 
 </head>
@@ -1386,13 +1392,14 @@ main{
     id="notificationHeaderBtn"
     aria-label="Notifications"
     type="button"
+    onclick="goNotifications()"
   >
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
          stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
       <path d="M10 21h4"></path>
     </svg>
-    <span id="notificationBadge" class="notification-badge" aria-hidden="true">0</span>
+    <span id="notificationBadge" class="notification-badge">0</span>
   </button>
 
   <!-- Wishlist -->
@@ -1590,12 +1597,19 @@ main{
       Wishlist
     </div>
 
-    <div class="menu-item">
+    <div
+      class="menu-item notification-menu-item"
+      onclick="goNotifications()"
+      role="button"
+      tabindex="0"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goNotifications();}"
+    >
       <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
         <path d="M10 21h4"/>
       </svg>
-      Notifications
+      <span>Notifications</span>
+      <span id="desktopNotificationBadge" class="desktop-notification-badge">0</span>
     </div>
 
     <div class="account-divider"></div>
@@ -3468,145 +3482,146 @@ if(typeof supabaseClient!=="undefined" && supabaseClient.auth){
   supabaseClient.auth.onAuthStateChange(function(){setTimeout(renderLookingBanner,120);});
 }
 
+
 /* =========================================================
-   REAL HEADER NOTIFICATIONS
-   - Opens notifications.html
-   - Shows live unread badge
-   - Uses the logged-in Supabase user
-   - Updates instantly through Realtime
+   REAL NOTIFICATIONS
+   Mobile bell + desktop account menu + realtime unread badge
 ========================================================= */
-(function initRealHeaderNotifications(){
 
-  const notificationButton =
-    document.getElementById("notificationHeaderBtn");
+(function(){
 
-  const notificationBadge =
+  const mobileBadge =
     document.getElementById("notificationBadge");
 
-  if(!notificationButton || !notificationBadge) return;
+  const desktopBadge =
+    document.getElementById("desktopNotificationBadge");
 
   let notificationChannel = null;
-  let lastUnreadCount = -1;
 
-  function setNotificationBadge(count){
-    const safeCount = Math.max(0, Number(count) || 0);
+  function setBadge(el, count){
+    if(!el) return;
 
-    if(safeCount > 0){
-      notificationBadge.textContent = safeCount > 99 ? "99+" : String(safeCount);
-      notificationBadge.classList.add("show");
-      notificationBadge.setAttribute("aria-hidden","false");
+    if(count > 0){
+      el.textContent = count > 99 ? "99+" : String(count);
+      el.classList.add("show");
     }else{
-      notificationBadge.textContent = "0";
-      notificationBadge.classList.remove("show");
-      notificationBadge.setAttribute("aria-hidden","true");
-    }
-
-    lastUnreadCount = safeCount;
-  }
-
-  async function getCurrentUserId(){
-    try{
-      const { data, error } = await supabaseClient.auth.getSession();
-      if(error) throw error;
-      return data?.session?.user?.id || null;
-    }catch(error){
-      console.error("Notification session error:", error);
-      return null;
+      el.classList.remove("show");
     }
   }
 
-  async function updateNotificationBadge(){
+  window.goNotifications = function(){
+    window.location.href = "notifications.html";
+  };
+
+  async function updateNotificationBadges(){
+
     try{
-      const userId = await getCurrentUserId();
+
+      const { data: sessionData } =
+        await supabaseClient.auth.getSession();
+
+      const userId =
+        sessionData?.session?.user?.id;
 
       if(!userId){
-        setNotificationBadge(0);
+        setBadge(mobileBadge, 0);
+        setBadge(desktopBadge, 0);
         return;
       }
 
-      const { count, error } = await supabaseClient
-        .from("notifications")
-        .select("id", { count:"exact", head:true })
-        .eq("user_id", userId)
-        .eq("is_read", false);
+      const { count, error } =
+        await supabaseClient
+          .from("notifications")
+          .select("id", { count:"exact", head:true })
+          .eq("user_id", userId)
+          .eq("is_read", false);
 
       if(error) throw error;
 
-      setNotificationBadge(count || 0);
+      setBadge(mobileBadge, count || 0);
+      setBadge(desktopBadge, count || 0);
+
     }catch(error){
-      console.error("Notification badge error:", error);
-      /* Do not show a fake number if the notification service fails. */
-      setNotificationBadge(0);
+
+      console.error(
+        "Notification badge error:",
+        error
+      );
+
     }
   }
 
   async function startNotificationRealtime(){
+
     try{
-      const userId = await getCurrentUserId();
+
+      const { data: sessionData } =
+        await supabaseClient.auth.getSession();
+
+      const userId =
+        sessionData?.session?.user?.id;
 
       if(!userId) return;
 
       if(notificationChannel){
-        try{
-          await supabaseClient.removeChannel(notificationChannel);
-        }catch(e){}
-        notificationChannel = null;
+        await supabaseClient.removeChannel(
+          notificationChannel
+        );
       }
 
-      notificationChannel = supabaseClient
-        .channel("mystore-header-notifications-" + userId)
-        .on(
-          "postgres_changes",
-          {
-            event:"*",
-            schema:"public",
-            table:"notifications",
-            filter:"user_id=eq." + userId
-          },
-          function(){
-            updateNotificationBadge();
-          }
-        )
-        .subscribe(function(status){
-          if(status === "SUBSCRIBED"){
-            updateNotificationBadge();
-          }
-        });
+      notificationChannel =
+        supabaseClient
+          .channel("header-notifications-" + userId)
+          .on(
+            "postgres_changes",
+            {
+              event:"*",
+              schema:"public",
+              table:"notifications",
+              filter:"user_id=eq." + userId
+            },
+            function(){
+              updateNotificationBadges();
+
+              if(
+                navigator.vibrate
+              ){
+                navigator.vibrate([50,30,50]);
+              }
+            }
+          )
+          .subscribe();
+
     }catch(error){
-      console.error("Notification realtime error:", error);
+
+      console.error(
+        "Notification realtime error:",
+        error
+      );
+
     }
   }
 
-  notificationButton.addEventListener("click", function(){
-    window.location.href = "notifications.html";
-  });
-
-  updateNotificationBadge();
+  updateNotificationBadges();
   startNotificationRealtime();
 
-  if(supabaseClient.auth){
-    supabaseClient.auth.onAuthStateChange(function(){
+  supabaseClient.auth.onAuthStateChange(
+    function(){
       setTimeout(function(){
-        updateNotificationBadge();
+        updateNotificationBadges();
         startNotificationRealtime();
-      }, 250);
-    });
-  }
+      }, 300);
+    }
+  );
 
-  /* When the user comes back to index.html, refresh the badge. */
-  window.addEventListener("pageshow", function(){
-    updateNotificationBadge();
-  });
-
-  window.addEventListener("focus", function(){
-    updateNotificationBadge();
-  });
-
-  /* Expose a tiny manual refresh hook for future code/admin actions. */
-  window.refreshNotificationBadge = updateNotificationBadge;
+  window.addEventListener(
+    "focus",
+    function(){
+      updateNotificationBadges();
+    }
+  );
 
 })();
-
 
 </script>
 
