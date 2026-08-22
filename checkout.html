@@ -381,6 +381,15 @@ body{padding:0 !important;margin:0 !important;}
   background:#fbfefc;
 }
 .ck-location-miniform .ckfield{margin-bottom:12px;}
+.ck-location-miniform .ck-location-landmark-field{grid-column:1 / -1;}
+#ckDetectedPincode{
+  font-family:inherit !important;
+  font-size:12px !important;
+  font-weight:850 !important;
+  line-height:1.35 !important;
+  color:var(--ink) !important;
+}
+.ck-detected-pin-loader{right:30px;}
 @media(max-width:480px){
   .ck-location-miniform{grid-template-columns:1fr;gap:0;}
 }
@@ -535,8 +544,8 @@ body{padding:0 !important;margin:0 !important;}
 .ck-detected-pincode-detail{position:relative}
 #ckDetectedPincode{
   display:block;
-  width:calc(100% - 22px);
-  margin:2px 22px 0 0;
+  width:calc(100% - 58px);
+  margin:2px 58px 0 0;
   padding:0;
   border:0;
   outline:0;
@@ -554,25 +563,39 @@ body{padding:0 !important;margin:0 !important;}
   position:absolute;
   right:9px;
   bottom:7px;
-  width:14px;
-  height:14px;
-  color:#6d756f;
-  opacity:.95;
-  pointer-events:none;
+  min-width:45px;
+  height:16px;
+  color:#2f7a55;
+  opacity:1;
+  pointer-events:auto;
+  cursor:pointer;
   display:flex;
   align-items:center;
-  justify-content:center;
+  justify-content:flex-end;
+  gap:3px;
+  white-space:nowrap;
 }
 .ck-detected-pincode-pen svg{
   width:14px;
   height:14px;
   display:block;
+  flex:none;
   stroke:currentColor;
+  stroke-width:2.1;
+}
+.ck-detected-pincode-pen.ck-pin-edit-hidden{display:none !important;}
+.ck-detected-pincode-edit-text{
+  font-family:inherit;
+  font-size:11px;
+  line-height:1.1;
+  font-weight:800;
+  color:#2f7a55;
 }
 #ckDetectedPincode:focus{text-decoration:none;}
 .ck-detected-pin-loader{
   display:none;
   position:absolute;
+  z-index:3;
   right:10px;
   bottom:8px;
   font-size:10px;
@@ -582,6 +605,14 @@ body{padding:0 !important;margin:0 !important;}
 .ck-detected-pin-loader.show{display:block}
 #ckDetectedPincode.ck-pin-invalid{
   color:#b42318;
+}
+.ck-detected-pincode-detail.ck-pincode-fetching{
+  border-color:#8bcfa7 !important;
+  background:#f0fbf4 !important;
+}
+.ck-detected-pincode-detail.ck-pincode-invalid{
+  border-color:#e26b6b !important;
+  background:#fff5f5 !important;
 }
 </style>
 
@@ -994,22 +1025,29 @@ body{padding:0 !important;margin:0 !important;}
             <div class="ck-detected-address" id="ckDetectedAddressDetails">
               <div class="ck-detected-address-title">📍 Delivery location</div>
               <div class="ck-location-details-grid ck-plus-only">
-                <div class="ck-location-detail ck-plus-code-box ck-location-full"><small>Plus Code</small><strong id="ckDetectedArea">—</strong></div>
+                <div class="ck-location-detail ck-plus-code-box"><small>Plus Code</small><strong id="ckDetectedArea">—</strong></div>
                 <div class="ck-location-detail"><small>District</small><strong id="ckDetectedDistrict">—</strong></div>
-                <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
                 <div class="ck-location-detail ck-detected-pincode-detail">
-  <small>Pincode</small>
-  <input
-    id="ckDetectedPincode"
-    type="tel"
-    inputmode="numeric"
-    maxlength="6"
-    autocomplete="postal-code"
-    value=""
-    aria-label="Delivery pincode"
-  >
-  <span id="ckDetectedPinLoader" class="ck-detected-pin-loader">Fetching…</span>
-</div>
+                  <small>Pincode</small>
+                  <input
+                    id="ckDetectedPincode"
+                    type="tel"
+                    inputmode="numeric"
+                    maxlength="6"
+                    autocomplete="postal-code"
+                    value=""
+                    aria-label="Delivery pincode"
+                  >
+                  <span class="ck-detected-pincode-pen" role="button" tabindex="0" aria-label="Edit pincode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 20h9"></path>
+                      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                    </svg>
+                    <span class="ck-detected-pincode-edit-text">edit</span>
+                  </span>
+                  <span id="ckDetectedPinLoader" class="ck-detected-pin-loader">Fetching…</span>
+                </div>
+                <div class="ck-location-detail"><small>State</small><strong id="ckDetectedState">—</strong></div>
               </div>
               <div class="ck-location-map-row">
                 <span>GPS accuracy: <b id="ckDetectedAccuracy">—</b></span>
@@ -1063,7 +1101,7 @@ body{padding:0 !important;margin:0 !important;}
               <label for="ckRoad">Road name, Area, Colony *</label>
               <input id="ckRoad" type="text" placeholder="e.g. MG Road, Shastri Nagar">
             </div>
-            <div class="ckfield">
+            <div class="ckfield ck-location-landmark-field">
               <label for="ckLandmark">Landmark</label>
               <input id="ckLandmark" type="text" placeholder="e.g. Near Temple, School, Market" autocomplete="address-line2">
             </div>
@@ -1535,26 +1573,7 @@ body{padding:0 !important;margin:0 !important;}
       replace() removes the current Checkout document from this history
       position, so after returning to Product, Back will NOT reopen Checkout.
     */
-    /*
-      Never allow Checkout itself to become the destination.
-      This is an extra guard against stale sessionStorage/referrer data
-      creating a Product -> Checkout -> Product -> Checkout loop.
-    */
     var destination=target || document.referrer || '/';
-
-    try{
-      var destUrl=new URL(destination,location.href);
-      var destIsCheckout=/\/ecom\/checkout(?:\.html)?(?:[?#]|$)/i.test(destUrl.pathname);
-
-      if(destIsCheckout){
-        destination='/';
-      }
-    }catch(e){
-      if(/\/ecom\/checkout(?:\.html)?(?:[?#]|$)/i.test(String(destination))){
-        destination='/';
-      }
-    }
-
     try{
       location.replace(destination);
     }catch(e){
@@ -1899,7 +1918,7 @@ body{padding:0 !important;margin:0 !important;}
       grid.classList.add('ck-location-miniform');
 
       /* Keep only Full Name + Mobile + Village after GPS detection. */
-      ['ckPincode','ckState','ckDistrict','ckRoad','ckLandmark'].forEach(function(id){
+      ['ckPincode','ckState','ckDistrict','ckRoad'].forEach(function(id){
         var input=el(id);
         if(input){
           var field=input.closest('.ckfield');
@@ -1907,7 +1926,7 @@ body{padding:0 !important;margin:0 !important;}
         }
       });
 
-      ['ckFullName','ckPhone','ckCity'].forEach(function(id){
+      ['ckFullName','ckPhone','ckCity','ckLandmark'].forEach(function(id){
         var input=el(id);
         if(input){
           var field=input.closest('.ckfield');
@@ -2645,23 +2664,62 @@ body{padding:0 !important;margin:0 !important;}
     var district=el('ckDetectedDistrict');
     var state=el('ckDetectedState');
     var loader=el('ckDetectedPinLoader');
+    var detail=pin.closest('.ck-detected-pincode-detail');
     if(!pin)return;
 
+    function setPincodeBoxState(state){
+      if(!detail)return;
+      detail.classList.remove('ck-pincode-fetching','ck-pincode-invalid');
+      if(state==='fetching') detail.classList.add('ck-pincode-fetching');
+      if(state==='invalid') detail.classList.add('ck-pincode-invalid');
+    }
+
     var timer=null;
+    var pinLookupSeq=0;
+
+    /* Clicking the pen or the edit text focuses the same pincode input. */
+    var editControl=pin.closest('.ck-detected-pincode-detail')?.querySelector('.ck-detected-pincode-pen');
+    if(editControl){
+      editControl.addEventListener('click',function(){
+        pin.focus();
+        try{pin.select();}catch(e){}
+      });
+      editControl.addEventListener('keydown',function(e){
+        if(e.key==='Enter' || e.key===' '){
+          e.preventDefault();
+          pin.focus();
+          try{pin.select();}catch(err){}
+        }
+      });
+    }
 
     pin.addEventListener('input',function(){
       var value=this.value.replace(/\D/g,'').slice(0,6);
       this.value=value;
       this.classList.remove('ck-pin-invalid');
+      setPincodeBoxState('normal');
 
       if(timer)clearTimeout(timer);
+      var lookupSeq=++pinLookupSeq;
 
       if(value.length!==6){
+        if(loader)loader.classList.remove('show');
+        /* 1-5 digits = invalid/red box. Pen + edit stay hidden. */
+        this.classList.add('ck-pin-invalid');
+        setPincodeBoxState('invalid');
+        if(editControl)editControl.classList.add('ck-pin-edit-hidden');
         if(district) setText('ckDetectedDistrict','—');
         return;
       }
 
+      /* Exactly 6 digits = green box while fetching. */
+      this.classList.remove('ck-pin-invalid');
+      setPincodeBoxState('fetching');
+
+      /* While the pincode is being fetched, hide the pen + edit control.
+         Show it back immediately when fetching finishes. */
       if(loader)loader.classList.add('show');
+      if(editControl)editControl.classList.add('ck-pin-edit-hidden');
 
       timer=setTimeout(async function(){
         try{
@@ -2683,12 +2741,18 @@ body{padding:0 !important;margin:0 !important;}
             currentLocationData.district='';
             setText('ckDetectedDistrict','Not available');
             pin.classList.add('ck-pin-invalid');
+            setPincodeBoxState('invalid');
           }
         }catch(e){
           console.warn('Detected pincode lookup:',e);
           pin.classList.add('ck-pin-invalid');
+          setPincodeBoxState('invalid');
         }finally{
-          if(loader)loader.classList.remove('show');
+          if(lookupSeq===pinLookupSeq){
+            if(loader)loader.classList.remove('show');
+            if(editControl)editControl.classList.remove('ck-pin-edit-hidden');
+            if(!pin.classList.contains('ck-pin-invalid')) setPincodeBoxState('normal');
+          }
         }
       },220);
     });
@@ -2698,9 +2762,11 @@ body{padding:0 !important;margin:0 !important;}
       this.value=value;
       if(value.length!==6){
         this.classList.add('ck-pin-invalid');
+        setPincodeBoxState('invalid');
         return;
       }
       this.classList.remove('ck-pin-invalid');
+      if(!loader || !loader.classList.contains('show')) setPincodeBoxState('normal');
     });
   }
 
@@ -2765,7 +2831,7 @@ body{padding:0 !important;margin:0 !important;}
       village:gpsMode ? village : '',
       house:'',
       road:gpsMode ? '' : (el('ckRoad')?.value||'').trim(),
-      landmark:gpsMode ? '' : (el('ckLandmark')?.value||'').trim(),
+      landmark:(el('ckLandmark')?.value||'').trim(),
       plus_code:gpsMode ? (currentLocationData.plus_code||'') : '',
       type:gpsMode ? 'current location' : (addressType || 'home'),
       map_link:gpsMode ? (currentLocationData.map_link||'') : '',
@@ -2791,7 +2857,7 @@ body{padding:0 !important;margin:0 !important;}
         city:gpsMode ? null : addr.city,
         house:addr.house,
         road:gpsMode ? null : addr.road,
-        landmark:gpsMode ? null : (addr.landmark||''),
+        landmark:addr.landmark||'',
 
         /* Current Location gets separate Village + Plus Code. */
         village:gpsMode ? (addr.village||'') : null,
@@ -3149,37 +3215,10 @@ body{padding:0 !important;margin:0 !important;}
       if(window.ckRealSkeletonShow) ckRealSkeletonShow();
 
       try{
-        /*
-          FIX: Always refresh the Checkout origin from the actual page
-          that opened this Checkout instance.
-
-          Previously ckOriginPage was only set when it did not already
-          exist. Because sessionStorage survives navigation, an old
-          Checkout URL could remain there. Then Back from Checkout could
-          replace the current page with that old Checkout URL, causing:
-          Product -> Checkout -> Product -> Checkout loops.
-
-          Keep the existing origin when the referrer is Checkout itself,
-          otherwise store the real previous page.
-        */
-        var ref=document.referrer||'';
-        var refIsSameOrigin=false;
-        var refIsCheckout=false;
-
-        try{
-          if(ref){
-            var refUrl=new URL(ref,location.href);
-            refIsSameOrigin=refUrl.origin===location.origin;
-            refIsCheckout=/\/ecom\/checkout(?:\.html)?(?:[?#]|$)/i.test(refUrl.pathname);
-          }
-        }catch(e){}
-
-        if(refIsSameOrigin && !refIsCheckout){
-          sessionStorage.setItem('ckOriginPage',ref);
-        }else if(!sessionStorage.getItem('ckOriginPage') && refIsSameOrigin){
-          sessionStorage.setItem('ckOriginPage',ref);
+        var existing=sessionStorage.getItem('ckOriginPage');
+        if(!existing && document.referrer && new URL(document.referrer).origin===location.origin){
+          sessionStorage.setItem('ckOriginPage',document.referrer);
         }
-
         sessionStorage.removeItem('ckOrderJustPlaced');
       }catch(e){}
 
