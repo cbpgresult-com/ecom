@@ -1565,7 +1565,13 @@ body{padding:0 !important;margin:0 !important;}
       var trackTarget=sessionStorage.getItem('ckTrackAfterBack');
       if(trackTarget){
         sessionStorage.removeItem('ckTrackAfterBack');
-        location.replace(trackTarget);
+
+        /*
+          We have now landed on Product after skipping Checkout history.
+          Use normal navigation so Product stays immediately behind My Orders.
+          Result: My Orders -> Back -> Product.
+        */
+        location.href=trackTarget;
         return;
       }
     }catch(err){}
@@ -3188,29 +3194,34 @@ body{padding:0 !important;margin:0 !important;}
         track.href='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
 
         /*
-          IMPORTANT: Track Order is a new destination, not a checkout step.
-          Replace the Checkout history entry when opening My Orders.
-          This prevents: Product -> Checkout -> My Orders -> Back -> Checkout.
-          After My Orders, Back therefore returns to the Product page.
+          IMPORTANT:
+          Track Order must create this final history chain:
+
+          Product -> My Orders
+
+          Checkout's internal Address/Order/Payment history entries must be
+          skipped first. We go back to the Product page, then NORMAL navigation
+          to My Orders adds My Orders after Product.
+
+          Do NOT use location.replace() here. replace() would replace Product
+          itself, causing My Orders -> Back to skip Product.
         */
         track.onclick=function(e){
           e.preventDefault();
           var url='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
 
-          /*
-            Checkout creates browser-history entries for Address, Order and
-            Payment. Replacing only the current entry is NOT enough: My Orders
-            would still go back to an older Checkout step.
-
-            First go back across every checkout entry, then immediately open
-            My Orders. This leaves the Product page directly behind My Orders.
-          */
           try{
             sessionStorage.setItem('ckTrackAfterBack',url);
+
+            /*
+              historyInitialized state = Address (replaceState)
+              ckHistoryEntries = number of additional checkout states.
+              +1 moves from the current Checkout document back to Product.
+            */
             var backCount=(Number(ckHistoryEntries)||0)+1;
             history.go(-backCount);
           }catch(err){
-            try{ location.replace(url); }catch(err2){ location.href=url; }
+            try{ location.href=url; }catch(err2){ location.assign(url); }
           }
         };
       }
