@@ -1372,6 +1372,24 @@ function normalizeItem(item){
   };
 }
 
+function normalizeAddress(address){
+  const a = parseJson(address, {}) || {};
+  return {
+    ...a,
+    name: a.name ?? a.full_name ?? a.fullName ?? '',
+    phone: a.phone ?? a.mobile ?? a.mobile_number ?? '',
+    house: a.house ?? a.house_no ?? a.house_number ?? a.address_line1 ?? '',
+    road: a.road ?? a.street ?? a.address_line2 ?? '',
+    village: a.village ?? a.village_name ?? '',
+    landmark: a.landmark ?? '',
+    district: a.district ?? '',
+    city: a.city ?? a.town ?? '',
+    state: a.state ?? '',
+    pincode: a.pincode ?? a.pin ?? a.postal_code ?? a.zipcode ?? '',
+    address: a.address ?? a.full_address ?? a.fullAddress ?? ''
+  };
+}
+
 function normalizeOrder(order){
   order = order || {};
   return {
@@ -1382,7 +1400,7 @@ function normalizeOrder(order){
     status: order.status ?? order.order_status ?? 'placed',
     payment_method: order.payment_method ?? 'cod',
     items: parseJson(order.items, []).map(normalizeItem),
-    address: parseJson(order.address, {}) || {}
+    address: normalizeAddress(order.address)
   };
 }
 
@@ -1932,7 +1950,17 @@ function renderDetail(order){
         <div class="ss-col-label">${ico.addrPin} Shipping address</div>
         <div class="ss-addr-name">${esc(addr.name||'')}</div>
         <div class="ss-addr-text">
-          ${[addr.house,addr.road,addr.city&&addr.state?addr.city+', '+addr.state+(addr.pincode?' '+addr.pincode:''):addr.city||''].filter(Boolean).join('<br>')}
+          ${[
+            addr.house,
+            addr.road,
+            addr.village,
+            addr.landmark ? 'Landmark: '+addr.landmark : '',
+            addr.district ? 'District: '+addr.district : '',
+            addr.city,
+            addr.state,
+            addr.pincode ? 'Pincode: '+addr.pincode : '',
+            addr.address
+          ].filter(Boolean).filter((v,i,arr)=>arr.indexOf(v)===i).map(v=>esc(v)).join('<br>')}
           ${addr.phone?'<br>'+esc(addr.phone):''}
         </div>
       </div>
