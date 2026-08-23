@@ -1424,6 +1424,7 @@ body{padding:0 !important;margin:0 !important;}
   var savedAddresses = [];
   var selectedAddress = null;
   var historyInitialized = false;
+  var ckHistoryEntries = 0;
 
   /* =========================================================
      HELPERS
@@ -1545,15 +1546,30 @@ body{padding:0 !important;margin:0 !important;}
         var state={ckStep:step};
         if(!historyInitialized){
           historyInitialized=true;
+          ckHistoryEntries=0;
           history.replaceState(state,'',location.href);
         }else{
           history.pushState(state,'',location.href);
+          ckHistoryEntries++;
         }
       }catch(e){}
     }
   };
 
   window.addEventListener('popstate',function(e){
+    /*
+      Track Order needs to leave ALL checkout history entries behind.
+      The flag is set by the Track Order click before history.go().
+    */
+    try{
+      var trackTarget=sessionStorage.getItem('ckTrackAfterBack');
+      if(trackTarget){
+        sessionStorage.removeItem('ckTrackAfterBack');
+        location.replace(trackTarget);
+        return;
+      }
+    }catch(err){}
+
     var step=window._ckCurrentStep||1;
     if(step>=4){ navigateOrigin(); return; }
     if(e.state && e.state.ckStep){ applyPanel(e.state.ckStep); }
@@ -3180,10 +3196,21 @@ body{padding:0 !important;margin:0 !important;}
         track.onclick=function(e){
           e.preventDefault();
           var url='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
+
+          /*
+            Checkout creates browser-history entries for Address, Order and
+            Payment. Replacing only the current entry is NOT enough: My Orders
+            would still go back to an older Checkout step.
+
+            First go back across every checkout entry, then immediately open
+            My Orders. This leaves the Product page directly behind My Orders.
+          */
           try{
-            location.replace(url);
+            sessionStorage.setItem('ckTrackAfterBack',url);
+            var backCount=(Number(ckHistoryEntries)||0)+1;
+            history.go(-backCount);
           }catch(err){
-            location.href=url;
+            try{ location.replace(url); }catch(err2){ location.href=url; }
           }
         };
       }
