@@ -1607,16 +1607,6 @@ body{padding:0 !important;margin:0 !important;}
     navigateOrigin();
   };
 
-  /*
-    Track Status flow:
-      Product -> Checkout -> My Orders -> Back -> Product
-
-    Replace ONLY the current Checkout history entry with My Orders.
-    The Product page remains immediately behind it in browser history.
-
-    My Orders page/code is NOT changed.
-  */
-
   /* =========================================================
      LOAD CART
   ========================================================= */
@@ -3188,26 +3178,27 @@ body{padding:0 !important;margin:0 !important;}
         My Orders page ko order id ke saath open karenge.
       */
       if(track){
-        track.href='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
+        var url='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
+        track.href=url;
 
         /*
-          Correct final flow:
-          Product -> Checkout -> My Orders -> Back -> Product
+          FINAL REQUIRED FLOW:
 
-          replace() removes the current Checkout history entry and puts
-          My Orders in exactly that history position. Product remains
-          immediately behind My Orders.
+          Product -> Checkout -> Order Place -> Track Status -> My Orders
+          My Orders -> Back -> Product
 
-          Do NOT use history.back() here: that would skip My Orders.
-          Do NOT use normal href/location.href here: that leaves Checkout
-          behind My Orders.
+          IMPORTANT:
+          replace() is intentional here. It REPLACES the current Checkout
+          history entry with My Orders. Therefore My Orders has Product
+          directly behind it in browser history.
 
-          My Orders page/code is NOT modified.
+          We do NOT use history.back(), history.go(), pageshow redirects,
+          or sessionStorage handoff here.
+
+          My Orders page/code is NOT changed.
         */
         track.onclick=function(e){
           e.preventDefault();
-          var url='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
-
           try{
             location.replace(url);
           }catch(err){
