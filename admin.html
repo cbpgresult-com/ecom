@@ -968,44 +968,6 @@ th{
   }
 }
 
-
-
-/* =========================
-   BULK PRODUCT IMPORT
-========================= */
-.bulk-btn{position:relative}
-.bulk-modal-box{width:min(1180px,100%);max-height:94vh;overflow:auto;background:#fff;border-radius:20px;padding:20px}
-.bulk-help{font-size:11px;color:#777;line-height:1.6;margin:7px 0 14px}
-.bulk-upload-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
-.bulk-file{display:none}
-.bulk-drop{border:1.5px dashed #cfd3d8;border-radius:13px;padding:18px;background:#fafafa;text-align:center;cursor:pointer;flex:1;min-width:250px}
-.bulk-drop strong{display:block;font-size:13px;margin-bottom:4px}
-.bulk-drop span{font-size:10px;color:#888}
-.bulk-stats{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
-.bulk-stat{padding:7px 10px;border:1px solid #e5e7eb;border-radius:9px;background:#fafafa;font-size:10px;font-weight:800}
-.bulk-table-wrap{border:1px solid #e5e7eb;border-radius:13px;overflow:auto;max-height:52vh;background:#fff}
-.bulk-table{min-width:1050px;border-collapse:collapse;width:100%}
-.bulk-table th,.bulk-table td{padding:9px;border-bottom:1px solid #eee;font-size:10px;vertical-align:middle}
-.bulk-table th{position:sticky;top:0;z-index:2;background:#f8f8f8;text-transform:uppercase;color:#777;font-size:9px}
-.bulk-table input,.bulk-table select{width:100%;height:34px;border:1px solid #ddd;border-radius:8px;padding:0 8px;outline:0;font-size:10px;background:#fff}
-.bulk-table input:focus,.bulk-table select:focus{border-color:#111}
-.bulk-img{width:46px;height:46px;border:1px solid #eee;border-radius:8px;object-fit:contain;padding:3px;background:#fff}
-.bulk-name{min-width:220px}
-.bulk-price{min-width:105px}
-.bulk-mrp{min-width:105px}
-.bulk-category{min-width:130px}
-.bulk-stock{min-width:80px}
-.bulk-remove{width:32px;height:32px;border:1px solid #ddd;background:#fff;border-radius:8px;font-weight:900}
-.bulk-remove:hover{background:#fef2f2;color:#dc2626}
-.bulk-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap}
-.bulk-error{display:none;margin-top:10px;padding:10px;border-radius:9px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;font-size:11px}
-.bulk-note{font-size:10px;color:#888;margin-top:9px;line-height:1.5}
-.bulk-source{font-size:9px;color:#888;max-width:220px;word-break:break-all}
-@media(max-width:600px){
-  .bulk-modal-box{padding:14px;border-radius:16px}
-  .bulk-drop{min-width:100%}
-}
-
 </style>
 </head>
 
@@ -1070,10 +1032,6 @@ th{
 
       <button onclick="openAdd()">
         ＋ Add Product
-      </button>
-
-      <button onclick="openBulkImport()">
-        ⇧ Bulk Import
       </button>
 
     </nav>
@@ -1170,20 +1128,12 @@ th{
             </p>
           </div>
 
-          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-            <button
-              class="btn light bulk-btn"
-              onclick="openBulkImport()"
-            >
-              ⇧ Bulk Import
-            </button>
-            <button
-              class="btn"
-              onclick="openAdd()"
-            >
-              + Add Product
-            </button>
-          </div>
+          <button
+            class="btn"
+            onclick="openAdd()"
+          >
+            + Add Product
+          </button>
 
         </div>
 
@@ -1791,77 +1741,6 @@ th{
 </div>
 
 
-<!-- BULK PRODUCT IMPORT MODAL -->
-<div id="bulkModal" class="modal details-modal">
-  <div class="bulk-modal-box">
-    <div class="mh">
-      <div>
-        <h2>Bulk Product Import</h2>
-        <div class="details-summary">20–30 Flipkart product URLs ek saath paste karke import karein.</div>
-      </div>
-      <button type="button" class="close" onclick="closeBulkImport()">×</button>
-    </div>
-
-    <div class="bulk-help">
-      Har line mein <b>1 Flipkart product Share Link</b> paste karein. <b>https://dl.flipkart.com/s/...</b> ya direct product URL dono chalega. System authorized Flipkart Affiliate API se product data fetch karega.
-      Import se pehle <b>Price, MRP, Stock, Category, Status</b> aur neeche available product fields edit kar sakte hain.
-    </div>
-
-    <textarea id="bulkUrls" style="width:100%;min-height:145px;border:1px solid #ddd;border-radius:12px;padding:12px;outline:0;font:inherit;font-size:12px;resize:vertical" placeholder="https://dl.flipkart.com/s/XXXXXXXX
-https://dl.flipkart.com/s/YYYYYYYY
-https://www.flipkart.com/product-name/p/itmXXXXXXXX
-
-20–30 Flipkart Share Links paste karein..."></textarea>
-
-    <div class="bulk-upload-row" style="margin-top:10px">
-      <button type="button" class="btn" onclick="fetchBulkFlipkartProducts()">🔎 Fetch Products</button>
-      <button type="button" class="btn light" onclick="clearBulkRows()">Clear</button>
-    </div>
-
-    <div id="bulkFileName" class="bulk-note">0 URLs added.</div>
-    <div id="bulkError" class="bulk-error"></div>
-    <div id="bulkStats" class="bulk-stats" style="display:none"></div>
-
-    <div id="bulkTableWrap" class="bulk-table-wrap" style="display:none">
-      <table class="bulk-table" style="min-width:1750px">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Image</th>
-            <th>Product Name</th>
-            <th>Flipkart Price</th>
-            <th>Your Price *</th>
-            <th>MRP</th>
-            <th>Brand</th>
-            <th>Category</th>
-            <th>Stock</th>
-            <th>Stock Status</th>
-            <th>Return</th>
-            <th>COD</th>
-            <th>Assured</th>
-            <th>Customize</th>
-            <th>Badge</th>
-            <th>Active</th>
-            <th>Source URL</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="bulkTbody"></tbody>
-      </table>
-    </div>
-
-    <div class="bulk-note">
-      <b>Import ke baad:</b> normal <b>Edit Product</b> se Price, MRP aur product ke baaki fields kabhi bhi change kar sakte hain.
-      Flipkart API token browser mein expose nahi hota; fetch ke liye secure backend endpoint use hota hai.
-    </div>
-
-    <div class="bulk-actions">
-      <button type="button" class="btn light" onclick="closeBulkImport()">Cancel</button>
-      <button type="button" id="bulkImportBtn" class="btn" onclick="importBulkProducts()" disabled>Import All Products</button>
-    </div>
-  </div>
-</div>
-
 <!-- PRODUCT DETAILS MODAL -->
 <div
   id="detailsModal"
@@ -2147,9 +2026,6 @@ let detailsDraft = {
   highlights: [],
   all_details: []
 };
-
-let bulkRows = [];
-
 
 
 const $ =
@@ -4582,277 +4458,6 @@ async function removeProduct(id){
    ERROR MESSAGE
 ========================= */
 
-
-/* =========================================================
-   BULK PRODUCT IMPORT — FLIPKART URL MODE
-   Secure flow:
-   Admin -> Flipkart URLs -> secure backend -> Flipkart Affiliate API -> preview/edit -> Supabase
-========================================================= */
-const FLIPKART_IMPORT_ENDPOINT = "/api/flipkart-products";
-
-function openBulkImport(){
-  bulkRows=[];
-  $("bulkUrls").value="";
-  $("bulkFileName").textContent="0 URLs added.";
-  $("bulkError").style.display="none";
-  $("bulkStats").style.display="none";
-  $("bulkTableWrap").style.display="none";
-  $("bulkTbody").innerHTML="";
-  $("bulkImportBtn").disabled=true;
-  $("bulkModal").classList.add("show");
-}
-
-function closeBulkImport(){
-  $("bulkModal").classList.remove("show");
-}
-
-function clearBulkRows(){
-  bulkRows=[];
-  $("bulkUrls").value="";
-  $("bulkFileName").textContent="0 URLs added.";
-  $("bulkError").style.display="none";
-  $("bulkStats").style.display="none";
-  $("bulkTableWrap").style.display="none";
-  $("bulkTbody").innerHTML="";
-  $("bulkImportBtn").disabled=true;
-}
-
-function getBulkURLs(){
-  const raw=String($("bulkUrls").value||"");
-  return [...new Set(raw.split(/\r?\n|\s+/).map(x=>x.trim()).filter(Boolean))];
-}
-
-function updateBulkURLCount(){
-  const urls=getBulkURLs();
-  $("bulkFileName").textContent=`${urls.length} unique URL${urls.length===1?"":"s"} added.`;
-  if(urls.length>100) showBulkError("Ek baar mein maximum 100 URLs allowed hain.");
-  else if($("bulkError")) $("bulkError").style.display="none";
-}
-
-$("bulkUrls")?.addEventListener("input",updateBulkURLCount);
-
-function isAcceptedFlipkartURL(url){
-  try{
-    const u=new URL(String(url||"").trim());
-    const host=u.hostname.toLowerCase();
-    return host === "flipkart.com" || host === "www.flipkart.com" || host === "dl.flipkart.com";
-  }catch{
-    return false;
-  }
-}
-
-function normalizeFlipkartProductId(url){
-  const s=String(url||"").trim();
-  if(!s) return "";
-  try{
-    const u=new URL(s);
-    const p=u.pathname.match(/\/p\/([A-Za-z0-9]+)/i);
-    if(p?.[1]) return p[1];
-    const id=u.searchParams.get("pid");
-    if(id) return id;
-  }catch{}
-  const m=s.match(/\/p\/([A-Za-z0-9]+)/i);
-  return m?.[1]||"";
-}
-
-async function fetchBulkFlipkartProducts(){
-  const urls=getBulkURLs();
-  if(!urls.length){
-    showBulkError("Pehle Flipkart product URLs paste karein.");
-    return;
-  }
-  if(urls.length>100){
-    showBulkError("Ek baar mein maximum 100 URLs allowed hain.");
-    return;
-  }
-
-  const invalid=urls.filter(u=>!isAcceptedFlipkartURL(u));
-  if(invalid.length){
-    showBulkError(`Invalid Flipkart URL: ${invalid[0]}`);
-    return;
-  }
-
-  const fetchBtn=document.querySelector('#bulkModal .bulk-upload-row .btn');
-  if(fetchBtn){fetchBtn.disabled=true;fetchBtn.textContent=`Fetching 0/${urls.length}...`;}
-  $("bulkError").style.display="none";
-  bulkRows=[];
-
-  try{
-    const response=await fetch(FLIPKART_IMPORT_ENDPOINT,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({urls})
-    });
-
-    const text=await response.text();
-    let data={};
-    try{data=JSON.parse(text);}catch{throw new Error(text||`Backend error (${response.status})`);}
-    if(!response.ok) throw new Error(data.error||`Backend error (${response.status})`);
-
-    const products=Array.isArray(data.products)?data.products:[];
-    const errors=Array.isArray(data.errors)?data.errors:[];
-    if(!products.length){
-      throw new Error(errors[0]?.error||"Kisi URL ka product data nahi mila.");
-    }
-
-    bulkRows=products.map((p,i)=>normalizeImportedProduct(p,i));
-    renderBulkRows();
-
-    if(errors.length){
-      showBulkError(`${products.length} products mile. ${errors.length} URL fail hua: ${errors[0]?.url||""} — ${errors[0]?.error||"Unknown error"}`);
-    }
-  }catch(e){
-    console.error("FLIPKART BULK FETCH ERROR:",e);
-    showBulkError(readable(e));
-  }finally{
-    if(fetchBtn){fetchBtn.disabled=false;fetchBtn.textContent="🔎 Fetch Products";}
-  }
-}
-
-function normalizeImportedProduct(p,i){
-  const sourcePrice=parseBulkNumber(p.flipkart_price ?? p.price ?? p.sellingPrice);
-  const mrp=parseBulkNumber(p.mrp ?? p.maximumRetailPrice);
-  const image=String(p.main_image||p.image||p.imageUrl||"").trim();
-  const images=Array.isArray(p.images)?p.images.filter(Boolean):[];
-  const stock=Number.isInteger(Number(p.stock)) ? Math.max(0,Number(p.stock)) : 10;
-  return {
-    key:i,
-    name:String(p.name||p.title||`Product ${i+1}`),
-    slug:String(p.slug||slugify(p.name||p.title||`product-${i+1}`)),
-    description:String(p.description||p.productDescription||""),
-    manufacturer_info:normalizeManufacturerInfo(p.manufacturer_info||{}),
-    brand:String(p.brand||p.productBrand||""),
-    category:String(p.category||"Electronics"),
-    sourcePrice,
-    price:sourcePrice,
-    mrp,
-    stock,
-    stockStatus:String(p.stock_status||"stock"),
-    customizeEnabled:Boolean(p.customize_enabled),
-    returnEnabled:p.return_enabled!==false,
-    returnDays:Number(p.return_days)||10,
-    codEnabled:p.cod_enabled!==false,
-    assuredEnabled:p.assured_enabled!==false,
-    mainImage:image,
-    images,
-    badge:String(p.badge||""),
-    active:p.is_active!==false,
-    highlights:normalizeHighlights(p.highlights||[]),
-    all_details:normalizeAllDetails(p.all_details||[]),
-    sourceURL:String(p.source_url||p.productUrl||p.url||"")
-  };
-}
-
-function parseBulkNumber(v){
-  if(v===null||v===undefined||String(v).trim()==="") return 0;
-  const cleaned=String(v).replace(/[^0-9.\-]/g,"");
-  const n=Number(cleaned);
-  return Number.isFinite(n)?n:0;
-}
-
-function showBulkError(msg){
-  const box=$("bulkError");
-  box.textContent=msg;
-  box.style.display="block";
-  if($("bulkImportBtn")) $("bulkImportBtn").disabled=true;
-}
-
-function renderBulkRows(){
-  const tbody=$("bulkTbody");
-  tbody.innerHTML=bulkRows.map((r,i)=>`
-    <tr data-index="${i}">
-      <td>${i+1}</td>
-      <td>${r.mainImage?`<img class="bulk-img" src="${esc(r.mainImage)}" onerror="this.style.visibility='hidden'">`:`<div class="bulk-img"></div>`}</td>
-      <td class="bulk-name">
-        <input value="${esc(r.name)}" oninput="bulkRows[${i}].name=this.value">
-        <div class="bulk-source">${esc(r.slug)}</div>
-      </td>
-      <td>${r.sourcePrice?money(r.sourcePrice):"—"}</td>
-      <td class="bulk-price"><input type="number" min="0" step="0.01" value="${esc(r.price)}" oninput="bulkRows[${i}].price=Number(this.value)"></td>
-      <td class="bulk-mrp"><input type="number" min="0" step="0.01" value="${esc(r.mrp||"")}" oninput="bulkRows[${i}].mrp=Number(this.value)||0"></td>
-      <td><input value="${esc(r.brand)}" oninput="bulkRows[${i}].brand=this.value"></td>
-      <td class="bulk-category"><input value="${esc(r.category)}" oninput="bulkRows[${i}].category=this.value"></td>
-      <td class="bulk-stock"><input type="number" min="0" step="1" value="${esc(r.stock)}" oninput="bulkRows[${i}].stock=Math.max(0,parseInt(this.value||0,10))"></td>
-      <td><select onchange="bulkRows[${i}].stockStatus=this.value"><option value="stock" ${r.stockStatus==='stock'?'selected':''}>In Stock</option><option value="out_of_stock" ${r.stockStatus==='out_of_stock'?'selected':''}>Out</option></select></td>
-      <td><select onchange="bulkRows[${i}].returnEnabled=this.value==='true'"><option value="true" ${r.returnEnabled?'selected':''}>ON</option><option value="false" ${!r.returnEnabled?'selected':''}>OFF</option></select></td>
-      <td><select onchange="bulkRows[${i}].codEnabled=this.value==='true'"><option value="true" ${r.codEnabled?'selected':''}>ON</option><option value="false" ${!r.codEnabled?'selected':''}>OFF</option></select></td>
-      <td><select onchange="bulkRows[${i}].assuredEnabled=this.value==='true'"><option value="true" ${r.assuredEnabled?'selected':''}>ON</option><option value="false" ${!r.assuredEnabled?'selected':''}>OFF</option></select></td>
-      <td><select onchange="bulkRows[${i}].customizeEnabled=this.value==='true'"><option value="false" ${!r.customizeEnabled?'selected':''}>OFF</option><option value="true" ${r.customizeEnabled?'selected':''}>ON</option></select></td>
-      <td><input value="${esc(r.badge)}" placeholder="Badge" oninput="bulkRows[${i}].badge=this.value"></td>
-      <td><select onchange="bulkRows[${i}].active=this.value==='true'"><option value="true" ${r.active?'selected':''}>Active</option><option value="false" ${!r.active?'selected':''}>Inactive</option></select></td>
-      <td class="bulk-source">${esc(r.sourceURL||"—")}</td>
-      <td><button type="button" class="bulk-remove" onclick="removeBulkRow(${i})">×</button></td>
-    </tr>
-  `).join("");
-
-  $("bulkStats").style.display="flex";
-  $("bulkStats").innerHTML=`<span class="bulk-stat">Products: ${bulkRows.length}</span><span class="bulk-stat">Editable before import: Price / MRP / Brand / Category / Stock / Status / Return / COD / Assured / Customize / Badge. API se available Description / Highlights / Details / Images bhi save honge.</span>`;
-  $("bulkTableWrap").style.display=bulkRows.length?"block":"none";
-  $("bulkImportBtn").disabled=!bulkRows.length;
-  if(!$("bulkError").textContent) $("bulkError").style.display="none";
-}
-
-function removeBulkRow(index){bulkRows.splice(index,1);renderBulkRows();}
-
-async function importBulkProducts(){
-  if(!bulkRows.length) return;
-  const btn=$("bulkImportBtn");
-  const valid=[]; const errors=[];
-
-  bulkRows.forEach((r,i)=>{
-    const name=String(r.name||"").trim();
-    const price=Number(r.price); const stock=Number(r.stock);
-    if(!name) errors.push(`Row ${i+1}: Product name missing`);
-    if(!Number.isFinite(price)||price<0) errors.push(`Row ${i+1}: Price invalid`);
-    if(!Number.isInteger(stock)||stock<0) errors.push(`Row ${i+1}: Stock invalid`);
-    if(name&&Number.isFinite(price)&&price>=0&&Number.isInteger(stock)&&stock>=0){
-      valid.push({
-        name,
-        slug:String(r.slug||slugify(name)),
-        description:String(r.description||"").trim(),
-        manufacturer_info:normalizeManufacturerInfo(r.manufacturer_info||{}),
-        category:String(r.category||"Electronics").trim()||"Electronics",
-        brand:String(r.brand||"").trim(),
-        price,
-        mrp:Number(r.mrp)||null,
-        stock,
-        stock_status:String(r.stockStatus||"stock"),
-        customize_enabled:Boolean(r.customizeEnabled),
-        return_enabled:Boolean(r.returnEnabled),
-        return_days:Boolean(r.returnEnabled)?(Number(r.returnDays)||10):10,
-        cod_enabled:Boolean(r.codEnabled),
-        assured_enabled:Boolean(r.assuredEnabled),
-        main_image:String(r.mainImage||"").trim(),
-        images:Array.isArray(r.images)?r.images:[],
-        badge:String(r.badge||"").trim(),
-        is_active:r.active!==false,
-        highlights:normalizeHighlights(r.highlights||[]),
-        all_details:normalizeAllDetails(r.all_details||[])
-      });
-    }
-  });
-
-  if(errors.length){showBulkError(errors.slice(0,8).join(" • "));return;}
-  btn.disabled=true;btn.textContent=`Importing 0/${valid.length}...`;
-  try{
-    const chunkSize=20;let done=0;
-    for(let i=0;i<valid.length;i+=chunkSize){
-      const chunk=valid.slice(i,i+chunkSize);
-      const {error}=await sb.from("products").insert(chunk);
-      if(error) throw error;
-      done+=chunk.length;btn.textContent=`Importing ${done}/${valid.length}...`;
-    }
-    toast(`✓ ${valid.length} products imported`);
-    closeBulkImport();
-    await loadProducts();
-  }catch(e){
-    console.error("BULK IMPORT ERROR:",e);
-    showBulkError(readable(e));
-  }finally{
-    btn.disabled=!bulkRows.length;btn.textContent="Import All Products";
-  }
-}
-
 function readable(e){
 
   const m =
@@ -4927,10 +4532,6 @@ $("detailsModal")
     }
   );
 
-
-$("bulkModal").addEventListener("click",e=>{
-  if(e.target.id === "bulkModal") closeBulkImport();
-});
 
 /* =========================
    START
