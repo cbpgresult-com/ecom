@@ -1611,34 +1611,11 @@ body{padding:0 !important;margin:0 !important;}
     Track Status flow:
       Product -> Checkout -> My Orders -> Back -> Product
 
-    Track click stores a one-time handoff flag. If the user presses
-    Back from My Orders, the Checkout document can be restored from
-    browser cache (BFCache) or loaded again. In either case, pageshow
-    sees the flag and immediately leaves Checkout to the Product page.
+    Replace ONLY the current Checkout history entry with My Orders.
+    The Product page remains immediately behind it in browser history.
 
-    My Orders code itself is NOT changed.
+    My Orders page/code is NOT changed.
   */
-  function handleTrackReturnToProduct(){
-    var shouldReturn=false;
-    try{
-      shouldReturn=sessionStorage.getItem('ckTrackReturnToProduct')==='1';
-      if(shouldReturn) sessionStorage.removeItem('ckTrackReturnToProduct');
-    }catch(e){}
-
-    if(!shouldReturn) return;
-
-    setTimeout(function(){
-      try{
-        history.back();
-      }catch(e){
-        navigateOrigin();
-      }
-    },0);
-  }
-
-  window.addEventListener('pageshow',function(){
-    handleTrackReturnToProduct();
-  });
 
   /* =========================================================
      LOAD CART
@@ -3217,9 +3194,13 @@ body{padding:0 !important;margin:0 !important;}
           Correct final flow:
           Product -> Checkout -> My Orders -> Back -> Product
 
-          Open My Orders normally so My Orders sits directly after the
-          Product page in browser history. A one-time session flag tells
-          Checkout to leave itself when it is restored by My Orders -> Back.
+          replace() removes the current Checkout history entry and puts
+          My Orders in exactly that history position. Product remains
+          immediately behind My Orders.
+
+          Do NOT use history.back() here: that would skip My Orders.
+          Do NOT use normal href/location.href here: that leaves Checkout
+          behind My Orders.
 
           My Orders page/code is NOT modified.
         */
@@ -3228,13 +3209,9 @@ body{padding:0 !important;margin:0 !important;}
           var url='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
 
           try{
-            sessionStorage.setItem('ckTrackReturnToProduct','1');
-          }catch(err){}
-
-          try{
+            location.replace(url);
+          }catch(err){
             location.href=url;
-          }catch(err2){
-            location.assign(url);
           }
         };
       }
