@@ -1,4 +1,3 @@
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'POST method required' });
@@ -31,13 +30,14 @@ export default async function handler(req, res) {
     // A small sequential worker keeps this comfortably below the limit.
     for (const url of cleanUrls) {
       try {
-        if (!/^https?:\/\/(www\.)?flipkart\.com\//i.test(url)) {
-          throw new Error('Invalid Flipkart URL');
+        if (!isAcceptedFlipkartURL(url)) {
+          throw new Error('Invalid Flipkart URL. Flipkart Share Link (dl.flipkart.com/s/...) ya direct product URL use karein.');
         }
 
-        const productId = extractProductId(url);
+        const resolved = await resolveFlipkartURL(url);
+        const productId = extractProductId(resolved.finalUrl || url);
         if (!productId) {
-          throw new Error('Product ID could not be extracted from this URL');
+          throw new Error('Product ID nahi mila. Ye link individual product ka Share Link hona chahiye.');
         }
 
         const apiUrl = new URL('https://affiliate-api.flipkart.net/affiliate/1.0/product.json');
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
           throw new Error(data?.error || data?.message || `Flipkart API error ${fkResponse.status}`);
         }
 
-        const mapped = mapFlipkartProduct(data, url);
+        const mapped = mapFlipkartProduct(data, url, resolved.finalUrl || url);
         if (!mapped.name) {
           throw new Error('Product details were not returned by Flipkart');
         }
@@ -81,6 +81,44 @@ export default async function handler(req, res) {
   }
 }
 
+function isAcceptedFlipkartURL(url) {
+  try {
+    const u = new URL(String(url || '').trim());
+    const host = u.hostname.toLowerCase();
+    return host === 'flipkart.com' || host === 'www.flipkart.com' || host === 'dl.flipkart.com';
+  } catch {
+    return false;
+  }
+}
+
+async function resolveFlipkartURL(url) {
+  const u = new URL(String(url).trim());
+  const host = u.hostname.toLowerCase();
+
+  // Direct product URLs do not need redirect resolution.
+  if (host === 'flipkart.com' || host === 'www.flipkart.com') {
+    return { finalUrl: u.toString() };
+  }
+
+  // Flipkart Share/Deep Links use dl.flipkart.com. Resolve only the redirect;
+  // product data itself is fetched through the official Affiliate API below.
+  const response = await fetch(u.toString(), {
+    method: 'GET',
+    redirect: 'follow',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (compatible; MyStore Flipkart Importer/1.0)',
+      'Accept': 'text/html,application/xhtml+xml'
+    }
+  });
+
+  const finalUrl = response.url || u.toString();
+  if (!response.ok && response.status !== 304) {
+    throw new Error(`Flipkart Share Link resolve failed (${response.status})`);
+  }
+
+  return { finalUrl };
+}
+
 function extractProductId(url) {
   try {
     const u = new URL(url);
@@ -94,7 +132,7 @@ function extractProductId(url) {
   return match?.[1] || '';
 }
 
-function mapFlipkartProduct(data, sourceUrl) {
+function mapFlipkartProduct(data, sourceUrl, resolvedUrl = sourceUrl) {
   const base = data?.productBaseInfoV1 || data?.productBaseInfo || {};
   const shipping = data?.productShippingInfoV1 || data?.productShippingInfo || {};
 
@@ -117,8 +155,9 @@ function mapFlipkartProduct(data, sourceUrl) {
     mrp: mrp || 0,
     main_image: images[0] || '',
     images,
-    productUrl: sourceUrl,
+    productUrl: base.productUrl || resolvedUrl || sourceUrl,
     source_url: sourceUrl,
+    resolved_url: resolvedUrl,
     stock_status: base.inStock === false ? 'out_of_stock' : 'stock',
     // These are defaults for fields not supplied by the Flipkart product API.
     stock: base.inStock === false ? 0 : 10,
@@ -128,6 +167,18 @@ function mapFlipkartProduct(data, sourceUrl) {
     assured_enabled: true,
     customize_enabled: false,
     badge: '',
+    emi_enabled: Boolean(base.emiAvailable),
+    discount_percentage: number(base.discountPercentage ?? base.discount),
+    cashback: base.cashBack || '',
+    offers: base.offers || [],
+    color: base.color || '',
+    size: base.size || '',
+    size_unit: base.sizeUnit || '',
+    seller_name: shipping.sellerName || '',
+    seller_rating: number(shipping.sellerAverageRating),
+    seller_ratings_count: number(shipping.sellerNoOfRatings),
+    seller_reviews_count: number(shipping.sellerNoOfReviews),
+    shipping_info: shipping.shippingBaseInfo || '',
     is_active: base.isAvailable !== false,
     highlights: buildHighlights(base),
     all_details: buildDetails(base, shipping)
@@ -148,8 +199,10 @@ function buildHighlights(base) {
   const out = [];
   if (base.productBrand) out.push({ icon: '✓', label: 'Brand', value: String(base.productBrand), color: '#111111' });
   if (base.color) out.push({ icon: '✓', label: 'Color', value: String(base.color), color: '#111111' });
-  if (base.size) out.push({ icon: '✓', label: 'Size', value: String(base.size), color: '#111111' });
-  if (base.discount) out.push({ icon: '✓', label: 'Discount', value: String(base.discount), color: '#111111' });
+  if (base.size) out.push({ icon: '✓', label: 'Size', value: String(base.size) + (base.sizeUnit ? ' ' + base.sizeUnit : ''), color: '#111111' });
+  if (base.discountPercentage != null && String(base.discountPercentage) !== '') out.push({ icon: '✓', label: 'Discount', value: String(base.discountPercentage) + '%', color: '#111111' });
+  if (base.codAvailable != null) out.push({ icon: '✓', label: 'COD', value: base.codAvailable ? 'Available' : 'Not available', color: '#111111' });
+  if (base.emiAvailable != null) out.push({ icon: '✓', label: 'EMI', value: base.emiAvailable ? 'Available' : 'Not available', color: '#111111' });
   return out;
 }
 
@@ -158,9 +211,18 @@ function buildDetails(base, shipping) {
   if (base.productId) rows.push({ key: 'Flipkart Product ID', value: String(base.productId) });
   if (base.productBrand) rows.push({ key: 'Brand', value: String(base.productBrand) });
   if (base.color) rows.push({ key: 'Color', value: String(base.color) });
-  if (base.size) rows.push({ key: 'Size', value: String(base.size) });
+  if (base.size) rows.push({ key: 'Size', value: String(base.size) + (base.sizeUnit ? ' ' + base.sizeUnit : '') });
   if (base.styleCode) rows.push({ key: 'Style Code', value: String(base.styleCode) });
+  if (base.discountPercentage != null && String(base.discountPercentage) !== '') rows.push({ key: 'Discount', value: String(base.discountPercentage) + '%' });
+  if (base.codAvailable != null) rows.push({ key: 'COD', value: base.codAvailable ? 'Available' : 'Not available' });
+  if (base.emiAvailable != null) rows.push({ key: 'EMI', value: base.emiAvailable ? 'Available' : 'Not available' });
+  if (base.cashBack) rows.push({ key: 'Cashback', value: String(base.cashBack) });
+  if (base.offers) rows.push({ key: 'Offers', value: typeof base.offers === 'string' ? base.offers : JSON.stringify(base.offers) });
   if (shipping?.shippingBaseInfo) rows.push({ key: 'Shipping Info', value: String(shipping.shippingBaseInfo) });
+  if (shipping?.sellerName) rows.push({ key: 'Seller', value: String(shipping.sellerName) });
+  if (shipping?.sellerAverageRating) rows.push({ key: 'Seller Rating', value: String(shipping.sellerAverageRating) });
+  if (shipping?.sellerNoOfRatings) rows.push({ key: 'Seller Ratings', value: String(shipping.sellerNoOfRatings) });
+  if (shipping?.sellerNoOfReviews) rows.push({ key: 'Seller Reviews', value: String(shipping.sellerNoOfReviews) });
   return rows.length ? [{ title: 'Product Details', rows }] : [];
 }
 
