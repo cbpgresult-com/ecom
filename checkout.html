@@ -1424,7 +1424,6 @@ body{padding:0 !important;margin:0 !important;}
   var savedAddresses = [];
   var selectedAddress = null;
   var historyInitialized = false;
-  var ckHistoryEntries = 0;
 
   /* =========================================================
      HELPERS
@@ -1539,47 +1538,34 @@ body{padding:0 !important;margin:0 !important;}
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
+  /*
+    IMPORTANT HISTORY DESIGN:
+    Checkout keeps ONLY ONE browser-history entry.
+    Address -> Order -> Payment are internal panels, not separate
+    browser entries. This prevents Checkout from being left behind
+    My Orders.
+
+    Header Back still behaves step-by-step through ckGoBack().
+  */
   window.ckShowPanel=function(step){
     applyPanel(step);
+
     if(step>=1 && step<=3){
       try{
-        var state={ckStep:step};
         if(!historyInitialized){
           historyInitialized=true;
-          ckHistoryEntries=0;
-          history.replaceState(state,'',location.href);
-        }else{
-          history.pushState(state,'',location.href);
-          ckHistoryEntries++;
+          history.replaceState({ckCheckout:true,ckStep:step},'',location.href);
         }
       }catch(e){}
     }
   };
 
-  window.addEventListener('popstate',function(e){
-    /*
-      Track Order needs to leave ALL checkout history entries behind.
-      The flag is set by the Track Order click before history.go().
-    */
-    try{
-      var trackTarget=sessionStorage.getItem('ckTrackAfterBack');
-      if(trackTarget){
-        sessionStorage.removeItem('ckTrackAfterBack');
-
-        /*
-          We have now landed on Product after skipping Checkout history.
-          Use normal navigation so Product stays immediately behind My Orders.
-          Result: My Orders -> Back -> Product.
-        */
-        location.href=trackTarget;
-        return;
-      }
-    }catch(err){}
-
-    var step=window._ckCurrentStep||1;
-    if(step>=4){ navigateOrigin(); return; }
-    if(e.state && e.state.ckStep){ applyPanel(e.state.ckStep); }
-    else if(step>1){ applyPanel(step-1); }
+  /*
+    If the user uses the browser's Back button while inside Checkout,
+    leave Checkout through its single history entry.
+  */
+  window.addEventListener('popstate',function(){
+    navigateOrigin();
   });
 
   function navigateOrigin(){
@@ -1587,13 +1573,9 @@ body{padding:0 !important;margin:0 !important;}
     try{ target=sessionStorage.getItem('ckOriginPage'); }catch(e){}
 
     /*
-      IMPORTANT: Do NOT use location.href here.
-      location.href creates a NEW history entry for the Product page.
-      Then Product -> Back -> Checkout happens again, which was the
-      3-4 times Back problem.
-
-      replace() removes the current Checkout document from this history
-      position, so after returning to Product, Back will NOT reopen Checkout.
+      Checkout has only one browser entry now.
+      replace() removes that Checkout entry, so Product -> Back can
+      never reopen Checkout.
     */
     var destination=target || document.referrer || '/';
     try{
@@ -1607,18 +1589,56 @@ body{padding:0 !important;margin:0 !important;}
     var step=window._ckCurrentStep||1;
 
     /*
-      Flipkart-style behaviour:
-      Step 3 -> Step 2 -> Step 1 -> Product/previous page.
-      Internal checkout steps use browser history, while leaving Checkout
-      uses replace() so Checkout cannot remain behind Product in history.
+      Header Back:
+      Step 3 -> Step 2 -> Step 1 -> Product.
+      These are internal panels, so no browser-history entries are
+      created for them.
     */
-    if(step>1 && step<4){
-      history.back();
+    if(step===3){
+      applyPanel(2);
+      return;
+    }
+
+    if(step===2){
+      applyPanel(1);
       return;
     }
 
     navigateOrigin();
   };
+
+  /*
+    Track Status flow:
+      Product -> Checkout -> My Orders -> Back -> Product
+
+    Track click stores a one-time handoff flag. If the user presses
+    Back from My Orders, the Checkout document can be restored from
+    browser cache (BFCache) or loaded again. In either case, pageshow
+    sees the flag and immediately leaves Checkout to the Product page.
+
+    My Orders code itself is NOT changed.
+  */
+  function handleTrackReturnToProduct(){
+    var shouldReturn=false;
+    try{
+      shouldReturn=sessionStorage.getItem('ckTrackReturnToProduct')==='1';
+      if(shouldReturn) sessionStorage.removeItem('ckTrackReturnToProduct');
+    }catch(e){}
+
+    if(!shouldReturn) return;
+
+    setTimeout(function(){
+      try{
+        history.back();
+      }catch(e){
+        navigateOrigin();
+      }
+    },0);
+  }
+
+  window.addEventListener('pageshow',function(){
+    handleTrackReturnToProduct();
+  });
 
   /* =========================================================
      LOAD CART
@@ -3194,34 +3214,27 @@ body{padding:0 !important;margin:0 !important;}
         track.href='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
 
         /*
-          IMPORTANT:
-          Track Order must create this final history chain:
+          Correct final flow:
+          Product -> Checkout -> My Orders -> Back -> Product
 
-          Product -> My Orders
+          Open My Orders normally so My Orders sits directly after the
+          Product page in browser history. A one-time session flag tells
+          Checkout to leave itself when it is restored by My Orders -> Back.
 
-          Checkout's internal Address/Order/Payment history entries must be
-          skipped first. We go back to the Product page, then NORMAL navigation
-          to My Orders adds My Orders after Product.
-
-          Do NOT use location.replace() here. replace() would replace Product
-          itself, causing My Orders -> Back to skip Product.
+          My Orders page/code is NOT modified.
         */
         track.onclick=function(e){
           e.preventDefault();
           var url='/ecom/my-orders.html?id='+encodeURIComponent(order.id);
 
           try{
-            sessionStorage.setItem('ckTrackAfterBack',url);
+            sessionStorage.setItem('ckTrackReturnToProduct','1');
+          }catch(err){}
 
-            /*
-              historyInitialized state = Address (replaceState)
-              ckHistoryEntries = number of additional checkout states.
-              +1 moves from the current Checkout document back to Product.
-            */
-            var backCount=(Number(ckHistoryEntries)||0)+1;
-            history.go(-backCount);
-          }catch(err){
-            try{ location.href=url; }catch(err2){ location.assign(url); }
+          try{
+            location.href=url;
+          }catch(err2){
+            location.assign(url);
           }
         };
       }
