@@ -2197,9 +2197,14 @@ window.closeMobileDetail = function(){
   stopPendingPoll();
   const url=new URL(window.location.href);
   url.searchParams.delete('id');
-  // IMPORTANT: do not create another history entry here.
-  // The order was opened with pushState(), so returning to the list
-  // must replace the current URL instead of pushing a new list state.
+  // Order Details was opened with pushState().
+  // Go back to that existing List history entry instead of creating/replacing one.
+  if(window.history.state && window.history.state.id){
+    window.history.back();
+    return;
+  }
+
+  // Fallback when the page was opened directly without an order history state.
   window.history.replaceState({},'',url);
   renderList();
   window.scrollTo(0,0);
