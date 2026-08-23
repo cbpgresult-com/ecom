@@ -1803,15 +1803,15 @@ th{
     </div>
 
     <div class="bulk-help">
-      Har line mein <b>1 Flipkart product URL</b> paste karein. System authorized Flipkart Affiliate API se product data fetch karega.
+      Har line mein <b>1 Flipkart product Share Link</b> paste karein. <b>https://dl.flipkart.com/s/...</b> ya direct product URL dono chalega. System authorized Flipkart Affiliate API se product data fetch karega.
       Import se pehle <b>Price, MRP, Stock, Category, Status</b> aur neeche available product fields edit kar sakte hain.
     </div>
 
-    <textarea id="bulkUrls" style="width:100%;min-height:145px;border:1px solid #ddd;border-radius:12px;padding:12px;outline:0;font:inherit;font-size:12px;resize:vertical" placeholder="https://www.flipkart.com/product-1/p/...
-https://www.flipkart.com/product-2/p/...
-https://www.flipkart.com/product-3/p/...
+    <textarea id="bulkUrls" style="width:100%;min-height:145px;border:1px solid #ddd;border-radius:12px;padding:12px;outline:0;font:inherit;font-size:12px;resize:vertical" placeholder="https://dl.flipkart.com/s/XXXXXXXX
+https://dl.flipkart.com/s/YYYYYYYY
+https://www.flipkart.com/product-name/p/itmXXXXXXXX
 
-20–30 URLs paste karein..."></textarea>
+20–30 Flipkart Share Links paste karein..."></textarea>
 
     <div class="bulk-upload-row" style="margin-top:10px">
       <button type="button" class="btn" onclick="fetchBulkFlipkartProducts()">🔎 Fetch Products</button>
@@ -4631,6 +4631,16 @@ function updateBulkURLCount(){
 
 $("bulkUrls")?.addEventListener("input",updateBulkURLCount);
 
+function isAcceptedFlipkartURL(url){
+  try{
+    const u=new URL(String(url||"").trim());
+    const host=u.hostname.toLowerCase();
+    return host === "flipkart.com" || host === "www.flipkart.com" || host === "dl.flipkart.com";
+  }catch{
+    return false;
+  }
+}
+
 function normalizeFlipkartProductId(url){
   const s=String(url||"").trim();
   if(!s) return "";
@@ -4656,7 +4666,7 @@ async function fetchBulkFlipkartProducts(){
     return;
   }
 
-  const invalid=urls.filter(u=>!/^https?:\/\/(www\.)?flipkart\.com\//i.test(u));
+  const invalid=urls.filter(u=>!isAcceptedFlipkartURL(u));
   if(invalid.length){
     showBulkError(`Invalid Flipkart URL: ${invalid[0]}`);
     return;
@@ -4776,7 +4786,7 @@ function renderBulkRows(){
   `).join("");
 
   $("bulkStats").style.display="flex";
-  $("bulkStats").innerHTML=`<span class="bulk-stat">Products: ${bulkRows.length}</span><span class="bulk-stat">Editable before import: Price / MRP / Brand / Category / Stock / Status / Return / COD / Assured / Customize / Badge</span>`;
+  $("bulkStats").innerHTML=`<span class="bulk-stat">Products: ${bulkRows.length}</span><span class="bulk-stat">Editable before import: Price / MRP / Brand / Category / Stock / Status / Return / COD / Assured / Customize / Badge. API se available Description / Highlights / Details / Images bhi save honge.</span>`;
   $("bulkTableWrap").style.display=bulkRows.length?"block":"none";
   $("bulkImportBtn").disabled=!bulkRows.length;
   if(!$("bulkError").textContent) $("bulkError").style.display="none";
