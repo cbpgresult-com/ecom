@@ -1845,17 +1845,35 @@ function createMovieCard(movie){
 function attachMovieCardNavigation(container){
     container.querySelectorAll(".movie-card").forEach(card=>{
         if(card.dataset.navigationBound==="1") return;
+
         card.dataset.navigationBound="1";
         card.style.cursor="pointer";
         card.setAttribute("role","link");
-        card.addEventListener("click",e=>{
-            if(e.target.closest("button")) return;
+        card.setAttribute("tabindex","0");
+
+        function openMovie(){
             const id=card.dataset.id;
+
             if(!id){
                 console.warn("CINEFLIX: movie card has no database id",card);
                 return;
             }
-            window.location.assign(`movie.html?id=${encodeURIComponent(id)}`);
+
+            // Home = page.html, Movie Post = movie.html
+            window.location.href =
+                "movie.html?id=" + encodeURIComponent(id);
+        }
+
+        card.addEventListener("click",e=>{
+            if(e.target.closest(".card-action")) return;
+            openMovie();
+        });
+
+        card.addEventListener("keydown",e=>{
+            if(e.key==="Enter" || e.key===" "){
+                e.preventDefault();
+                openMovie();
+            }
         });
     });
 }
