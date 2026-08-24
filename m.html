@@ -4299,7 +4299,7 @@ function toggleVideoFromTap(){
     }
 
     if(video.paused || video.ended){
-        showPlayerLoading();
+        playWithoutLoaderIfBuffered();
         video.play().catch(()=>{});
     }else{
         video.pause();
@@ -4623,7 +4623,13 @@ videoPlayer.addEventListener("click",e=>{
     showPlayerControls(true);
 });
 
-video.addEventListener("play",updateCenterPlayPause);
+video.addEventListener("play",()=>{
+    if(window.__pausePrefetchTimer){
+        clearInterval(window.__pausePrefetchTimer);
+        window.__pausePrefetchTimer=null;
+    }
+    updateCenterPlayPause();
+});
 video.addEventListener("pause",()=>{
     hidePlayerLoading();
     updateCenterPlayPause();
@@ -5084,7 +5090,7 @@ function togglePlay(){
 
     if(video.paused){
         initialPoster.classList.add("hidden");
-        showPlayerLoading();
+        playWithoutLoaderIfBuffered();
         video.play().catch(()=>{});
     }else{
         video.pause();
@@ -5111,9 +5117,26 @@ qualitySelect.addEventListener("change",()=>{
     applyHlsQuality(newQuality,false);
 });
 
-video.addEventListener("loadstart",()=>{ if(pendingAutoPlay || !video.paused) showPlayerLoading(); });
-video.addEventListener("waiting",()=>{ /* no player loader during quality switching */ });
-video.addEventListener("stalled",()=>{ if(!video.paused) showPlayerLoading(); });
+video.addEventListener("loadstart",()=>{
+    if(pendingAutoPlay || !video.paused) showPlayerLoading();
+});
+
+video.addEventListener("waiting",()=>{
+    /*
+       If playback has real buffered media at the current point, do not
+       flash the loader. Only show it when there is genuinely nothing
+       usable left to play.
+    */
+    if(!video.paused && getBufferedAheadSeconds()<=0.15){
+        showPlayerLoading();
+    }
+});
+
+video.addEventListener("stalled",()=>{
+    if(!video.paused && getBufferedAheadSeconds()<=0.15){
+        showPlayerLoading();
+    }
+});
 video.addEventListener("seeking",()=>{ if(!video.paused) showPlayerLoading(); });
 video.addEventListener("canplay",()=>{ /* keep loader until actual playback */ });
 video.addEventListener("loadeddata",()=>{
@@ -5160,18 +5183,17 @@ hidePlayerControls();
 
 
 video.addEventListener("pause",()=>{
-    /*
-       Keep HLS loading while the user is paused.
-       This lets the gray buffered section continue growing
-       toward roughly 60 seconds ahead.
-    */
-    try{
-        if(hls && typeof hls.startLoad==="function"){
-            hls.startLoad();
-        }
-    }catch(e){}
+    pausePrefetch();
 
-    updateBufferedProgress();
+    /*
+       One immediate real-buffer measurement on pause.
+       After this, the watcher advances the gray bar every 2 seconds.
+    */
+    setTimeout(()=>{
+        if(video.paused){
+            updateBufferedProgress();
+        }
+    },0);
 });
 
 video.addEventListener("progress",updateBufferedProgress);
@@ -5182,9 +5204,16 @@ video.addEventListener("playing",updateBufferedProgress);
 
 const bufferWatchTimer=setInterval(()=>{
     if(video.paused){
+        try{
+            if(hls && typeof hls.startLoad==="function"){
+                hls.startLoad(video.currentTime);
+            }
+        }catch(e){}
+
+        /* Deliberately update in 2-second jumps while paused. */
         updateBufferedProgress();
     }
-},500);
+},2000);
 
 function bufferRevealFrame(){
     if(video.paused && bufferRevealStartTime!==null){
@@ -5227,6 +5256,90 @@ let bufferRevealBaseSeconds=20;
    Keep roughly 10–20 seconds ahead when the source can provide it.
    The gray track represents the portion already buffered ahead of playback.
 */
+
+function getBufferedAheadSeconds(){
+    if(!video.duration || !Number.isFinite(video.currentTime)) return 0;
+
+    try{
+        const ranges=video.buffered;
+        for(let i=0;i<ranges.length;i++){
+            const start=ranges.start(i);
+            const end=ranges.end(i);
+
+            if(video.currentTime>=start-0.15 &&
+               video.currentTime<=end+0.15){
+                return Math.max(0,end-video.currentTime);
+            }
+        }
+    }catch(e){}
+
+    return 0;
+}
+
+function pausePrefetch(){
+    /*
+       Pause = aggressive background prefetch.
+       Start HLS immediately from the exact point where the player stopped.
+       The gray bar remains based on REAL media buffered by the browser.
+    */
+    try{
+        if(hls && typeof hls.startLoad==="function"){
+            hls.startLoad(video.currentTime);
+        }
+    }catch(e){}
+
+    hidePlayerLoading();
+    updateBufferedProgress();
+
+    /*
+       Check frequently while paused so the real buffer can build quickly.
+       We do not fake the amount: every visible 2-second jump comes from
+       actual media that has arrived in the browser buffer.
+    */
+    if(window.__pausePrefetchTimer){
+        clearInterval(window.__pausePrefetchTimer);
+    }
+
+    window.__pausePrefetchTimer=setInterval(()=>{
+        if(!video.paused){
+            clearInterval(window.__pausePrefetchTimer);
+            window.__pausePrefetchTimer=null;
+            return;
+        }
+
+        try{
+            if(hls && typeof hls.startLoad==="function"){
+                hls.startLoad(video.currentTime);
+            }
+        }catch(e){}
+
+        updateBufferedProgress();
+
+        if(getBufferedAheadSeconds()>=10){
+            /* Keep loading normally, but the first 10s are now ready. */
+            clearInterval(window.__pausePrefetchTimer);
+            window.__pausePrefetchTimer=null;
+        }
+    },2000);
+}
+
+function playWithoutLoaderIfBuffered(){
+    const ahead=getBufferedAheadSeconds();
+
+    /*
+       If even a small real buffered range exists, resume from the exact
+       paused position without flashing the loader. The browser will play
+       from that buffered data and the background prefetch continues.
+    */
+    if(ahead>0.15){
+        hidePlayerLoading();
+    }else{
+        showPlayerLoading();
+    }
+
+    return ahead;
+}
+
 function updateBufferedProgress(){
     if(!bufferedProgress || !video.duration || !Number.isFinite(video.duration)){
         if(bufferedProgress) bufferedProgress.style.width="0%";
@@ -5249,12 +5362,29 @@ function updateBufferedProgress(){
     }catch(e){}
 
     /*
+       PAUSED BUFFER MODE:
+       While paused, never fake/cap the gray buffer. Show exactly what
+       the browser has really buffered. The paused watcher below updates
+       it in 2-second steps, so the gray line visibly grows like:
+       +2s, +2s, +2s...
+    */
+    const actualAhead=Math.max(0,bufferedEnd-video.currentTime);
+
+    if(video.paused){
+        const visibleEnd=Math.min(
+            video.duration,
+            video.currentTime+actualAhead
+        );
+        bufferedProgress.style.width=((visibleEnd/video.duration)*100)+"%";
+        return;
+    }
+
+    /*
        Smooth gray-buffer reveal:
        First 20 seconds can appear normally. Once 20 seconds ahead
        has been buffered, any additional buffered content is revealed
        at no more than 1 second of timeline per real second.
     */
-    const actualAhead=Math.max(0,bufferedEnd-video.currentTime);
 
     if(actualAhead>=20 && bufferRevealStartTime===null){
         bufferRevealStartTime=performance.now();
