@@ -2517,6 +2517,244 @@ button{
   }
 }
 
+
+/* HOME HEADER/NAV CSS */
+.header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:72px;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    padding:0 4%;
+    background:linear-gradient(
+        to bottom,
+        rgba(0,0,0,.9),
+        rgba(0,0,0,.55),
+        transparent
+    );
+    transition:.35s;
+}
+
+.header.scrolled{
+    background:rgba(5,5,6,.96);
+    backdrop-filter:blur(16px);
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+.logo{
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:-1.5px;
+    color:#fff;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+}
+
+.logo-mark{
+    width:30px;
+    height:30px;
+    border-radius:8px;
+    background:var(--red);
+    display:grid;
+    place-items:center;
+    box-shadow:0 5px 20px rgba(229,9,20,.35);
+}
+
+.logo-mark svg{
+    width:17px;
+    height:17px;
+    fill:white;
+}
+
+.nav{
+    display:flex;
+    align-items:center;
+    gap:27px;
+    margin-left:45px;
+}
+
+.nav a{
+    color:#d5d5d7;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+    transition:.2s;
+}
+
+.nav a:hover,
+.nav a.active{
+    color:#fff;
+}
+
+.nav a.active{
+    position:relative;
+}
+
+.nav a.active::after{
+    content:"";
+    position:absolute;
+    bottom:-8px;
+    left:50%;
+    width:5px;
+    height:5px;
+    background:var(--red);
+    border-radius:50%;
+    transform:translateX(-50%);
+}
+
+/* =========================================================
+   HEADER RIGHT
+========================================================= */
+
+.header-right{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.search-box{
+    width:0;
+    opacity:0;
+    overflow:hidden;
+    transition:.3s;
+}
+
+.search-box.open{
+    width:210px;
+    opacity:1;
+}
+
+.search-box input{
+    width:100%;
+    height:38px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(0,0,0,.7);
+    color:white;
+    outline:none;
+    border-radius:8px;
+    padding:0 13px;
+    font-size:13px;
+}
+
+.icon-btn{
+    width:38px;
+    height:38px;
+    border:0;
+    background:transparent;
+    color:white;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    border-radius:50%;
+    transition:.2s;
+}
+
+.icon-btn:hover{
+    background:rgba(255,255,255,.1);
+}
+
+.icon-btn svg{
+    width:20px;
+    height:20px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.9;
+}
+
+.profile{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    background:
+        linear-gradient(135deg,#ff1f35,#6f0710);
+    display:grid;
+    place-items:center;
+    font-size:12px;
+    font-weight:800;
+    border:2px solid rgba(255,255,255,.2);
+}
+
+
+.mobile-nav{
+    display:none;
+}
+
+
+@media(max-width:800px){
+.header{
+        height:62px;
+        padding:0 18px;
+    }
+.logo{
+        font-size:20px;
+    }
+.logo-mark{
+        width:27px;
+        height:27px;
+    }
+.nav{
+        display:none;
+    }
+.header-right{
+        gap:5px;
+    }
+.search-box.open{
+        position:absolute;
+        top:58px;
+        left:15px;
+        right:15px;
+        width:auto;
+    }
+.profile{
+        width:32px;
+        height:32px;
+    }
+.mobile-nav{
+        display:flex;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:64px;
+        z-index:1000;
+        background:rgba(8,8,9,.94);
+        backdrop-filter:blur(18px);
+        border-top:1px solid rgba(255,255,255,.08);
+        justify-content:space-around;
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+.mobile-nav button{
+        border:0;
+        background:none;
+        color:#777;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:4px;
+        font-size:9px;
+        font-weight:600;
+        width:25%;
+    }
+.mobile-nav button.active{
+        color:#fff;
+    }
+.mobile-nav svg{
+        width:20px;
+        height:20px;
+        stroke:currentColor;
+        fill:none;
+        stroke-width:1.8;
+    }
+}
+
 </style>
 <style>
 
@@ -2744,47 +2982,55 @@ button{
 <body>
 
 
-<!-- =======================================================
-     TOP BAR
-======================================================= -->
+<!-- HOME HEADER -->
 
-<header class="topbar" id="topbar">
+<header class="header" id="header">
 
-    <button class="back-btn" onclick="history.back()">
-
-        <svg viewBox="0 0 24 24">
-            <path d="m15 18-6-6 6-6"/>
-        </svg>
-
-    </button>
-
-
-    <div class="top-logo">
-
+    <a href="index.html" class="logo">
         <span class="logo-mark">
-
             <svg viewBox="0 0 24 24">
                 <path d="M7 3v18l14-9L7 3z"/>
             </svg>
-
         </span>
-
         CINEFLIX
+    </a>
+
+    <nav class="nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="index.html#movies">Movies</a>
+        <a href="index.html#series">Series</a>
+        <a href="index.html#trending">Trending</a>
+        <a href="index.html#genres">Genres</a>
+    </nav>
+
+    <div class="header-right">
+
+        <div class="search-box" id="searchBox">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search movies..."
+                autocomplete="off"
+            >
+        </div>
+
+        <button class="icon-btn" id="searchBtn" aria-label="Search">
+            <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7"/>
+                <path d="m20 20-4-4"/>
+            </svg>
+        </button>
+
+        <button class="icon-btn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                <path d="M10 21h4"/>
+            </svg>
+        </button>
+
+        <div class="profile">S</div>
 
     </div>
-
-
-    <button class="more-btn">
-
-        <svg viewBox="0 0 24 24">
-
-            <circle cx="12" cy="5" r="1.6"/>
-            <circle cx="12" cy="12" r="1.6"/>
-            <circle cx="12" cy="19" r="1.6"/>
-
-        </svg>
-
-    </button>
 
 </header>
 
@@ -3648,71 +3894,40 @@ button{
 </main>
 
 
-<!-- =======================================================
-     BOTTOM NAV
-======================================================= -->
+<!-- HOME MOBILE NAVIGATION -->
 
-<nav class="bottom-nav">
+<nav class="mobile-nav">
 
-
-    <button
-        class="bottom-item"
-        onclick="location.href='index.html'"
-    >
-
+    <button class="active">
         <svg viewBox="0 0 24 24">
-
             <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
-
         </svg>
-
         Home
-
     </button>
 
-
-    <button class="bottom-item">
-
+    <button>
         <svg viewBox="0 0 24 24">
-
             <circle cx="11" cy="11" r="7"/>
-
             <path d="m20 20-4-4"/>
-
         </svg>
-
         Search
-
     </button>
 
-
-    <button class="bottom-item active">
-
+    <button>
         <svg viewBox="0 0 24 24">
-
-            <path d="M7 3v18l14-9L7 3z"/>
-
+            <path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V12"/>
+            <path d="M12 3v13M8 7l4-4 4 4"/>
         </svg>
-
-        Watch
-
+        Downloads
     </button>
 
-
-    <button class="bottom-item">
-
+    <button>
         <svg viewBox="0 0 24 24">
-
             <circle cx="12" cy="8" r="4"/>
-
             <path d="M4 21a8 8 0 0 1 16 0"/>
-
         </svg>
-
         Profile
-
     </button>
-
 
 </nav>
 
@@ -4728,7 +4943,7 @@ function showToast(message){
    quality levels instead of treating the m3u8 as a normal MP4.
 */
 const MOVIE_DEMO_URL =
-    "https://rozgarlelo.modiplay.xyz/proxy.php?serve_m3u8=1&ref=https%3A%2F%2Fhanerix.com%2Fe%2Fidai5wak9cv0&url=https%3A%2F%2Fhanerix.com%2Fstream%2FUK-Of0SdI8JxcQXbHbJMTA%2Fkjhhiuahiuhgihdf%2F1787612438%2F73580730%2Fmaster.m3u8&ebd=https%3A%2F%2Fhanerix.com";
+    "https://rozgarlelo.modiplay.xyz/proxy.php?serve_m3u8=1&ref=https%3A%2F%2Fhanerix.com%2Fe%2Fzjfm633cc533&url=https%3A%2F%2Fhanerix.com%2Fstream%2FDuiEtK--aLBvx94_7wcLEg%2Fkjhhiuahiuhgihdf%2F1787644877%2F73983620%2Fmaster.m3u8&ebd=https%3A%2F%2Fhanerix.com";
 
 const TRAILER_DEMO_URL = MOVIE_DEMO_URL;
 
@@ -5748,6 +5963,13 @@ document.addEventListener("fullscreenchange",()=>{
     }
 });
 
+</script>
+
+<script>
+(function(){
+ const btn=document.getElementById("searchBtn"),box=document.getElementById("searchBox"),input=document.getElementById("searchInput");
+ if(btn&&box){btn.addEventListener("click",()=>{box.classList.toggle("open");if(box.classList.contains("open")&&input)setTimeout(()=>input.focus(),120);});}
+})();
 </script>
 
 </body>
