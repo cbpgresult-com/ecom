@@ -2986,7 +2986,7 @@ button{
 
 <header class="header" id="header">
 
-    <a href="index.html" class="logo">
+    <a href="page.html" class="logo">
         <span class="logo-mark">
             <svg viewBox="0 0 24 24">
                 <path d="M7 3v18l14-9L7 3z"/>
@@ -2996,7 +2996,7 @@ button{
     </a>
 
     <nav class="nav">
-        <a href="index.html" class="active">Home</a>
+        <a href="page.html" class="active">Home</a>
         <a href="index.html#movies">Movies</a>
         <a href="index.html#series">Series</a>
         <a href="index.html#trending">Trending</a>
@@ -4226,7 +4226,6 @@ button{
 ></div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
 <script>
 
@@ -5970,158 +5969,6 @@ document.addEventListener("fullscreenchange",()=>{
 (function(){
  const btn=document.getElementById("searchBtn"),box=document.getElementById("searchBox"),input=document.getElementById("searchInput");
  if(btn&&box){btn.addEventListener("click",()=>{box.classList.toggle("open");if(box.classList.contains("open")&&input)setTimeout(()=>input.focus(),120);});}
-})();
-</script>
-
-
-<script>
-/* =========================================================
-   CINEFLIX — DYNAMIC MOVIE POST PAGE
-   Home sends: movie.html?id=<Supabase movie UUID>
-========================================================= */
-(function(){
-    const CINEFLIX_SUPABASE_URL = "https://bbqaagbypawcpszjwzii.supabase.co";
-    const CINEFLIX_SUPABASE_KEY = "sb_publishable_dWktR3La6JpSwD32tfSb-Q_a__jx0cO";
-    const cineflixDB = window.supabase.createClient(CINEFLIX_SUPABASE_URL,CINEFLIX_SUPABASE_KEY);
-    const movieId = new URLSearchParams(window.location.search).get("id");
-
-    function text(selector,value){
-        const el=document.querySelector(selector);
-        if(el) el.textContent=value ?? "";
-        return el;
-    }
-    function esc(v){
-        return String(v ?? "").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[s]));
-    }
-    function fmtRuntime(min){
-        const n=Number(min);
-        if(!n || !Number.isFinite(n)) return "";
-        const h=Math.floor(n/60), m=n%60;
-        return h ? `${h}h ${m}m` : `${m}m`;
-    }
-    function getGenres(v){
-        if(Array.isArray(v)) return v.filter(Boolean).map(x=>typeof x==="string"?x:(x.name||"")).filter(Boolean);
-        return [];
-    }
-
-    function setDetails(movie){
-        const genres=getGenres(movie.genres);
-        const year=movie.year || (movie.release_date||"").slice(0,4) || "—";
-        const rating=Number(movie.rating||0).toFixed(1);
-        const runtime=fmtRuntime(movie.runtime);
-
-        document.title=`${movie.title||"Movie"} | CINEFLIX`;
-        text(".movie-title",movie.title||"Untitled Movie");
-
-        const meta=document.querySelector(".movie-meta");
-        if(meta){
-            meta.innerHTML=`
-                <span class="rating">★ ${esc(rating)}</span>
-                <span class="dot">•</span>
-                <span>${esc(year)}</span>
-                ${runtime?`<span class="dot">•</span><span>${esc(runtime)}</span>`:""}
-                <span class="dot">•</span>
-                <span>${esc(movie.media_type==="tv"?"Series":"HD")}</span>`;
-        }
-
-        const genresBox=document.querySelector(".genres");
-        if(genresBox){
-            genresBox.innerHTML=(genres.length?genres:["Movie"]).slice(0,6)
-                .map(g=>`<span class="genre">${esc(g)}</span>`).join("");
-        }
-
-        const desc=document.querySelector(".description");
-        if(desc) desc.textContent=movie.overview||movie.tagline||"No description available.";
-
-        const poster=document.querySelector("#initialPoster img");
-        if(poster) poster.src=movie.poster_url||movie.backdrop_url||poster.src;
-
-        if(movie.backdrop_url||movie.poster_url){
-            const player=document.querySelector("#videoPlayer");
-            if(player) player.style.backgroundImage=`url("${(movie.backdrop_url||movie.poster_url).replace(/"/g,'\\"')}")`;
-        }
-
-        /* Actual cast + crew */
-        const castRow=document.querySelector(".cast-row");
-        const people=[
-            ...(Array.isArray(movie.cast_data)?movie.cast_data:[]).map(x=>({name:x.name,role:x.character||"Actor",profile:x.profile})),
-            ...(Array.isArray(movie.crew_data)?movie.crew_data:[]).map(x=>({name:x.name,role:x.job||"Crew",profile:x.profile}))
-        ];
-        if(castRow && people.length){
-            castRow.innerHTML=people.slice(0,10).map(p=>`
-                <div class="cast">
-                    <div class="cast-photo">
-                        ${p.profile
-                            ? `<img src="${esc(p.profile)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-                            : `<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>`}
-                    </div>
-                    <div class="cast-name">${esc(p.name||"")}</div>
-                    <div class="cast-role">${esc(p.role||"")}</div>
-                </div>`).join("");
-        }
-
-        /* Actual similar movies */
-        const similarRow=document.querySelector(".similar-row");
-        if(similarRow && Array.isArray(movie.similar_data) && movie.similar_data.length){
-            similarRow.innerHTML=movie.similar_data.slice(0,10).map(s=>{
-                const poster=s.poster||"";
-                return `<div class="similar-card" data-tmdb-id="${esc(s.tmdb_id||"")}" style="cursor:pointer">
-                    <div class="similar-art" style="${poster?`background-image:url('${poster.replace(/'/g,"\\'")}');background-size:cover;background-position:center;`:""}">
-                        <div class="similar-content">
-                            <div class="similar-title">${esc(s.title||"")}</div>
-                            <div class="similar-meta">${esc(s.year||"")} • ★ ${Number(s.rating||0).toFixed(1)}</div>
-                        </div>
-                    </div>
-                </div>`;
-            }).join("");
-        }
-
-        /* Real streaming URLs from Admin/Supabase */
-        if(typeof QUALITY_SOURCES!=="undefined"){
-            const v480=movie.video_480||"";
-            const v720=movie.video_720||"";
-            const v1080=movie.video_1080||"";
-            const trailer=movie.trailer_url||"";
-            QUALITY_SOURCES.movie["480"]=v480||v720||v1080||MOVIE_DEMO_URL;
-            QUALITY_SOURCES.movie["720"]=v720||v1080||v480||MOVIE_DEMO_URL;
-            QUALITY_SOURCES.movie["1080"]=v1080||v720||v480||MOVIE_DEMO_URL;
-            QUALITY_SOURCES.trailer["480"]=trailer||QUALITY_SOURCES.movie["480"];
-            QUALITY_SOURCES.trailer["720"]=trailer||QUALITY_SOURCES.movie["720"];
-            QUALITY_SOURCES.trailer["1080"]=trailer||QUALITY_SOURCES.movie["1080"];
-        }
-
-        window.CINEFLIX_CURRENT_MOVIE=movie;
-
-        /* Reset existing player to the real DB source, without autoplay. */
-        try{
-            if(typeof setPlayerMode==="function"){
-                setPlayerMode("movie",false);
-                video.pause();
-                video.currentTime=0;
-            }
-        }catch(e){
-            console.warn("CINEFLIX player reset:",e);
-        }
-    }
-
-    async function loadMoviePost(){
-        if(!movieId) return;
-        try{
-            const {data,error}=await cineflixDB.from("movies").select("*").eq("id",movieId).maybeSingle();
-            if(error) throw error;
-            if(!data) throw new Error("Movie not found");
-            setDetails(data);
-        }catch(error){
-            console.error("CINEFLIX MOVIE LOAD ERROR:",error);
-            text(".movie-title","Movie could not be loaded");
-            text(".description","This movie could not be found in the CINEFLIX database.");
-        }
-    }
-
-    if(document.readyState==="loading")
-        document.addEventListener("DOMContentLoaded",loadMoviePost,{once:true});
-    else
-        loadMoviePost();
 })();
 </script>
 
