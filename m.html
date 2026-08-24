@@ -1,0 +1,4790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>The Last Journey — CINEFLIX</title>
+
+<meta name="theme-color" content="#070708">
+
+<style>
+
+/* =========================================================
+   CINEFLIX MOVIE PAGE
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+    --bg:#070708;
+    --bg2:#0c0c0f;
+    --card:#111114;
+    --card2:#17171b;
+    --red:#e50914;
+    --red2:#ff2632;
+    --white:#fff;
+    --text:#eeeeef;
+    --muted:#99999f;
+    --muted2:#6f7075;
+    --border:rgba(255,255,255,.08);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--bg);
+    color:#fff;
+    font-family:Inter,Arial,sans-serif;
+    overflow-x:hidden;
+}
+
+button{
+    font-family:inherit;
+    -webkit-tap-highlight-color:transparent;
+}
+
+::-webkit-scrollbar{
+    width:5px;
+}
+
+::-webkit-scrollbar-track{
+    background:#070708;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#333338;
+    border-radius:20px;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+
+    height:62px;
+
+    z-index:1000;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 17px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,.96),
+            rgba(0,0,0,.65),
+            transparent
+        );
+
+    transition:.3s;
+}
+
+.topbar.scrolled{
+    background:rgba(7,7,8,.97);
+
+    backdrop-filter:blur(16px);
+
+    border-bottom:1px solid var(--border);
+}
+
+.back-btn{
+    width:38px;
+    height:38px;
+
+    border:0;
+    border-radius:50%;
+
+    background:rgba(0,0,0,.45);
+
+    color:#fff;
+
+    display:grid;
+    place-items:center;
+
+    cursor:pointer;
+}
+
+.back-btn svg{
+    width:20px;
+    height:20px;
+
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+}
+
+.top-logo{
+    position:absolute;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    display:flex;
+    align-items:center;
+
+    gap:7px;
+
+    font-size:18px;
+    font-weight:900;
+
+    letter-spacing:-.8px;
+}
+
+.logo-mark{
+    width:25px;
+    height:25px;
+
+    border-radius:7px;
+
+    background:var(--red);
+
+    display:grid;
+    place-items:center;
+}
+
+.logo-mark svg{
+    width:14px;
+    height:14px;
+
+    fill:#fff;
+}
+
+.more-btn{
+    margin-left:auto;
+
+    width:38px;
+    height:38px;
+
+    border:0;
+
+    background:transparent;
+
+    color:#fff;
+
+    display:grid;
+    place-items:center;
+
+    cursor:pointer;
+}
+
+.more-btn svg{
+    width:21px;
+    height:21px;
+
+    fill:currentColor;
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.page{
+    width:100%;
+    max-width:900px;
+
+    margin:auto;
+
+    padding-bottom:90px;
+}
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+.player-section{
+    width:100%;
+
+    padding-top:62px;
+}
+
+.video-player{
+    position:relative;
+
+    width:100%;
+
+    aspect-ratio:16/9;
+
+    background:#000;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.45);
+
+    user-select:none;
+}
+
+.video-player video{
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    object-fit:contain;
+
+    background:#000;
+}
+
+/* PLAYER SWITCH LOADER */
+.player-loading{
+    position:absolute;
+    inset:0;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.62);
+    backdrop-filter:blur(3px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .2s ease, visibility .2s ease;
+}
+
+.player-loading.show{
+    opacity:1;
+    visibility:visible;
+}
+
+.player-loader-mark{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:rgba(229,9,20,.13);
+    border:1px solid rgba(229,9,20,.35);
+    box-shadow:0 0 35px rgba(229,9,20,.2);
+    position:relative;
+}
+
+.player-loader-mark::after{
+    content:"";
+    position:absolute;
+    inset:-5px;
+    border:2px solid transparent;
+    border-top-color:var(--red);
+    border-right-color:rgba(229,9,20,.25);
+    border-radius:50%;
+    animation:playerSpin .8s linear infinite;
+}
+
+.player-loader-mark svg{
+    width:22px;
+    height:22px;
+    fill:var(--red);
+    margin-left:2px;
+}
+
+@keyframes playerSpin{
+    to{transform:rotate(360deg);}
+}
+
+
+/* EMPTY PLAYER */
+
+.player-empty{
+    position:absolute;
+
+    inset:0;
+
+    z-index:1;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    opacity:1;
+    visibility:visible;
+    transition:opacity .12s ease, visibility .12s ease;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #1b1b20 0%,
+            #09090a 55%,
+            #000 100%
+        );
+}
+
+.player-empty-content{
+    text-align:center;
+
+    color:#777;
+}
+
+.player-empty-icon{
+    width:58px;
+    height:58px;
+
+    margin:0 auto 12px;
+
+    border-radius:50%;
+
+    display:grid;
+    place-items:center;
+
+    background:rgba(255,255,255,.07);
+}
+
+.player-empty-icon svg{
+    width:24px;
+    height:24px;
+
+    fill:#ddd;
+}
+
+.player-empty-title{
+    font-size:12px;
+    font-weight:700;
+
+    color:#aaa;
+}
+
+.player-empty-sub{
+    font-size:10px;
+
+    color:#666;
+
+    margin-top:5px;
+}
+
+
+.player-empty.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+
+/* INITIAL THUMBNAIL */
+.initial-poster{
+    position:absolute;
+    inset:0;
+    z-index:30;
+    overflow:hidden;
+    background:#050505;
+    opacity:1;
+    visibility:visible;
+    transition:opacity .18s ease,visibility .18s ease;
+}
+.initial-poster.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+.initial-poster img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+.initial-poster-shade{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.28);
+}
+.initial-poster-play{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:66px;
+    height:66px;
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    background:rgba(20,20,20,.46);
+    box-shadow:0 8px 30px rgba(0,0,0,.38);
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+    transition:transform .18s ease,background .18s ease;
+}
+.initial-poster-play:hover{
+    transform:translate(-50%,-50%) scale(1.05);
+    background:rgba(20,20,20,.60);
+}
+.initial-poster-play:active{
+    transform:translate(-50%,-50%) scale(.95);
+}
+.initial-poster-play svg{
+    width:29px;
+    height:29px;
+    fill:#fff;
+    margin-left:3px;
+}
+
+
+/* CENTER PLAY / PAUSE */
+.center-play-pause{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%) scale(1);
+    width:58px;
+    height:58px;
+    z-index:24;
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:50%;
+    display:none;
+    place-items:center;
+    cursor:pointer;
+    background:rgba(18,18,18,.44);
+    box-shadow:0 8px 28px rgba(0,0,0,.34);
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
+    opacity:0;
+    transition:opacity .16s ease, transform .16s ease, background .16s ease;
+}
+.center-play-pause.show{
+    display:grid;
+    opacity:1;
+}
+.center-play-pause:active{
+    transform:translate(-50%,-50%) scale(.94);
+}
+.center-play-pause svg{
+    width:25px;
+    height:25px;
+    fill:#fff;
+}
+.center-play-icon,.center-pause-icon{display:none;}
+.center-play-pause[data-state="play"] .center-play-icon{display:block;margin-left:3px;}
+.center-play-pause[data-state="pause"] .center-pause-icon{display:block;}
+
+/* PLAYER TOP */
+
+.player-top{
+    position:absolute;
+
+    top:0;
+    left:0;
+    right:0;
+
+    height:75px;
+
+    z-index:10;
+
+    padding:14px;
+
+    display:flex;
+
+    align-items:flex-start;
+    justify-content:space-between;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,.7),
+            transparent
+        );
+
+    opacity:1;
+    transform:translateY(0);
+    visibility:visible;
+    transition:opacity .22s ease, transform .22s ease, visibility .22s ease;
+}
+
+.player-top.auto-hidden{
+    opacity:0;
+    transform:translateY(-8px);
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.player-label{
+    font-size:10px;
+
+    font-weight:800;
+
+    padding:5px 8px;
+
+    border-radius:4px;
+
+    background:rgba(229,9,20,.95);
+
+    letter-spacing:.5px;
+}
+
+.player-quality{
+    font-size:10px;
+
+    font-weight:800;
+
+    padding:5px 7px;
+
+    border-radius:4px;
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(8px);
+}
+
+
+/* CENTER PLAY */
+
+.center-play{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    z-index:8;
+
+    width:62px;
+    height:62px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(255,255,255,.25);
+
+    background:rgba(0,0,0,.48);
+
+    color:#fff;
+
+    display:grid;
+    place-items:center;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(10px);
+
+    transition:.25s;
+}
+
+.center-play:hover{
+    transform:translate(-50%,-50%) scale(1.08);
+
+    background:var(--red);
+
+    border-color:var(--red);
+}
+
+.center-play svg{
+    width:25px;
+    height:25px;
+
+    fill:#fff;
+
+    margin-left:3px;
+}
+
+
+
+/* =========================================================
+   SETTINGS / PIP / FULLSCREEN
+========================================================= */
+.player-right-icons{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+.player-extra-btn{
+    display:grid;
+    place-items:center;
+}
+.player-extra-btn svg,
+#fullscreenBtn svg{
+    width:18px;
+    height:18px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.65;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+#settingsBtn svg{
+    width:17px;
+    height:17px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.7;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.settings-panel{
+    position:absolute;
+    right:10px;
+    bottom:53px;
+    width:190px;
+    padding:7px 7px 6px;
+    border-radius:10px;
+    background:rgba(22,22,27,.97);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 16px 42px rgba(0,0,0,.55);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    z-index:80;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translateY(9px) scale(.97);
+    transform-origin:bottom right;
+    transition:opacity .18s ease, transform .18s ease, visibility .18s ease;
+}
+.settings-panel.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:translateY(0) scale(1);
+}
+.settings-heading{
+    padding:1px 8px 6px;
+    color:#8c8c95;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:1.5px;
+}
+.settings-row{
+    width:100%;
+    min-height:29px;
+    border:0;
+    background:transparent;
+    color:#e7e7eb;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:3px 8px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:background .14s ease;
+    font:inherit;
+}
+.settings-row:hover{
+    background:rgba(255,255,255,.055);
+}
+.settings-left{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:0;
+}
+.settings-left svg{
+    width:15px;
+    height:15px;
+    flex:0 0 15px;
+    fill:none;
+    stroke:#d9d9de;
+    stroke-width:1.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.settings-right{
+    color:#8e8e98;
+    font-size:10px;
+    white-space:nowrap;
+}
+.settings-right b{
+    color:#9999a2;
+    font-size:14px;
+    font-weight:400;
+    margin-left:3px;
+}
+.settings-boost{
+    min-height:29px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:3px 8px 2px;
+    color:#e7e7eb;
+    font-size:12px;
+}
+.settings-boost input{
+    width:64px;
+    height:14px;
+    accent-color:#f1f1f1;
+    cursor:pointer;
+}
+
+
+/* COMPACT SETTINGS SUBVIEWS */
+.settings-main-view{display:block;}
+#qualityView{display:none;}
+.settings-panel.sub-open #qualityView.active{display:block;}
+
+.settings-sub-view{display:none;}
+.settings-panel.sub-open .settings-main-view{display:none;}
+.settings-panel.sub-open .settings-sub-view.active{display:block;}
+.settings-back{
+    width:100%; min-height:29px; display:flex; align-items:center; gap:7px;
+    border:0; border-bottom:1px solid rgba(255,255,255,.08);
+    margin:0 0 5px; padding:2px 5px 7px; background:transparent;
+    color:#fff; font:600 12px/1 inherit; cursor:pointer;
+}
+.settings-back svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.sub-option{
+    width:100%; min-height:28px; border:0; border-radius:6px; padding:3px 8px;
+    background:transparent; color:#dddde2; display:flex; align-items:center;
+    justify-content:space-between; font:500 12px/1 inherit; cursor:pointer;
+    transition:background .14s ease,color .14s ease;
+}
+.sub-option:hover{background:rgba(255,255,255,.06);}
+.sub-option.active{background:rgba(229,9,20,.16);color:#fff;}
+.sub-option.active::after{content:"✓";color:#e50914;font-size:12px;}
+
+@media(max-width:520px){
+    .settings-panel{
+        right:7px;
+        bottom:50px;
+        width:188px;
+    }
+}
+
+
+/* MOBILE COMPACT SETTINGS — visual-only refinement */
+.settings-panel{
+    right:8px;
+    bottom:51px;
+    width:170px;
+    padding:6px;
+    border-radius:9px;
+}
+.settings-heading{
+    padding:1px 6px 5px;
+    font-size:8px;
+    letter-spacing:1.35px;
+}
+.settings-row{
+    min-height:27px;
+    padding:2px 6px;
+    font-size:11px;
+}
+.settings-left{
+    gap:6px;
+    white-space:nowrap;
+}
+.settings-left svg{
+    width:14px;
+    height:14px;
+    flex-basis:14px;
+    stroke-width:1.55;
+}
+.settings-right{
+    font-size:9px;
+    margin-left:5px;
+}
+.settings-right b{
+    font-size:12px;
+    margin-left:2px;
+}
+.settings-boost{
+    min-height:27px;
+    padding:2px 6px;
+    font-size:11px;
+}
+.settings-boost input{
+    width:54px;
+    height:13px;
+}
+.settings-back{
+    min-height:27px;
+    gap:6px;
+    margin-bottom:4px;
+    padding:1px 4px 6px;
+    font-size:11px;
+}
+.settings-back svg{width:14px;height:14px;}
+.sub-option{
+    min-height:26px;
+    padding:2px 6px;
+    font-size:11px;
+}
+@media(max-width:520px){
+    .settings-panel{
+        right:6px;
+        bottom:48px;
+        width:170px;
+    }
+}
+
+/* PLAYER CONTROLS */
+
+.player-controls{
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    z-index:12;
+    opacity:1;
+    transform:translateY(0);
+    visibility:visible;
+    transition:opacity .22s ease, transform .22s ease, visibility .22s ease;
+
+    padding:30px 13px 12px;
+
+    background:
+        linear-gradient(
+            transparent,
+            rgba(0,0,0,.9)
+        );
+}
+
+.player-controls.auto-hidden{
+    opacity:0;
+    transform:translateY(10px);
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.progress-area{
+    width:100%;
+
+    height:4px;
+
+    background:rgba(255,255,255,.25);
+
+    border-radius:20px;
+
+    cursor:pointer;
+
+    margin-bottom:11px;
+}
+
+.progress{
+    width:0%;
+
+    height:100%;
+
+    background:var(--red);
+
+    border-radius:20px;
+
+    position:relative;
+}
+
+.progress::after{
+    content:"";
+
+    position:absolute;
+
+    right:-4px;
+    top:50%;
+
+    width:9px;
+    height:9px;
+
+    transform:translateY(-50%);
+
+    border-radius:50%;
+
+    background:#fff;
+
+    opacity:0;
+}
+
+.progress-area:hover .progress::after{
+    opacity:1;
+}
+
+.control-row{
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.action.mode-active{
+    position:relative;
+    border-color:var(--red);
+    color:#fff;
+    box-shadow:inset 0 0 0 1px rgba(229,9,20,.15), 0 0 0 1px rgba(229,9,20,.08);
+}
+
+.action.mode-active::after{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border:1.5px solid var(--red);
+    border-radius:inherit;
+    pointer-events:none;
+    clip-path:inset(0 100% 0 0);
+    animation:modeRedOutline .34s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+@keyframes modeRedOutline{
+    0%{clip-path:inset(0 100% 0 0);}
+    45%{clip-path:inset(0 0 0 0);}
+    100%{clip-path:inset(0 0 0 0);}
+}
+
+.control-btn{
+    width:26px;
+    height:26px;
+
+    border:0;
+
+    background:transparent;
+
+    color:#fff;
+
+    display:grid;
+    place-items:center;
+
+    cursor:pointer;
+}
+
+.control-btn svg{
+    width:18px;
+    height:18px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.8;
+}
+
+.time{
+    color:#ddd;
+
+    font-size:9px;
+
+    font-weight:600;
+}
+
+.control-spacer{
+    flex:1;
+}
+
+/* QUALITY DROPDOWN */
+.quality-wrap{
+    position:relative;
+    flex:none;
+}
+
+.quality-select{
+    appearance:none;
+    -webkit-appearance:none;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.07);
+    color:#fff;
+    min-width:68px;
+    height:30px;
+    padding:0 25px 0 10px;
+    border-radius:7px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.2px;
+    outline:none;
+    cursor:pointer;
+    backdrop-filter:blur(10px);
+}
+
+.quality-select:focus{
+    border-color:rgba(229,9,20,.85);
+    box-shadow:0 0 0 2px rgba(229,9,20,.12);
+}
+
+.quality-select option{
+    background:#151519;
+    color:#fff;
+    font-weight:700;
+}
+
+.quality-chevron{
+    position:absolute;
+    right:7px;
+    top:50%;
+    transform:translateY(-50%);
+    width:12px;
+    height:12px;
+    pointer-events:none;
+    color:#fff;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content{
+    padding:20px 17px 0;
+}
+
+
+/* TITLE */
+
+.movie-title{
+    font-size:26px;
+
+    line-height:1.1;
+
+    letter-spacing:-1px;
+
+    font-weight:900;
+
+    margin-bottom:10px;
+}
+
+.movie-meta{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    color:#b8b8bd;
+
+    font-size:11px;
+
+    font-weight:600;
+
+    margin-bottom:13px;
+}
+
+.movie-meta .dot{
+    color:#555;
+}
+
+.movie-meta .rating{
+    color:#ffd33d;
+}
+
+.movie-meta .age{
+    border:1px solid #555;
+
+    padding:2px 5px;
+
+    border-radius:3px;
+
+    color:#ddd;
+
+    font-size:9px;
+}
+
+
+/* GENRES */
+
+.genres{
+    display:flex;
+
+    gap:7px;
+
+    overflow-x:auto;
+
+    scrollbar-width:none;
+
+    margin-bottom:18px;
+}
+
+.genres::-webkit-scrollbar{
+    display:none;
+}
+
+.genre{
+    flex:none;
+
+    padding:6px 10px;
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.035);
+
+    color:#bdbdc1;
+
+    font-size:9px;
+
+    font-weight:600;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.actions{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+    scroll-snap-type:x proximity;
+    padding-bottom:2px;
+    margin-bottom:20px;
+    touch-action:pan-x;
+}
+
+.actions::-webkit-scrollbar{
+    display:none;
+}
+
+.action{
+    flex:0 0 82px;
+    min-height:52px;
+
+    border:1px solid var(--border);
+
+    border-radius:9px;
+
+    background:#111114;
+
+    color:#ddd;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:5px;
+
+    cursor:pointer;
+
+    transition:.2s;
+    scroll-snap-align:start;
+}
+
+.action:hover{
+    background:#1b1b20;
+
+    border-color:#333;
+}
+
+.action.active{
+    color:#ff3340;
+
+    border-color:rgba(229,9,20,.4);
+
+    background:rgba(229,9,20,.06);
+}
+
+.action svg{
+    width:18px;
+    height:18px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.8;
+}
+
+.action span{
+    font-size:8px;
+
+    font-weight:700;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.description-box{
+    margin-bottom:22px;
+}
+
+.section-heading{
+    font-size:15px;
+
+    font-weight:800;
+
+    margin-bottom:10px;
+
+    letter-spacing:-.3px;
+}
+
+.description{
+    color:#a8a8ad;
+
+    font-size:12px;
+
+    line-height:1.7;
+}
+
+.description-more{
+    display:none;
+}
+
+.description-more.show{
+    display:inline;
+}
+
+.read-more{
+    color:#fff;
+
+    border:0;
+
+    background:none;
+
+    font-size:11px;
+
+    font-weight:800;
+
+    margin-top:7px;
+
+    cursor:pointer;
+}
+
+
+/* =========================================================
+   MOVIE DETAILS
+========================================================= */
+
+.info-card{
+    background:#101013;
+
+    border:1px solid var(--border);
+
+    border-radius:11px;
+
+    padding:15px;
+
+    margin-bottom:24px;
+}
+
+.info-grid{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    row-gap:16px;
+
+    column-gap:15px;
+}
+
+.info-item small{
+    display:block;
+
+    color:#66676d;
+
+    font-size:8px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.6px;
+
+    font-weight:800;
+
+    margin-bottom:5px;
+}
+
+.info-item strong{
+    display:block;
+
+    color:#ddd;
+
+    font-size:10px;
+
+    line-height:1.4;
+}
+
+
+/* =========================================================
+   TRAILER
+========================================================= */
+
+.trailer-section{
+    margin-bottom:26px;
+}
+
+.trailer{
+    width:100%;
+
+    aspect-ratio:16/9;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #222228,
+            #0a0a0c
+        );
+
+    border:1px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+}
+
+.trailer::before{
+    content:"TRAILER";
+
+    position:absolute;
+
+    top:10px;
+    left:10px;
+
+    padding:5px 7px;
+
+    font-size:8px;
+
+    font-weight:800;
+
+    background:rgba(0,0,0,.6);
+
+    border-radius:4px;
+}
+
+.trailer-play{
+    width:52px;
+    height:52px;
+
+    border-radius:50%;
+
+    display:grid;
+
+    place-items:center;
+
+    background:rgba(229,9,20,.9);
+
+    box-shadow:
+        0 10px 30px rgba(229,9,20,.25);
+
+    transition:.25s;
+}
+
+.trailer:hover .trailer-play{
+    transform:scale(1.08);
+}
+
+.trailer-play svg{
+    width:21px;
+    height:21px;
+
+    fill:#fff;
+
+    margin-left:3px;
+}
+
+
+/* =========================================================
+   CAST
+========================================================= */
+
+.cast-section{
+    margin-bottom:28px;
+}
+
+.cast-row{
+    display:flex;
+
+    gap:13px;
+
+    overflow-x:auto;
+
+    scrollbar-width:none;
+
+    padding-bottom:4px;
+}
+
+.cast-row::-webkit-scrollbar{
+    display:none;
+}
+
+.cast{
+    flex:0 0 72px;
+
+    text-align:center;
+}
+
+.cast-photo{
+    width:58px;
+    height:58px;
+
+    margin:0 auto 7px;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #303038,
+            #111114
+        );
+
+    display:grid;
+
+    place-items:center;
+
+    color:#777;
+
+    border:1px solid var(--border);
+}
+
+.cast-photo svg{
+    width:25px;
+    height:25px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.4;
+}
+
+.cast-name{
+    font-size:9px;
+
+    color:#ddd;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+.cast-role{
+    color:#666;
+
+    font-size:8px;
+
+    margin-top:3px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+
+/* =========================================================
+   SIMILAR MOVIES
+========================================================= */
+
+.similar-section{
+    margin-bottom:30px;
+}
+
+.similar-row{
+    display:flex;
+
+    gap:10px;
+
+    overflow-x:auto;
+
+    scrollbar-width:none;
+
+    padding-bottom:7px;
+
+    cursor:grab;
+}
+
+.similar-row::-webkit-scrollbar{
+    display:none;
+}
+
+.similar-card{
+    flex:0 0 125px;
+
+    aspect-ratio:2/3;
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:7px;
+
+    background:#161619;
+
+    border:1px solid var(--border);
+}
+
+.similar-art{
+    width:100%;
+    height:100%;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    padding:9px;
+
+    overflow:hidden;
+}
+
+.similar-art::before{
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #22232b,
+            #0b0b0d
+        );
+}
+
+.similar-card:nth-child(2) .similar-art::before{
+    background:
+        linear-gradient(
+            135deg,
+            #25202b,
+            #08080a
+        );
+}
+
+.similar-card:nth-child(3) .similar-art::before{
+    background:
+        linear-gradient(
+            135deg,
+            #1c2929,
+            #070808
+        );
+}
+
+.similar-card:nth-child(4) .similar-art::before{
+    background:
+        linear-gradient(
+            135deg,
+            #2a211c,
+            #080807
+        );
+}
+
+.similar-card:nth-child(5) .similar-art::before{
+    background:
+        linear-gradient(
+            135deg,
+            #20272c,
+            #080808
+        );
+}
+
+.similar-content{
+    position:relative;
+
+    z-index:2;
+}
+
+.similar-title{
+    font-size:10px;
+
+    font-weight:800;
+
+    line-height:1.2;
+}
+
+.similar-meta{
+    font-size:7px;
+
+    color:#aaa;
+
+    margin-top:4px;
+}
+
+
+/* =========================================================
+   REPORT
+========================================================= */
+
+.report{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:7px;
+
+    color:#666;
+
+    font-size:9px;
+
+    font-weight:600;
+
+    padding:15px;
+
+    border-top:1px solid var(--border);
+}
+
+.report svg{
+    width:13px;
+    height:13px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.7;
+}
+
+
+/* =========================================================
+   BOTTOM NAV
+========================================================= */
+
+.bottom-nav{
+    position:fixed;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:64px;
+
+    z-index:1000;
+
+    display:flex;
+
+    justify-content:space-around;
+
+    align-items:center;
+
+    background:rgba(8,8,9,.95);
+
+    backdrop-filter:blur(18px);
+
+    border-top:1px solid var(--border);
+
+    padding-bottom:env(safe-area-inset-bottom);
+}
+
+.bottom-item{
+    width:25%;
+
+    height:100%;
+
+    border:0;
+
+    background:none;
+
+    color:#666;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:4px;
+
+    font-size:8px;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+.bottom-item.active{
+    color:#fff;
+}
+
+.bottom-item.active svg{
+    color:var(--red);
+}
+
+.bottom-item svg{
+    width:20px;
+    height:20px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.7;
+}
+
+
+/* =========================================================
+   DOWNLOAD POPUP
+========================================================= */
+
+.download-overlay{
+    position:fixed;
+
+    inset:0;
+
+    z-index:3000;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+    background:rgba(0,0,0,.68);
+
+    backdrop-filter:blur(8px);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+}
+
+.download-overlay.show{
+    opacity:1;
+
+    visibility:visible;
+}
+
+
+/* POPUP */
+
+.download-popup{
+    width:100%;
+
+    max-width:350px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #17171b,
+            #0e0e11
+        );
+
+    border:1px solid rgba(255,255,255,.1);
+
+    border-radius:14px;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.65);
+
+    overflow:hidden;
+
+    transform:
+        translateY(18px)
+        scale(.96);
+
+    transition:.28s ease;
+}
+
+.download-overlay.show .download-popup{
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/* POPUP HEADER */
+
+.download-header{
+    height:58px;
+
+    padding:0 15px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    border-bottom:1px solid var(--border);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(229,9,20,.08),
+            transparent
+        );
+}
+
+.download-header-left{
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+}
+
+.download-header-icon{
+    width:32px;
+    height:32px;
+
+    border-radius:8px;
+
+    background:rgba(229,9,20,.12);
+
+    color:var(--red);
+
+    display:grid;
+
+    place-items:center;
+}
+
+.download-header-icon svg{
+    width:17px;
+    height:17px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.9;
+}
+
+.download-header-title{
+    font-size:14px;
+
+    font-weight:800;
+
+    letter-spacing:-.2px;
+}
+
+.download-close{
+    width:31px;
+    height:31px;
+
+    border:0;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.06);
+
+    color:#aaa;
+
+    display:grid;
+
+    place-items:center;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.download-close:hover{
+    color:#fff;
+
+    background:rgba(255,255,255,.12);
+}
+
+.download-close svg{
+    width:15px;
+    height:15px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:2;
+}
+
+
+/* POPUP BODY */
+
+.download-body{
+    padding:13px 14px 15px;
+}
+
+
+/* TABLE HEADER */
+
+.download-table-head{
+    display:grid;
+
+    grid-template-columns:1fr 1fr 42px;
+
+    align-items:center;
+
+    padding:0 9px 7px;
+
+    color:#64656b;
+
+    font-size:8px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+
+    letter-spacing:.6px;
+}
+
+.download-table-head span:nth-child(2){
+    text-align:center;
+}
+
+.download-table-head span:nth-child(3){
+    text-align:right;
+}
+
+
+/* DOWNLOAD ROW */
+
+.download-row{
+    display:grid;
+
+    grid-template-columns:1fr 1fr 42px;
+
+    align-items:center;
+
+    min-height:48px;
+
+    padding:6px 9px;
+
+    margin-bottom:5px;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:8px;
+
+    background:rgba(255,255,255,.025);
+
+    transition:.2s;
+}
+
+.download-row:last-child{
+    margin-bottom:0;
+}
+
+.download-row:hover{
+    background:rgba(255,255,255,.05);
+
+    border-color:rgba(255,255,255,.11);
+}
+
+
+/* QUALITY */
+
+.quality{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+}
+
+.quality-icon{
+    width:27px;
+    height:27px;
+
+    border-radius:6px;
+
+    display:grid;
+
+    place-items:center;
+
+    background:#1b1b20;
+
+    color:#aaa;
+}
+
+.quality-icon svg{
+    width:13px;
+    height:13px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.8;
+}
+
+.quality-name{
+    font-size:10px;
+
+    font-weight:800;
+
+    color:#eee;
+}
+
+.quality-type{
+    font-size:7px;
+
+    color:#666;
+
+    margin-top:2px;
+}
+
+
+/* SIZE */
+
+.download-size{
+    text-align:center;
+
+    font-size:9px;
+
+    font-weight:700;
+
+    color:#aaa;
+}
+
+
+/* DOWNLOAD ACTION */
+
+.download-now{
+    width:31px;
+    height:31px;
+
+    border:0;
+
+    border-radius:7px;
+
+    background:rgba(229,9,20,.1);
+
+    color:var(--red);
+
+    display:grid;
+
+    place-items:center;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.download-now:hover{
+    background:var(--red);
+
+    color:#fff;
+}
+
+.download-now svg{
+    width:15px;
+    height:15px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.9;
+}
+
+
+/* POPUP FOOTER */
+
+.download-footer{
+    margin-top:11px;
+
+    padding-top:10px;
+
+    border-top:1px solid var(--border);
+
+    color:#606168;
+
+    font-size:8px;
+
+    line-height:1.5;
+
+    text-align:center;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast{
+    position:fixed;
+
+    left:50%;
+
+    bottom:82px;
+
+    transform:
+        translateX(-50%)
+        translateY(20px);
+
+    z-index:6000;
+
+    background:#202024;
+
+    border:1px solid #333;
+
+    color:#fff;
+
+    padding:11px 15px;
+
+    border-radius:8px;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.3s;
+
+    white-space:nowrap;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.4);
+}
+
+.toast.show{
+    opacity:1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media(min-width:700px){
+
+    body{
+        background:
+            radial-gradient(
+                circle at top,
+                #111116,
+                #070708 650px
+            );
+    }
+
+    .topbar{
+        padding:0 30px;
+    }
+
+    .page{
+        padding-bottom:60px;
+    }
+
+    .player-section{
+        padding-top:72px;
+
+        padding-left:18px;
+
+        padding-right:18px;
+    }
+
+    .video-player{
+        border-radius:12px;
+    }
+
+    .content{
+        padding:25px 30px;
+    }
+
+    .bottom-nav{
+        display:none;
+    }
+
+    .movie-title{
+        font-size:32px;
+    }
+
+}
+
+
+/* FINAL PLAYER VISIBILITY FIX */
+.player-empty.hidden{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+}
+.player-video{
+    position:relative !important;
+    z-index:2 !important;
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+}
+.player-overlay{
+    z-index:3 !important;
+}
+.player-controls{
+    z-index:10 !important;
+}
+
+
+/* MOVIE / TRAILER ACTIVE TAB */
+#trailerToggle{
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+#trailerToggle::after{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border:1.6px solid #e50914;
+    border-radius:inherit;
+    opacity:0;
+    pointer-events:none;
+    clip-path:inset(0 100% 0 0);
+}
+
+#trailerToggle.mode-active::after{
+    animation:tabRedSweep .38s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+@keyframes tabRedSweep{
+    0%{
+        clip-path:inset(0 100% 0 0);
+        opacity:1;
+    }
+    25%{
+        clip-path:inset(0 0 75% 0);
+        opacity:1;
+    }
+    50%{
+        clip-path:inset(0 0 0 0);
+        opacity:1;
+    }
+    100%{
+        clip-path:inset(0 0 0 0);
+        opacity:1;
+    }
+}
+
+</style>
+<style>
+
+/* FINAL MOBILE SETTINGS POLISH v10 — visual only */
+#settingsBtn svg{
+  width:18px !important;
+  height:18px !important;
+  stroke:#f1f1f3 !important;
+  stroke-width:1.7 !important;
+  fill:none !important;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));
+}
+.settings-panel{
+  width:182px !important;
+  max-width:calc(100% - 12px) !important;
+  right:6px !important;
+  bottom:48px !important;
+  padding:7px !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+.settings-heading{
+  height:17px !important;
+  box-sizing:border-box !important;
+  padding:1px 7px 4px !important;
+  line-height:12px !important;
+  white-space:nowrap !important;
+}
+.settings-row{
+  min-height:29px !important;
+  height:29px !important;
+  box-sizing:border-box !important;
+  padding:2px 7px !important;
+  white-space:nowrap !important;
+}
+.settings-left{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+}
+.settings-left > span:last-child{
+  white-space:nowrap !important;
+  overflow:visible !important;
+}
+.settings-left svg{
+  width:15px !important;
+  height:15px !important;
+  flex:0 0 15px !important;
+  stroke:#e8e8eb !important;
+  stroke-width:1.55 !important;
+}
+.settings-right{
+  flex:0 0 auto !important;
+  margin-left:8px !important;
+  white-space:nowrap !important;
+}
+.settings-boost{
+  min-height:29px !important;
+  height:29px !important;
+  box-sizing:border-box !important;
+  padding:2px 7px !important;
+  white-space:nowrap !important;
+}
+.settings-boost input{width:58px !important;height:13px !important;flex:0 0 58px !important;}
+.settings-sub-view{width:100% !important;overflow:hidden !important;}
+.settings-back{
+  min-height:30px !important;
+  height:30px !important;
+  box-sizing:border-box !important;
+  padding:2px 5px 6px !important;
+  margin-bottom:4px !important;
+  white-space:nowrap !important;
+}
+.settings-back span{white-space:nowrap !important;}
+.sub-option{
+  min-height:28px !important;
+  height:28px !important;
+  box-sizing:border-box !important;
+  white-space:nowrap !important;
+}
+@media(max-width:520px){
+  .settings-panel{
+    width:182px !important;
+    right:6px !important;
+    bottom:48px !important;
+  }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     TOP BAR
+======================================================= -->
+
+<header class="topbar" id="topbar">
+
+    <button class="back-btn" onclick="history.back()">
+
+        <svg viewBox="0 0 24 24">
+            <path d="m15 18-6-6 6-6"/>
+        </svg>
+
+    </button>
+
+
+    <div class="top-logo">
+
+        <span class="logo-mark">
+
+            <svg viewBox="0 0 24 24">
+                <path d="M7 3v18l14-9L7 3z"/>
+            </svg>
+
+        </span>
+
+        CINEFLIX
+
+    </div>
+
+
+    <button class="more-btn">
+
+        <svg viewBox="0 0 24 24">
+
+            <circle cx="12" cy="5" r="1.6"/>
+            <circle cx="12" cy="12" r="1.6"/>
+            <circle cx="12" cy="19" r="1.6"/>
+
+        </svg>
+
+    </button>
+
+</header>
+
+
+<!-- =======================================================
+     MAIN
+======================================================= -->
+
+<main class="page">
+
+
+<!-- =======================================================
+     PLAYER
+======================================================= -->
+
+<section class="player-section">
+
+<div class="video-player" id="videoPlayer">
+
+    <div class="initial-poster" id="initialPoster" aria-hidden="false">
+        <img
+            src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=85"
+            alt="Movie thumbnail"
+        >
+        <div class="initial-poster-shade"></div>
+        <button class="initial-poster-play" id="initialPosterPlay" type="button" aria-label="Play movie">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8.2 5.6v12.8c0 .8.9 1.3 1.6.9l9.1-6.4c.6-.4.6-1.3 0-1.8L9.8 4.7c-.7-.5-1.6.1-1.6.9Z"/>
+            </svg>
+        </button>
+    </div>
+    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="Play">
+        <svg class="center-play-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8.2 5.6v12.8c0 .8.9 1.3 1.6.9l9.1-6.4c.6-.4.6-1.3 0-1.8L9.8 4.7c-.7-.5-1.6.1-1.6.9Z"/>
+        </svg>
+        <svg class="center-pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 5.5h3.5v13H7zM13.5 5.5H17v13h-3.5z"/>
+        </svg>
+    </button>
+
+
+    <video
+        id="movieVideo"
+        preload="metadata"
+        playsinline
+    ></video>
+
+
+    <div class="player-empty" id="playerEmpty">
+
+        <div class="player-empty-content">
+
+            <div class="player-empty-icon">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7L8 5z"/>
+                </svg>
+
+            </div>
+
+            <div class="player-empty-title">
+                Movie Player
+            </div>
+
+            <div class="player-empty-sub">
+                Video source will appear here
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="player-loading" id="playerLoading" aria-hidden="true">
+        <div class="player-loader-mark">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+        </div>
+    </div>
+
+
+    <div class="player-top">
+
+        <span class="player-label" id="playerModeLabel">
+            MOVIE
+        </span>
+
+    </div>
+
+
+    <button
+        class="center-play"
+        id="centerPlay"
+    >
+
+        <svg viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7L8 5z"/>
+        </svg>
+
+    </button>
+
+
+    <div class="player-controls">
+
+        <div
+            class="progress-area"
+            id="progressArea"
+        >
+
+            <div
+                class="progress"
+                id="progress"
+            ></div>
+
+        </div>
+
+
+        <div class="control-row">
+
+
+            <button
+                class="control-btn"
+                id="playPause"
+            >
+
+                <svg viewBox="0 0 24 24" id="playIcon">
+
+                    <path d="M8 5v14l11-7L8 5z"/>
+
+                </svg>
+
+            </button>
+
+
+            <button
+                class="control-btn"
+                id="muteBtn"
+            >
+
+                <svg viewBox="0 0 24 24">
+
+                    <path d="M4 10v4h4l5 4V6l-5 4H4z"/>
+
+                    <path d="M17 9l4 6M21 9l-4 6"/>
+
+                </svg>
+
+            </button>
+
+
+            <span class="time" id="time">
+                00:00
+            </span>
+
+
+            <span class="control-spacer"></span>
+
+
+            <!-- QUALITY SELECT IS KEPT HIDDEN FOR THE EXISTING QUALITY LOGIC -->
+            <select
+                class="quality-select"
+                id="qualitySelect"
+                aria-label="Video quality"
+                title="Change quality"
+                style="display:none"
+            >
+                <option value="480">480p</option>
+                <option value="720">720p</option>
+                <option value="1080" selected>1080p</option>
+            </select>
+
+            <div class="player-right-icons">
+
+                <button
+                    class="control-btn player-extra-btn"
+                    id="settingsBtn"
+                    type="button"
+                    aria-label="Settings"
+                    title="Settings"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/>
+                        <path d="M19.4 13.3a7.7 7.7 0 0 0 0-2.6l1.3-1-1.7-2.9-1.6.6a7.8 7.8 0 0 0-2.2-1.3L15 4.5h-3.4l-.2 1.6a7.8 7.8 0 0 0-2.2 1.3l-1.6-.6-1.7 2.9 1.3 1a7.7 7.7 0 0 0 0 2.6l-1.3 1 1.7 2.9 1.6-.6a7.8 7.8 0 0 0 2.2 1.3l.2 1.6H15l.2-1.6a7.8 7.8 0 0 0 2.2-1.3l1.6.6 1.7-2.9-1.3-1Z"/>
+                    </svg>
+                </button>
+
+                <button
+                    class="control-btn player-extra-btn"
+                    id="pipBtn"
+                    type="button"
+                    aria-label="Picture in Picture"
+                    title="Picture in Picture"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3" y="5" width="18" height="14" rx="2"/>
+                        <rect x="12.2" y="11.3" width="6.2" height="4.7" rx=".8"/>
+                    </svg>
+                </button>
+
+                <button
+                    class="control-btn"
+                    id="fullscreenBtn"
+                    type="button"
+                    aria-label="Fullscreen"
+                    title="Fullscreen"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8 3H3v5"/>
+                        <path d="M16 3h5v5"/>
+                        <path d="M8 21H3v-5"/>
+                        <path d="M21 16v5h-5"/>
+                    </svg>
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="settings-panel" id="settingsPanel" aria-hidden="true">
+
+        <div class="settings-main-view">
+            <div class="settings-heading">SETTINGS</div>
+
+            <button class="settings-row" type="button" data-setting="quality">
+                <span class="settings-left">
+                    <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 12h5M8 15h7"/></svg>
+                    <span>Quality</span>
+                </span>
+                <span class="settings-right" id="settingsQualityValue">Auto <b>›</b></span>
+            </button>
+
+            <button class="settings-row" type="button" data-setting="speed">
+                <span class="settings-left">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 1.8"/><path d="M7.2 4.9 5.6 3.6M16.8 4.9l1.6-1.3"/></svg>
+                    <span>Speed</span>
+                </span>
+                <span class="settings-right" id="settingsSpeedValue">1× <b>›</b></span>
+            </button>
+
+            <button class="settings-row" type="button" data-setting="aspect">
+                <span class="settings-left">
+                    <svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="1.8"/><path d="M7 9h10M7 12h6M7 15h8"/></svg>
+                    <span>Aspect Ratio</span>
+                </span>
+                <span class="settings-right" id="settingsAspectValue">Fit <b>›</b></span>
+            </button>
+
+            <button class="settings-row" type="button" data-setting="subtitle">
+                <span class="settings-left">
+                    <svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M7 10h4M7 14h7"/></svg>
+                    <span>Subtitle Style</span>
+                </span>
+                <span class="settings-right">Style <b>›</b></span>
+            </button>
+
+            <button class="settings-row" type="button" data-setting="audio">
+                <span class="settings-left">
+                    <svg viewBox="0 0 24 24"><path d="M5 10h4l5-4v12l-5-4H5z"/><path d="M17 9a4 4 0 0 1 0 6M19 7a7 7 0 0 1 0 10"/></svg>
+                    <span>Audio Track</span>
+                </span>
+                <span class="settings-right">Default <b>›</b></span>
+            </button>
+
+            <div class="settings-boost">
+                <span class="settings-left">
+                    <svg viewBox="0 0 24 24"><path d="m13 3-8 11h6l-1 7 8-11h-6z"/></svg>
+                    <span>Boost</span>
+                </span>
+                <input type="range" min="0" max="100" value="50" aria-label="Boost">
+            </div>
+        </div>
+
+        <div class="settings-sub-view" id="qualityView">
+            <button class="settings-back" type="button" data-back>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+                <span>Quality</span>
+            </button>
+            <button class="sub-option" type="button" data-quality-setting="auto">Auto</button>
+            <button class="sub-option" type="button" data-quality-setting="480">480p</button>
+            <button class="sub-option" type="button" data-quality-setting="720">720p</button>
+            <button class="sub-option active" type="button" data-quality-setting="1080">1080p</button>
+        </div>
+
+        <div class="settings-sub-view" id="speedView">
+            <button class="settings-back" type="button" data-back>
+                <svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg><span>Speed</span>
+            </button>
+            <button class="sub-option" type="button" data-speed="0.5">0.5×</button>
+            <button class="sub-option" type="button" data-speed="0.75">0.75×</button>
+            <button class="sub-option active" type="button" data-speed="1">1×</button>
+            <button class="sub-option" type="button" data-speed="1.25">1.25×</button>
+            <button class="sub-option" type="button" data-speed="1.5">1.5×</button>
+            <button class="sub-option" type="button" data-speed="1.75">1.75×</button>
+            <button class="sub-option" type="button" data-speed="2">2×</button>
+        </div>
+
+        <div class="settings-sub-view" id="aspectView">
+            <button class="settings-back" type="button" data-back>
+                <svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg><span>Aspect Ratio</span>
+            </button>
+            <button class="sub-option active" type="button" data-aspect="fit">Fit</button>
+            <button class="sub-option" type="button" data-aspect="fill">Fill</button>
+            <button class="sub-option" type="button" data-aspect="stretch">Stretch</button>
+            <button class="sub-option" type="button" data-aspect="original">Original</button>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     CONTENT
+======================================================= -->
+
+<section class="content">
+
+
+<h1 class="movie-title">
+    The Last Journey
+</h1>
+
+
+<div class="movie-meta">
+
+    <span class="rating">
+        ★ 8.9
+    </span>
+
+    <span class="dot">•</span>
+
+    <span>2026</span>
+
+    <span class="dot">•</span>
+
+    <span>2h 18m</span>
+
+    <span class="dot">•</span>
+
+    <span class="age">16+</span>
+
+    <span class="dot">•</span>
+
+    <span>HD</span>
+
+</div>
+
+
+<div class="genres">
+
+    <span class="genre">Action</span>
+    <span class="genre">Adventure</span>
+    <span class="genre">Sci-Fi</span>
+    <span class="genre">Thriller</span>
+
+</div>
+
+
+<!-- =======================================================
+     ACTION BUTTONS
+======================================================= -->
+
+<div class="actions" id="actionsRow">
+
+    <!-- LIKE -->
+    <button class="action" id="likeBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.8 8.7c0 5.5-8.8 10.2-8.8 10.2S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.5z"/>
+        </svg>
+        <span>Like</span>
+    </button>
+
+    <!-- TRAILER / MOVIE -->
+    <button class="action" id="trailerToggle" type="button">
+        <svg viewBox="0 0 24 24" id="trailerToggleIcon" aria-hidden="true">
+            <path d="M4 7h16v10H4z"/>
+            <path d="m10 10 5 2-5 2z"/>
+        </svg>
+        <span id="trailerToggleText">Trailer</span>
+    </button>
+
+    <!-- DOWNLOAD -->
+    <button class="action" id="downloadBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v12"/>
+            <path d="m7 10 5 5 5-5"/>
+            <path d="M4 20h16"/>
+        </svg>
+        <span>Download</span>
+    </button>
+
+    <!-- SHARE -->
+    <button class="action" id="shareBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="18" cy="5" r="2"/>
+            <circle cx="6" cy="12" r="2"/>
+            <circle cx="18" cy="19" r="2"/>
+            <path d="m8 11 8-5M8 13l8 5"/>
+        </svg>
+        <span>Share</span>
+    </button>
+
+    <!-- RATE — after Share; swipe horizontally on mobile -->
+    <button class="action" id="rateBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 10v10H4V10h3z"/>
+            <path d="M7 10l4-7c.5-.9 2-.5 2 .5V8h5.5c1.2 0 2 1.1 1.7 2.2l-1.4 6.5A2 2 0 0 1 17 18H7"/>
+        </svg>
+        <span>Rate</span>
+    </button>
+
+</div>
+
+<!-- =======================================================
+     DESCRIPTION
+======================================================= -->
+
+<section class="description-box">
+
+    <h2 class="section-heading">
+        About the Movie
+    </h2>
+
+    <p class="description">
+
+        A fearless explorer returns to a forgotten world where
+        every secret comes with a price. When an unexpected
+        discovery changes the course of his mission, he must
+        travel beyond the limits of human exploration to uncover
+        the truth.
+
+        <span
+            class="description-more"
+            id="descriptionMore"
+        >
+
+            Along the way, he encounters a mysterious force,
+            dangerous landscapes and a secret that could change
+            humanity forever. The final journey becomes more
+            than an adventure — it becomes a fight for survival.
+
+        </span>
+
+    </p>
+
+    <button
+        class="read-more"
+        id="readMore"
+    >
+        Read more
+    </button>
+
+</section>
+
+
+<!-- =======================================================
+     MOVIE DETAILS
+======================================================= -->
+
+<section>
+
+    <h2 class="section-heading">
+        Movie Details
+    </h2>
+
+
+    <div class="info-card">
+
+        <div class="info-grid">
+
+
+            <div class="info-item">
+
+                <small>Release Date</small>
+
+                <strong>
+                    24 August 2026
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <small>Type</small>
+
+                <strong>
+                    Movie
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <small>Category</small>
+
+                <strong>
+                    Action / Adventure
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <small>Runtime</small>
+
+                <strong>
+                    2h 18m
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <small>Language</small>
+
+                <strong>
+                    Hindi • English
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <small>Audio</small>
+
+                <strong>
+                    Hindi 5.1 • English 5.1
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <small>Quality</small>
+
+                <strong>
+                    1080p • 720p • 480p
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <small>Subtitles</small>
+
+                <strong>
+                    Hindi • English
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     CAST
+======================================================= -->
+
+<section class="cast-section">
+
+    <h2 class="section-heading">
+        Cast & Crew
+    </h2>
+
+
+    <div class="cast-row">
+
+
+        <div class="cast">
+
+            <div class="cast-photo">
+
+                <svg viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="8" r="4"/>
+
+                    <path d="M4 21a8 8 0 0 1 16 0"/>
+
+                </svg>
+
+            </div>
+
+            <div class="cast-name">
+                Alex Carter
+            </div>
+
+            <div class="cast-role">
+                Lead Actor
+            </div>
+
+        </div>
+
+
+        <div class="cast">
+
+            <div class="cast-photo">
+
+                <svg viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="8" r="4"/>
+
+                    <path d="M4 21a8 8 0 0 1 16 0"/>
+
+                </svg>
+
+            </div>
+
+            <div class="cast-name">
+                Emma Stone
+            </div>
+
+            <div class="cast-role">
+                Actress
+            </div>
+
+        </div>
+
+
+        <div class="cast">
+
+            <div class="cast-photo">
+
+                <svg viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="8" r="4"/>
+
+                    <path d="M4 21a8 8 0 0 1 16 0"/>
+
+                </svg>
+
+            </div>
+
+            <div class="cast-name">
+                Daniel Ray
+            </div>
+
+            <div class="cast-role">
+                Actor
+            </div>
+
+        </div>
+
+
+        <div class="cast">
+
+            <div class="cast-photo">
+
+                <svg viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="8" r="4"/>
+
+                    <path d="M4 21a8 8 0 0 1 16 0"/>
+
+                </svg>
+
+            </div>
+
+            <div class="cast-name">
+                John Miller
+            </div>
+
+            <div class="cast-role">
+                Director
+            </div>
+
+        </div>
+
+
+        <div class="cast">
+
+            <div class="cast-photo">
+
+                <svg viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="8" r="4"/>
+
+                    <path d="M4 21a8 8 0 0 1 16 0"/>
+
+                </svg>
+
+            </div>
+
+            <div class="cast-name">
+                Sarah Lee
+            </div>
+
+            <div class="cast-role">
+                Writer
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     SIMILAR
+======================================================= -->
+
+<section class="similar-section">
+
+    <h2 class="section-heading">
+        You May Also Like
+    </h2>
+
+
+    <div class="similar-row">
+
+
+        <div class="similar-card">
+
+            <div class="similar-art">
+
+                <div class="similar-content">
+
+                    <div class="similar-title">
+                        Dark Horizon
+                    </div>
+
+                    <div class="similar-meta">
+                        2026 • ★ 8.6
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="similar-card">
+
+            <div class="similar-art">
+
+                <div class="similar-content">
+
+                    <div class="similar-title">
+                        Beyond Stars
+                    </div>
+
+                    <div class="similar-meta">
+                        2026 • ★ 9.1
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="similar-card">
+
+            <div class="similar-art">
+
+                <div class="similar-content">
+
+                    <div class="similar-title">
+                        Silent City
+                    </div>
+
+                    <div class="similar-meta">
+                        2026 • ★ 8.7
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="similar-card">
+
+            <div class="similar-art">
+
+                <div class="similar-content">
+
+                    <div class="similar-title">
+                        Lost Kingdom
+                    </div>
+
+                    <div class="similar-meta">
+                        2025 • ★ 8.4
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="similar-card">
+
+            <div class="similar-art">
+
+                <div class="similar-content">
+
+                    <div class="similar-title">
+                        Red Planet
+                    </div>
+
+                    <div class="similar-meta">
+                        2026 • ★ 8.2
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- REPORT -->
+
+<div class="report">
+
+    <svg viewBox="0 0 24 24">
+
+        <path d="M12 9v4"/>
+
+        <path d="M12 17h.01"/>
+
+        <path d="M10.3 3.7 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"/>
+
+    </svg>
+
+    Report a problem with this movie
+
+</div>
+
+
+</section>
+
+</main>
+
+
+<!-- =======================================================
+     BOTTOM NAV
+======================================================= -->
+
+<nav class="bottom-nav">
+
+
+    <button
+        class="bottom-item"
+        onclick="location.href='index.html'"
+    >
+
+        <svg viewBox="0 0 24 24">
+
+            <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
+
+        </svg>
+
+        Home
+
+    </button>
+
+
+    <button class="bottom-item">
+
+        <svg viewBox="0 0 24 24">
+
+            <circle cx="11" cy="11" r="7"/>
+
+            <path d="m20 20-4-4"/>
+
+        </svg>
+
+        Search
+
+    </button>
+
+
+    <button class="bottom-item active">
+
+        <svg viewBox="0 0 24 24">
+
+            <path d="M7 3v18l14-9L7 3z"/>
+
+        </svg>
+
+        Watch
+
+    </button>
+
+
+    <button class="bottom-item">
+
+        <svg viewBox="0 0 24 24">
+
+            <circle cx="12" cy="8" r="4"/>
+
+            <path d="M4 21a8 8 0 0 1 16 0"/>
+
+        </svg>
+
+        Profile
+
+    </button>
+
+
+</nav>
+
+
+<!-- =======================================================
+     DOWNLOAD POPUP
+======================================================= -->
+
+<div
+    class="download-overlay"
+    id="downloadOverlay"
+>
+
+
+    <div class="download-popup">
+
+
+        <!-- HEADER -->
+
+        <div class="download-header">
+
+
+            <div class="download-header-left">
+
+
+                <div class="download-header-icon">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M12 3v12"/>
+
+                        <path d="m7 10 5 5 5-5"/>
+
+                        <path d="M4 20h16"/>
+
+                    </svg>
+
+                </div>
+
+
+                <div class="download-header-title">
+                    Download
+                </div>
+
+
+            </div>
+
+
+            <button
+                class="download-close"
+                id="downloadClose"
+            >
+
+                <svg viewBox="0 0 24 24">
+
+                    <path d="M6 6l12 12"/>
+
+                    <path d="M18 6 6 18"/>
+
+                </svg>
+
+            </button>
+
+
+        </div>
+
+
+        <!-- BODY -->
+
+        <div class="download-body">
+
+
+            <!-- TABLE HEADER -->
+
+            <div class="download-table-head">
+
+                <span>
+                    Quality
+                </span>
+
+                <span>
+                    Size
+                </span>
+
+                <span></span>
+
+            </div>
+
+
+            <!-- 480P -->
+
+            <div class="download-row">
+
+
+                <div class="quality">
+
+                    <div class="quality-icon">
+
+                        <svg viewBox="0 0 24 24">
+
+                            <path d="M4 6h16v12H4z"/>
+
+                            <path d="m9 10 6 2-6 2z"/>
+
+                        </svg>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="quality-name">
+                            480p
+                        </div>
+
+                        <div class="quality-type">
+                            SD
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="download-size">
+                    700 MB
+                </div>
+
+
+                <button
+                    class="download-now"
+                    data-quality="480p"
+                >
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M12 3v12"/>
+
+                        <path d="m7 10 5 5 5-5"/>
+
+                        <path d="M4 20h16"/>
+
+                    </svg>
+
+                </button>
+
+
+            </div>
+
+
+            <!-- 720P -->
+
+            <div class="download-row">
+
+
+                <div class="quality">
+
+                    <div class="quality-icon">
+
+                        <svg viewBox="0 0 24 24">
+
+                            <path d="M4 6h16v12H4z"/>
+
+                            <path d="m9 10 6 2-6 2z"/>
+
+                        </svg>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="quality-name">
+                            720p
+                        </div>
+
+                        <div class="quality-type">
+                            HD
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="download-size">
+                    1.3 GB
+                </div>
+
+
+                <button
+                    class="download-now"
+                    data-quality="720p"
+                >
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M12 3v12"/>
+
+                        <path d="m7 10 5 5 5-5"/>
+
+                        <path d="M4 20h16"/>
+
+                    </svg>
+
+                </button>
+
+
+            </div>
+
+
+            <!-- 1080P -->
+
+            <div class="download-row">
+
+
+                <div class="quality">
+
+                    <div class="quality-icon">
+
+                        <svg viewBox="0 0 24 24">
+
+                            <path d="M4 6h16v12H4z"/>
+
+                            <path d="m9 10 6 2-6 2z"/>
+
+                        </svg>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="quality-name">
+                            1080p
+                        </div>
+
+                        <div class="quality-type">
+                            Full HD
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="download-size">
+                    2.4 GB
+                </div>
+
+
+                <button
+                    class="download-now"
+                    data-quality="1080p"
+                >
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M12 3v12"/>
+
+                        <path d="m7 10 5 5 5-5"/>
+
+                        <path d="M4 20h16"/>
+
+                    </svg>
+
+                </button>
+
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="download-footer">
+
+                Select a quality to start downloading.
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     TOAST
+======================================================= -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const video =
+    document.getElementById("movieVideo");
+
+const centerPlay =
+    document.getElementById("centerPlay");
+
+const playPause =
+    document.getElementById("playPause");
+
+const playIcon =
+    document.getElementById("playIcon");
+
+const progress =
+    document.getElementById("progress");
+
+const progressArea =
+    document.getElementById("progressArea");
+
+const time =
+    document.getElementById("time");
+
+const muteBtn =
+    document.getElementById("muteBtn");
+
+const fullscreenBtn =
+    document.getElementById("fullscreenBtn");
+
+const qualitySelect =
+    document.getElementById("qualitySelect");
+
+const toast =
+    document.getElementById("toast");
+
+const downloadBtn =
+    document.getElementById("downloadBtn");
+
+const downloadOverlay =
+    document.getElementById("downloadOverlay");
+
+const downloadClose =
+    document.getElementById("downloadClose");
+
+const initialPoster =
+    document.getElementById("initialPoster");
+
+const initialPosterPlay =
+    document.getElementById("initialPosterPlay");
+
+const centerPlayPause =
+    document.getElementById("centerPlayPause");
+
+const playerLoading =
+    document.getElementById("playerLoading");
+
+const playerEmpty =
+    document.getElementById("playerEmpty");
+
+const playerModeLabel =
+    document.getElementById("playerModeLabel");
+
+const trailerToggle =
+    document.getElementById("trailerToggle");
+
+const trailerToggleText =
+    document.getElementById("trailerToggleText");
+
+const trailerToggleIcon =
+    document.getElementById("trailerToggleIcon");
+
+const playerControls =
+    document.querySelector(".player-controls");
+
+const playerTop =
+    document.querySelector(".player-top");
+
+const playerSurface =
+    document.querySelector("#videoPlayer");
+
+
+/* =========================================================
+   SETTINGS / PIP + REAL SUB MENUS
+========================================================= */
+const settingsBtn=document.getElementById("settingsBtn");
+const settingsPanel=document.getElementById("settingsPanel");
+const pipBtn=document.getElementById("pipBtn");
+const settingsQualityValue=document.getElementById("settingsQualityValue");
+const settingsSpeedValue=document.getElementById("settingsSpeedValue");
+const settingsAspectValue=document.getElementById("settingsAspectValue");
+const qualityView=document.getElementById("qualityView");
+const speedView=document.getElementById("speedView");
+const aspectView=document.getElementById("aspectView");
+
+function closeSettingsSub(){
+    settingsPanel.classList.remove("sub-open");
+    qualityView.classList.remove("active");
+    speedView.classList.remove("active");
+    aspectView.classList.remove("active");
+}
+function closeSettings(){
+    if(!settingsPanel) return;
+    closeSettingsSub();
+    settingsPanel.classList.remove("open");
+    settingsPanel.setAttribute("aria-hidden","true");
+    showPlayerControls(true);
+}
+function toggleSettings(){
+    const open=settingsPanel.classList.contains("open");
+    if(open){
+        closeSettings();
+    }else{
+        clearTimeout(controlsHideTimer);
+        closeSettingsSub();
+        settingsPanel.classList.add("open");
+        settingsPanel.setAttribute("aria-hidden","false");
+
+        /* Settings open = controls stay visible continuously. */
+        playerControls.classList.remove("auto-hidden");
+        playerTop.classList.remove("auto-hidden");
+    }
+}
+settingsBtn.addEventListener("click",e=>{
+    e.stopPropagation();
+    toggleSettings();
+});
+settingsPanel.addEventListener("click",e=>e.stopPropagation());
+document.addEventListener("click",e=>{
+    if(settingsPanel.classList.contains("open") &&
+       !settingsPanel.contains(e.target) &&
+       e.target!==settingsBtn){
+        closeSettings();
+    }
+});
+
+/* Quality -> dedicated submenu. */
+document.querySelector('[data-setting="quality"]').addEventListener("click",()=>{
+    closeSettingsSub();
+    const q=(typeof currentQuality!=="undefined" ? String(currentQuality) : "1080");
+    document.querySelectorAll("[data-quality-setting]").forEach(x=>{
+        x.classList.toggle("active", x.dataset.qualitySetting===q);
+    });
+    if(q==="1080") settingsQualityValue.innerHTML="1080p <b>›</b>";
+    else settingsQualityValue.innerHTML=q+"p <b>›</b>";
+    qualityView.classList.add("active");
+    settingsPanel.classList.add("sub-open");
+});
+
+/* Real quality engine: Auto uses the best available (1080p). */
+document.querySelectorAll("[data-quality-setting]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+        const choice=btn.dataset.qualitySetting;
+        const target=choice==="auto" ? "1080" : choice;
+
+        document.querySelectorAll("[data-quality-setting]").forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+
+        const old=String(typeof currentQuality!=="undefined" ? currentQuality : "1080");
+
+        if(target===old){
+            settingsQualityValue.innerHTML=(choice==="auto" ? "Auto" : target+"p")+" <b>›</b>";
+            closeSettingsSub();
+            return;
+        }
+
+        currentQuality=target;
+        qualitySelect.value=target;
+        settingsQualityValue.innerHTML=(choice==="auto" ? "Auto" : target+"p")+" <b>›</b>";
+
+        /* Use the same existing quality-switch engine. */
+        const wasPlaying=!video.paused;
+        const savedTime=video.currentTime || 0;
+        const mode=currentMode;
+        const source=QUALITY_SOURCES[mode]?.[currentQuality] ||
+            (mode==="trailer" ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
+
+        showPlayerLoading();
+        closeSettingsSub();
+
+        const onReady=()=>{
+            video.removeEventListener("canplay",onReady);
+            try{video.currentTime=savedTime;}catch(e){}
+            if(wasPlaying){
+                video.play().catch(()=>{
+                    hidePlayerLoading();
+                    centerPlay.style.display="grid";
+                });
+            }else{
+                hidePlayerLoading();
+                centerPlay.style.display="grid";
+            }
+            showToast(choice==="auto" ? "Quality: Auto" : "Quality changed to "+currentQuality+"p");
+        };
+
+        video.addEventListener("canplay",onReady,{once:true});
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+        video.src=source;
+        video.load();
+        showPlayerControls(true);
+    });
+});
+
+/* Speed -> dedicated submenu, then actually change HTML5 playbackRate. */
+document.querySelector('[data-setting="speed"]').addEventListener("click",()=>{
+    closeSettingsSub();
+    speedView.classList.add("active");
+    settingsPanel.classList.add("sub-open");
+});
+document.querySelectorAll("[data-speed]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+        const speed=Number(btn.dataset.speed);
+        video.playbackRate=speed;
+        document.querySelectorAll("[data-speed]").forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+        settingsSpeedValue.innerHTML=speed+"× <b>›</b>";
+        closeSettingsSub();
+    });
+});
+video.addEventListener("ratechange",()=>{
+    settingsSpeedValue.innerHTML=(video.playbackRate||1)+"× <b>›</b>";
+});
+
+/* Aspect Ratio -> dedicated submenu, real video rendering change. */
+document.querySelector('[data-setting="aspect"]').addEventListener("click",()=>{
+    closeSettingsSub();
+    aspectView.classList.add("active");
+    settingsPanel.classList.add("sub-open");
+});
+document.querySelectorAll("[data-aspect]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+        const mode=btn.dataset.aspect;
+        video.style.objectFit=(mode==="fill"?"cover":mode==="stretch"?"fill":"contain");
+        document.querySelectorAll("[data-aspect]").forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+        settingsAspectValue.innerHTML=(mode.charAt(0).toUpperCase()+mode.slice(1))+" <b>›</b>";
+        closeSettingsSub();
+    });
+});
+
+/* Back arrow returns to the main Settings view. */
+document.querySelectorAll("[data-back]").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+        e.stopPropagation();
+        closeSettingsSub();
+    });
+});
+
+/* Picture in Picture */
+pipBtn.addEventListener("click",async e=>{
+    e.stopPropagation();
+    try{
+        if(document.pictureInPictureElement) await document.exitPictureInPicture();
+        else if(document.pictureInPictureEnabled && video.requestPictureInPicture)
+            await video.requestPictureInPicture();
+    }catch(err){}
+    if(settingsPanel.classList.contains("open")){
+        clearTimeout(controlsHideTimer);
+        playerControls.classList.remove("auto-hidden");
+        playerTop.classList.remove("auto-hidden");
+    }else{
+        showPlayerControls(true);
+    }
+});
+
+let controlsHideTimer = null;
+
+initialPosterPlay.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    initialPoster.classList.add("hidden");
+    showPlayerLoading();
+
+    video.play().catch(()=>{
+        initialPoster.classList.remove("hidden");
+        hidePlayerLoading();
+        centerPlay.style.display="none";
+    });
+
+    showPlayerControls(true);
+    updateCenterPlayPause();
+});
+
+
+function updateCenterPlayPause(){
+    if(!centerPlayPause) return;
+    const playing = !video.paused && !video.ended;
+    centerPlayPause.dataset.state = playing ? "pause" : "play";
+    centerPlayPause.setAttribute("aria-label", playing ? "Pause" : "Play");
+}
+
+function showCenterPlayPause(){
+    if(!centerPlayPause) return;
+    updateCenterPlayPause();
+    centerPlayPause.classList.add("show");
+    clearTimeout(window.__centerPlayPauseTimer);
+    window.__centerPlayPauseTimer=setTimeout(()=>{
+        centerPlayPause.classList.remove("show");
+    }, 900);
+}
+
+function toggleVideoFromTap(){
+    if(initialPoster && !initialPoster.classList.contains("hidden")){
+        return; // Initial thumbnail's own button handles first playback.
+    }
+
+    if(video.paused || video.ended){
+        showPlayerLoading();
+        video.play().catch(()=>{});
+    }else{
+        video.pause();
+    }
+
+    showPlayerControls(true);
+    showCenterPlayPause();
+    updateCenterPlayPause();
+}
+
+centerPlayPause.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    toggleVideoFromTap();
+});
+
+/* Tap/click on the player toggles Play/Pause once the thumbnail is gone. */
+videoPlayer.addEventListener("click",(e)=>{
+    if(
+        e.target.closest("button") ||
+        e.target.closest("select") ||
+        e.target.closest("input") ||
+        e.target.closest("a")
+    ) return;
+
+    if(initialPoster && !initialPoster.classList.contains("hidden")){
+        return;
+    }
+
+    toggleVideoFromTap();
+});
+
+video.addEventListener("play",updateCenterPlayPause);
+video.addEventListener("pause",()=>{
+    updateCenterPlayPause();
+    showCenterPlayPause();
+});
+video.addEventListener("ended",()=>{
+    updateCenterPlayPause();
+
+    /* Video finished: smoothly reveal the controls and keep them visible. */
+    showPlayerControls(false);
+
+    if(centerPlayPause){
+        centerPlayPause.dataset.state="play";
+        centerPlayPause.classList.add("show");
+    }
+});
+
+function showPlayerControls(resetTimer=true){
+    /* Top Movie/Trailer label + bottom player controls always move together. */
+    playerControls.classList.remove("auto-hidden");
+    playerTop.classList.remove("auto-hidden");
+
+    clearTimeout(controlsHideTimer);
+
+    /* While Settings is open, controls must remain visible. */
+    if(settingsPanel && settingsPanel.classList.contains("open")){
+        return;
+    }
+
+    if(resetTimer){
+        controlsHideTimer=setTimeout(()=>{
+            if(settingsPanel && settingsPanel.classList.contains("open")){
+                return;
+            }
+            playerControls.classList.add("auto-hidden");
+            playerTop.classList.add("auto-hidden");
+        },5000);
+    }
+}
+
+function hidePlayerControls(){
+    clearTimeout(controlsHideTimer);
+    playerControls.classList.add("auto-hidden");
+    playerTop.classList.add("auto-hidden");
+}
+
+function handlePlayerInteraction(e){
+    /* Any tap/click on the video area instantly brings both UI layers back. */
+    showPlayerControls(true);
+}
+
+/* Show once when the player opens, then hide automatically after 5 seconds. */
+showPlayerControls(true);
+
+/* Touch + mouse/pointer support. */
+playerSurface.addEventListener("pointerdown",handlePlayerInteraction);
+playerSurface.addEventListener("touchstart",handlePlayerInteraction,{passive:true});
+playerSurface.addEventListener("click",handlePlayerInteraction);
+
+/* Interacting with controls also resets the 5-second timer. */
+playerControls.addEventListener("pointerdown",e=>{
+    e.stopPropagation();
+    showPlayerControls(true);
+});
+
+playerControls.addEventListener("touchstart",e=>{
+    e.stopPropagation();
+    showPlayerControls(true);
+},{passive:true});
+
+playerControls.addEventListener("pointermove",()=>{
+    showPlayerControls(true);
+});
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+function showToast(message){
+
+    toast.textContent=message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer=setTimeout(()=>{
+
+        toast.classList.remove("show");
+
+    },2200);
+
+}
+
+
+/* =========================================================
+   PLAYER + MOVIE / TRAILER SWITCH
+========================================================= */
+
+/* Demo sources for testing. Replace later with real database URLs. */
+const MOVIE_DEMO_URL =
+    "https://www.w3schools.com/html/mov_bbb.mp4";
+
+const TRAILER_DEMO_URL =
+    "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+
+let currentMode = "movie";
+let currentQuality = "1080";
+
+const QUALITY_SOURCES = {
+    movie: {
+        "480": MOVIE_DEMO_URL,
+        "720": MOVIE_DEMO_URL,
+        "1080": MOVIE_DEMO_URL
+    },
+    trailer: {
+        "480": TRAILER_DEMO_URL,
+        "720": TRAILER_DEMO_URL,
+        "1080": TRAILER_DEMO_URL
+    }
+};
+
+function showPlayerLoading(){
+    playerLoading.classList.add("show");
+    playerLoading.setAttribute("aria-hidden","false");
+    playerEmpty.classList.add("hidden");
+    centerPlay.style.display="none";
+}
+
+function hidePlayerLoading(){
+    playerLoading.classList.remove("show");
+    playerLoading.setAttribute("aria-hidden","true");
+    playerEmpty.classList.add("hidden");
+}
+
+function setPlayerMode(mode,autoPlay=true){
+    closeSettings();
+    currentMode=mode;
+
+    const isTrailer=mode==="trailer";
+    const source=
+        QUALITY_SOURCES[mode]?.[currentQuality] ||
+        (isTrailer ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
+
+    playerModeLabel.textContent=isTrailer ? "TRAILER" : "MOVIE";
+    trailerToggleText.textContent=isTrailer ? "Movie" : "Trailer";
+
+    trailerToggleIcon.innerHTML=isTrailer
+        ? `
+            <path d="M4 6h16v12H4z"/>
+            <path d="m8 8 8 4-8 4z"/>
+            <path d="M7 4h10"/>
+          `
+        : `
+            <path d="M4 7h16v10H4z"/>
+            <path d="m10 10 5 2-5 2z"/>
+          `;
+
+    qualitySelect.value=currentQuality;
+
+    try{video.pause();}catch(e){}
+
+    video.removeAttribute("src");
+    video.load();
+
+    progress.style.width="0%";
+    time.textContent="00:00";
+
+    video.src=source;
+    video.load();
+    playerEmpty.classList.add("hidden");
+
+    if(autoPlay){
+        initialPoster.classList.add("hidden");
+        showPlayerLoading();
+
+        const playWhenReady=()=>{
+            video.removeEventListener("canplay",playWhenReady);
+            video.play().catch(()=>{
+                hidePlayerLoading();
+                centerPlay.style.display="grid";
+            });
+        };
+        video.addEventListener("canplay",playWhenReady);
+    }else{
+        initialPoster.classList.remove("hidden");
+        hidePlayerLoading();
+        centerPlay.style.display="none";
+    }
+}
+
+function togglePlay(){
+    if(!video.src){
+        setPlayerMode(currentMode,true);
+        return;
+    }
+
+    if(video.paused){
+        video.play().catch(()=>{});
+    }else{
+        video.pause();
+    }
+}
+
+centerPlay.addEventListener("click",togglePlay);
+playPause.addEventListener("click",togglePlay);
+
+trailerToggle.addEventListener("click",(e)=>{
+    e.stopPropagation();
+
+    /* Selected Movie/Trailer tab gets a full red outline sweeping
+       smoothly around all four sides of the button. */
+    trailerToggle.classList.remove("mode-active");
+    void trailerToggle.offsetWidth;
+    trailerToggle.classList.add("mode-active");
+
+    setPlayerMode(currentMode==="movie" ? "trailer" : "movie",true);
+    showPlayerControls(true);
+});
+
+/* QUALITY CHANGE */
+qualitySelect.addEventListener("change",()=>{
+    showPlayerControls(true);
+
+    const newQuality=qualitySelect.value;
+    if(typeof settingsQualityValue!=="undefined"){
+        settingsQualityValue.innerHTML=newQuality+"p <b>›</b>";
+    }
+
+    if(newQuality===currentQuality)
+        return;
+
+    currentQuality=newQuality;
+
+    showPlayerLoading();
+
+    const wasPlaying=!video.paused;
+    const savedTime=video.currentTime || 0;
+
+    const mode=currentMode;
+    const source=
+        QUALITY_SOURCES[mode]?.[currentQuality] ||
+        (mode==="trailer" ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
+
+    const onReady=()=>{
+        video.removeEventListener("canplay",onReady);
+
+        try{
+            video.currentTime=savedTime;
+        }catch(e){}
+
+        if(wasPlaying){
+            video.play().catch(()=>{
+                hidePlayerLoading();
+                centerPlay.style.display="grid";
+            });
+        }else{
+            hidePlayerLoading();
+            centerPlay.style.display="grid";
+        }
+
+        showToast("Quality changed to "+currentQuality+"p");
+    };
+
+    video.addEventListener("canplay",onReady,{once:true});
+
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    video.src=source;
+    video.load();
+});
+
+video.addEventListener("loadstart",showPlayerLoading);
+video.addEventListener("waiting",showPlayerLoading);
+video.addEventListener("canplay",hidePlayerLoading);
+video.addEventListener("loadeddata",()=>{
+    playerEmpty.classList.add("hidden");
+    hidePlayerLoading();
+});
+
+video.addEventListener("playing",()=>{
+    playerEmpty.classList.add("hidden");
+    hidePlayerLoading();
+    showPlayerControls(true);
+});
+
+video.addEventListener("error",()=>{
+    hidePlayerLoading();
+    playerEmpty.classList.remove("hidden");
+    centerPlay.style.display="grid";
+    showToast("Demo video could not be loaded.");
+});
+
+video.addEventListener("play",()=>{
+    centerPlay.style.display="none";
+    playIcon.innerHTML=`
+        <path d="M7 5h4v14H7z"/>
+        <path d="M13 5h4v14h-4z"/>
+    `;
+});
+
+video.addEventListener("pause",()=>{
+    if(!playerLoading.classList.contains("show")){
+        centerPlay.style.display="grid";
+    }
+    playIcon.innerHTML=`
+        <path d="M8 5v14l11-7L8 5z"/>
+    `;
+});
+
+/* Start with the movie demo — thumbnail first, no autoplay. */
+setPlayerMode("movie",false);
+video.pause();
+video.currentTime=0;
+hidePlayerControls();
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+video.addEventListener(
+    "timeupdate",
+    ()=>{
+
+        if(!video.duration)
+            return;
+
+        const percent=
+            (video.currentTime/video.duration)*100;
+
+        progress.style.width=
+            percent+"%";
+
+        time.textContent=
+            formatTime(video.currentTime);
+
+    }
+);
+
+
+function formatTime(seconds){
+
+    if(!seconds || isNaN(seconds))
+        return "00:00";
+
+    const minutes=
+        Math.floor(seconds/60);
+
+    const secs=
+        Math.floor(seconds%60);
+
+    return String(minutes).padStart(2,"0")
+        +":"
+        +String(secs).padStart(2,"0");
+
+}
+
+
+progressArea.addEventListener(
+    "click",
+    e=>{
+
+        if(!video.duration){
+
+            showToast(
+                "Video source is not connected."
+            );
+
+            return;
+
+        }
+
+        const rect=
+            progressArea.getBoundingClientRect();
+
+        const percent=
+            (e.clientX-rect.left)/rect.width;
+
+        video.currentTime=
+            percent*video.duration;
+
+    }
+);
+
+
+/* =========================================================
+   MUTE
+========================================================= */
+
+muteBtn.addEventListener(
+    "click",
+    ()=>{
+
+        video.muted=
+            !video.muted;
+
+        if(video.muted){
+
+            muteBtn.innerHTML=`
+
+                <svg viewBox="0 0 24 24">
+
+                    <path d="M4 10v4h4l5 4V6l-5 4H4z"/>
+
+                    <path d="m17 9 4 6"/>
+
+                    <path d="m21 9-4 6"/>
+
+                </svg>
+
+            `;
+
+        }else{
+
+            muteBtn.innerHTML=`
+
+                <svg viewBox="0 0 24 24">
+
+                    <path d="M4 10v4h4l5 4V6l-5 4H4z"/>
+
+                    <path d="M17 8a6 6 0 0 1 0 8"/>
+
+                </svg>
+
+            `;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FULLSCREEN
+========================================================= */
+
+fullscreenBtn.addEventListener(
+    "click",
+    ()=>{
+
+        const player=
+            document.getElementById("videoPlayer");
+
+        if(document.fullscreenElement){
+
+            document.exitFullscreen();
+
+        }else{
+
+            player.requestFullscreen?.();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+const readMore=
+    document.getElementById("readMore");
+
+const descriptionMore=
+    document.getElementById("descriptionMore");
+
+
+readMore.addEventListener(
+    "click",
+    ()=>{
+
+        descriptionMore.classList.toggle("show");
+
+        readMore.textContent=
+            descriptionMore.classList.contains("show")
+            ? "Show less"
+            : "Read more";
+
+    }
+);
+
+
+/* =========================================================
+   LIKE
+========================================================= */
+
+document
+.getElementById("likeBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        this.classList.toggle("active");
+
+        showToast(
+            this.classList.contains("active")
+            ? "Added to liked movies"
+            : "Removed from liked movies"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   DOWNLOAD POPUP OPEN
+========================================================= */
+
+downloadBtn.addEventListener(
+    "click",
+    ()=>{
+
+        downloadOverlay.classList.add("show");
+
+        document.body.style.overflow="hidden";
+
+    }
+);
+
+
+/* =========================================================
+   DOWNLOAD POPUP CLOSE
+========================================================= */
+
+function closeDownload(){
+
+    downloadOverlay.classList.remove("show");
+
+    document.body.style.overflow="";
+
+}
+
+
+downloadClose.addEventListener(
+    "click",
+    closeDownload
+);
+
+
+/* CLICK OUTSIDE POPUP */
+
+downloadOverlay.addEventListener(
+    "click",
+    e=>{
+
+        if(e.target===downloadOverlay){
+
+            closeDownload();
+
+        }
+
+    }
+);
+
+
+/* ESC */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(e.key==="Escape"){
+
+            closeDownload();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DOWNLOAD QUALITY BUTTONS
+========================================================= */
+
+document
+.querySelectorAll(".download-now")
+.forEach(button=>{
+
+    button.addEventListener(
+        "click",
+        ()=>{
+
+            const quality=
+                button.dataset.quality;
+
+            /*
+               BAAD ME YAHAN REAL DOWNLOAD URL
+               DATABASE SE AAYEGA.
+
+               Example:
+
+               window.location.href =
+               movie.downloads[quality];
+            */
+
+            showToast(
+                quality.toUpperCase()
+                +" download selected"
+            );
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   SHARE
+========================================================= */
+
+document
+.getElementById("shareBtn")
+.addEventListener(
+    "click",
+    async()=>{
+
+        try{
+
+            if(navigator.share){
+
+                await navigator.share({
+
+                    title:
+                        "The Last Journey",
+
+                    text:
+                        "Watch The Last Journey on CINEFLIX.",
+
+                    url:
+                        window.location.href
+
+                });
+
+            }else{
+
+                await navigator.clipboard.writeText(
+                    window.location.href
+                );
+
+                showToast(
+                    "Movie link copied."
+                );
+
+            }
+
+        }catch(e){}
+
+    }
+);
+
+
+/* =========================================================
+   TRAILER
+========================================================= */
+
+document
+.getElementById("trailer")
+.addEventListener(
+    "click",
+    ()=>{
+
+        showToast(
+            "Trailer player will open here."
+        );
+
+    }
+);
+
+
+/* =========================================================
+   SIMILAR MOVIES SWIPE
+========================================================= */
+
+const similarRow=
+    document.querySelector(".similar-row");
+
+let dragging=false;
+
+let startX=0;
+
+let scrollStart=0;
+
+
+similarRow.addEventListener(
+    "pointerdown",
+    e=>{
+
+        dragging=true;
+
+        startX=e.clientX;
+
+        scrollStart=
+            similarRow.scrollLeft;
+
+        similarRow.setPointerCapture(
+            e.pointerId
+        );
+
+        similarRow.style.cursor=
+            "grabbing";
+
+    }
+);
+
+
+similarRow.addEventListener(
+    "pointermove",
+    e=>{
+
+        if(!dragging)
+            return;
+
+        const distance=
+            e.clientX-startX;
+
+        similarRow.scrollLeft=
+            scrollStart-distance;
+
+    }
+);
+
+
+similarRow.addEventListener(
+    "pointerup",
+    ()=>{
+
+        dragging=false;
+
+        similarRow.style.cursor=
+            "grab";
+
+    }
+);
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+window.addEventListener(
+    "scroll",
+    ()=>{
+
+        document
+        .getElementById("topbar")
+        .classList.toggle(
+            "scrolled",
+            window.scrollY>30
+        );
+
+    },
+    {passive:true}
+);
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(e.code==="Space"){
+
+            const tag=
+                document.activeElement.tagName;
+
+            if(
+                tag!=="INPUT" &&
+                tag!=="TEXTAREA" &&
+                tag!=="BUTTON"
+            ){
+
+                e.preventDefault();
+
+                togglePlay();
+
+            }
+
+        }
+
+
+        if(e.key==="f"){
+
+            fullscreenBtn.click();
+
+        }
+
+
+        if(e.key==="m"){
+
+            muteBtn.click();
+
+        }
+
+    }
+);
+
+
+</script>
+
+</body>
+</html>
