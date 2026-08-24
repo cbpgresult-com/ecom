@@ -218,6 +218,8 @@ button{
 }
 
 .video-player{
+
+    touch-action:pan-y;
     position:relative;
 
     width:100%;
@@ -226,7 +228,7 @@ button{
 
     background:#000;
 
-    overflow:hidden;
+    overflow:visible;
 
     box-shadow:
         0 20px 60px rgba(0,0,0,.45);
@@ -245,7 +247,16 @@ button{
     background:#000;
 }
 
-/* PLAYER SWITCH LOADER */
+/* =========================================================
+   FAST CINEMATIC PLAYER LOADER
+   - stays INSIDE the player
+   - compact, premium and fast-looking
+   - no heavy dark overlay
+========================================================= */
+/* =========================================================
+   PREMIUM ORBIT LOADER — V16
+   Small, clean, completely different from the old spinner
+========================================================= */
 .player-loading{
     position:absolute;
     inset:0;
@@ -253,52 +264,93 @@ button{
     display:flex;
     align-items:center;
     justify-content:center;
-    background:rgba(0,0,0,.62);
-    backdrop-filter:blur(3px);
+    background:rgba(0,0,0,.06);
     opacity:0;
     visibility:hidden;
     pointer-events:none;
-    transition:opacity .2s ease, visibility .2s ease;
+    transition:opacity .14s ease,visibility .14s ease;
 }
-
 .player-loading.show{
     opacity:1;
     visibility:visible;
 }
 
 .player-loader-mark{
-    width:58px;
-    height:58px;
-    border-radius:50%;
-    display:grid;
-    place-items:center;
-    background:rgba(229,9,20,.13);
-    border:1px solid rgba(229,9,20,.35);
-    box-shadow:0 0 35px rgba(229,9,20,.2);
+    width:36px;
+    height:36px;
     position:relative;
+    display:block;
+    border-radius:50%;
+    background:rgba(8,8,11,.38);
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:
+        0 5px 18px rgba(0,0,0,.25),
+        0 0 18px rgba(229,9,20,.13);
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+}
+
+/* two sleek orbit arcs */
+.player-loader-mark::before{
+    content:"";
+    position:absolute;
+    inset:-3px;
+    border-radius:50%;
+    border:2px solid transparent;
+    border-top-color:#ff2532;
+    border-right-color:rgba(229,9,20,.42);
+    animation:orbitLoader .68s cubic-bezier(.55,.08,.3,.92) infinite;
 }
 
 .player-loader-mark::after{
     content:"";
     position:absolute;
-    inset:-5px;
-    border:2px solid transparent;
-    border-top-color:var(--red);
-    border-right-color:rgba(229,9,20,.25);
+    inset:5px;
     border-radius:50%;
-    animation:playerSpin .8s linear infinite;
+    border:1px solid transparent;
+    border-bottom-color:rgba(255,255,255,.68);
+    border-left-color:rgba(229,9,20,.32);
+    animation:orbitLoaderReverse .9s linear infinite;
 }
 
+/* tiny premium center dots */
+.player-loader-mark span{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:3px;
+    height:3px;
+    margin:-1.5px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 0 7px rgba(255,255,255,.8);
+    animation:orbitDot .72s ease-in-out infinite;
+}
+.player-loader-mark span:first-child{
+    transform:translateY(-8px);
+    animation-delay:-.18s;
+}
+.player-loader-mark span:nth-child(2){
+    transform:translateY(8px);
+    animation-delay:-.48s;
+}
+
+/* remove play icon completely */
 .player-loader-mark svg{
-    width:22px;
-    height:22px;
-    fill:var(--red);
-    margin-left:2px;
+    display:none !important;
 }
 
-@keyframes playerSpin{
+@keyframes orbitLoader{
     to{transform:rotate(360deg);}
 }
+@keyframes orbitLoaderReverse{
+    to{transform:rotate(-360deg);}
+}
+@keyframes orbitDot{
+    0%,100%{opacity:.25;scale:.7;}
+    50%{opacity:1;scale:1.15;}
+}
+
 
 
 /* EMPTY PLAYER */
@@ -846,6 +898,128 @@ button{
         );
 }
 
+/* =========================================================
+   MX-STYLE TOUCH / SEEK GESTURE UI
+========================================================= */
+.player-gesture-overlay{
+    position:absolute;
+    inset:0;
+    z-index:10;
+    pointer-events:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    transition:opacity .16s ease, transform .16s ease;
+}
+.player-gesture-overlay.show{
+    opacity:1;
+}
+.gesture-seek-card{
+    min-width:112px;
+    padding:10px 15px;
+    border-radius:14px;
+    background:rgba(12,12,15,.78);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 12px 35px rgba(0,0,0,.35);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    text-align:center;
+    color:#fff;
+    transform:scale(.94);
+    transition:transform .16s ease;
+}
+.player-gesture-overlay.show .gesture-seek-card{
+    transform:scale(1);
+}
+.gesture-seek-time{
+    font-size:15px;
+    line-height:1.2;
+    font-weight:800;
+    letter-spacing:.3px;
+}
+.gesture-seek-delta{
+    margin-top:3px;
+    font-size:10px;
+    color:rgba(255,255,255,.72);
+    font-weight:700;
+}
+.gesture-seek-icon{
+    width:22px;
+    height:22px;
+    margin:0 auto 5px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+}
+.gesture-tap-zone{
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:33.333%;
+    z-index:9;
+    pointer-events:none;
+}
+.gesture-tap-zone.left{left:0}
+.gesture-tap-zone.center{left:33.333%}
+.gesture-tap-zone.right{right:0}
+
+.gesture-ripple{
+    position:absolute;
+    width:74px;
+    height:74px;
+    margin:-37px 0 0 -37px;
+    border-radius:50%;
+    background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.2);
+    transform:scale(.45);
+    opacity:0;
+    pointer-events:none;
+    animation:gestureRipple .42s ease-out forwards;
+}
+@keyframes gestureRipple{
+    0%{transform:scale(.45);opacity:.9}
+    100%{transform:scale(1.18);opacity:0}
+}
+
+.player-gesture-scrub{
+    position:absolute;
+    left:50%;
+    bottom:74px;
+    transform:translateX(-50%) translateY(8px);
+    z-index:13;
+    min-width:148px;
+    padding:9px 13px;
+    border-radius:12px;
+    background:rgba(8,8,10,.82);
+    border:1px solid rgba(255,255,255,.12);
+    color:#fff;
+    text-align:center;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .16s ease, transform .16s ease, visibility .16s ease;
+    pointer-events:none;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+}
+.player-gesture-scrub.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(-50%) translateY(0);
+}
+.gesture-scrub-time{
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:.25px;
+}
+.gesture-scrub-delta{
+    margin-top:3px;
+    font-size:10px;
+    color:rgba(255,255,255,.72);
+    font-weight:700;
+}
+
+
 .player-controls.auto-hidden{
     opacity:0;
     transform:translateY(10px);
@@ -954,12 +1128,37 @@ button{
 .control-btn svg{
     width:18px;
     height:18px;
-
     fill:none;
-
     stroke:currentColor;
+    stroke-width:1.75;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    vector-effect:non-scaling-stroke;
+    opacity:.96;
+    transition:transform .16s ease, opacity .16s ease, filter .16s ease;
+}
 
+.control-btn:hover svg{
+    opacity:1;
+    transform:scale(1.06);
+    filter:drop-shadow(0 1px 5px rgba(255,255,255,.18));
+}
+
+#playIcon{
+    fill:currentColor;
+    stroke:none;
+    stroke-width:0;
+}
+
+#muteBtn svg,
+#settingsBtn svg,
+#pipBtn svg,
+#fullscreenBtn svg{
+    fill:none;
+    stroke:currentColor;
     stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
 }
 
 .time{
@@ -2276,6 +2475,48 @@ button{
     }
 }
 
+
+/* FINAL SETTINGS SPACING FIX — remove subtitle row and tighten vertical gaps */
+.settings-panel{
+  padding:4px 5px 4px !important;
+}
+.settings-heading{
+  padding:0 6px 2px !important;
+  height:15px !important;
+  line-height:11px !important;
+}
+.settings-row{
+  min-height:27px !important;
+  height:27px !important;
+  padding:1px 6px !important;
+}
+.settings-boost{
+  min-height:27px !important;
+  height:27px !important;
+  padding:1px 6px !important;
+}
+@media(max-width:520px){
+  .settings-panel{
+    bottom:48px !important;
+    width:160px !important;
+    padding:4px 5px !important;
+  }
+  .settings-heading{
+    padding:0 6px 2px !important;
+    height:15px !important;
+  }
+  .settings-row{
+    min-height:27px !important;
+    height:27px !important;
+    padding:1px 6px !important;
+  }
+  .settings-boost{
+    min-height:27px !important;
+    height:27px !important;
+    padding:1px 6px !important;
+  }
+}
+
 </style>
 <style>
 
@@ -2363,6 +2604,137 @@ button{
     right:6px !important;
     bottom:48px !important;
   }
+}
+
+
+/* SETTINGS PANEL VISIBILITY FIX — mobile upward-opening panel */
+.settings-panel{
+  z-index:999 !important;
+  max-height:calc(100vh - 70px) !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  scrollbar-width:none !important;
+}
+.settings-panel::-webkit-scrollbar{display:none !important;}
+
+@media(max-width:520px){
+  .video-player{
+    overflow:visible !important;
+  }
+
+  /* Compact, centered settings card: keeps a clear gap from the header
+     while remaining fully inside the player and easy to tap. */
+  .settings-panel{
+    width:160px !important;
+    max-width:calc(100vw - 24px) !important;
+    right:12px !important;
+    bottom:58px !important;
+    padding:5px !important;
+    border-radius:12px !important;
+    box-sizing:border-box !important;
+  }
+
+  .settings-panel .setting-row{
+    min-height:34px !important;
+    height:34px !important;
+    padding:0 7px !important;
+    gap:6px !important;
+    box-sizing:border-box !important;
+  }
+
+  .settings-panel .setting-row svg{
+    width:16px !important;
+    height:16px !important;
+    flex:0 0 16px !important;
+  }
+
+  .settings-panel .setting-row .setting-label{
+    font-size:12px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+  }
+
+  .settings-panel .setting-row .setting-value{
+    font-size:10px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+  }
+
+  .settings-panel .settings-title{
+    font-size:9px !important;
+    letter-spacing:1.2px !important;
+    padding:3px 7px 2px !important;
+  }
+
+  .settings-panel .boost-slider{
+    width:62px !important;
+  }
+}
+
+
+/* REAL PLAYING-QUALITY BADGE
+   Independent of player-top so it remains visible after controls hide. */
+#playerQuality{
+    position:absolute !important;
+    top:10px !important;
+    right:10px !important;
+    z-index:45 !important;
+    display:block !important;
+    min-width:28px;
+    padding:4px 6px !important;
+    border:1px solid rgba(255,255,255,.10) !important;
+    border-radius:5px !important;
+    background:rgba(0,0,0,.28) !important;
+    color:rgba(255,255,255,.72) !important;
+    font:800 8px/1 Inter,Arial,sans-serif !important;
+    letter-spacing:.65px !important;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,.16);
+    backdrop-filter:blur(7px);
+    -webkit-backdrop-filter:blur(7px);
+    pointer-events:none !important;
+    opacity:.72;
+    visibility:visible !important;
+    transition:opacity .18s ease, transform .18s ease;
+}
+#playerQuality.quality-updated{
+    opacity:.95;
+    transform:scale(1.05);
+}
+@media(max-width:520px){
+    #playerQuality{
+        top:8px !important;
+        right:8px !important;
+        font-size:7.5px !important;
+        padding:4px 5px !important;
+        min-width:26px;
+    }
+}
+
+
+/* YOUTUBE-LIKE AHEAD BUFFER */
+.progress-area{
+    position:relative;
+    overflow:hidden;
+    background:rgba(255,255,255,.24);
+}
+
+.buffered-progress{
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    width:0;
+    background:rgba(255,255,255,.48);
+    border-radius:20px;
+    pointer-events:none;
+    transition:width .12s linear;
+    z-index:1;
+}
+
+.progress{
+    position:relative;
+    z-index:2;
 }
 
 </style>
@@ -2461,6 +2833,23 @@ button{
     ></video>
 
 
+    <div class="player-gesture-overlay" id="gestureOverlay" aria-hidden="true">
+        <div class="gesture-seek-card">
+            <svg class="gesture-seek-icon" id="gestureSeekIcon" viewBox="0 0 24 24">
+                <path d="M9 7 4 12l5 5"/>
+                <path d="M5 12h10"/>
+            </svg>
+            <div class="gesture-seek-time" id="gestureSeekTime">00:00</div>
+            <div class="gesture-seek-delta" id="gestureSeekDelta">−10 sec</div>
+        </div>
+    </div>
+
+    <div class="player-gesture-scrub" id="gestureScrub" aria-hidden="true">
+        <div class="gesture-scrub-time" id="gestureScrubTime">00:00</div>
+        <div class="gesture-scrub-delta" id="gestureScrubDelta">+0 sec</div>
+    </div>
+
+
     <div class="player-empty" id="playerEmpty">
 
         <div class="player-empty-content">
@@ -2486,15 +2875,12 @@ button{
     </div>
 
     <div class="player-loading" id="playerLoading" aria-hidden="true">
-        <div class="player-loader-mark">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8 5v14l11-7L8 5z"/>
-            </svg>
-        </div>
+        <div class="player-loader-mark" aria-hidden="true"><span></span><span></span></div>
     </div>
 
 
-    <div class="player-top">
+    <div id="playerQuality">FHD</div>
+<div class="player-top">
 
         <span class="player-label" id="playerModeLabel">
             MOVIE
@@ -2521,6 +2907,11 @@ button{
             class="progress-area"
             id="progressArea"
         >
+
+            <div
+                class="buffered-progress"
+                id="bufferedProgress"
+            ></div>
 
             <div
                 class="progress"
@@ -2552,12 +2943,10 @@ button{
                 id="muteBtn"
             >
 
-                <svg viewBox="0 0 24 24">
-
-                    <path d="M4 10v4h4l5 4V6l-5 4H4z"/>
-
-                    <path d="M17 9l4 6M21 9l-4 6"/>
-
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/>
+                    <path d="M16.3 9a4.4 4.4 0 0 1 0 6"/>
+                    <path d="M18.8 6.9a7.5 7.5 0 0 1 0 11.2"/>
                 </svg>
 
             </button>
@@ -2594,8 +2983,8 @@ button{
                     title="Settings"
                 >
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/>
-                        <path d="M19.4 13.3a7.7 7.7 0 0 0 0-2.6l1.3-1-1.7-2.9-1.6.6a7.8 7.8 0 0 0-2.2-1.3L15 4.5h-3.4l-.2 1.6a7.8 7.8 0 0 0-2.2 1.3l-1.6-.6-1.7 2.9 1.3 1a7.7 7.7 0 0 0 0 2.6l-1.3 1 1.7 2.9 1.6-.6a7.8 7.8 0 0 0 2.2 1.3l.2 1.6H15l.2-1.6a7.8 7.8 0 0 0 2.2-1.3l1.6.6 1.7-2.9-1.3-1Z"/>
+                        <circle cx="12" cy="12" r="3.2"/>
+                        <path d="M19 13.4a7.2 7.2 0 0 0 0-2.8l1.4-1.1-1.7-2.9-1.7.7a7.3 7.3 0 0 0-2.4-1.4L14.4 4h-3.3l-.3 1.9a7.3 7.3 0 0 0-2.4 1.4l-1.7-.7L5 9.5l1.4 1.1a7.2 7.2 0 0 0 0 2.8L5 14.5l1.7 2.9 1.7-.7a7.3 7.3 0 0 0 2.4 1.4l.3 1.9h3.3l.3-1.9a7.3 7.3 0 0 0 2.4-1.4l1.7.7 1.7-2.9z"/>
                     </svg>
                 </button>
 
@@ -2607,8 +2996,8 @@ button{
                     title="Picture in Picture"
                 >
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <rect x="3" y="5" width="18" height="14" rx="2"/>
-                        <rect x="12.2" y="11.3" width="6.2" height="4.7" rx=".8"/>
+                        <rect x="3.5" y="4.5" width="17" height="15" rx="2"/>
+                        <rect x="11.8" y="11" width="6.4" height="5" rx="1"/>
                     </svg>
                 </button>
 
@@ -2662,14 +3051,6 @@ button{
                 <span class="settings-right" id="settingsAspectValue">Fit <b>›</b></span>
             </button>
 
-            <button class="settings-row" type="button" data-setting="subtitle">
-                <span class="settings-left">
-                    <svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M7 10h4M7 14h7"/></svg>
-                    <span>Subtitle Style</span>
-                </span>
-                <span class="settings-right">Style <b>›</b></span>
-            </button>
-
             <button class="settings-row" type="button" data-setting="audio">
                 <span class="settings-left">
                     <svg viewBox="0 0 24 24"><path d="M5 10h4l5-4v12l-5-4H5z"/><path d="M17 9a4 4 0 0 1 0 6M19 7a7 7 0 0 1 0 10"/></svg>
@@ -2678,13 +3059,7 @@ button{
                 <span class="settings-right">Default <b>›</b></span>
             </button>
 
-            <div class="settings-boost">
-                <span class="settings-left">
-                    <svg viewBox="0 0 24 24"><path d="m13 3-8 11h6l-1 7 8-11h-6z"/></svg>
-                    <span>Boost</span>
-                </span>
-                <input type="range" min="0" max="100" value="50" aria-label="Boost">
-            </div>
+            
         </div>
 
         <div class="settings-sub-view" id="qualityView">
@@ -3636,6 +4011,7 @@ button{
 ></div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
 <script>
 
 /* =========================================================
@@ -3721,6 +4097,28 @@ const playerSurface =
     document.querySelector("#videoPlayer");
 
 
+const gestureOverlay =
+    document.getElementById("gestureOverlay");
+
+const gestureSeekIcon =
+    document.getElementById("gestureSeekIcon");
+
+const gestureSeekTime =
+    document.getElementById("gestureSeekTime");
+
+const gestureSeekDelta =
+    document.getElementById("gestureSeekDelta");
+
+const gestureScrub =
+    document.getElementById("gestureScrub");
+
+const gestureScrubTime =
+    document.getElementById("gestureScrubTime");
+
+const gestureScrubDelta =
+    document.getElementById("gestureScrubDelta");
+
+
 /* =========================================================
    SETTINGS / PIP + REAL SUB MENUS
 ========================================================= */
@@ -3780,67 +4178,21 @@ document.querySelector('[data-setting="quality"]').addEventListener("click",()=>
     closeSettingsSub();
     const q=(typeof currentQuality!=="undefined" ? String(currentQuality) : "1080");
     document.querySelectorAll("[data-quality-setting]").forEach(x=>{
-        x.classList.toggle("active", x.dataset.qualitySetting===q);
+        x.classList.toggle("active", currentQualityChoice==="auto" ? x.dataset.qualitySetting==="auto" : x.dataset.qualitySetting===q);
     });
-    if(q==="1080") settingsQualityValue.innerHTML="1080p <b>›</b>";
-    else settingsQualityValue.innerHTML=q+"p <b>›</b>";
+    settingsQualityValue.innerHTML=(currentQualityChoice==="auto" ? "Auto" : q+"p")+" <b>›</b>";
     qualityView.classList.add("active");
     settingsPanel.classList.add("sub-open");
+    rebuildQualityButtons();
 });
 
-/* Real quality engine: Auto uses the best available (1080p). */
 document.querySelectorAll("[data-quality-setting]").forEach(btn=>{
     btn.addEventListener("click",()=>{
         const choice=btn.dataset.qualitySetting;
-        const target=choice==="auto" ? "1080" : choice;
-
-        document.querySelectorAll("[data-quality-setting]").forEach(x=>x.classList.remove("active"));
-        btn.classList.add("active");
-
-        const old=String(typeof currentQuality!=="undefined" ? currentQuality : "1080");
-
-        if(target===old){
-            settingsQualityValue.innerHTML=(choice==="auto" ? "Auto" : target+"p")+" <b>›</b>";
-            closeSettingsSub();
-            return;
-        }
-
-        currentQuality=target;
-        qualitySelect.value=target;
-        settingsQualityValue.innerHTML=(choice==="auto" ? "Auto" : target+"p")+" <b>›</b>";
-
-        /* Use the same existing quality-switch engine. */
-        const wasPlaying=!video.paused;
-        const savedTime=video.currentTime || 0;
-        const mode=currentMode;
-        const source=QUALITY_SOURCES[mode]?.[currentQuality] ||
-            (mode==="trailer" ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
-
-        showPlayerLoading();
-        closeSettingsSub();
-
-        const onReady=()=>{
-            video.removeEventListener("canplay",onReady);
-            try{video.currentTime=savedTime;}catch(e){}
-            if(wasPlaying){
-                video.play().catch(()=>{
-                    hidePlayerLoading();
-                    centerPlay.style.display="grid";
-                });
-            }else{
-                hidePlayerLoading();
-                centerPlay.style.display="grid";
-            }
-            showToast(choice==="auto" ? "Quality: Auto" : "Quality changed to "+currentQuality+"p");
-        };
-
-        video.addEventListener("canplay",onReady,{once:true});
-        video.pause();
-        video.removeAttribute("src");
-        video.load();
-        video.src=source;
-        video.load();
+        if(btn.disabled) return;
         showPlayerControls(true);
+        applyHlsQuality(choice,true);
+        closeSettingsSub();
     });
 });
 
@@ -3960,34 +4312,325 @@ function toggleVideoFromTap(){
 
 centerPlayPause.addEventListener("click",(e)=>{
     e.stopPropagation();
-    toggleVideoFromTap();
-});
 
-/* Tap/click on the player toggles Play/Pause once the thumbnail is gone. */
-videoPlayer.addEventListener("click",(e)=>{
-    if(
-        e.target.closest("button") ||
-        e.target.closest("select") ||
-        e.target.closest("input") ||
-        e.target.closest("a")
-    ) return;
-
-    if(initialPoster && !initialPoster.classList.contains("hidden")){
+    if(performance.now() < gestureSuppressClickUntil){
+        e.preventDefault();
         return;
     }
 
     toggleVideoFromTap();
 });
 
+/* =========================================================
+   MX-STYLE PLAYER GESTURES
+   - Single tap: show controls only
+   - Double tap left 35%: -10 seconds (full height + corners)
+   - Double tap right 35%: +10 seconds (full height + corners)
+   - Double tap center 30%: Play / Pause (full height)
+   - Horizontal swipe: smooth seeking with live time + delta
+========================================================= */
+
+let gesturePointer = null;
+let gestureTapTimer = null;
+let gestureSuppressClickUntil = 0;
+let gestureLastTap = 0;
+let gestureLastTapX = 0;
+let gestureLastTapY = 0;
+let gestureOverlayTimer = null;
+let gestureSwipeActive = false;
+let gestureSwipeStartX = 0;
+let gestureSwipeStartY = 0;
+let gestureSwipeStartTime = 0;
+let gestureSwipeStartVideoTime = 0;
+let gestureSwipeLastTime = 0;
+let gestureSwipeMoved = false;
+let gestureSwipePointerId = null;
+
+function gestureFormatTime(seconds){
+    if(!Number.isFinite(seconds) || seconds < 0) seconds = 0;
+    seconds = Math.floor(seconds);
+
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    if(h > 0){
+        return String(h).padStart(2,"0") + ":" +
+               String(m).padStart(2,"0") + ":" +
+               String(s).padStart(2,"0");
+    }
+
+    return String(m).padStart(2,"0") + ":" +
+           String(s).padStart(2,"0");
+}
+
+function gestureShowOverlay(delta, iconDirection){
+    if(!gestureOverlay) return;
+
+    const direction = delta >= 0 ? "forward" : "back";
+    const absDelta = Math.abs(Math.round(delta));
+
+    gestureSeekTime.textContent = gestureFormatTime(video.currentTime || 0);
+    gestureSeekDelta.textContent =
+        (delta >= 0 ? "+" : "−") + absDelta + " sec";
+
+    gestureSeekIcon.innerHTML =
+        direction === "forward"
+        ? `<path d="m15 7 5 5-5 5"/><path d="M19 12H8"/><path d="M4 6v12"/>`
+        : `<path d="m9 7-5 5 5 5"/><path d="M5 12h11"/><path d="M20 6v12"/>`;
+
+    gestureOverlay.classList.add("show");
+    clearTimeout(gestureOverlayTimer);
+    gestureOverlayTimer = setTimeout(()=>{
+        gestureOverlay.classList.remove("show");
+    },700);
+}
+
+function gestureRippleAt(x,y){
+    const ripple=document.createElement("span");
+    ripple.className="gesture-ripple";
+    ripple.style.left=x+"px";
+    ripple.style.top=y+"px";
+    playerSurface.appendChild(ripple);
+    ripple.addEventListener("animationend",()=>ripple.remove(),{once:true});
+}
+
+function gestureSeekBy(seconds){
+    if(!Number.isFinite(video.duration) || video.duration <= 0) return;
+
+    const oldTime = video.currentTime || 0;
+    const newTime = Math.max(0,Math.min(video.duration,oldTime + seconds));
+    video.currentTime = newTime;
+
+    showPlayerControls(true);
+    gestureShowOverlay(newTime - oldTime);
+}
+
+function gestureDoubleTap(x,y){
+    const rect=playerSurface.getBoundingClientRect();
+    const ratio=(x-rect.left)/rect.width;
+
+    gestureRippleAt(x,y);
+
+    /*
+       The middle 30% vertical band belongs to Play / Pause.
+       This band covers the whole height of the player, so tapping
+       above or below the center button still toggles playback.
+       Everything to the left/right — including the corners — seeks.
+    */
+    if(ratio < .35){
+        gestureSeekBy(-10);
+        return;
+    }
+
+    if(ratio > .65){
+        gestureSeekBy(10);
+        return;
+    }
+
+    /* Center double tap = Play / Pause. */
+    toggleVideoFromTap();
+    showPlayerControls(true);
+
+    if(gestureOverlay){
+        gestureSeekIcon.innerHTML = video.paused
+            ? `<path d="M8 5v14l11-7L8 5z"/>`
+            : `<path d="M7 5h4v14H7z"/><path d="M13 5h4v14h-4z"/>`;
+        gestureSeekTime.textContent = video.paused ? "Paused" : "Playing";
+        gestureSeekDelta.textContent = "Double tap";
+        gestureOverlay.classList.add("show");
+        clearTimeout(gestureOverlayTimer);
+        gestureOverlayTimer=setTimeout(()=>{
+            gestureOverlay.classList.remove("show");
+        },650);
+    }
+}
+
+function gestureBegin(e){
+    if(e.pointerType==="mouse" && e.button!==0) return;
+
+    /*
+       Gesture seeking is intentionally active across the ENTIRE video
+       surface, including the upper/lower areas and the corners.
+       Only real interactive controls are excluded so their normal clicks
+       keep working (Settings / PIP / Fullscreen / sliders / links).
+    */
+    if(
+        e.target.closest(".settings-panel") ||
+        e.target.closest("button") ||
+        e.target.closest("select") ||
+        e.target.closest("input") ||
+        e.target.closest("a")
+    ){
+        return;
+    }
+
+    if(initialPoster && !initialPoster.classList.contains("hidden")){
+        showPlayerControls(true);
+        return;
+    }
+
+    gesturePointer=e.pointerId;
+    gestureSwipePointerId=e.pointerId;
+    gestureSwipeStartX=e.clientX;
+    gestureSwipeStartY=e.clientY;
+    gestureSwipeStartTime=performance.now();
+    gestureSwipeStartVideoTime=video.currentTime || 0;
+    gestureSwipeLastTime=gestureSwipeStartVideoTime;
+    gestureSwipeActive=false;
+    gestureSwipeMoved=false;
+
+    try{ playerSurface.setPointerCapture(e.pointerId); }catch(err){}
+}
+
+function gestureMove(e){
+    if(gesturePointer!==e.pointerId) return;
+
+    const dx=e.clientX-gestureSwipeStartX;
+    const dy=e.clientY-gestureSwipeStartY;
+
+    if(!gestureSwipeActive){
+        if(Math.abs(dx)<10 && Math.abs(dy)<10) return;
+
+        /* Only horizontal movement becomes video seeking. */
+        if(Math.abs(dx) <= Math.abs(dy)) return;
+
+        gestureSwipeActive=true;
+        gestureSwipeMoved=true;
+        showPlayerControls(true);
+        clearTimeout(gestureTapTimer);
+
+        if(e.pointerType!=="mouse"){
+            try{ e.preventDefault(); }catch(err){}
+        }
+    }
+
+    if(!gestureSwipeActive) return;
+
+    if(e.pointerType!=="mouse"){
+        try{ e.preventDefault(); }catch(err){}
+    }
+
+    const rect=playerSurface.getBoundingClientRect();
+
+    /*
+       MX-style feel: the full player width represents the full duration,
+       with a gentle 0.85 multiplier so a swipe is smooth rather than too fast.
+    */
+    const seekDelta=(dx/Math.max(1,rect.width))*Math.max(1,video.duration||0)*0.85;
+    const next=Math.max(
+        0,
+        Math.min(video.duration||0,gestureSwipeStartVideoTime+seekDelta)
+    );
+
+    if(Number.isFinite(next)){
+        video.currentTime=next;
+        gestureSwipeLastTime=next;
+
+        const delta=next-gestureSwipeStartVideoTime;
+        gestureScrubTime.textContent=gestureFormatTime(next);
+        gestureScrubDelta.textContent=
+            (delta>=0?"+":"−") + Math.abs(Math.round(delta)) + " sec";
+
+        gestureScrub.classList.add("show");
+        showPlayerControls(true);
+    }
+}
+
+function gestureEnd(e){
+    if(gesturePointer!==e.pointerId) return;
+
+    const x=e.clientX;
+    const y=e.clientY;
+    const now=performance.now();
+
+    try{ playerSurface.releasePointerCapture(e.pointerId); }catch(err){}
+
+    if(gestureSwipeActive){
+        gestureScrub.classList.remove("show");
+        gesturePointer=null;
+        gestureSwipePointerId=null;
+        gestureSwipeActive=false;
+        return;
+    }
+
+    const rect=playerSurface.getBoundingClientRect();
+    const moved=Math.hypot(x-gestureSwipeStartX,y-gestureSwipeStartY);
+
+    if(moved>18){
+        gesturePointer=null;
+        gestureSwipePointerId=null;
+        return;
+    }
+
+    const tapGap=now-gestureLastTap;
+    const tapDistance=Math.hypot(x-gestureLastTapX,y-gestureLastTapY);
+
+    if(tapGap<360 && tapDistance<55){
+        clearTimeout(gestureTapTimer);
+
+        /*
+           A mobile browser can synthesize a click after the second tap.
+           The double-tap handler already performs the action, so block that
+           extra click briefly; otherwise center double-tap can toggle twice
+           (pause -> play instantly).
+        */
+        gestureSuppressClickUntil = performance.now() + 500;
+        gestureLastTap=0;
+        gestureDoubleTap(x,y);
+    }else{
+        gestureLastTap=now;
+        gestureLastTapX=x;
+        gestureLastTapY=y;
+
+        clearTimeout(gestureTapTimer);
+        gestureTapTimer=setTimeout(()=>{
+            /* Single tap ONLY reveals controls; it does not pause/play. */
+            showPlayerControls(true);
+        },260);
+    }
+
+    gesturePointer=null;
+    gestureSwipePointerId=null;
+}
+
+/* Pointer events work for touch, pen and mouse. */
+playerSurface.addEventListener("pointerdown",gestureBegin,{passive:false});
+playerSurface.addEventListener("pointermove",gestureMove,{passive:false});
+playerSurface.addEventListener("pointerup",gestureEnd,{passive:true});
+playerSurface.addEventListener("pointercancel",gestureEnd,{passive:true});
+
+/*
+   A normal click/tap no longer toggles playback.
+   It only reveals controls. Double tap performs the action.
+*/
+videoPlayer.addEventListener("click",e=>{
+    if(performance.now() < gestureSuppressClickUntil){
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+    }
+
+    if(
+        e.target.closest("button") ||
+        e.target.closest("select") ||
+        e.target.closest("input") ||
+        e.target.closest("a") ||
+        e.target.closest(".player-controls") ||
+        e.target.closest(".settings-panel")
+    ) return;
+
+    showPlayerControls(true);
+});
+
 video.addEventListener("play",updateCenterPlayPause);
 video.addEventListener("pause",()=>{
+    hidePlayerLoading();
     updateCenterPlayPause();
     showCenterPlayPause();
 });
 video.addEventListener("ended",()=>{
     updateCenterPlayPause();
-
-    /* Video finished: smoothly reveal the controls and keep them visible. */
     showPlayerControls(false);
 
     if(centerPlayPause){
@@ -3997,13 +4640,11 @@ video.addEventListener("ended",()=>{
 });
 
 function showPlayerControls(resetTimer=true){
-    /* Top Movie/Trailer label + bottom player controls always move together. */
     playerControls.classList.remove("auto-hidden");
     playerTop.classList.remove("auto-hidden");
 
     clearTimeout(controlsHideTimer);
 
-    /* While Settings is open, controls must remain visible. */
     if(settingsPanel && settingsPanel.classList.contains("open")){
         return;
     }
@@ -4026,19 +4667,10 @@ function hidePlayerControls(){
 }
 
 function handlePlayerInteraction(e){
-    /* Any tap/click on the video area instantly brings both UI layers back. */
     showPlayerControls(true);
 }
 
-/* Show once when the player opens, then hide automatically after 5 seconds. */
-showPlayerControls(true);
-
-/* Touch + mouse/pointer support. */
-playerSurface.addEventListener("pointerdown",handlePlayerInteraction);
-playerSurface.addEventListener("touchstart",handlePlayerInteraction,{passive:true});
-playerSurface.addEventListener("click",handlePlayerInteraction);
-
-/* Interacting with controls also resets the 5-second timer. */
+/* Controls interaction stays separate from video gestures. */
 playerControls.addEventListener("pointerdown",e=>{
     e.stopPropagation();
     showPlayerControls(true);
@@ -4056,6 +4688,8 @@ playerControls.addEventListener("pointermove",()=>{
 /* =========================================================
    TOAST
 ========================================================= */
+
+
 
 let toastTimer;
 
@@ -4077,31 +4711,316 @@ function showToast(message){
 
 
 /* =========================================================
-   PLAYER + MOVIE / TRAILER SWITCH
+   PLAYER + HLS MOVIE / TRAILER SWITCH
 ========================================================= */
 
-/* Demo sources for testing. Replace later with real database URLs. */
+/*
+   The StreamHG link supplied for the demo is an HLS stream.
+   The original player source shows that its proxy exposes the
+   master.m3u8 manifest through serve_m3u8=1.  We use HLS.js here
+   so Chromium/Firefox can play that manifest and expose its real
+   quality levels instead of treating the m3u8 as a normal MP4.
+*/
 const MOVIE_DEMO_URL =
-    "https://www.w3schools.com/html/mov_bbb.mp4";
+    "https://rozgarlelo.modiplay.xyz/proxy.php?serve_m3u8=1&ref=https%3A%2F%2Fhanerix.com%2Fe%2Fidai5wak9cv0&url=https%3A%2F%2Fhanerix.com%2Fstream%2FUK-Of0SdI8JxcQXbHbJMTA%2Fkjhhiuahiuhgihdf%2F1787612438%2F73580730%2Fmaster.m3u8&ebd=https%3A%2F%2Fhanerix.com";
 
-const TRAILER_DEMO_URL =
-    "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const TRAILER_DEMO_URL = MOVIE_DEMO_URL;
 
 let currentMode = "movie";
 let currentQuality = "1080";
+let currentQualityChoice = "auto";
+let hls = null;
+let hlsLevels = [];
+let hlsReady = false;
+let pendingAutoPlay = false;
+let pendingStartTime = 0;
 
 const QUALITY_SOURCES = {
-    movie: {
-        "480": MOVIE_DEMO_URL,
-        "720": MOVIE_DEMO_URL,
-        "1080": MOVIE_DEMO_URL
-    },
-    trailer: {
-        "480": TRAILER_DEMO_URL,
-        "720": TRAILER_DEMO_URL,
-        "1080": TRAILER_DEMO_URL
-    }
+    movie: { "480": MOVIE_DEMO_URL, "720": MOVIE_DEMO_URL, "1080": MOVIE_DEMO_URL },
+    trailer: { "480": TRAILER_DEMO_URL, "720": TRAILER_DEMO_URL, "1080": TRAILER_DEMO_URL }
 };
+
+function hlsHash(s){
+    let h=0;
+    for(let i=0;i<s.length;i++){
+        h=((h<<5)-h)+s.charCodeAt(i);
+        h|=0;
+    }
+    return (h>>>0).toString(16).padStart(8,"0");
+}
+
+function getHlsConfig(){
+    return {
+        maxBufferLength:60,
+        maxMaxBufferLength:120,
+        maxBufferSize:0,
+        enableWorker:true,
+        startLevel:0,
+        autoStartLoad:true,
+        startPosition:0,
+        abrEwmaDefaultEstimate:3000000,
+        abrEwmaFastLive:3,
+        abrEwmaSlowLive:9,
+        abrBandWidthFactor:0.8,
+        abrBandWidthUpFactor:0.7,
+        capLevelToPlayerSize:false,
+        abrBandWidthUpFactor:0.4,
+        abrMaxWithRealBitrate:true,
+        capLevelToPlayerSize:true,
+        capLevelOnFPSDrop:true,
+        startFragPrefetch:true,
+        testBandwidth:true,
+        progressive:true,
+        fragLoadingTimeOut:10000,
+        fragLoadingMaxRetry:2,
+        fragLoadingRetryDelay:250,
+        manifestLoadingTimeOut:15000,
+        manifestLoadingMaxRetry:6,
+        levelLoadingTimeOut:15000,
+        levelLoadingMaxRetry:6,
+        maxSeekHole:5,
+        nudgeOffset:0.5,
+        nudgeMaxRetry:10,
+        maxBufferHole:1.5,
+        lowLatencyMode:false,
+        backBufferLength:120,
+        renderTextTracksNatively:true,
+        fetchSetup:function(context,initParams){
+            initParams.mode="cors";
+            initParams.credentials="omit";
+            if(context.url.indexOf("/proxy.php")===-1){
+                initParams.referrerPolicy="no-referrer";
+            }
+            return new Request(context.url,initParams);
+        }
+    };
+}
+
+function qualityLabel(level){
+    if(!level) return "Auto";
+    const h=Number(level.height||0);
+    if(h>=1000) return "1080p";
+    if(h>=650) return "720p";
+    if(h>=400) return "480p";
+    return h ? h+"p" : "Auto";
+}
+
+function rebuildQualityButtons(){
+    const buttons=[...document.querySelectorAll("[data-quality-setting]")];
+    const heights=hlsLevels.map(l=>Number(l.height||0)).filter(Boolean);
+    const available={
+        "480":heights.some(h=>h>=400 && h<650),
+        "720":heights.some(h=>h>=650 && h<1000),
+        "1080":heights.some(h=>h>=1000)
+    };
+
+    buttons.forEach(btn=>{
+        const q=btn.dataset.qualitySetting;
+        btn.disabled=(q!=="auto" && !available[q]);
+        btn.style.opacity=btn.disabled?.38:1;
+        btn.style.pointerEvents=btn.disabled?"none":"auto";
+    });
+}
+
+function findLevelForQuality(q){
+    if(!hlsLevels.length) return -1;
+    const target=Number(q);
+    let best=-1;
+    let bestDiff=Infinity;
+    hlsLevels.forEach((level,index)=>{
+        const height=Number(level.height||0);
+        if(!height) return;
+        const diff=Math.abs(height-target);
+        if(diff<bestDiff){ bestDiff=diff; best=index; }
+    });
+    return best;
+}
+
+function syncQualityUI(label){
+    const isAuto=(label==="Auto");
+    if(settingsQualityValue){
+        settingsQualityValue.innerHTML=(isAuto?"Auto":label)+" <b>›</b>";
+    }
+    if(qualitySelect){
+        qualitySelect.value=isAuto?currentQuality:String(currentQuality);
+    }
+    document.querySelectorAll("[data-quality-setting]").forEach(btn=>{
+        const q=btn.dataset.qualitySetting;
+        btn.classList.toggle("active",isAuto?q==="auto":q===String(currentQuality));
+    });
+}
+
+function applyHlsQuality(choice,showMessage=true){
+    currentQualityChoice=choice;
+
+    if(choice==="auto"){
+        currentQuality="1080";
+        if(hls) hls.currentLevel=-1;
+        syncQualityUI("Auto");
+        if(showMessage) showToast("Quality changed to Auto");
+        return;
+    }
+
+    currentQuality=String(choice);
+
+    /*
+       FAST / SMOOTH QUALITY SWITCH
+       - Never pause the video.
+       - Never show the big player loader for a manual quality change.
+       - HLS switches the already-playing media buffer in place.
+       - UI changes immediately, while the small badge is corrected
+         again when the real HLS level becomes active.
+    */
+    const level=findLevelForQuality(currentQuality);
+
+    if(hls && level>=0){
+        try{
+            /*
+               Schedule the switch for the next clean media segment.
+               Do NOT force currentLevel here — forcing it can flush/rebuffer
+               the current buffer and create the 1-second freezes.
+            */
+            hls.nextLevel=level;
+        }catch(e){}
+    }
+
+    syncQualityUI(currentQuality+"p");
+
+    if(showMessage){
+        showToast("Quality changed to "+currentQuality+"p");
+    }
+}
+
+function destroyHls(){
+    if(hls){
+        try{hls.destroy();}catch(e){}
+        hls=null;
+    }
+    hlsLevels=[];
+    hlsReady=false;
+}
+
+function loadHlsSource(source,autoPlay=true,savedTime=0){
+    pendingAutoPlay=autoPlay;
+    pendingStartTime=savedTime||0;
+    hlsReady=false;
+    hlsLevels=[];
+
+    try{video.pause();}catch(e){}
+    video.removeAttribute("src");
+    video.load();
+
+    if(typeof Hls!=="undefined" && Hls.isSupported()){
+        destroyHls();
+        showPlayerLoading();
+
+        hls=new Hls(getHlsConfig());
+
+        hls.on(Hls.Events.MANIFEST_PARSED,(event,data)=>{
+            hlsReady=true;
+            hlsLevels=hls.levels||data.levels||[];
+            rebuildQualityButtons();
+
+            if(currentQualityChoice==="auto") hls.currentLevel=-1;
+            else {
+                const level=findLevelForQuality(currentQuality);
+                if(level>=0) hls.currentLevel=level;
+            }
+
+            /* Keep the real loader visible until the video actually starts.
+               MANIFEST_PARSED only means the playlist is ready — frames may
+               still be buffering. The playing event is the true ready signal. */
+            playerEmpty.classList.add("hidden");
+
+            if(pendingStartTime>0){
+                try{video.currentTime=pendingStartTime;}catch(e){}
+            }
+
+            if(pendingAutoPlay){
+                const p=video.play();
+                if(p && p.catch){
+                    p.catch(()=>{
+                        hidePlayerLoading();
+                        centerPlay.style.display="grid";
+                    });
+                }
+            }else{
+                centerPlay.style.display="none";
+            }
+        });
+
+        hls.on(Hls.Events.LEVEL_SWITCHED,(event,data)=>{
+            const level=hls.levels?.[data.level];
+            if(!level) return;
+
+            const label=qualityLabel(level);
+            const badge=document.getElementById("playerQuality");
+
+            if(currentQualityChoice==="auto"){
+                if(settingsQualityValue) settingsQualityValue.innerHTML="Auto <b>›</b>";
+                if(badge){
+                    badge.textContent=label.toUpperCase();
+                    badge.classList.remove("quality-updated");
+                    requestAnimationFrame(()=>{
+                        badge.classList.add("quality-updated");
+                        setTimeout(()=>badge.classList.remove("quality-updated"),220);
+                    });
+                }
+                return;
+            }
+
+            const actualHeight=Number(level.height||0);
+            const requestedHeight=Number(currentQuality);
+
+            if(actualHeight && Math.abs(actualHeight-requestedHeight)<=120){
+                if(badge){
+                    badge.textContent=label.toUpperCase();
+                    badge.classList.remove("quality-updated");
+                    requestAnimationFrame(()=>{
+                        badge.classList.add("quality-updated");
+                        setTimeout(()=>badge.classList.remove("quality-updated"),220);
+                    });
+                }
+            }
+        });
+
+        hls.on(Hls.Events.ERROR,(event,data)=>{
+            if(!data.fatal) return;
+            if(data.type===Hls.ErrorTypes.MEDIA_ERROR){
+                try{hls.recoverMediaError();return;}catch(e){}
+            }
+            hidePlayerLoading();
+            playerEmpty.classList.remove("hidden");
+            centerPlay.style.display="grid";
+            showToast("Stream could not be loaded.");
+        });
+
+        hls.loadSource(source);
+        hls.attachMedia(video);
+        return;
+    }
+
+    /* Safari/iOS can play HLS natively. */
+    if(video.canPlayType("application/vnd.apple.mpegurl")){
+        showPlayerLoading();
+        video.src=source;
+        video.load();
+        const ready=()=>{
+            video.removeEventListener("loadedmetadata",ready);
+            /* Do not hide here: loadedmetadata can fire before playback is
+               actually ready. The playing event hides the loader. */
+            if(pendingStartTime>0) video.currentTime=pendingStartTime;
+            if(pendingAutoPlay) video.play().catch(()=>centerPlay.style.display="grid");
+        };
+        video.addEventListener("loadedmetadata",ready,{once:true});
+        return;
+    }
+
+    hidePlayerLoading();
+    playerEmpty.classList.remove("hidden");
+    centerPlay.style.display="grid";
+    showToast("This browser cannot play HLS.");
+}
 
 function showPlayerLoading(){
     playerLoading.classList.add("show");
@@ -4121,8 +5040,7 @@ function setPlayerMode(mode,autoPlay=true){
     currentMode=mode;
 
     const isTrailer=mode==="trailer";
-    const source=
-        QUALITY_SOURCES[mode]?.[currentQuality] ||
+    const source=QUALITY_SOURCES[mode]?.[currentQuality] ||
         (isTrailer ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
 
     playerModeLabel.textContent=isTrailer ? "TRAILER" : "MOVIE";
@@ -4139,46 +5057,34 @@ function setPlayerMode(mode,autoPlay=true){
             <path d="m10 10 5 2-5 2z"/>
           `;
 
-    qualitySelect.value=currentQuality;
-
-    try{video.pause();}catch(e){}
-
-    video.removeAttribute("src");
-    video.load();
-
     progress.style.width="0%";
     time.textContent="00:00";
-
-    video.src=source;
-    video.load();
-    playerEmpty.classList.add("hidden");
+    destroyHls();
 
     if(autoPlay){
         initialPoster.classList.add("hidden");
         showPlayerLoading();
-
-        const playWhenReady=()=>{
-            video.removeEventListener("canplay",playWhenReady);
-            video.play().catch(()=>{
-                hidePlayerLoading();
-                centerPlay.style.display="grid";
-            });
-        };
-        video.addEventListener("canplay",playWhenReady);
+        loadHlsSource(source,true,0);
     }else{
+        /* Keep the existing thumbnail/center-play experience. */
         initialPoster.classList.remove("hidden");
         hidePlayerLoading();
         centerPlay.style.display="none";
+        loadHlsSource(source,false,0);
     }
 }
 
 function togglePlay(){
-    if(!video.src){
-        setPlayerMode(currentMode,true);
+    if(!hlsReady && !video.src){
+        initialPoster.classList.add("hidden");
+        showPlayerLoading();
+        loadHlsSource(QUALITY_SOURCES[currentMode]?.[currentQuality] || MOVIE_DEMO_URL,true,video.currentTime||0);
         return;
     }
 
     if(video.paused){
+        initialPoster.classList.add("hidden");
+        showPlayerLoading();
         video.play().catch(()=>{});
     }else{
         video.pause();
@@ -4190,117 +5096,103 @@ playPause.addEventListener("click",togglePlay);
 
 trailerToggle.addEventListener("click",(e)=>{
     e.stopPropagation();
-
-    /* Selected Movie/Trailer tab gets a full red outline sweeping
-       smoothly around all four sides of the button. */
     trailerToggle.classList.remove("mode-active");
     void trailerToggle.offsetWidth;
     trailerToggle.classList.add("mode-active");
-
     setPlayerMode(currentMode==="movie" ? "trailer" : "movie",true);
     showPlayerControls(true);
 });
 
-/* QUALITY CHANGE */
+/* QUALITY CHANGE — use real HLS levels, not fake MP4 URLs. */
 qualitySelect.addEventListener("change",()=>{
     showPlayerControls(true);
-
     const newQuality=qualitySelect.value;
-    if(typeof settingsQualityValue!=="undefined"){
-        settingsQualityValue.innerHTML=newQuality+"p <b>›</b>";
-    }
-
-    if(newQuality===currentQuality)
-        return;
-
-    currentQuality=newQuality;
-
-    showPlayerLoading();
-
-    const wasPlaying=!video.paused;
-    const savedTime=video.currentTime || 0;
-
-    const mode=currentMode;
-    const source=
-        QUALITY_SOURCES[mode]?.[currentQuality] ||
-        (mode==="trailer" ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
-
-    const onReady=()=>{
-        video.removeEventListener("canplay",onReady);
-
-        try{
-            video.currentTime=savedTime;
-        }catch(e){}
-
-        if(wasPlaying){
-            video.play().catch(()=>{
-                hidePlayerLoading();
-                centerPlay.style.display="grid";
-            });
-        }else{
-            hidePlayerLoading();
-            centerPlay.style.display="grid";
-        }
-
-        showToast("Quality changed to "+currentQuality+"p");
-    };
-
-    video.addEventListener("canplay",onReady,{once:true});
-
-    video.pause();
-    video.removeAttribute("src");
-    video.load();
-    video.src=source;
-    video.load();
+    if(newQuality===currentQuality && currentQualityChoice!=="auto") return;
+    applyHlsQuality(newQuality,false);
 });
 
-video.addEventListener("loadstart",showPlayerLoading);
-video.addEventListener("waiting",showPlayerLoading);
-video.addEventListener("canplay",hidePlayerLoading);
+video.addEventListener("loadstart",()=>{ if(pendingAutoPlay || !video.paused) showPlayerLoading(); });
+video.addEventListener("waiting",()=>{ /* no player loader during quality switching */ });
+video.addEventListener("stalled",()=>{ if(!video.paused) showPlayerLoading(); });
+video.addEventListener("seeking",()=>{ if(!video.paused) showPlayerLoading(); });
+video.addEventListener("canplay",()=>{ /* keep loader until actual playback */ });
 video.addEventListener("loadeddata",()=>{
     playerEmpty.classList.add("hidden");
-    hidePlayerLoading();
 });
-
 video.addEventListener("playing",()=>{
     playerEmpty.classList.add("hidden");
     hidePlayerLoading();
     showPlayerControls(true);
 });
-
 video.addEventListener("error",()=>{
+    if(typeof Hls!=="undefined" && hls) return;
     hidePlayerLoading();
     playerEmpty.classList.remove("hidden");
     centerPlay.style.display="grid";
-    showToast("Demo video could not be loaded.");
+    showToast("Video could not be loaded.");
 });
-
 video.addEventListener("play",()=>{
     centerPlay.style.display="none";
     playIcon.innerHTML=`
-        <path d="M7 5h4v14H7z"/>
-        <path d="M13 5h4v14h-4z"/>
+        <path d="M7 5.5h3.4v13H7z"/>
+        <path d="M13.6 5.5H17v13h-3.4z"/>
     `;
 });
-
 video.addEventListener("pause",()=>{
-    if(!playerLoading.classList.contains("show")){
-        centerPlay.style.display="grid";
-    }
-    playIcon.innerHTML=`
-        <path d="M8 5v14l11-7L8 5z"/>
-    `;
+    if(!playerLoading.classList.contains("show")) centerPlay.style.display="grid";
+    playIcon.innerHTML=`<path d="M8.2 5.3v13.4c0 .8.9 1.2 1.6.8l9.1-6.1c.6-.4.6-1.2 0-1.6L9.8 4.5c-.7-.4-1.6 0-1.6.8Z"/>`;
 });
 
-/* Start with the movie demo — thumbnail first, no autoplay. */
+/* Start with thumbnail first — never autoplay on page open. */
+video.autoplay = false;
+video.removeAttribute("autoplay");
+video.muted = false;
+video.volume = 1;
 setPlayerMode("movie",false);
 video.pause();
 video.currentTime=0;
+updateMuteIcon();
 hidePlayerControls();
 
 /* =========================================================
    PROGRESS
 ========================================================= */
+
+
+video.addEventListener("pause",()=>{
+    /*
+       Keep HLS loading while the user is paused.
+       This lets the gray buffered section continue growing
+       toward roughly 60 seconds ahead.
+    */
+    try{
+        if(hls && typeof hls.startLoad==="function"){
+            hls.startLoad();
+        }
+    }catch(e){}
+
+    updateBufferedProgress();
+});
+
+video.addEventListener("progress",updateBufferedProgress);
+video.addEventListener("durationchange",updateBufferedProgress);
+video.addEventListener("loadedmetadata",updateBufferedProgress);
+video.addEventListener("canplay",updateBufferedProgress);
+video.addEventListener("playing",updateBufferedProgress);
+
+const bufferWatchTimer=setInterval(()=>{
+    if(video.paused){
+        updateBufferedProgress();
+    }
+},500);
+
+function bufferRevealFrame(){
+    if(video.paused && bufferRevealStartTime!==null){
+        updateBufferedProgress();
+    }
+    requestAnimationFrame(bufferRevealFrame);
+}
+requestAnimationFrame(bufferRevealFrame);
 
 video.addEventListener(
     "timeupdate",
@@ -4315,6 +5207,8 @@ video.addEventListener(
         progress.style.width=
             percent+"%";
 
+        updateBufferedProgress();
+
         time.textContent=
             formatTime(video.currentTime);
 
@@ -4322,16 +5216,88 @@ video.addEventListener(
 );
 
 
+
+const bufferedProgress=document.getElementById("bufferedProgress");
+
+let bufferRevealStartTime=null;
+let bufferRevealBaseSeconds=20;
+
+
+/*
+   Keep roughly 10–20 seconds ahead when the source can provide it.
+   The gray track represents the portion already buffered ahead of playback.
+*/
+function updateBufferedProgress(){
+    if(!bufferedProgress || !video.duration || !Number.isFinite(video.duration)){
+        if(bufferedProgress) bufferedProgress.style.width="0%";
+        return;
+    }
+
+    let bufferedEnd=video.currentTime;
+
+    try{
+        const ranges=video.buffered;
+        for(let i=0;i<ranges.length;i++){
+            const start=ranges.start(i);
+            const end=ranges.end(i);
+
+            if(video.currentTime>=start-0.15 && video.currentTime<=end+0.15){
+                bufferedEnd=end;
+                break;
+            }
+        }
+    }catch(e){}
+
+    /*
+       Smooth gray-buffer reveal:
+       First 20 seconds can appear normally. Once 20 seconds ahead
+       has been buffered, any additional buffered content is revealed
+       at no more than 1 second of timeline per real second.
+    */
+    const actualAhead=Math.max(0,bufferedEnd-video.currentTime);
+
+    if(actualAhead>=20 && bufferRevealStartTime===null){
+        bufferRevealStartTime=performance.now();
+        bufferRevealBaseSeconds=20;
+    }
+
+    let allowedAhead=actualAhead;
+
+    if(bufferRevealStartTime!==null){
+        const elapsed=(performance.now()-bufferRevealStartTime)/1000;
+        allowedAhead=Math.min(
+            actualAhead,
+            bufferRevealBaseSeconds+elapsed
+        );
+    }
+
+    const visibleEnd=Math.min(
+        video.duration,
+        video.currentTime+Math.max(0,allowedAhead)
+    );
+
+    const percent=(visibleEnd/video.duration)*100;
+    bufferedProgress.style.width=percent+"%";
+}
+
 function formatTime(seconds){
 
-    if(!seconds || isNaN(seconds))
+    if(!Number.isFinite(seconds) || seconds < 0)
         return "00:00";
 
-    const minutes=
-        Math.floor(seconds/60);
+    seconds=Math.floor(seconds);
 
-    const secs=
-        Math.floor(seconds%60);
+    const hours=Math.floor(seconds/3600);
+    const minutes=Math.floor((seconds%3600)/60);
+    const secs=seconds%60;
+
+    if(hours>0){
+        return String(hours).padStart(2,"0")
+            +":"
+            +String(minutes).padStart(2,"0")
+            +":"
+            +String(secs).padStart(2,"0");
+    }
 
     return String(minutes).padStart(2,"0")
         +":"
@@ -4371,47 +5337,38 @@ progressArea.addEventListener(
    MUTE
 ========================================================= */
 
-muteBtn.addEventListener(
-    "click",
-    ()=>{
+function updateMuteIcon(){
+    if(!muteBtn) return;
 
-        video.muted=
-            !video.muted;
+    const muted = !!video.muted;
 
-        if(video.muted){
+    muteBtn.innerHTML = muted
+        ? `
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/>
+                <path d="m17 9 4 6"/>
+                <path d="m21 9-4 6"/>
+            </svg>
+          `
+        : `
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/>
+                <path d="M16.3 9a4.4 4.4 0 0 1 0 6"/>
+                <path d="M18.8 6.9a7.5 7.5 0 0 1 0 11.2"/>
+            </svg>
+          `;
 
-            muteBtn.innerHTML=`
+    muteBtn.setAttribute("aria-label", muted ? "Unmute" : "Mute");
+    muteBtn.title = muted ? "Unmute" : "Mute";
+}
 
-                <svg viewBox="0 0 24 24">
+muteBtn.addEventListener("click",()=>{
+    video.muted = !video.muted;
+    if(!video.muted && video.volume === 0) video.volume = 1;
+    updateMuteIcon();
+});
 
-                    <path d="M4 10v4h4l5 4V6l-5 4H4z"/>
-
-                    <path d="m17 9 4 6"/>
-
-                    <path d="m21 9-4 6"/>
-
-                </svg>
-
-            `;
-
-        }else{
-
-            muteBtn.innerHTML=`
-
-                <svg viewBox="0 0 24 24">
-
-                    <path d="M4 10v4h4l5 4V6l-5 4H4z"/>
-
-                    <path d="M17 8a6 6 0 0 1 0 8"/>
-
-                </svg>
-
-            `;
-
-        }
-
-    }
-);
+video.addEventListener("volumechange", updateMuteIcon);
 
 
 /* =========================================================
@@ -4420,176 +5377,41 @@ muteBtn.addEventListener(
 
 fullscreenBtn.addEventListener(
     "click",
-    ()=>{
-
-        const player=
+    async ()=>{
+        const player =
             document.getElementById("videoPlayer");
 
         if(document.fullscreenElement){
-
-            document.exitFullscreen();
-
-        }else{
-
-            player.requestFullscreen?.();
-
+            try{
+                await document.exitFullscreen();
+            }catch(e){}
+            return;
         }
 
-    }
-);
-
-
-/* =========================================================
-   DESCRIPTION
-========================================================= */
-
-const readMore=
-    document.getElementById("readMore");
-
-const descriptionMore=
-    document.getElementById("descriptionMore");
-
-
-readMore.addEventListener(
-    "click",
-    ()=>{
-
-        descriptionMore.classList.toggle("show");
-
-        readMore.textContent=
-            descriptionMore.classList.contains("show")
-            ? "Show less"
-            : "Read more";
-
-    }
-);
-
-
-/* =========================================================
-   LIKE
-========================================================= */
-
-document
-.getElementById("likeBtn")
-.addEventListener(
-    "click",
-    function(){
-
-        this.classList.toggle("active");
-
-        showToast(
-            this.classList.contains("active")
-            ? "Added to liked movies"
-            : "Removed from liked movies"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   DOWNLOAD POPUP OPEN
-========================================================= */
-
-downloadBtn.addEventListener(
-    "click",
-    ()=>{
-
-        downloadOverlay.classList.add("show");
-
-        document.body.style.overflow="hidden";
-
-    }
-);
-
-
-/* =========================================================
-   DOWNLOAD POPUP CLOSE
-========================================================= */
-
-function closeDownload(){
-
-    downloadOverlay.classList.remove("show");
-
-    document.body.style.overflow="";
-
-}
-
-
-downloadClose.addEventListener(
-    "click",
-    closeDownload
-);
-
-
-/* CLICK OUTSIDE POPUP */
-
-downloadOverlay.addEventListener(
-    "click",
-    e=>{
-
-        if(e.target===downloadOverlay){
-
-            closeDownload();
-
+        /* Enter fullscreen FIRST. Android browsers allow a reliable
+           orientation lock only after fullscreen is active. */
+        try{
+            if(player.requestFullscreen){
+                await player.requestFullscreen();
+            }else if(player.webkitRequestFullscreen){
+                player.webkitRequestFullscreen();
+            }else{
+                return;
+            }
+        }catch(e){
+            return;
         }
 
+        /* Then rotate the fullscreen player to landscape. */
+        try{
+            if(screen.orientation && screen.orientation.lock){
+                await screen.orientation.lock("landscape");
+            }
+        }catch(e){
+            /* Fullscreen remains usable if this browser refuses orientation lock. */
+        }
     }
 );
-
-
-/* ESC */
-
-document.addEventListener(
-    "keydown",
-    e=>{
-
-        if(e.key==="Escape"){
-
-            closeDownload();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   DOWNLOAD QUALITY BUTTONS
-========================================================= */
-
-document
-.querySelectorAll(".download-now")
-.forEach(button=>{
-
-    button.addEventListener(
-        "click",
-        ()=>{
-
-            const quality=
-                button.dataset.quality;
-
-            /*
-               BAAD ME YAHAN REAL DOWNLOAD URL
-               DATABASE SE AAYEGA.
-
-               Example:
-
-               window.location.href =
-               movie.downloads[quality];
-            */
-
-            showToast(
-                quality.toUpperCase()
-                +" download selected"
-            );
-
-        }
-    );
-
-});
-
-
 /* =========================================================
    SHARE
 ========================================================= */
@@ -4783,6 +5605,18 @@ document.addEventListener(
     }
 );
 
+
+
+/* Release temporary landscape lock after fullscreen closes */
+document.addEventListener("fullscreenchange",()=>{
+    if(!document.fullscreenElement){
+        try{
+            if(screen.orientation && screen.orientation.unlock){
+                screen.orientation.unlock();
+            }
+        }catch(e){}
+    }
+});
 
 </script>
 
