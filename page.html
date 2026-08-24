@@ -1598,8 +1598,8 @@ body{
 /* =========================================================
    SUPABASE / DATABASE
 ========================================================= */
-const SUPABASE_URL = "https://bbqaagbypawcpszjwzii.supabase.co";
-const SUPABASE_KEY = "sb_publishable_dWktR3La6JpSwD32tfSb-Q_a__jx0cO";
+const SUPABASE_URL = "https://bszojvhitsoamhksyjul.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoiYnN6b2p2aGl0c29hbWhrc3lqdWwiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4NjU5NjQ5MywiZXhwIjoyMTAyMTcyNDkzfQ.QW1vat89dYrOYY0U8Bk6BwAcunTIISduPhk7ngz3iBE";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /* =========================================================
@@ -1775,11 +1775,6 @@ let series = [
 ];
 
 
-/* Keep the original one-demo fallback cards unchanged. */
-const DEMO_MOVIES = movies.slice();
-const DEMO_SERIES = series.slice();
-
-
 /* =========================================================
    MOVIE CARD
 ========================================================= */
@@ -1845,35 +1840,23 @@ function createMovieCard(movie){
 function attachMovieCardNavigation(container){
     container.querySelectorAll(".movie-card").forEach(card=>{
         if(card.dataset.navigationBound==="1") return;
-
         card.dataset.navigationBound="1";
         card.style.cursor="pointer";
-        card.setAttribute("role","link");
-        card.setAttribute("tabindex","0");
 
-        function openMovie(){
+        const openMovie=()=>{
             const id=card.dataset.id;
-
             if(!id){
-                console.warn("CINEFLIX: movie card has no database id",card);
+                console.warn("CINEFLIX: this card has no Supabase movie id",card);
                 return;
             }
-
-            // Home = page.html, Movie Post = movie.html
-            window.location.href =
-                "movie.html?id=" + encodeURIComponent(id);
-        }
+            window.location.assign(
+                "movie.html?id=" + encodeURIComponent(id)
+            );
+        };
 
         card.addEventListener("click",e=>{
             if(e.target.closest(".card-action")) return;
             openMovie();
-        });
-
-        card.addEventListener("keydown",e=>{
-            if(e.key==="Enter" || e.key===" "){
-                e.preventDefault();
-                openMovie();
-            }
         });
     });
 }
@@ -1887,7 +1870,7 @@ function showSkeleton(row){
 
     row.innerHTML = "";
 
-    for(let i=0;i<1;i++){
+    for(let i=0;i<9;i++){
 
         const card = document.createElement("div");
 
@@ -2421,52 +2404,25 @@ async function loadDatabaseMovies(){
             image:m.poster_url
         }));
 
+        movies=mapped.filter(m=>true);
+        series=mapped.filter((m,i)=>data[i].category==="Series");
+
         const movieOnly=mapped.filter((m,i)=>data[i].category!=="Series");
         const trending=mapped.filter((m,i)=>data[i].is_trending);
         const fresh=mapped.filter((m,i)=>data[i].is_new_release);
-        const dbSeries=mapped.filter((m,i)=>data[i].category==="Series");
 
-        movies=mapped;
-        series=dbSeries;
-
-        // Keep exactly one card visible in each section.
         document.getElementById("trendingRow").innerHTML="";
         document.getElementById("newRow").innerHTML="";
         document.getElementById("seriesRow").innerHTML="";
 
-        loadRow("trendingRow",(trending.length?trending:movieOnly).slice(0,1));
-        loadRow("newRow",(fresh.length?fresh:movieOnly).slice(0,1));
-        loadRow("seriesRow",(dbSeries.length?dbSeries:DEMO_SERIES).slice(0,1));
+        loadRow("trendingRow",trending.length?trending:movieOnly);
+        loadRow("newRow",fresh.length?fresh:movieOnly);
+        loadRow("seriesRow",series);
 
     }catch(error){
         console.warn("CINEFLIX database load failed:",error);
     }
 }
-
-let cineflixRefreshBusy=false;
-async function refreshCineflixHome(){
-    if(cineflixRefreshBusy) return;
-    cineflixRefreshBusy=true;
-    try{ await loadDatabaseMovies(); } finally { cineflixRefreshBusy=false; }
-}
-
-function startCineflixLiveSync(){
-    refreshCineflixHome();
-
-    // Realtime: updates the Home page as soon as Supabase reports a change.
-    try{
-        supabaseClient
-            .channel("cineflix-movies-live")
-            .on("postgres_changes",{event:"*",schema:"public",table:"movies"},()=>refreshCineflixHome())
-            .subscribe();
-    }catch(e){
-        console.warn("CINEFLIX realtime unavailable:",e);
-    }
-
-    // Fallback polling keeps the page live even if Realtime is not enabled.
-    setInterval(refreshCineflixHome,2000);
-}
-
 
 
 /* =========================================================
@@ -2477,22 +2433,24 @@ document.addEventListener("DOMContentLoaded",()=>{
 
     loadRow(
         "trendingRow",
-        DEMO_MOVIES.slice(0,1)
+        movies.slice(0,1)
     );
 
     loadRow(
         "newRow",
-        [...DEMO_MOVIES].reverse().slice(0,1)
+        [...movies].reverse().slice(0,1)
     );
 
     loadRow(
         "seriesRow",
-        DEMO_SERIES.slice(0,1)
+        series.slice(0,1)
     );
-
     setupRowArrows();
+
     startHeroTimer();
-    startCineflixLiveSync();
+
+    // Load real movies from Supabase so every card gets its database UUID.
+    loadDatabaseMovies();
 
 });
 </script>
