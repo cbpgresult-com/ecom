@@ -5041,20 +5041,47 @@ const QUALITY_SOURCES = {
 let trailerFrame=null;
 function normalizeTrailerUrl(url){
     if(!url) return "";
+
+    // TMDB commonly stores the YouTube video key, not a complete URL.
+    let raw = String(url).trim();
+
+    // Handle accidental JSON/string-wrapped values.
+    if((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))){
+        raw = raw.slice(1,-1).trim();
+    }
+
+    // Direct YouTube key from TMDB, e.g. "dQw4w9WgXcQ"
+    if(/^[A-Za-z0-9_-]{11}$/.test(raw)){
+        return `https://www.youtube.com/embed/${encodeURIComponent(raw)}?autoplay=1&rel=0&modestbranding=1`;
+    }
+
     try{
-        const u=new URL(url);
+        const u=new URL(raw);
         let id="";
-        if(u.hostname.includes("youtu.be")) id=u.pathname.slice(1).split("/")[0];
-        else if(u.hostname.includes("youtube.com")){
-            if(u.pathname==="/watch") id=u.searchParams.get("v")||"";
-            else if(u.pathname.startsWith("/embed/")) id=u.pathname.split("/")[2]||"";
-            else if(u.pathname.startsWith("/shorts/")) id=u.pathname.split("/")[2]||"";
+
+        if(u.hostname.includes("youtu.be")){
+            id=u.pathname.slice(1).split("/")[0];
+        }else if(u.hostname.includes("youtube.com")){
+            if(u.pathname==="/watch"){
+                id=u.searchParams.get("v")||"";
+            }else if(u.pathname.startsWith("/embed/")){
+                id=u.pathname.split("/")[2]||"";
+            }else if(u.pathname.startsWith("/shorts/")){
+                id=u.pathname.split("/")[2]||"";
+            }
         }
-        if(id) return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1`;
+
+        if(id){
+            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1`;
+        }
     }catch(e){}
-    return url;
+
+    return raw;
 }
-function isYouTubeUrl(url){return /(?:youtube\.com|youtu\.be)/i.test(url||"");}
+
+function isYouTubeUrl(url){
+    return /(?:youtube\.com|youtu\.be)/i.test(url||"");
+}
 function showTrailerFrame(url){
     if(!trailerFrame){
         trailerFrame=document.createElement("iframe");
@@ -5386,12 +5413,17 @@ function setPlayerMode(mode,autoPlay=true){
     hideTrailerFrame();
     destroyHls();
 
-    if(isTrailer && source && isYouTubeUrl(source)){
-        try{video.pause();}catch(e){}
-        video.removeAttribute("src");
-        video.load();
-        showTrailerFrame(source);
-        return;
+    if(isTrailer && source){
+        const normalizedTrailer=normalizeTrailerUrl(source);
+
+        // YouTube/TMDB trailers must be played in an iframe, not in <video>.
+        if(isYouTubeUrl(normalizedTrailer) && normalizedTrailer.includes("/embed/")){
+            try{video.pause();}catch(e){}
+            video.removeAttribute("src");
+            video.load();
+            showTrailerFrame(normalizedTrailer);
+            return;
+        }
     }
 
     if(!source){
@@ -5433,18 +5465,29 @@ function togglePlay(){
 centerPlay.addEventListener("click",togglePlay);
 playPause.addEventListener("click",togglePlay);
 
-trailerToggle.addEventListener("click",(e)=>{
-    e.stopPropagation();
-    if(currentMode==="movie" && !TRAILER_DEMO_URL){
-        showToast("Trailer not available.");
-        return;
-    }
-    trailerToggle.classList.remove("mode-active");
-    void trailerToggle.offsetWidth;
-    trailerToggle.classList.add("mode-active");
-    setPlayerMode(currentMode==="movie" ? "trailer" : "movie",true);
-    showPlayerControls(true);
-});
+if(trailerToggle){
+    trailerToggle.addEventListener("click",(e)=>{
+        e.stopPropagation();
+
+        const trailerSource=TRAILER_DEMO_URL || trailerToggle.dataset.trailerUrl || "";
+
+        if(currentMode==="movie" && !trailerSource){
+            showToast("Trailer not available.");
+            return;
+        }
+
+        trailerToggle.classList.remove("mode-active");
+        void trailerToggle.offsetWidth;
+        trailerToggle.classList.add("mode-active");
+
+        if(currentMode==="movie"){
+            TRAILER_DEMO_URL=normalizeTrailerUrl(trailerSource);
+        }
+
+        setPlayerMode(currentMode==="movie" ? "trailer" : "movie",true);
+        showPlayerControls(true);
+    });
+}
 
 /* QUALITY CHANGE — use real HLS levels, not fake MP4 URLs. */
 qualitySelect.addEventListener("change",()=>{
@@ -6253,7 +6296,7 @@ document.addEventListener("fullscreenchange",()=>{
         }
 
         // Trailer button uses the actual TMDB trailer URL when available.
-        const trailerUrl=movie.trailer_url || "";
+        const trailerUrl=normalizeTrailerUrl(movie.trailer_url || "");
         const trailerBtn=$("#trailerToggle");
         if(trailerBtn){
             trailerBtn.dataset.trailerUrl=trailerUrl;
@@ -6269,7 +6312,7 @@ document.addEventListener("fullscreenchange",()=>{
 
         // Real video sources saved by Admin.
         MOVIE_DEMO_URL = movie.video_1080 || movie.video_720 || movie.video_480 || "";
-        TRAILER_DEMO_URL = movie.trailer_url || "";
+        TRAILER_DEMO_URL = normalizeTrailerUrl(movie.trailer_url || "");
 
         QUALITY_SOURCES.movie = {
             "480": movie.video_480 || MOVIE_DEMO_URL,
