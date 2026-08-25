@@ -2806,6 +2806,32 @@ body.cineflix-db-error .cineflix-db-message{
     display:grid;
 }
 
+
+
+/* MODE BADGE — shown only during Movie/Trailer switching and while controls are visible */
+.player-mode-badge{
+    position:absolute;
+    top:12px;
+    left:12px;
+    z-index:52;
+    padding:5px 8px;
+    border-radius:4px;
+    background:#e50914;
+    color:#fff;
+    font:800 9px/1 Inter,Arial,sans-serif;
+    letter-spacing:.65px;
+    text-transform:uppercase;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(-3px);
+    transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
+    pointer-events:none;
+}
+.player-mode-badge.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+}
 </style>
 <style>
 
@@ -3125,6 +3151,8 @@ body.cineflix-db-error .cineflix-db-message{
 <section class="player-section">
 
 <div class="video-player" id="videoPlayer">
+
+    <div class="player-mode-badge" id="playerModeBadge" aria-hidden="true">MOVIE</div>
 
     <div class="initial-poster" id="initialPoster" aria-hidden="false">
         <img
@@ -4369,6 +4397,9 @@ const playerEmpty =
 const playerModeLabel =
     document.getElementById("playerModeLabel");
 
+const playerModeBadge =
+    document.getElementById("playerModeBadge");
+
 const trailerToggle =
     document.getElementById("trailerToggle");
 
@@ -4939,6 +4970,7 @@ video.addEventListener("ended",()=>{
 function showPlayerControls(resetTimer=true){
     playerControls.classList.remove("auto-hidden");
     playerTop.classList.remove("auto-hidden");
+    if(playerModeBadge) playerModeBadge.classList.add("show");
 
     clearTimeout(controlsHideTimer);
 
@@ -4953,6 +4985,7 @@ function showPlayerControls(resetTimer=true){
             }
             playerControls.classList.add("auto-hidden");
             playerTop.classList.add("auto-hidden");
+            if(playerModeBadge) playerModeBadge.classList.remove("show");
         },5000);
     }
 }
@@ -4961,6 +4994,7 @@ function hidePlayerControls(){
     clearTimeout(controlsHideTimer);
     playerControls.classList.add("auto-hidden");
     playerTop.classList.add("auto-hidden");
+    if(playerModeBadge) playerModeBadge.classList.remove("show");
 }
 
 function handlePlayerInteraction(e){
@@ -5053,7 +5087,7 @@ function normalizeTrailerUrl(url){
 
     // Direct YouTube key from TMDB, e.g. "dQw4w9WgXcQ"
     if(/^[A-Za-z0-9_-]{11}$/.test(raw)){
-        return `https://www.youtube.com/embed/${encodeURIComponent(raw)}?autoplay=1&rel=0&modestbranding=1`;
+        return `https://www.youtube.com/embed/${encodeURIComponent(raw)}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
     }
 
     try{
@@ -5073,7 +5107,7 @@ function normalizeTrailerUrl(url){
         }
 
         if(id){
-            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1`;
+            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
         }
     }catch(e){}
 
@@ -5096,6 +5130,10 @@ function showTrailerFrame(url){
     initialPoster.classList.add("hidden");
     hidePlayerLoading();
     centerPlay.style.display="none";
+    if(playerModeBadge){
+        playerModeBadge.textContent="TRAILER";
+        playerModeBadge.classList.add("show");
+    }
 }
 function hideTrailerFrame(){
     if(trailerFrame){trailerFrame.classList.remove("show");trailerFrame.src="about:blank";}
@@ -5404,6 +5442,10 @@ function setPlayerMode(mode,autoPlay=true){
     const source=QUALITY_SOURCES[mode]?.[currentQuality] || (isTrailer ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
 
     playerModeLabel.textContent=isTrailer ? "TRAILER" : "MOVIE";
+    if(playerModeBadge){
+        playerModeBadge.textContent=isTrailer ? "TRAILER" : "MOVIE";
+        playerModeBadge.classList.add("show");
+    }
     trailerToggleText.textContent=isTrailer ? "Movie" : "Trailer";
     trailerToggleIcon.innerHTML=isTrailer ? `
         <path d="M4 6h16v12H4z"/><path d="m8 8 8 4-8 4z"/><path d="M7 4h10"/>` : `
@@ -5485,6 +5527,7 @@ if(trailerToggle){
             TRAILER_DEMO_URL=normalizeTrailerUrl(trailerSource);
         }
 
+        hidePlayerLoading();
         setPlayerMode(currentMode==="movie" ? "trailer" : "movie",true);
         showPlayerControls(true);
     });
@@ -5555,6 +5598,11 @@ video.volume = 1;
 setPlayerMode("movie",false);
 video.pause();
 video.currentTime=0;
+if(playerModeBadge){
+    playerModeBadge.textContent="MOVIE";
+    playerModeBadge.classList.add("show");
+    setTimeout(()=>playerModeBadge.classList.remove("show"),5000);
+}
 updateMuteIcon();
 hidePlayerControls();
 
