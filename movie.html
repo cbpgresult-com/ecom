@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CINEFLIX · नया लुक</title>
+  <title>CINEFLIX · Supabase + New UI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
@@ -21,7 +21,6 @@
     ::-webkit-scrollbar-track { background: #1c1823; }
     ::-webkit-scrollbar-thumb { background: #6b4d8a; border-radius: 12px; }
 
-    /* ===== GLASSMORPHISM ===== */
     .glass {
       background: rgba(255,255,255,0.03);
       backdrop-filter: blur(16px);
@@ -92,6 +91,17 @@
       width: 100%; height: 100%; display: block; object-fit: contain;
       background: #0b0a0f;
     }
+
+    /* TRAILER IFRAME */
+    #trailerFrameOverlay {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      border: 0; display: none; background: #000; z-index: 40;
+    }
+    #trailerFrameOverlay.show { display: block; }
+    .video-player.trailer-mode .player-controls { display: none !important; }
+    .video-player.trailer-mode .center-play-pause { display: none !important; }
+    .video-player.trailer-mode .initial-poster { display: none !important; }
+    .video-player.trailer-mode #playerQuality { display: none !important; }
 
     /* LOADER */
     .player-loading {
@@ -356,7 +366,10 @@
       background: #1a1622;
       border: 1px solid rgba(255,255,255,0.04);
       position: relative;
+      cursor: pointer;
+      transition: 0.2s;
     }
+    .similar-card:hover { transform: scale(1.03); border-color: rgba(168,85,247,0.2); }
     .similar-art {
       width: 100%; height: 100%; background-size: cover; background-position: center;
       display: flex; align-items: flex-end; padding: 8px;
@@ -401,517 +414,877 @@
       .movie-title { font-size: 22px; }
       .settings-panel { right: 6px; bottom: 52px; width: 160px; }
     }
+
+    /* ===== SKELETON LOADER ===== */
+    .movie-page-skeleton {
+      position: fixed; inset: 0; z-index: 950;
+      background: #0d0b12; color: #fff;
+      opacity: 1; visibility: visible;
+      pointer-events: auto;
+    }
+    body:not(.cineflix-db-loading) .movie-page-skeleton {
+      opacity: 0; visibility: hidden;
+      pointer-events: none; transition: 0.2s;
+    }
+    .skeleton-shimmer {
+      position: relative; overflow: hidden;
+      background: #1c1823; border-radius: 7px;
+    }
+    .skeleton-shimmer::after {
+      content: ""; position: absolute; inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      animation: shimmer 1.2s ease-in-out infinite;
+    }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+    .skeleton-header { height: 64px; display: flex; align-items: center; padding: 0 4%; gap: 20px; }
+    .skeleton-logo { width: 120px; height: 28px; }
+    .skeleton-nav { display: flex; gap: 20px; flex: 1; }
+    .skeleton-nav span { width: 50px; height: 12px; }
+    .skeleton-player { width: 100%; aspect-ratio: 16/9; }
+    .skeleton-title { width: 60%; height: 32px; margin-top: 20px; }
+    .skeleton-meta { display: flex; gap: 10px; margin-top: 10px; }
+    .skeleton-meta span { width: 40px; height: 12px; }
+    .skeleton-genres { display: flex; gap: 8px; margin-top: 12px; }
+    .skeleton-genre { width: 60px; height: 24px; border-radius: 20px; }
+    .skeleton-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .skeleton-action { width: 70px; height: 48px; border-radius: 16px; }
+
+    .cineflix-db-message {
+      position: fixed; inset: 64px 0 0 0; z-index: 900;
+      display: none; place-items: center;
+      background: #0d0b12; color: #fff;
+      text-align: center; font-size: 14px; padding: 30px;
+    }
+    body.cineflix-db-error .cineflix-db-message { display: grid; }
   </style>
 </head>
-<body>
 
-<!-- ===== HEADER ===== -->
-<header class="header">
-  <a href="#" class="logo">
-    <span class="logo-mark"><svg viewBox="0 0 24 24"><path d="M7 3v18l14-9L7 3z"/></svg></span>
-    CINEFLIX
-  </a>
-  <nav class="nav">
-    <a href="#" class="active">Home</a>
-    <a href="#">Movies</a>
-    <a href="#">Series</a>
-    <a href="#">Trending</a>
-    <a href="#">Genres</a>
-  </nav>
-  <div class="header-right">
-    <button class="icon-btn" id="searchBtn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
-    <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button>
-    <div class="profile">S</div>
+<body class="cineflix-db-loading">
+
+  <!-- ===== SKELETON ===== -->
+  <div class="movie-page-skeleton" id="moviePageSkeleton">
+    <div class="skeleton-header">
+      <div class="skeleton-shimmer skeleton-logo"></div>
+      <div class="skeleton-nav">
+        <span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span>
+        <span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span>
+      </div>
+    </div>
+    <div class="skeleton-shimmer skeleton-player"></div>
+    <div style="padding: 0 16px;">
+      <div class="skeleton-shimmer skeleton-title"></div>
+      <div class="skeleton-meta"><span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span></div>
+      <div class="skeleton-genres"><span class="skeleton-shimmer skeleton-genre"></span><span class="skeleton-shimmer skeleton-genre"></span></div>
+      <div class="skeleton-actions"><span class="skeleton-shimmer skeleton-action"></span><span class="skeleton-shimmer skeleton-action"></span><span class="skeleton-shimmer skeleton-action"></span></div>
+    </div>
   </div>
-</header>
 
-<!-- ===== MAIN PAGE ===== -->
-<main class="page">
+  <div class="cineflix-db-message" id="cineflixDbMessage">❌ Movie could not be loaded.</div>
 
-  <!-- PLAYER -->
-  <section class="player-section">
-    <div class="video-player" id="videoPlayer">
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <a href="#" class="logo">
+      <span class="logo-mark"><svg viewBox="0 0 24 24"><path d="M7 3v18l14-9L7 3z"/></svg></span>
+      CINEFLIX
+    </a>
+    <nav class="nav">
+      <a href="#" class="active">Home</a>
+      <a href="#">Movies</a>
+      <a href="#">Series</a>
+      <a href="#">Trending</a>
+      <a href="#">Genres</a>
+    </nav>
+    <div class="header-right">
+      <button class="icon-btn" id="searchBtn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button>
+      <div class="profile">S</div>
+    </div>
+  </header>
 
-      <!-- Initial Poster -->
-      <div class="initial-poster" id="initialPoster">
-        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80" alt="movie">
-        <div class="initial-poster-shade"></div>
-        <button class="initial-poster-play" id="initialPosterPlay">
-          <svg viewBox="0 0 24 24"><path d="M8.2 5.6v12.8c0 .8.9 1.3 1.6.9l9.1-6.4c.6-.4.6-1.3 0-1.8L9.8 4.7c-.7-.5-1.6.1-1.6.9Z"/></svg>
-        </button>
-      </div>
+  <!-- ===== MAIN PAGE ===== -->
+  <main class="page">
 
-      <!-- Center Play/Pause -->
-      <button class="center-play-pause" id="centerPlayPause">
-        <svg class="center-play-icon" viewBox="0 0 24 24"><path d="M8.2 5.6v12.8c0 .8.9 1.3 1.6.9l9.1-6.4c.6-.4.6-1.3 0-1.8L9.8 4.7c-.7-.5-1.6.1-1.6.9Z"/></svg>
-        <svg class="center-pause-icon" viewBox="0 0 24 24"><path d="M7 5.5h3.5v13H7zM13.5 5.5H17v13h-3.5z"/></svg>
-      </button>
+    <!-- PLAYER -->
+    <section class="player-section">
+      <div class="video-player" id="videoPlayer">
 
-      <!-- Video -->
-      <video id="movieVideo" preload="metadata" playsinline></video>
+        <!-- Trailer Iframe -->
+        <iframe id="trailerFrameOverlay" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
 
-      <!-- Loading -->
-      <div class="player-loading" id="playerLoading"><div class="loader-ring"></div></div>
-
-      <!-- Quality Badge -->
-      <div id="playerQuality">FHD</div>
-
-      <!-- Controls -->
-      <div class="player-controls" id="playerControls">
-        <div class="progress-area" id="progressArea">
-          <div class="buffered-progress" id="bufferedProgress"></div>
-          <div class="progress" id="progress"></div>
+        <!-- Initial Poster -->
+        <div class="initial-poster" id="initialPoster">
+          <img id="posterImg" src="" alt="Movie poster">
+          <div class="initial-poster-shade"></div>
+          <button class="initial-poster-play" id="initialPosterPlay">
+            <svg viewBox="0 0 24 24"><path d="M8.2 5.6v12.8c0 .8.9 1.3 1.6.9l9.1-6.4c.6-.4.6-1.3 0-1.8L9.8 4.7c-.7-.5-1.6.1-1.6.9Z"/></svg>
+          </button>
         </div>
-        <div class="time-row"><span id="time">00:00</span><span id="durationTime">00:00</span></div>
-        <div class="control-row">
-          <button class="control-btn" id="playPause"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7L8 5z"/></svg></button>
-          <button class="control-btn" id="muteBtn"><svg viewBox="0 0 24 24"><path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/><path d="M16.3 9a4.4 4.4 0 0 1 0 6"/><path d="M18.8 6.9a7.5 7.5 0 0 1 0 11.2"/></svg></button>
-          <span class="control-spacer"></span>
-          <div class="player-right-icons">
-            <button class="control-btn" id="settingsBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19 13.4a7.2 7.2 0 0 0 0-2.8l1.4-1.1-1.7-2.9-1.7.7a7.3 7.3 0 0 0-2.4-1.4L14.4 4h-3.3l-.3 1.9a7.3 7.3 0 0 0-2.4 1.4l-1.7-.7L5 9.5l1.4 1.1a7.2 7.2 0 0 0 0 2.8L5 14.5l1.7 2.9 1.7-.7a7.3 7.3 0 0 0 2.4 1.4l.3 1.9h3.3l.3-1.9a7.3 7.3 0 0 0 2.4-1.4l1.7.7 1.7-2.9z"/></svg></button>
-            <button class="control-btn" id="pipBtn"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><rect x="11.8" y="11" width="6.4" height="5" rx="1"/></svg></button>
-            <button class="control-btn" id="fullscreenBtn"><svg viewBox="0 0 24 24"><path d="M8 3H3v5"/><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 16v5h-5"/></svg></button>
+
+        <!-- Center Play/Pause -->
+        <button class="center-play-pause" id="centerPlayPause">
+          <svg class="center-play-icon" viewBox="0 0 24 24"><path d="M8.2 5.6v12.8c0 .8.9 1.3 1.6.9l9.1-6.4c.6-.4.6-1.3 0-1.8L9.8 4.7c-.7-.5-1.6.1-1.6.9Z"/></svg>
+          <svg class="center-pause-icon" viewBox="0 0 24 24"><path d="M7 5.5h3.5v13H7zM13.5 5.5H17v13h-3.5z"/></svg>
+        </button>
+
+        <!-- Video -->
+        <video id="movieVideo" preload="metadata" playsinline></video>
+
+        <!-- Loading -->
+        <div class="player-loading" id="playerLoading"><div class="loader-ring"></div></div>
+
+        <!-- Quality Badge -->
+        <div id="playerQuality">AUTO</div>
+
+        <!-- Controls -->
+        <div class="player-controls" id="playerControls">
+          <div class="progress-area" id="progressArea">
+            <div class="buffered-progress" id="bufferedProgress"></div>
+            <div class="progress" id="progress"></div>
           </div>
-        </div>
-      </div>
-
-      <!-- Settings Panel -->
-      <div class="settings-panel" id="settingsPanel">
-        <div class="settings-heading">SETTINGS</div>
-        <button class="settings-row" data-setting="quality">
-          <span class="settings-left"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 12h5M8 15h7"/></svg><span>Quality</span></span>
-          <span class="settings-right" id="settingsQualityValue">Auto <b>›</b></span>
-        </button>
-        <button class="settings-row" data-setting="speed">
-          <span class="settings-left"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 1.8"/><path d="M7.2 4.9 5.6 3.6M16.8 4.9l1.6-1.3"/></svg><span>Speed</span></span>
-          <span class="settings-right" id="settingsSpeedValue">1× <b>›</b></span>
-        </button>
-        <button class="settings-row" data-setting="aspect">
-          <span class="settings-left"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="1.8"/><path d="M7 9h10M7 12h6M7 15h8"/></svg><span>Aspect</span></span>
-          <span class="settings-right" id="settingsAspectValue">Fit <b>›</b></span>
-        </button>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- CONTENT -->
-  <section class="content">
-    <h1 class="movie-title" id="movieTitle">The Last Journey</h1>
-    <div class="movie-meta" id="movieMeta">
-      <span class="rating">★ 8.9</span>
-      <span class="dot">•</span><span>2026</span>
-      <span class="dot">•</span><span>2h 18m</span>
-      <span class="dot">•</span><span class="age">16+</span>
-      <span class="dot">•</span><span>HD</span>
-    </div>
-
-    <div class="genres" id="genresBox">
-      <span class="genre">Action</span>
-      <span class="genre">Adventure</span>
-      <span class="genre">Sci-Fi</span>
-    </div>
-
-    <div class="actions" id="actionsRow">
-      <button class="action" id="likeBtn"><svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5.5-8.8 10.2-8.8 10.2S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.5z"/></svg><span>Like</span></button>
-      <button class="action" id="trailerToggle"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="m10 10 5 2-5 2z"/></svg><span>Trailer</span></button>
-      <button class="action" id="downloadBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></svg><span>Download</span></button>
-      <button class="action" id="shareBtn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="m8 11 8-5M8 13l8 5"/></svg><span>Share</span></button>
-    </div>
-
-    <div class="description-box">
-      <h2 class="section-heading">About</h2>
-      <p class="description" id="movieDesc">A fearless explorer returns to a forgotten world where every secret comes with a price…</p>
-      <button class="read-more" id="readMore">Read more</button>
-    </div>
-
-    <div class="info-card">
-      <div class="info-grid" id="infoGrid">
-        <div class="info-item"><small>Release</small><strong id="infoRelease">24 Aug 2026</strong></div>
-        <div class="info-item"><small>Type</small><strong>Movie</strong></div>
-        <div class="info-item"><small>Category</small><strong>Action / Adventure</strong></div>
-        <div class="info-item"><small>Runtime</small><strong>2h 18m</strong></div>
-        <div class="info-item"><small>Language</small><strong>Hindi • English</strong></div>
-        <div class="info-item"><small>Quality</small><strong>1080p • 720p • 480p</strong></div>
-      </div>
-    </div>
-
-    <section class="cast-section">
-      <h2 class="section-heading">Cast</h2>
-      <div class="cast-row" id="castRow"></div>
-    </section>
-
-    <section class="similar-section">
-      <h2 class="section-heading">You may also like</h2>
-      <div class="similar-row" id="similarRow"></div>
-    </section>
-
-    <div class="report">
-      <svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.7 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"/></svg>
-      Report a problem
-    </div>
-  </section>
-</main>
-
-<!-- ===== MOBILE NAV ===== -->
-<nav class="mobile-nav">
-  <button class="active"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
-  <button><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Search</button>
-  <button><svg viewBox="0 0 24 24"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V12"/><path d="M12 3v13M8 7l4-4 4 4"/></svg>Downloads</button>
-  <button><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Profile</button>
-</nav>
-
-<!-- ===== SCRIPTS ===== -->
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
-<script>
-  (function() {
-    // ============================================================
-    // COMPLETE PLAYER LOGIC - SAME AS YOUR ORIGINAL CODE
-    // ============================================================
-
-    // Elements
-    const video = document.getElementById('movieVideo');
-    const progress = document.getElementById('progress');
-    const progressArea = document.getElementById('progressArea');
-    const time = document.getElementById('time');
-    const durationTime = document.getElementById('durationTime');
-    const playPause = document.getElementById('playPause');
-    const playIcon = document.getElementById('playIcon');
-    const muteBtn = document.getElementById('muteBtn');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const settingsBtn = document.getElementById('settingsBtn');
-    const settingsPanel = document.getElementById('settingsPanel');
-    const initialPoster = document.getElementById('initialPoster');
-    const initialPosterPlay = document.getElementById('initialPosterPlay');
-    const centerPlayPause = document.getElementById('centerPlayPause');
-    const playerLoading = document.getElementById('playerLoading');
-    const playerControls = document.getElementById('playerControls');
-    const bufferedProgress = document.getElementById('bufferedProgress');
-
-    let controlsHideTimer;
-    let hls = null;
-    let currentQuality = '1080';
-    let currentQualityChoice = 'auto';
-
-    // ===== HELPER FUNCTIONS =====
-    function formatTime(s) {
-      if (!s || s < 0) return '00:00';
-      s = Math.floor(s);
-      const m = Math.floor(s / 60);
-      const sec = s % 60;
-      return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
-    }
-
-    function showToast(msg) {
-      alert(msg); // Simple fallback
-    }
-
-    function showPlayerControls(reset) {
-      playerControls.classList.remove('auto-hidden');
-      clearTimeout(controlsHideTimer);
-      if (reset !== false) {
-        controlsHideTimer = setTimeout(() => {
-          playerControls.classList.add('auto-hidden');
-        }, 5000);
-      }
-    }
-
-    function hidePlayerLoading() {
-      playerLoading.classList.remove('show');
-    }
-
-    function showPlayerLoading() {
-      playerLoading.classList.add('show');
-    }
-
-    function updateCenterPlayPause() {
-      if (!centerPlayPause) return;
-      const playing = !video.paused && !video.ended;
-      centerPlayPause.dataset.state = playing ? 'pause' : 'play';
-    }
-
-    function showCenterPlayPause() {
-      if (!centerPlayPause) return;
-      updateCenterPlayPause();
-      centerPlayPause.classList.add('show');
-      clearTimeout(window.__centerPlayPauseTimer);
-      window.__centerPlayPauseTimer = setTimeout(() => {
-        centerPlayPause.classList.remove('show');
-      }, 900);
-    }
-
-    function togglePlay() {
-      if (video.paused) {
-        initialPoster.classList.add('hidden');
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-      }
-      showPlayerControls(true);
-      showCenterPlayPause();
-      updateCenterPlayPause();
-    }
-
-    // ===== VIDEO EVENTS =====
-    video.addEventListener('play', () => {
-      playIcon.innerHTML = '<path d="M7 5.5h3.4v13H7z"/><path d="M13.6 5.5H17v13h-3.4z"/>';
-      hidePlayerLoading();
-      showPlayerControls(true);
-      updateCenterPlayPause();
-    });
-
-    video.addEventListener('pause', () => {
-      playIcon.innerHTML = '<path d="M8 5v14l11-7L8 5z"/>';
-      updateCenterPlayPause();
-      showCenterPlayPause();
-    });
-
-    video.addEventListener('ended', () => {
-      updateCenterPlayPause();
-      showCenterPlayPause();
-    });
-
-    video.addEventListener('timeupdate', () => {
-      if (!video.duration) return;
-      const percent = (video.currentTime / video.duration) * 100;
-      progress.style.width = percent + '%';
-      time.textContent = formatTime(video.currentTime);
-      durationTime.textContent = formatTime(video.duration);
-      updateBufferedProgress();
-    });
-
-    video.addEventListener('durationchange', () => {
-      durationTime.textContent = formatTime(video.duration);
-      updateBufferedProgress();
-    });
-
-    // ===== BUFFERED PROGRESS =====
-    function updateBufferedProgress() {
-      if (!bufferedProgress || !video.duration) return;
-      let bufferedEnd = video.currentTime;
-      try {
-        const ranges = video.buffered;
-        for (let i = 0; i < ranges.length; i++) {
-          const start = ranges.start(i);
-          const end = ranges.end(i);
-          if (video.currentTime >= start - 0.15 && video.currentTime <= end + 0.15) {
-            bufferedEnd = end;
-            break;
-          }
-        }
-      } catch (e) {}
-      const percent = (bufferedEnd / video.duration) * 100;
-      bufferedProgress.style.width = Math.min(100, percent) + '%';
-    }
-
-    // ===== PROGRESS AREA CLICK =====
-    progressArea.addEventListener('click', (e) => {
-      if (!video.duration) return;
-      const rect = progressArea.getBoundingClientRect();
-      const pct = (e.clientX - rect.left) / rect.width;
-      video.currentTime = pct * video.duration;
-    });
-
-    // ===== PLAY/PAUSE BUTTONS =====
-    playPause.addEventListener('click', togglePlay);
-
-    initialPosterPlay.addEventListener('click', (e) => {
-      e.stopPropagation();
-      initialPoster.classList.add('hidden');
-      video.play().catch(() => {});
-      showPlayerControls(true);
-    });
-
-    centerPlayPause.addEventListener('click', (e) => {
-      e.stopPropagation();
-      togglePlay();
-    });
-
-    // ===== MUTE =====
-    muteBtn.addEventListener('click', () => {
-      video.muted = !video.muted;
-      muteBtn.innerHTML = video.muted
-        ? '<svg viewBox="0 0 24 24"><path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/><path d="m17 9 4 6"/><path d="m21 9-4 6"/></svg>'
-        : '<svg viewBox="0 0 24 24"><path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/><path d="M16.3 9a4.4 4.4 0 0 1 0 6"/><path d="M18.8 6.9a7.5 7.5 0 0 1 0 11.2"/></svg>';
-    });
-
-    // ===== FULLSCREEN =====
-    fullscreenBtn.addEventListener('click', () => {
-      const el = document.getElementById('videoPlayer');
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        el.requestFullscreen?.();
-      }
-    });
-
-    // ===== SETTINGS =====
-    settingsBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      settingsPanel.classList.toggle('open');
-      if (settingsPanel.classList.contains('open')) {
-        showPlayerControls(false);
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (settingsPanel.classList.contains('open') &&
-          !settingsPanel.contains(e.target) &&
-          e.target !== settingsBtn) {
-        settingsPanel.classList.remove('open');
-      }
-    });
-
-    // Quality settings
-    document.querySelector('[data-setting="quality"]')?.addEventListener('click', () => {
-      // Simple quality toggle for demo
-      const qualities = ['Auto', '480p', '720p', '1080p'];
-      const current = document.getElementById('settingsQualityValue').textContent.trim();
-      let idx = qualities.indexOf(current.replace('›', '').trim());
-      idx = (idx + 1) % qualities.length;
-      const newQ = qualities[idx];
-      document.getElementById('settingsQualityValue').innerHTML = newQ + ' <b>›</b>';
-      if (newQ !== 'Auto') {
-        currentQuality = newQ.replace('p', '');
-        document.getElementById('playerQuality').textContent = newQ.toUpperCase();
-      } else {
-        document.getElementById('playerQuality').textContent = 'AUTO';
-      }
-      showToast('Quality: ' + newQ);
-    });
-
-    // Speed settings
-    document.querySelector('[data-setting="speed"]')?.addEventListener('click', () => {
-      const speeds = ['0.5×', '0.75×', '1×', '1.25×', '1.5×', '2×'];
-      const current = document.getElementById('settingsSpeedValue').textContent.trim();
-      let idx = speeds.indexOf(current.replace('›', '').trim());
-      idx = (idx + 1) % speeds.length;
-      const newSpeed = speeds[idx];
-      document.getElementById('settingsSpeedValue').innerHTML = newSpeed + ' <b>›</b>';
-      video.playbackRate = parseFloat(newSpeed);
-      showToast('Speed: ' + newSpeed);
-    });
-
-    // Aspect settings
-    document.querySelector('[data-setting="aspect"]')?.addEventListener('click', () => {
-      const aspects = ['Fit', 'Fill', 'Stretch', 'Original'];
-      const current = document.getElementById('settingsAspectValue').textContent.trim();
-      let idx = aspects.indexOf(current.replace('›', '').trim());
-      idx = (idx + 1) % aspects.length;
-      const newAspect = aspects[idx];
-      document.getElementById('settingsAspectValue').innerHTML = newAspect + ' <b>›</b>';
-      const map = { 'Fit': 'contain', 'Fill': 'cover', 'Stretch': 'fill', 'Original': 'none' };
-      video.style.objectFit = map[newAspect] || 'contain';
-      showToast('Aspect: ' + newAspect);
-    });
-
-    // ===== PICTURE-IN-PICTURE =====
-    document.getElementById('pipBtn')?.addEventListener('click', async () => {
-      try {
-        if (document.pictureInPictureElement) {
-          await document.exitPictureInPicture();
-        } else if (document.pictureInPictureEnabled) {
-          await video.requestPictureInPicture();
-        }
-      } catch (e) {}
-    });
-
-    // ===== KEYBOARD SHORTCUTS =====
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') {
-        const tag = document.activeElement?.tagName || '';
-        if (!['INPUT', 'TEXTAREA', 'BUTTON'].includes(tag)) {
-          e.preventDefault();
-          togglePlay();
-        }
-      }
-      if (e.key === 'f') fullscreenBtn.click();
-      if (e.key === 'm') muteBtn.click();
-    });
-
-    // ===== HLS (for streaming) =====
-    window.MOVIE_DEMO_URL = '';
-    window.TRAILER_DEMO_URL = '';
-    window.QUALITY_SOURCES = {
-      movie: { '480': '', '720': '', '1080': '' },
-      trailer: { '480': '', '720': '', '1080': '' }
-    };
-    window.setPlayerMode = function(mode) {};
-
-    // ===== POPULATE CAST & SIMILAR (demo) =====
-    const castRow = document.getElementById('castRow');
-    if (castRow) {
-      castRow.innerHTML = ['Alex Carter', 'Emma Stone', 'Daniel Ray', 'John Miller'].map(n => `
-        <div class="cast">
-          <div class="cast-photo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
-          <div class="cast-name">${n}</div>
-          <div class="cast-role">${['Lead Actor', 'Actress', 'Actor', 'Director'][Math.floor(Math.random()*4)]}</div>
-        </div>
-      `).join('');
-    }
-
-    const similarRow = document.getElementById('similarRow');
-    if (similarRow) {
-      similarRow.innerHTML = ['Dark Horizon', 'Beyond Stars', 'Silent City', 'Lost Kingdom'].map(t => `
-        <div class="similar-card">
-          <div class="similar-art">
-            <div class="similar-content">
-              <div class="similar-title">${t}</div>
-              <div class="similar-meta">2026 ★ ${(8 + Math.random() * 1.5).toFixed(1)}</div>
+          <div class="time-row"><span id="time">00:00</span><span id="durationTime">00:00</span></div>
+          <div class="control-row">
+            <button class="control-btn" id="playPause"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7L8 5z"/></svg></button>
+            <button class="control-btn" id="muteBtn"><svg viewBox="0 0 24 24"><path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/><path d="M16.3 9a4.4 4.4 0 0 1 0 6"/><path d="M18.8 6.9a7.5 7.5 0 0 1 0 11.2"/></svg></button>
+            <span class="control-spacer"></span>
+            <div class="player-right-icons">
+              <button class="control-btn" id="settingsBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19 13.4a7.2 7.2 0 0 0 0-2.8l1.4-1.1-1.7-2.9-1.7.7a7.3 7.3 0 0 0-2.4-1.4L14.4 4h-3.3l-.3 1.9a7.3 7.3 0 0 0-2.4 1.4l-1.7-.7L5 9.5l1.4 1.1a7.2 7.2 0 0 0 0 2.8L5 14.5l1.7 2.9 1.7-.7a7.3 7.3 0 0 0 2.4 1.4l.3 1.9h3.3l.3-1.9a7.3 7.3 0 0 0 2.4-1.4l1.7.7 1.7-2.9z"/></svg></button>
+              <button class="control-btn" id="pipBtn"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><rect x="11.8" y="11" width="6.4" height="5" rx="1"/></svg></button>
+              <button class="control-btn" id="fullscreenBtn"><svg viewBox="0 0 24 24"><path d="M8 3H3v5"/><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 16v5h-5"/></svg></button>
             </div>
           </div>
         </div>
-      `).join('');
-    }
 
-    // ===== READ MORE =====
-    const readMore = document.getElementById('readMore');
-    const movieDesc = document.getElementById('movieDesc');
-    let expanded = false;
-    const fullText = movieDesc.textContent + ' Along the way, he encounters a mysterious force, dangerous landscapes and a secret that could change humanity forever.';
-    readMore?.addEventListener('click', () => {
-      expanded = !expanded;
-      movieDesc.textContent = expanded ? fullText : 'A fearless explorer returns to a forgotten world where every secret comes with a price…';
-      readMore.textContent = expanded ? 'Read less' : 'Read more';
-    });
+        <!-- Settings Panel -->
+        <div class="settings-panel" id="settingsPanel">
+          <div class="settings-heading">SETTINGS</div>
+          <button class="settings-row" data-setting="quality">
+            <span class="settings-left"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 12h5M8 15h7"/></svg><span>Quality</span></span>
+            <span class="settings-right" id="settingsQualityValue">Auto <b>›</b></span>
+          </button>
+          <button class="settings-row" data-setting="speed">
+            <span class="settings-left"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 1.8"/><path d="M7.2 4.9 5.6 3.6M16.8 4.9l1.6-1.3"/></svg><span>Speed</span></span>
+            <span class="settings-right" id="settingsSpeedValue">1× <b>›</b></span>
+          </button>
+          <button class="settings-row" data-setting="aspect">
+            <span class="settings-left"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="1.8"/><path d="M7 9h10M7 12h6M7 15h8"/></svg><span>Aspect</span></span>
+            <span class="settings-right" id="settingsAspectValue">Fit <b>›</b></span>
+          </button>
+        </div>
 
-    // ===== SHARE =====
-    document.getElementById('shareBtn')?.addEventListener('click', async () => {
-      try {
-        if (navigator.share) {
-          await navigator.share({
-            title: 'CINEFLIX',
-            text: 'Watch this movie on CINEFLIX',
-            url: location.href
-          });
-        } else {
-          await navigator.clipboard.writeText(location.href);
-          showToast('Link copied!');
+      </div>
+    </section>
+
+    <!-- CONTENT -->
+    <section class="content">
+      <h1 class="movie-title" id="movieTitle">Loading...</h1>
+      <div class="movie-meta" id="movieMeta">
+        <span class="rating">★ 0.0</span>
+        <span class="dot">•</span><span id="metaYear">----</span>
+        <span class="dot">•</span><span id="metaRuntime">--h --m</span>
+        <span class="dot">•</span><span class="age">16+</span>
+        <span class="dot">•</span><span>HD</span>
+      </div>
+
+      <div class="genres" id="genresBox"></div>
+
+      <div class="actions" id="actionsRow">
+        <button class="action" id="likeBtn"><svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5.5-8.8 10.2-8.8 10.2S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.5z"/></svg><span>Like</span></button>
+        <button class="action" id="trailerToggle"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="m10 10 5 2-5 2z"/></svg><span>Trailer</span></button>
+        <button class="action" id="downloadBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></svg><span>Download</span></button>
+        <button class="action" id="shareBtn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="m8 11 8-5M8 13l8 5"/></svg><span>Share</span></button>
+      </div>
+
+      <div class="description-box">
+        <h2 class="section-heading">About</h2>
+        <p class="description" id="movieDesc">Loading description...</p>
+        <button class="read-more" id="readMore">Read more</button>
+      </div>
+
+      <div class="info-card">
+        <div class="info-grid" id="infoGrid">
+          <div class="info-item"><small>Release</small><strong id="infoRelease">--</strong></div>
+          <div class="info-item"><small>Type</small><strong id="infoType">Movie</strong></div>
+          <div class="info-item"><small>Category</small><strong id="infoCategory">--</strong></div>
+          <div class="info-item"><small>Runtime</small><strong id="infoRuntime">--</strong></div>
+          <div class="info-item"><small>Language</small><strong id="infoLanguage">--</strong></div>
+          <div class="info-item"><small>Quality</small><strong id="infoQuality">1080p • 720p • 480p</strong></div>
+        </div>
+      </div>
+
+      <section class="cast-section">
+        <h2 class="section-heading">Cast & Crew</h2>
+        <div class="cast-row" id="castRow"></div>
+      </section>
+
+      <section class="similar-section">
+        <h2 class="section-heading">You may also like</h2>
+        <div class="similar-row" id="similarRow"></div>
+      </section>
+
+      <div class="report">
+        <svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.7 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"/></svg>
+        Report a problem
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== MOBILE NAV ===== -->
+  <nav class="mobile-nav">
+    <button class="active"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+    <button><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Search</button>
+    <button><svg viewBox="0 0 24 24"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V12"/><path d="M12 3v13M8 7l4-4 4 4"/></svg>Downloads</button>
+    <button><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Profile</button>
+  </nav>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+  <script>
+    // ============================================================
+    // SUPABASE INTEGRATION + FULL PLAYER LOGIC
+    // ============================================================
+
+    (function() {
+      const SUPABASE_URL = "https://bbqaagbypawcpszjwzii.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_dWktR3La6JpSwD32tfSb-Q_a__jx0cO";
+
+      // ===== DOM REFS =====
+      const video = document.getElementById('movieVideo');
+      const progress = document.getElementById('progress');
+      const progressArea = document.getElementById('progressArea');
+      const time = document.getElementById('time');
+      const durationTime = document.getElementById('durationTime');
+      const playPause = document.getElementById('playPause');
+      const playIcon = document.getElementById('playIcon');
+      const muteBtn = document.getElementById('muteBtn');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const settingsBtn = document.getElementById('settingsBtn');
+      const settingsPanel = document.getElementById('settingsPanel');
+      const initialPoster = document.getElementById('initialPoster');
+      const initialPosterPlay = document.getElementById('initialPosterPlay');
+      const centerPlayPause = document.getElementById('centerPlayPause');
+      const playerLoading = document.getElementById('playerLoading');
+      const playerControls = document.getElementById('playerControls');
+      const bufferedProgress = document.getElementById('bufferedProgress');
+      const posterImg = document.getElementById('posterImg');
+      const trailerFrame = document.getElementById('trailerFrameOverlay');
+      const videoPlayer = document.getElementById('videoPlayer');
+
+      // ===== STATE =====
+      let controlsHideTimer;
+      let hls = null;
+      let hlsReady = false;
+      let currentQuality = '1080';
+      let currentQualityChoice = 'auto';
+      let currentMode = 'movie'; // 'movie' | 'trailer'
+      let movieData = null;
+      let trailerUrl = '';
+
+      // ===== HELPERS =====
+      function formatTime(s) {
+        if (!s || s < 0) return '00:00';
+        s = Math.floor(s);
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+      }
+
+      function showToast(msg) {
+        const t = document.createElement('div');
+        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1c1823;color:#fff;padding:10px 20px;border-radius:12px;font-size:12px;font-weight:600;z-index:9999;border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(8px);box-shadow:0 8px 30px rgba(0,0,0,0.4);transition:0.3s;opacity:0;';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        requestAnimationFrame(() => { t.style.opacity = '1'; });
+        setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 2500);
+      }
+
+      function showPlayerControls(reset) {
+        playerControls.classList.remove('auto-hidden');
+        clearTimeout(controlsHideTimer);
+        if (reset !== false) {
+          controlsHideTimer = setTimeout(() => {
+            if (!settingsPanel.classList.contains('open')) {
+              playerControls.classList.add('auto-hidden');
+            }
+          }, 5000);
         }
-      } catch (e) {}
-    });
+      }
 
-    // ===== DOWNLOAD (demo) =====
-    document.getElementById('downloadBtn')?.addEventListener('click', () => {
-      showToast('Download option will be available soon!');
-    });
+      function hidePlayerLoading() { playerLoading.classList.remove('show'); }
+      function showPlayerLoading() { playerLoading.classList.add('show'); }
 
-    // ===== TRAILER (demo) =====
-    document.getElementById('trailerToggle')?.addEventListener('click', () => {
-      showToast('Trailer mode (YouTube) - coming soon!');
-    });
+      function updateCenterPlayPause() {
+        if (!centerPlayPause) return;
+        const playing = !video.paused && !video.ended;
+        centerPlayPause.dataset.state = playing ? 'pause' : 'play';
+      }
 
-    // ===== LIKE (demo) =====
-    let liked = false;
-    document.getElementById('likeBtn')?.addEventListener('click', function() {
-      liked = !liked;
-      this.classList.toggle('active');
-      this.querySelector('span').textContent = liked ? 'Liked' : 'Like';
-      showToast(liked ? 'Added to favorites!' : 'Removed from favorites');
-    });
+      function showCenterPlayPause() {
+        if (!centerPlayPause || videoPlayer.classList.contains('trailer-mode')) return;
+        updateCenterPlayPause();
+        centerPlayPause.classList.add('show');
+        clearTimeout(window.__centerPlayPauseTimer);
+        window.__centerPlayPauseTimer = setTimeout(() => {
+          centerPlayPause.classList.remove('show');
+        }, 900);
+      }
 
-    console.log('🎬 CINEFLIX - नया लुक, पुराने फीचर्स! सभी फंक्शनलिटी काम कर रही हैं ✅');
-  })();
-</script>
+      function togglePlay() {
+        if (videoPlayer.classList.contains('trailer-mode')) return;
+        if (video.paused) {
+          initialPoster.classList.add('hidden');
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+        showPlayerControls(true);
+        showCenterPlayPause();
+        updateCenterPlayPause();
+      }
+
+      // ===== TRAILER =====
+      function normalizeTrailerUrl(url) {
+        if (!url) return '';
+        let raw = String(url).trim();
+        if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
+          raw = raw.slice(1, -1).trim();
+        }
+        if (/^[A-Za-z0-9_-]{11}$/.test(raw)) {
+          return `https://www.youtube.com/embed/${encodeURIComponent(raw)}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1&controls=1&enablejsapi=1`;
+        }
+        try {
+          const u = new URL(raw);
+          let id = '';
+          if (u.hostname.includes('youtu.be')) {
+            id = u.pathname.slice(1).split('/')[0];
+          } else if (u.hostname.includes('youtube.com')) {
+            if (u.pathname === '/watch') id = u.searchParams.get('v') || '';
+            else if (u.pathname.startsWith('/embed/')) id = u.pathname.split('/')[2] || '';
+            else if (u.pathname.startsWith('/shorts/')) id = u.pathname.split('/')[2] || '';
+          }
+          if (id) {
+            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1&controls=1&enablejsapi=1`;
+          }
+        } catch (e) {}
+        return raw;
+      }
+
+      function showTrailer(url) {
+        const normalized = normalizeTrailerUrl(url);
+        if (!normalized || !normalized.includes('/embed/')) {
+          showToast('Trailer not available');
+          return;
+        }
+        trailerUrl = normalized;
+        video.pause();
+        videoPlayer.classList.add('trailer-mode');
+        initialPoster.classList.add('hidden');
+        trailerFrame.classList.add('show');
+        trailerFrame.src = normalized;
+        showPlayerControls(false);
+        document.getElementById('playerQuality').style.display = 'none';
+        document.getElementById('trailerToggleText')?.remove();
+        const txt = document.getElementById('trailerToggle')?.querySelector('span');
+        if (txt) txt.textContent = 'Movie';
+        showToast('▶️ Trailer playing');
+      }
+
+      function hideTrailer() {
+        videoPlayer.classList.remove('trailer-mode');
+        trailerFrame.classList.remove('show');
+        trailerFrame.src = 'about:blank';
+        document.getElementById('playerQuality').style.display = '';
+        const txt = document.getElementById('trailerToggle')?.querySelector('span');
+        if (txt) txt.textContent = 'Trailer';
+        if (movieData) {
+          initialPoster.classList.remove('hidden');
+          posterImg.src = movieData.backdrop_url || movieData.poster_url || '';
+        }
+        showPlayerControls(true);
+      }
+
+      // ===== HLS =====
+      function destroyHls() {
+        if (hls) {
+          try { hls.destroy(); } catch (e) {}
+          hls = null;
+        }
+        hlsReady = false;
+      }
+
+      function loadHlsSource(source, autoPlay = true) {
+        if (!source) {
+          showToast('No video source available');
+          return;
+        }
+        destroyHls();
+        video.removeAttribute('src');
+        video.load();
+
+        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+          showPlayerLoading();
+          hls = new Hls({
+            maxBufferLength: 60,
+            maxMaxBufferLength: 120,
+            enableWorker: true,
+            startLevel: -1,
+            autoStartLoad: true,
+          });
+
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            hlsReady = true;
+            if (currentQualityChoice === 'auto') {
+              hls.currentLevel = -1;
+            } else {
+              const levels = hls.levels || [];
+              const target = parseInt(currentQuality);
+              let best = -1;
+              let bestDiff = Infinity;
+              levels.forEach((l, i) => {
+                const h = Number(l.height || 0);
+                if (h && Math.abs(h - target) < bestDiff) {
+                  bestDiff = Math.abs(h - target);
+                  best = i;
+                }
+              });
+              if (best >= 0) hls.currentLevel = best;
+            }
+            hidePlayerLoading();
+            if (autoPlay) {
+              video.play().catch(() => {});
+            }
+          });
+
+          hls.on(Hls.Events.ERROR, (e, data) => {
+            if (data.fatal) {
+              destroyHls();
+              showToast('Video error, please try again');
+              hidePlayerLoading();
+            }
+          });
+
+          hls.loadSource(source);
+          hls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = source;
+          video.load();
+          if (autoPlay) video.play().catch(() => {});
+        } else {
+          showToast('This browser cannot play HLS');
+        }
+      }
+
+      // ===== UPDATE BUFFERED =====
+      function updateBufferedProgress() {
+        if (!bufferedProgress || !video.duration) return;
+        let bufferedEnd = video.currentTime;
+        try {
+          const ranges = video.buffered;
+          for (let i = 0; i < ranges.length; i++) {
+            const start = ranges.start(i);
+            const end = ranges.end(i);
+            if (video.currentTime >= start - 0.15 && video.currentTime <= end + 0.15) {
+              bufferedEnd = end;
+              break;
+            }
+          }
+        } catch (e) {}
+        const percent = (bufferedEnd / video.duration) * 100;
+        bufferedProgress.style.width = Math.min(100, percent) + '%';
+      }
+
+      // ===== RENDER MOVIE =====
+      function renderMovie(movie) {
+        movieData = movie;
+        document.title = `${movie.title || 'Movie'} — CINEFLIX`;
+
+        // Title
+        document.getElementById('movieTitle').textContent = movie.title || 'Untitled';
+
+        // Meta
+        const rating = Number(movie.rating || 0).toFixed(1);
+        const year = movie.year || String(movie.release_date || '').slice(0, 4) || '----';
+        const runtime = movie.runtime ? `${Math.floor(movie.runtime/60)}h ${movie.runtime%60}m` : '--h --m';
+        document.querySelector('.rating').textContent = '★ ' + rating;
+        document.getElementById('metaYear').textContent = year;
+        document.getElementById('metaRuntime').textContent = runtime;
+
+        // Genres
+        const genres = Array.isArray(movie.genres) ? movie.genres : [];
+        document.getElementById('genresBox').innerHTML = genres.slice(0, 6).map(g =>
+          `<span class="genre">${g}</span>`
+        ).join('');
+
+        // Description
+        const desc = movie.overview || movie.tagline || 'No description available.';
+        document.getElementById('movieDesc').textContent = desc;
+
+        // Poster
+        const poster = movie.backdrop_url || movie.poster_url || '';
+        posterImg.src = poster;
+        posterImg.alt = movie.title || 'Movie';
+
+        // Info
+        document.getElementById('infoRelease').textContent = movie.release_date || '--';
+        document.getElementById('infoType').textContent = (movie.media_type || 'movie').toUpperCase();
+        document.getElementById('infoCategory').textContent = genres.join(' / ') || 'Movie';
+        document.getElementById('infoRuntime').textContent = runtime;
+        document.getElementById('infoLanguage').textContent = movie.language ? String(movie.language).toUpperCase() : '--';
+
+        // Cast
+        const cast = Array.isArray(movie.cast_data) ? movie.cast_data : [];
+        const crew = Array.isArray(movie.crew_data) ? movie.crew_data : [];
+        const allCast = [...cast, ...crew].slice(0, 10);
+        document.getElementById('castRow').innerHTML = allCast.length ? allCast.map(p => `
+          <div class="cast">
+            <div class="cast-photo">
+              ${p.profile ? `<img src="${p.profile}" alt="${p.name}" loading="lazy">` :
+                `<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>`}
+            </div>
+            <div class="cast-name">${p.name || 'Unknown'}</div>
+            <div class="cast-role">${p.character || p.job || ''}</div>
+          </div>
+        `).join('') : `<div class="cast"><div class="cast-photo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><div class="cast-name">No cast data</div></div>`;
+
+        // Similar
+        const similar = Array.isArray(movie.similar_data) ? movie.similar_data : [];
+        document.getElementById('similarRow').innerHTML = similar.length ? similar.map(s => `
+          <div class="similar-card" onclick="location.href='?id=${s.tmdb_id || ''}'">
+            <div class="similar-art" style="${s.poster ? `background-image:url('${s.poster}');background-size:cover;background-position:center;` : ''}">
+              <div class="similar-content">
+                <div class="similar-title">${s.title || 'Movie'}</div>
+                <div class="similar-meta">${s.year || ''} ★ ${Number(s.rating||0).toFixed(1)}</div>
+              </div>
+            </div>
+          </div>
+        `).join('') : '';
+
+        // Video sources
+        const video1080 = movie.video_1080 || '';
+        const video720 = movie.video_720 || '';
+        const video480 = movie.video_480 || '';
+        const primarySource = video1080 || video720 || video480 || '';
+
+        // Store in global for quality switching
+        window.QUALITY_SOURCES = {
+          movie: { '480': video480 || primarySource, '720': video720 || video480 || primarySource, '1080': video1080 || video720 || video480 || primarySource },
+          trailer: { '480': '', '720': '', '1080': '' }
+        };
+
+        // Trailer URL
+        const trailer = normalizeTrailerUrl(movie.trailer_url || '');
+        const trailerBtn = document.getElementById('trailerToggle');
+        if (trailerBtn) {
+          trailerBtn.dataset.trailerUrl = trailer;
+          trailerBtn.style.opacity = trailer ? '1' : '0.5';
+        }
+
+        // Load video
+        if (primarySource) {
+          loadHlsSource(primarySource, false);
+          initialPoster.classList.remove('hidden');
+          hidePlayerLoading();
+        } else {
+          showToast('No video source available for this movie');
+        }
+
+        // Hide skeleton
+        document.body.classList.remove('cineflix-db-loading');
+        document.body.classList.remove('cineflix-db-error');
+      }
+
+      // ===== FETCH FROM SUPABASE =====
+      async function fetchMovie() {
+        const params = new URLSearchParams(window.location.search);
+        const movieId = params.get('id');
+
+        if (!movieId) {
+          throw new Error('Movie ID missing from URL. Use ?id=YOUR_MOVIE_ID');
+        }
+
+        if (!window.supabase) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Supabase library failed to load.'));
+            document.head.appendChild(script);
+          });
+        }
+
+        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const { data, error } = await client
+          .from('movies')
+          .select('*')
+          .eq('id', movieId)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (!data) throw new Error('Movie not found in Supabase.');
+        return data;
+      }
+
+      // ===== INIT =====
+      async function init() {
+        try {
+          const movie = await fetchMovie();
+          renderMovie(movie);
+        } catch (error) {
+          console.error('CINEFLIX error:', error);
+          document.body.classList.remove('cineflix-db-loading');
+          document.body.classList.add('cineflix-db-error');
+          document.getElementById('cineflixDbMessage').textContent = '❌ ' + (error.message || 'Unknown error');
+        }
+      }
+
+      // ===== EVENT BINDINGS =====
+
+      // Play/Pause
+      playPause.addEventListener('click', togglePlay);
+
+      initialPosterPlay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (videoPlayer.classList.contains('trailer-mode')) return;
+        initialPoster.classList.add('hidden');
+        if (video.src || hls) {
+          video.play().catch(() => {});
+        } else if (movieData) {
+          const src = movieData.video_1080 || movieData.video_720 || movieData.video_480 || '';
+          if (src) loadHlsSource(src, true);
+        }
+        showPlayerControls(true);
+      });
+
+      centerPlayPause.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePlay();
+      });
+
+      // Video events
+      video.addEventListener('play', () => {
+        playIcon.innerHTML = '<path d="M7 5.5h3.4v13H7z"/><path d="M13.6 5.5H17v13h-3.4z"/>';
+        hidePlayerLoading();
+        showPlayerControls(true);
+        updateCenterPlayPause();
+      });
+
+      video.addEventListener('pause', () => {
+        playIcon.innerHTML = '<path d="M8 5v14l11-7L8 5z"/>';
+        updateCenterPlayPause();
+        showCenterPlayPause();
+      });
+
+      video.addEventListener('ended', () => {
+        updateCenterPlayPause();
+        showCenterPlayPause();
+      });
+
+      video.addEventListener('timeupdate', () => {
+        if (!video.duration) return;
+        const percent = (video.currentTime / video.duration) * 100;
+        progress.style.width = percent + '%';
+        time.textContent = formatTime(video.currentTime);
+        durationTime.textContent = formatTime(video.duration);
+        updateBufferedProgress();
+      });
+
+      video.addEventListener('durationchange', () => {
+        durationTime.textContent = formatTime(video.duration);
+        updateBufferedProgress();
+      });
+
+      video.addEventListener('progress', updateBufferedProgress);
+      video.addEventListener('loadedmetadata', updateBufferedProgress);
+
+      // Progress area
+      progressArea.addEventListener('click', (e) => {
+        if (videoPlayer.classList.contains('trailer-mode')) return;
+        if (!video.duration) return;
+        const rect = progressArea.getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        video.currentTime = pct * video.duration;
+      });
+
+      // Mute
+      muteBtn.addEventListener('click', () => {
+        video.muted = !video.muted;
+        muteBtn.innerHTML = video.muted
+          ? '<svg viewBox="0 0 24 24"><path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/><path d="m17 9 4 6"/><path d="m21 9-4 6"/></svg>'
+          : '<svg viewBox="0 0 24 24"><path d="M4.5 10v4h3.7l5 4V6l-5 4H4.5z"/><path d="M16.3 9a4.4 4.4 0 0 1 0 6"/><path d="M18.8 6.9a7.5 7.5 0 0 1 0 11.2"/></svg>';
+      });
+
+      // Fullscreen
+      fullscreenBtn.addEventListener('click', () => {
+        const el = document.getElementById('videoPlayer');
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          el.requestFullscreen?.();
+        }
+      });
+
+      // PIP
+      document.getElementById('pipBtn')?.addEventListener('click', async () => {
+        try {
+          if (document.pictureInPictureElement) {
+            await document.exitPictureInPicture();
+          } else if (document.pictureInPictureEnabled) {
+            await video.requestPictureInPicture();
+          }
+        } catch (e) {}
+      });
+
+      // Settings
+      settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settingsPanel.classList.toggle('open');
+        if (settingsPanel.classList.contains('open')) showPlayerControls(false);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (settingsPanel.classList.contains('open') &&
+            !settingsPanel.contains(e.target) &&
+            e.target !== settingsBtn) {
+          settingsPanel.classList.remove('open');
+        }
+      });
+
+      // Quality
+      document.querySelector('[data-setting="quality"]')?.addEventListener('click', () => {
+        const qualities = ['Auto', '480p', '720p', '1080p'];
+        const current = document.getElementById('settingsQualityValue').textContent.trim();
+        let idx = qualities.indexOf(current.replace('›', '').trim());
+        idx = (idx + 1) % qualities.length;
+        const newQ = qualities[idx];
+        document.getElementById('settingsQualityValue').innerHTML = newQ + ' <b>›</b>';
+
+        if (newQ === 'Auto') {
+          currentQualityChoice = 'auto';
+          document.getElementById('playerQuality').textContent = 'AUTO';
+          if (hls) hls.currentLevel = -1;
+        } else {
+          currentQualityChoice = 'manual';
+          currentQuality = newQ.replace('p', '');
+          document.getElementById('playerQuality').textContent = newQ.toUpperCase();
+          if (hls && hls.levels) {
+            const target = parseInt(currentQuality);
+            let best = -1, bestDiff = Infinity;
+            hls.levels.forEach((l, i) => {
+              const h = Number(l.height || 0);
+              if (h && Math.abs(h - target) < bestDiff) {
+                bestDiff = Math.abs(h - target);
+                best = i;
+              }
+            });
+            if (best >= 0) hls.currentLevel = best;
+          }
+        }
+        showToast('Quality: ' + newQ);
+      });
+
+      // Speed
+      document.querySelector('[data-setting="speed"]')?.addEventListener('click', () => {
+        const speeds = ['0.5×', '0.75×', '1×', '1.25×', '1.5×', '2×'];
+        const current = document.getElementById('settingsSpeedValue').textContent.trim();
+        let idx = speeds.indexOf(current.replace('›', '').trim());
+        idx = (idx + 1) % speeds.length;
+        const newSpeed = speeds[idx];
+        document.getElementById('settingsSpeedValue').innerHTML = newSpeed + ' <b>›</b>';
+        video.playbackRate = parseFloat(newSpeed);
+        showToast('Speed: ' + newSpeed);
+      });
+
+      // Aspect
+      document.querySelector('[data-setting="aspect"]')?.addEventListener('click', () => {
+        const aspects = ['Fit', 'Fill', 'Stretch', 'Original'];
+        const current = document.getElementById('settingsAspectValue').textContent.trim();
+        let idx = aspects.indexOf(current.replace('›', '').trim());
+        idx = (idx + 1) % aspects.length;
+        const newAspect = aspects[idx];
+        document.getElementById('settingsAspectValue').innerHTML = newAspect + ' <b>›</b>';
+        const map = { 'Fit': 'contain', 'Fill': 'cover', 'Stretch': 'fill', 'Original': 'none' };
+        video.style.objectFit = map[newAspect] || 'contain';
+        showToast('Aspect: ' + newAspect);
+      });
+
+      // Trailer toggle
+      document.getElementById('trailerToggle')?.addEventListener('click', function() {
+        if (videoPlayer.classList.contains('trailer-mode')) {
+          hideTrailer();
+          return;
+        }
+        const url = this.dataset.trailerUrl || trailerUrl;
+        if (url && url.includes('/embed/')) {
+          showTrailer(url);
+        } else {
+          showToast('Trailer not available for this movie');
+        }
+      });
+
+      // Download
+      document.getElementById('downloadBtn')?.addEventListener('click', () => {
+        showToast('📥 Download options will appear here');
+      });
+
+      // Share
+      document.getElementById('shareBtn')?.addEventListener('click', async () => {
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: document.title || 'CINEFLIX',
+              text: 'Watch this movie on CINEFLIX',
+              url: location.href
+            });
+          } else {
+            await navigator.clipboard.writeText(location.href);
+            showToast('🔗 Link copied!');
+          }
+        } catch (e) {}
+      });
+
+      // Like
+      let liked = false;
+      document.getElementById('likeBtn')?.addEventListener('click', function() {
+        liked = !liked;
+        this.classList.toggle('active');
+        this.querySelector('span').textContent = liked ? 'Liked' : 'Like';
+        showToast(liked ? '❤️ Added to favorites!' : 'Removed from favorites');
+      });
+
+      // Read more
+      let expanded = false;
+      const readMore = document.getElementById('readMore');
+      const movieDesc = document.getElementById('movieDesc');
+      let fullDesc = '';
+
+      readMore?.addEventListener('click', () => {
+        if (!fullDesc && movieData) {
+          fullDesc = movieData.overview || movieData.tagline || 'No description.';
+        }
+        expanded = !expanded;
+        movieDesc.textContent = expanded ? fullDesc : (movieData?.overview || '').slice(0, 120) + '…';
+        readMore.textContent = expanded ? 'Read less' : 'Read more';
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+          const tag = document.activeElement?.tagName || '';
+          if (!['INPUT', 'TEXTAREA', 'BUTTON'].includes(tag)) {
+            e.preventDefault();
+            togglePlay();
+          }
+        }
+        if (e.key === 'f') fullscreenBtn.click();
+        if (e.key === 'm') muteBtn.click();
+      });
+
+      // ===== START =====
+      init();
+
+      console.log('🎬 CINEFLIX · Supabase + New UI — सभी फीचर्स काम कर रहे हैं! ✅');
+
+    })();
+  </script>
 </body>
 </html>
