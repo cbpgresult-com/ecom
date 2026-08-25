@@ -2983,123 +2983,6 @@ body.cineflix-db-error .cineflix-db-message{
     visibility:visible;
     transform:translateY(0);
 }
-
-/* =========================================================
-   CINEFLIX PLAY INTRO — ADD-ONLY
-   Shows only when the initial Movie Play button is pressed.
-   Video starts/loading underneath immediately.
-   ========================================================= */
-.cineflix-play-intro{
-    position:absolute;
-    inset:0;
-    z-index:90;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    background:#050506;
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-    transition:opacity .24s ease, visibility .24s ease;
-}
-.cineflix-play-intro.show{
-    opacity:1;
-    visibility:visible;
-}
-.cineflix-play-intro.hide{
-    opacity:0;
-    visibility:hidden;
-}
-.cineflix-play-intro::before{
-    content:"";
-    position:absolute;
-    width:42%;
-    height:1px;
-    left:29%;
-    top:50%;
-    background:linear-gradient(90deg,transparent,rgba(229,9,20,.85),transparent);
-    transform:scaleX(0);
-    animation:cineflixIntroLine 1.15s cubic-bezier(.2,.7,.2,1) .15s forwards;
-}
-.cineflix-intro-brand{
-    position:relative;
-    z-index:2;
-    display:flex;
-    align-items:center;
-    gap:9px;
-    transform:scale(.88);
-    opacity:0;
-    animation:cineflixIntroBrand 1.15s cubic-bezier(.16,1,.3,1) .08s forwards;
-}
-.cineflix-intro-mark{
-    width:42px;
-    height:42px;
-    border-radius:11px;
-    background:#e50914;
-    display:grid;
-    place-items:center;
-    box-shadow:0 0 35px rgba(229,9,20,.28);
-}
-.cineflix-intro-mark svg{
-    width:23px;
-    height:23px;
-    fill:#fff;
-    margin-left:2px;
-}
-.cineflix-intro-word{
-    font-size:29px;
-    line-height:1;
-    font-weight:900;
-    letter-spacing:-1.5px;
-    color:#fff;
-}
-.cineflix-intro-word span{
-    color:#e50914;
-}
-.cineflix-intro-glow{
-    position:absolute;
-    width:220px;
-    height:220px;
-    border-radius:50%;
-    background:radial-gradient(circle,rgba(229,9,20,.11),transparent 68%);
-    filter:blur(3px);
-    animation:cineflixIntroGlow 1.35s ease-out .05s forwards;
-    opacity:0;
-}
-.cineflix-play-intro.finish .cineflix-intro-brand{
-    animation:cineflixIntroExit .28s ease forwards;
-}
-.cineflix-play-intro.finish::before{
-    animation:cineflixIntroLineOut .22s ease forwards;
-}
-@keyframes cineflixIntroBrand{
-    0%{opacity:0;transform:scale(.82);filter:blur(5px)}
-    45%{opacity:1;transform:scale(1.03);filter:blur(0)}
-    100%{opacity:1;transform:scale(1);filter:blur(0)}
-}
-@keyframes cineflixIntroGlow{
-    0%{opacity:0;transform:scale(.55)}
-    45%{opacity:1;transform:scale(1)}
-    100%{opacity:.45;transform:scale(1.12)}
-}
-@keyframes cineflixIntroLine{
-    0%{transform:scaleX(0);opacity:0}
-    30%{opacity:1}
-    100%{transform:scaleX(1);opacity:.35}
-}
-@keyframes cineflixIntroExit{
-    to{opacity:0;transform:scale(1.04);filter:blur(2px)}
-}
-@keyframes cineflixIntroLineOut{
-    to{transform:scaleX(1.15);opacity:0}
-}
-@media(max-width:520px){
-    .cineflix-intro-mark{width:36px;height:36px;border-radius:9px}
-    .cineflix-intro-mark svg{width:20px;height:20px}
-    .cineflix-intro-word{font-size:24px;letter-spacing:-1.2px}
-}
-
 </style>
 <style>
 
@@ -3615,18 +3498,7 @@ body.cineflix-db-error .cineflix-db-message{
 
     <div class="player-mode-badge" id="playerModeBadge" aria-hidden="true">MOVIE</div>
 
-    
-<div class="cineflix-play-intro" id="cineflixPlayIntro" aria-hidden="true">
-    <div class="cineflix-intro-glow"></div>
-    <div class="cineflix-intro-brand">
-        <div class="cineflix-intro-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M8.1 5.2v13.6c0 .8.9 1.2 1.6.8l9.3-6.8c.6-.4.6-1.2 0-1.6L9.7 4.4c-.7-.5-1.6 0-1.6.8Z"/></svg>
-        </div>
-        <div class="cineflix-intro-word">CINE<span>FLIX</span></div>
-    </div>
-</div>
-
-<div class="initial-poster" id="initialPoster" aria-hidden="false">
+    <div class="initial-poster" id="initialPoster" aria-hidden="false">
         <img
             src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=85"
             alt="Movie thumbnail"
@@ -5057,60 +4929,20 @@ pipBtn.addEventListener("click",async e=>{
 
 let controlsHideTimer = null;
 
-/* =========================================================
-   CINEFLIX PLAY INTRO — ADD-ONLY
-   The movie starts/loading immediately underneath the intro.
-   The intro is shown only for the FIRST initial Play action.
-   It never sits above the controls after the intro finishes.
-   ========================================================= */
-const cineflixPlayIntro = document.getElementById("cineflixPlayIntro");
-let cineflixIntroRunning = false;
-
-function runCineflixPlayIntro(){
-    if(!cineflixPlayIntro || cineflixIntroRunning) return Promise.resolve();
-
-    cineflixIntroRunning = true;
-    cineflixPlayIntro.classList.remove("finish","hide");
-    cineflixPlayIntro.classList.add("show");
-    cineflixPlayIntro.setAttribute("aria-hidden","false");
-
-    return new Promise(resolve=>{
-        window.setTimeout(()=>{
-            cineflixPlayIntro.classList.add("finish");
-
-            window.setTimeout(()=>{
-                cineflixPlayIntro.classList.remove("show","finish");
-                cineflixPlayIntro.classList.add("hide");
-                cineflixPlayIntro.setAttribute("aria-hidden","true");
-                cineflixIntroRunning = false;
-                resolve();
-            },260);
-        },1500);
-    });
-}
-
-initialPosterPlay.addEventListener("click",async(e)=>{
+initialPosterPlay.addEventListener("click",(e)=>{
     e.stopPropagation();
     window.dispatchEvent(new CustomEvent("cineflix:play-intent"));
+    initialPoster.classList.add("hidden");
+    showPlayerLoading();
 
-    /*
-       IMPORTANT:
-       Do not call video.play() directly here. The movie source can be
-       HLS-managed, so video.src may be empty even though the stream is ready
-       to be loaded. Reuse the existing player start pipeline instead.
-       This keeps HLS loading, retry, loader, quality and controls intact.
-    */
-    togglePlay();
+    video.play().catch(()=>{
+        initialPoster.classList.remove("hidden");
+        hidePlayerLoading();
+        centerPlay.style.display="none";
+    });
 
-    /*
-       The intro runs on top while the REAL player starts loading underneath.
-       It does not replace or modify the existing player controls.
-    */
     showPlayerControls(true);
     updateCenterPlayPause();
-
-    /* Intro runs only for this initial Play action. */
-    await runCineflixPlayIntro();
 });
 
 
