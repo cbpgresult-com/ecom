@@ -5309,43 +5309,6 @@ function isYouTubeUrl(url){
     return /(?:youtube\.com|youtu\.be)/i.test(url||"");
 }
 
-/* =========================================================
-   YOUTUBE TRAILER READY DETECTION
-   Hide our loader only when the trailer actually starts.
-========================================================= */
-window.addEventListener("message",(event)=>{
-    if(!trailerFrame || event.source !== trailerFrame.contentWindow) return;
-
-    let data=null;
-    try{
-        data=typeof event.data==="string" ? JSON.parse(event.data) : event.data;
-    }catch(e){
-        return;
-    }
-
-    if(!data || data.event!=="onStateChange") return;
-
-    const state=data.info;
-
-    // PLAYING: real trailer is visible and running.
-    if(state===1){
-        hidePlayerLoading();
-        playerLoading.style.zIndex="";
-    }
-
-    // If YouTube buffers again later, show the loader only while it is
-    // actually buffering, then remove it again when PLAYING resumes.
-    if(state===3){
-        showPlayerLoading();
-        playerLoading.style.zIndex="60";
-    }
-
-    if(state===0 || state===2){
-        hidePlayerLoading();
-        playerLoading.style.zIndex="";
-    }
-});
-
 function showTrailerFrame(url){
     if(!trailerFrame){
         trailerFrame=document.createElement("iframe");
@@ -5383,16 +5346,30 @@ function showTrailerFrame(url){
     // Assign only after the overlay is already visible, preventing the
     // black iframe from being exposed without a loader.
     trailerFrame.classList.add("show");
+
+    // YouTube does not reliably send its player-state postMessage in every
+    // browser/extension setup. Use the iframe load event as the reliable
+    // hand-off so our loader can NEVER remain stuck over a playing trailer.
+    clearTimeout(window.__cineflixTrailerLoaderFallback);
+    trailerFrame.onload=()=>{
+        clearTimeout(window.__cineflixTrailerLoaderFallback);
+        requestAnimationFrame(()=>{
+            requestAnimationFrame(()=>{
+                hidePlayerLoading();
+                playerLoading.style.zIndex="";
+            });
+        });
+    };
+
+    // Keep our loader visible while the new YouTube document is loading.
     trailerFrame.src=normalizeTrailerUrl(url);
-    setTimeout(()=>{
-        try{
-            trailerFrame.contentWindow.postMessage(JSON.stringify({
-                event:"listening",
-                id:1,
-                channel:"widget"
-            }),"*");
-        }catch(e){}
-    },100);
+
+    // Safety fallback: even if a browser extension blocks the iframe load
+    // event, never leave the CINEFLIX loader spinning forever.
+    window.__cineflixTrailerLoaderFallback=setTimeout(()=>{
+        hidePlayerLoading();
+        playerLoading.style.zIndex="";
+    },5000);
 
     // Trailer uses YouTube's own controls. Keep CINEFLIX controls hidden.
     hidePlayerControls();
@@ -5403,9 +5380,11 @@ function showTrailerFrame(url){
 }
 
 function hideTrailerFrame(){
+    clearTimeout(window.__cineflixTrailerLoaderFallback);
     if(trailerFrame){
         trailerFrame.classList.remove("show");
         trailerFrame.src="about:blank";
+        trailerFrame.onload=null;
     }
 
     if(playerSurface) playerSurface.classList.remove("trailer-mode");
