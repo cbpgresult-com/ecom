@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CINEFLIX · Supabase + New UI</title>
+  <title>CINEFLIX · Premium</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
@@ -641,7 +641,7 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
   <script>
     // ============================================================
-    // SUPABASE INTEGRATION + FULL PLAYER LOGIC
+    // CINEFLIX · SUPABASE + FULL PLAYER · PREMIUM UI
     // ============================================================
 
     (function() {
@@ -676,7 +676,7 @@
       let hlsReady = false;
       let currentQuality = '1080';
       let currentQualityChoice = 'auto';
-      let currentMode = 'movie'; // 'movie' | 'trailer'
+      let currentMode = 'movie';
       let movieData = null;
       let trailerUrl = '';
 
@@ -783,7 +783,6 @@
         trailerFrame.src = normalized;
         showPlayerControls(false);
         document.getElementById('playerQuality').style.display = 'none';
-        document.getElementById('trailerToggleText')?.remove();
         const txt = document.getElementById('trailerToggle')?.querySelector('span');
         if (txt) txt.textContent = 'Movie';
         showToast('▶️ Trailer playing');
@@ -1282,7 +1281,7 @@
       // ===== START =====
       init();
 
-      console.log('🎬 CINEFLIX · Supabase + New UI — सभी फीचर्स काम कर रहे हैं! ✅');
+      console.log('🎬 CINEFLIX · Premium UI + Supabase — सभी फीचर्स काम कर रहे हैं! ✅');
 
     })();
   </script>
