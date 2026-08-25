@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HLS Link Generator</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#08090d;
+  --card:#11131a;
+  --card2:#171923;
+  --line:#292d3a;
+  --text:#f5f7fb;
+  --muted:#8f95a5;
+  --red:#ef1725;
+  --red2:#ff3340;
+}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(239,23,37,.16),transparent 38%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.wrap{width:min(760px,calc(100% - 28px));margin:0 auto;padding:28px 0 50px}
+.top{text-align:center;margin-bottom:24px}
+.logo{
+  width:48px;height:48px;border-radius:14px;background:var(--red);
+  display:grid;place-items:center;margin:0 auto 12px;
+  box-shadow:0 10px 30px rgba(239,23,37,.25)
+}
+.logo svg{width:24px;height:24px;fill:white}
+h1{font-size:25px;margin:0 0 7px;letter-spacing:-.5px}
+.sub{margin:0;color:var(--muted);font-size:13px}
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 18px 50px rgba(0,0,0,.28)
+}
+.field{margin-bottom:16px}
+label{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:0 0 8px;font-size:13px;font-weight:700
+}
+.label-note{font-weight:500;color:var(--muted);font-size:11px}
+input,textarea{
+  width:100%;border:1px solid var(--line);outline:none;
+  background:#0b0d12;color:var(--text);
+  border-radius:12px;padding:13px 14px;
+  font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+  transition:.18s border-color,.18s box-shadow;
+}
+input{height:48px}
+textarea{min-height:210px;resize:vertical}
+input:focus,textarea:focus{
+  border-color:rgba(239,23,37,.7);
+  box-shadow:0 0 0 3px rgba(239,23,37,.10)
+}
+button{
+  border:0;cursor:pointer;font:700 13px inherit;
+}
+.generate{
+  width:100%;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,var(--red),var(--red2));
+  color:#fff;box-shadow:0 10px 24px rgba(239,23,37,.18);
+  transition:transform .15s,filter .15s
+}
+.generate:hover{filter:brightness(1.08)}
+.generate:active{transform:scale(.985)}
+.result{margin-top:18px;display:none}
+.result.show{display:block}
+.result-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:8px
+}
+.result-title{font-size:13px;font-weight:800}
+.status{font-size:11px;color:#77e6a1}
+.output{
+  position:relative;background:#090b10;border:1px solid var(--line);
+  border-radius:12px;padding:13px 48px 13px 13px;
+  min-height:48px;word-break:break-all;
+  color:#dce1ec;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace
+}
+.copy{
+  position:absolute;right:7px;bottom:7px;
+  width:32px;height:28px;border-radius:8px;
+  background:#1b1e28;color:#cfd4df;border:1px solid #303543;
+  display:grid;place-items:center
+}
+.copy:hover{background:#242834;color:#fff}
+.copy svg{width:15px;height:15px}
+.help{
+  margin-top:12px;padding:11px 12px;border-radius:11px;
+  background:#0d1016;border:1px solid #20242e;
+  color:var(--muted);font-size:11px;line-height:1.5
+}
+.error{color:#ff8b92}
+@media(max-width:560px){
+  .wrap{width:calc(100% - 18px);padding-top:18px}
+  .card{padding:14px;border-radius:15px}
+  textarea{min-height:180px}
+  h1{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19 12 8 5.2z"/></svg>
+    </div>
+    <h1>HLS Link Generator</h1>
+    <p class="sub">Paste the video URL and its source code to generate the player link.</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>
+        <span>Video URL</span>
+        <span class="label-note">Original URL</span>
+      </label>
+      <input id="videoUrl" type="url"
+        placeholder="https://example.com/proxy.php?p=streamhg&c=...">
+    </div>
+
+    <div class="field">
+      <label>
+        <span>Source Code</span>
+        <span class="label-note">Paste full source</span>
+      </label>
+      <textarea id="sourceCode"
+        placeholder="Paste the page/source code containing src, directSrc, master.m3u8, EMBED_URL, etc."></textarea>
+    </div>
+
+    <button class="generate" id="generateBtn">Generate Now</button>
+
+    <div class="result" id="result">
+      <div class="result-head">
+        <span class="result-title">Main Player Link</span>
+        <span class="status" id="status">Generated</span>
+      </div>
+      <div class="output">
+        <span id="outputText"></span>
+        <button class="copy" id="copyBtn" title="Copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+            <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="help" id="help">
+        The link is generated locally from the URL and source code you supplied.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function decodeSafe(s){
+  try{return decodeURIComponent(s);}
+  catch{return s;}
+}
+
+function cleanUrl(s){
+  return s.trim().replace(/^["'`]+|["'`]+$/g,"");
+}
+
+function firstMatch(text, patterns){
+  for(const re of patterns){
+    const m=text.match(re);
+    if(m && m[1]) return cleanUrl(m[1]);
+  }
+  return "";
+}
+
+function getOrigin(url){
+  try{return new URL(url).origin}
+  catch{return ""}
+}
+
+function getQueryParam(url,name){
+  try{return new URL(url).searchParams.get(name)||""}
+  catch{return ""}
+}
+
+function findM3u8(text){
+  // Prefer a full master.m3u8 URL already present in source.
+  const decoded = decodeSafe(text);
+  const patterns = [
+    /https?:\/\/[^"'\\\s<>]+?master\.m3u8[^"'\\\s<>]*/i,
+    /https?:\/\/[^"'\\\s<>]+?\.m3u8[^"'\\\s<>]*/i
+  ];
+  for(const re of patterns){
+    const m=decoded.match(re);
+    if(m) return cleanUrl(m[0].replace(/&amp;/g,"&"));
+  }
+
+  // Handle escaped URLs in JavaScript strings.
+  const escaped = text.replace(/\\\//g,"/");
+  for(const re of patterns){
+    const m=escaped.match(re);
+    if(m) return cleanUrl(m[0].replace(/\\u0026/g,"&"));
+  }
+  return "";
+}
+
+function findEmbed(text){
+  const decoded=decodeSafe(text);
+
+  const direct = firstMatch(decoded,[
+    /(?:EMBED_URL|embedUrl|embed_url)\s*[:=]\s*["'`](https?:\/\/[^"'`]+)["'`]/i,
+    /["'`](https?:\/\/[^"'`]*\/e\/[^"'`]+)["'`]/i
+  ]);
+  if(direct) return direct;
+
+  const m=decoded.match(/https?:\/\/[^"'`\s<>]+\/e\/[^"'`\s<>]+/i);
+  return m ? cleanUrl(m[0]) : "";
+}
+
+function findEbd(m3u8){
+  try{return new URL(m3u8).origin}
+  catch{return ""}
+}
+
+function buildLink(videoUrl, source){
+  const existingSrc = firstMatch(source,[
+    /\bvar\s+src\s*=\s*["'`](https?:\/\/[^"'`]+)["'`]/i,
+    /\bsrc\s*=\s*["'`](https?:\/\/[^"'`]+)["'`]/i
+  ]);
+
+  // If the source already contains the exact serve_m3u8 proxy URL,
+  // return it directly.
+  if(existingSrc && /serve_m3u8=1/i.test(existingSrc) && /master\.m3u8/i.test(existingSrc)){
+    return existingSrc;
+  }
+
+  const m3u8=findM3u8(source);
+  if(!m3u8) throw new Error("Source code me .m3u8 / master.m3u8 link nahi mila.");
+
+  const embed=findEmbed(source);
+  if(!embed) throw new Error("Source code me embed (/e/...) link nahi mila.");
+
+  const proxyOrigin=getOrigin(videoUrl);
+  if(!proxyOrigin) throw new Error("Video URL valid nahi hai.");
+
+  const ebd=findEbd(m3u8);
+  if(!ebd) throw new Error("M3U8 source ka domain read nahi ho saka.");
+
+  // Construct the same proxy-style main link format:
+  // proxy.php?serve_m3u8=1&ref=<embed>&url=<m3u8>&ebd=<m3u8-origin>
+  return proxyOrigin + "/proxy.php?serve_m3u8=1"
+    + "&ref=" + encodeURIComponent(embed)
+    + "&url=" + encodeURIComponent(m3u8)
+    + "&ebd=" + encodeURIComponent(ebd);
+}
+
+$("generateBtn").addEventListener("click",()=>{
+  const video=$("videoUrl").value.trim();
+  const source=$("sourceCode").value;
+
+  $("result").classList.add("show");
+
+  try{
+    const link=buildLink(video,source);
+    $("outputText").textContent=link;
+    $("status").textContent="Generated";
+    $("status").className="status";
+    $("help").textContent="Link source code me mile existing HLS data se locally generate hua hai.";
+  }catch(err){
+    $("outputText").textContent=err.message;
+    $("status").textContent="Error";
+    $("status").className="status error";
+    $("help").textContent="Source code me existing playable HLS/embed information honi chahiye.";
+  }
+});
+
+$("copyBtn").addEventListener("click",async()=>{
+  const text=$("outputText").textContent;
+  if(!text || $("status").textContent==="Error") return;
+  try{
+    await navigator.clipboard.writeText(text);
+    $("status").textContent="Copied";
+    setTimeout(()=>$("status").textContent="Generated",1200);
+  }catch{
+    const ta=document.createElement("textarea");
+    ta.value=text;document.body.appendChild(ta);
+    ta.select();document.execCommand("copy");ta.remove();
+    $("status").textContent="Copied";
+    setTimeout(()=>$("status").textContent="Generated",1200);
+  }
+});
+</script>
+</body>
+</html>
