@@ -531,8 +531,8 @@ button{
     transform:translate(-50%,-50%) scale(.94);
 }
 .center-play-pause svg{
-    width:25px;
-    height:25px;
+    width:34px;
+    height:34px;
     fill:#fff;
 }
 .center-play-icon,.center-pause-icon{display:none;}
@@ -610,6 +610,7 @@ button{
 /* CENTER PLAY */
 
 .center-play{
+    display:none !important;
     position:absolute;
 
     left:50%;
@@ -1176,10 +1177,19 @@ button{
 
 .time{
     color:#ddd;
-
     font-size:9px;
-
     font-weight:600;
+    line-height:1;
+}
+.time-total{
+    position:absolute;
+    right:58px;
+    bottom:0;
+    color:#ddd;
+    font-variant-numeric:tabular-nums;
+}
+.control-row{
+    position:relative;
 }
 
 .control-spacer{
@@ -3504,10 +3514,13 @@ body.cineflix-db-error .cineflix-db-message{
             </button>
 
 
-            <span class="time" id="time">
+            <span class="time time-current" id="time">
                 00:00
             </span>
 
+            <span class="time time-total" id="durationTime">
+                00:00
+            </span>
 
             <span class="control-spacer"></span>
 
@@ -4559,6 +4572,9 @@ const progressArea =
 
 const time =
     document.getElementById("time");
+
+const durationTime =
+    document.getElementById("durationTime");
 
 const muteBtn =
     document.getElementById("muteBtn");
@@ -5769,6 +5785,7 @@ function setPlayerMode(mode,autoPlay=true){
 
     progress.style.width="0%";
     time.textContent="00:00";
+    if(durationTime) durationTime.textContent="00:00";
     hideTrailerFrame();
     destroyHls();
 
@@ -5947,8 +5964,14 @@ video.addEventListener("pause",()=>{
 });
 
 video.addEventListener("progress",updateBufferedProgress);
-video.addEventListener("durationchange",updateBufferedProgress);
-video.addEventListener("loadedmetadata",updateBufferedProgress);
+video.addEventListener("durationchange",()=>{
+    if(durationTime) durationTime.textContent = formatTime(video.duration);
+    updateBufferedProgress();
+});
+video.addEventListener("loadedmetadata",()=>{
+    if(durationTime) durationTime.textContent = formatTime(video.duration);
+    updateBufferedProgress();
+});
 video.addEventListener("canplay",updateBufferedProgress);
 video.addEventListener("playing",updateBufferedProgress);
 
@@ -5990,6 +6013,7 @@ video.addEventListener(
 
         time.textContent=
             formatTime(video.currentTime);
+        if(durationTime) durationTime.textContent = formatTime(video.duration);
 
     }
 );
