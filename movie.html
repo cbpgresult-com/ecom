@@ -3261,6 +3261,87 @@ body.cineflix-db-error .cineflix-db-message{
     z-index:40;
 }
 
+
+/* =========================================================
+   MOBILE PLAYER SWIPE CONTROLS
+========================================================= */
+.player-gesture-zone{
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:50%;
+    z-index:45;
+    touch-action:none;
+    -webkit-user-select:none;
+    user-select:none;
+    display:none;
+}
+.player-gesture-zone.left{left:0;}
+.player-gesture-zone.right{right:0;}
+
+.gesture-indicator{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(.92);
+    min-width:92px;
+    height:92px;
+    border-radius:50%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    background:rgba(0,0,0,.46);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .14s ease,transform .14s ease;
+}
+.gesture-indicator.show{
+    opacity:1;
+    visibility:visible;
+    transform:translate(-50%,-50%) scale(1);
+}
+.gesture-indicator svg{
+    width:30px;
+    height:30px;
+    fill:none;
+    stroke:#fff;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.gesture-indicator .gesture-value{
+    font-size:15px;
+    line-height:1;
+    font-weight:700;
+    color:#fff;
+}
+.gesture-indicator .gesture-label{
+    font-size:10px;
+    line-height:1;
+    color:rgba(255,255,255,.72);
+    letter-spacing:.4px;
+}
+
+.player-brightness-layer{
+    position:absolute;
+    inset:0;
+    z-index:44;
+    pointer-events:none;
+    background:#000;
+    opacity:0;
+    transition:opacity .08s linear;
+}
+
+@media (max-width: 900px), (pointer:coarse){
+    .player-gesture-zone{display:block;}
+}
+
 </style>
 </head>
 
@@ -3385,6 +3466,31 @@ body.cineflix-db-error .cineflix-db-message{
 <section class="player-section">
 
 <div class="video-player" id="videoPlayer">
+<!-- Mobile player gesture zones: left = brightness, right = volume -->
+<div class="player-brightness-layer" id="playerBrightnessLayer"></div>
+
+<div class="player-gesture-zone left" id="brightnessGestureZone">
+    <div class="gesture-indicator" id="brightnessIndicator">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v2M12 19v2M3 12H1M23 12h-2M5.64 5.64l-1.41-1.41M19.77 19.77l-1.41-1.41M5.64 18.36l-1.41 1.41M19.77 4.23l-1.41 1.41"/>
+            <circle cx="12" cy="12" r="4"/>
+        </svg>
+        <div class="gesture-value" id="brightnessValue">100%</div>
+        <div class="gesture-label">BRIGHTNESS</div>
+    </div>
+</div>
+
+<div class="player-gesture-zone right" id="volumeGestureZone">
+    <div class="gesture-indicator" id="volumeIndicator">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9v6h4l5 4V5L8 9H4z"/>
+            <path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/>
+        </svg>
+        <div class="gesture-value" id="volumeValue">100%</div>
+        <div class="gesture-label">VOLUME</div>
+    </div>
+</div>
+
 
     <div class="player-mode-badge" id="playerModeBadge" aria-hidden="true">MOVIE</div>
 
@@ -6954,6 +7060,156 @@ window.addEventListener("beforeunload",()=>{
     },true);
 
     initMovie();
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   CINEFLIX AUTO QUALITY START
+   Start at the lowest available quality (typically 480p),
+   then hand control back to adaptive bitrate immediately.
+========================================================= */
+(function(){
+    const originalHlsPlay = window.__cineflixPrepareHlsForPlay;
+    window.__cineflixPrepareHlsForPlay = function(hls){
+        try{
+            if(hls){
+                hls.autoLevelEnabled = true;
+                if(Array.isArray(hls.levels) && hls.levels.length){
+                    hls.startLevel = 0;
+                    hls.currentLevel = 0;
+                }
+            }
+        }catch(e){}
+        return originalHlsPlay ? originalHlsPlay(hls) : hls;
+    };
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   MOBILE BRIGHTNESS / VOLUME SWIPES
+   Brightness is a visual player overlay only: browsers cannot
+   change the phone's hardware screen brightness. Therefore the
+   device brightness itself is untouched and returns naturally
+   when leaving the player.
+========================================================= */
+(function(){
+    function initGestureControls(){
+        const video=document.getElementById("movieVideo");
+        const player=document.getElementById("videoPlayer");
+        const left=document.getElementById("brightnessGestureZone");
+        const right=document.getElementById("volumeGestureZone");
+        const bInd=document.getElementById("brightnessIndicator");
+        const vInd=document.getElementById("volumeIndicator");
+        const bVal=document.getElementById("brightnessValue");
+        const vVal=document.getElementById("volumeValue");
+        const bLayer=document.getElementById("playerBrightnessLayer");
+
+        if(!video || !player || !left || !right) return;
+
+        let brightness=100;
+        let volume=Math.round((video.volume ?? 1)*100);
+        let active=null;
+        let startY=0;
+        let startValue=0;
+        let lastY=0;
+        let hideTimer=0;
+
+        function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+
+        function show(ind,val,label){
+            if(!ind) return;
+            ind.classList.add("show");
+            if(label==="BRIGHTNESS" && bVal) bVal.textContent=val+"%";
+            if(label==="VOLUME" && vVal) vVal.textContent=val+"%";
+            clearTimeout(hideTimer);
+            hideTimer=setTimeout(()=>{
+                bInd?.classList.remove("show");
+                vInd?.classList.remove("show");
+            },700);
+        }
+
+        function updateBrightness(value){
+            brightness=clamp(Math.round(value),1,100);
+
+            // 100% = no dark overlay. Lower values darken only the player.
+            if(bLayer){
+                bLayer.style.opacity=String((100-brightness)/100 * .78);
+            }
+            show(bInd,brightness,"BRIGHTNESS");
+        }
+
+        function updateVolume(value){
+            volume=clamp(Math.round(value),0,100);
+            try{ video.volume=volume/100; }catch(e){}
+            if(volume===0) video.muted=true;
+            else video.muted=false;
+
+            show(vInd,volume,"VOLUME");
+        }
+
+        function begin(zone,e,type){
+            if(e.pointerType==="mouse" && e.button!==0) return;
+            active=type;
+            startY=e.clientY;
+            lastY=e.clientY;
+            startValue=type==="brightness" ? brightness : volume;
+            zone.setPointerCapture?.(e.pointerId);
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function move(e){
+            if(!active) return;
+            const delta=startY-e.clientY; // swipe up = positive
+            lastY=e.clientY;
+
+            // 100 px vertical movement = 25 percentage points.
+            const next=startValue + (delta/100)*25;
+
+            if(active==="brightness") updateBrightness(next);
+            else updateVolume(next);
+
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function end(e){
+            if(!active) return;
+            active=null;
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        left.addEventListener("pointerdown",e=>begin(left,e,"brightness"),{passive:false});
+        right.addEventListener("pointerdown",e=>begin(right,e,"volume"),{passive:false});
+
+        window.addEventListener("pointermove",move,{passive:false});
+        window.addEventListener("pointerup",end,{passive:false});
+        window.addEventListener("pointercancel",end,{passive:false});
+
+        // Keep the gesture volume synchronized with normal player volume changes.
+        video.addEventListener("volumechange",()=>{
+            if(active===null){
+                volume=Math.round((video.volume||0)*100);
+                if(vVal) vVal.textContent=volume+"%";
+            }
+        });
+
+        // If video starts muted, show the actual effective volume as 0.
+        if(video.muted) volume=0;
+        if(vVal) vVal.textContent=volume+"%";
+        if(bVal) bVal.textContent=brightness+"%";
+    }
+
+    if(document.readyState==="loading"){
+        document.addEventListener("DOMContentLoaded",initGestureControls);
+    }else{
+        initGestureControls();
+    }
 })();
 </script>
 
