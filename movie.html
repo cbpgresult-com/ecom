@@ -5337,6 +5337,8 @@ function showTrailerFrame(url){
     if(playerModeBadge){
         playerModeBadge.textContent="TRAILER";
         playerModeBadge.classList.add("show");
+        playerModeBadge.style.opacity="1";
+        playerModeBadge.style.visibility="visible";
     }
 
     // Start our loader BEFORE assigning the iframe source.
@@ -5352,6 +5354,10 @@ function showTrailerFrame(url){
     // hand-off so our loader can NEVER remain stuck over a playing trailer.
     clearTimeout(window.__cineflixTrailerLoaderFallback);
     trailerFrame.onload=()=>{
+        // Ignore the intentional about:blank reset.
+        const currentSrc=trailerFrame.src || "";
+        if(currentSrc==="about:blank") return;
+
         clearTimeout(window.__cineflixTrailerLoaderFallback);
         requestAnimationFrame(()=>{
             requestAnimationFrame(()=>{
@@ -5361,11 +5367,21 @@ function showTrailerFrame(url){
         });
     };
 
-    // Keep our loader visible while the new YouTube document is loading.
-    trailerFrame.src=normalizeTrailerUrl(url);
+    // Keep our loader visible BEFORE starting every trailer load.
+    // This also runs on repeated Movie -> Trailer switches.
+    const trailerUrl=normalizeTrailerUrl(url);
+    trailerFrame.src="about:blank";
 
-    // Safety fallback: even if a browser extension blocks the iframe load
-    // event, never leave the CINEFLIX loader spinning forever.
+    // Force a fresh YouTube document on every switch so the old black frame
+    // is never exposed without our loader above it.
+    requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>{
+            trailerFrame.src=trailerUrl;
+        });
+    });
+
+    // Safety fallback: if a browser extension blocks iframe load events,
+    // never leave the CINEFLIX loader spinning forever.
     window.__cineflixTrailerLoaderFallback=setTimeout(()=>{
         hidePlayerLoading();
         playerLoading.style.zIndex="";
@@ -5374,13 +5390,22 @@ function showTrailerFrame(url){
     // Trailer uses YouTube's own controls. Keep CINEFLIX controls hidden.
     hidePlayerControls();
     clearTimeout(controlsHideTimer);
-    controlsHideTimer=setTimeout(()=>{
-        if(playerModeBadge) playerModeBadge.classList.remove("show");
-    },5000);
+    // Trailer badge stays visible for the entire trailer mode.
+    if(playerModeBadge){
+        playerModeBadge.classList.add("show");
+        playerModeBadge.style.opacity="1";
+        playerModeBadge.style.visibility="visible";
+    }
 }
 
 function hideTrailerFrame(){
     clearTimeout(window.__cineflixTrailerLoaderFallback);
+
+    if(playerModeBadge && currentMode !== "trailer"){
+        playerModeBadge.classList.remove("show");
+        playerModeBadge.style.opacity="";
+        playerModeBadge.style.visibility="";
+    }
     if(trailerFrame){
         trailerFrame.classList.remove("show");
         trailerFrame.src="about:blank";
