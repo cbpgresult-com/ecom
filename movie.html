@@ -3084,9 +3084,14 @@ body.cineflix-db-error .cineflix-db-message{
 .video-player.trailer-mode .player-top{
     pointer-events:none;
 }
-#trailerFrameOverlay{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#000;z-index:8;}
+#trailerFrameOverlay{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#000;z-index:40;}
 #trailerFrameOverlay.show{display:block;}
 .video-player{position:relative;}
+/* Only the temporary mode badge is used. Hide the older duplicate label. */
+.player-top{
+    display:none !important;
+}
+
 </style>
 </head>
 
@@ -4981,6 +4986,7 @@ video.addEventListener("ended",()=>{
 function showPlayerControls(resetTimer=true){
     playerControls.classList.remove("auto-hidden");
     playerTop.classList.remove("auto-hidden");
+    playerTop.style.display="none";
     if(playerModeBadge) playerModeBadge.classList.add("show");
 
     clearTimeout(controlsHideTimer);
@@ -5005,6 +5011,7 @@ function hidePlayerControls(){
     clearTimeout(controlsHideTimer);
     playerControls.classList.add("auto-hidden");
     playerTop.classList.add("auto-hidden");
+    playerTop.style.display="none";
     if(playerModeBadge) playerModeBadge.classList.remove("show");
 }
 
@@ -5141,15 +5148,21 @@ function showTrailerFrame(url){
         document.getElementById("videoPlayer")?.appendChild(trailerFrame);
     }
 
-    // No CINEFLIX loading spinner for YouTube. YouTube controls/loading UI
-    // belongs to the iframe itself.
+    // YouTube owns the trailer playback and controls.
+    // Hide every CINEFLIX movie overlay first so the trailer is visible
+    // immediately while it starts playing.
     hidePlayerLoading();
-    centerPlay.style.display="none";
     initialPoster.classList.add("hidden");
+    initialPoster.setAttribute("aria-hidden","true");
+    centerPlay.style.display="none";
+    if(centerPlayPause){
+        centerPlayPause.classList.remove("show");
+        centerPlayPause.style.display="none";
+    }
 
-    trailerFrame.src=normalizeTrailerUrl(url);
-    trailerFrame.classList.add("show");
     playerSurface.classList.add("trailer-mode");
+    trailerFrame.classList.add("show");
+    trailerFrame.src=normalizeTrailerUrl(url);
 
     if(playerModeBadge){
         playerModeBadge.textContent="TRAILER";
@@ -5168,7 +5181,14 @@ function hideTrailerFrame(){
         trailerFrame.classList.remove("show");
         trailerFrame.src="about:blank";
     }
+
     if(playerSurface) playerSurface.classList.remove("trailer-mode");
+
+    // Restore the movie poster/play layer only for Movie mode.
+    if(currentMode !== "trailer" && initialPoster){
+        initialPoster.classList.remove("hidden");
+        initialPoster.setAttribute("aria-hidden","false");
+    }
 }
 
 
@@ -5489,6 +5509,8 @@ function setPlayerMode(mode,autoPlay=true){
     destroyHls();
 
     if(isTrailer && source){
+        initialPoster.classList.add("hidden");
+        initialPoster.setAttribute("aria-hidden","true");
         hidePlayerLoading();
         const normalizedTrailer=normalizeTrailerUrl(source);
 
@@ -5511,10 +5533,12 @@ function setPlayerMode(mode,autoPlay=true){
 
     if(autoPlay){
         initialPoster.classList.add("hidden");
+        initialPoster.setAttribute("aria-hidden","true");
         showPlayerLoading();
         loadHlsSource(source,true,0);
     }else{
         initialPoster.classList.remove("hidden");
+        initialPoster.setAttribute("aria-hidden","false");
         hidePlayerLoading();
         centerPlay.style.display="grid";
         loadHlsSource(source,false,0);
