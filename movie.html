@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The Last Journey — CINEFLIX</title>
+<title>CINEFLIX</title>
 
 <meta name="theme-color" content="#070708">
 
@@ -2755,6 +2755,33 @@ button{
     }
 }
 
+
+/* Prevent the old demo content from flashing before Supabase data arrives. */
+body.cineflix-db-loading .page{
+    visibility:hidden;
+}
+body.cineflix-db-loading .initial-poster{
+    visibility:hidden;
+}
+body.cineflix-db-error .page{
+    visibility:visible;
+}
+.cineflix-db-message{
+    position:fixed;
+    inset:62px 0 0 0;
+    z-index:900;
+    display:none;
+    place-items:center;
+    padding:30px;
+    background:#070708;
+    color:#fff;
+    text-align:center;
+    font-size:14px;
+}
+body.cineflix-db-error .cineflix-db-message{
+    display:grid;
+}
+
 </style>
 <style>
 
@@ -2979,7 +3006,8 @@ button{
 </head>
 
 
-<body>
+<body class="cineflix-db-loading">
+<div class="cineflix-db-message" id="cineflixDbMessage">Movie could not be loaded.</div>
 
 
 <!-- HOME HEADER -->
@@ -4942,10 +4970,10 @@ function showToast(message){
    so Chromium/Firefox can play that manifest and expose its real
    quality levels instead of treating the m3u8 as a normal MP4.
 */
-const MOVIE_DEMO_URL =
-    "https://rozgarlelo.modiplay.xyz/proxy.php?serve_m3u8=1&ref=https%3A%2F%2Fhanerix.com%2Fe%2Fzjfm633cc533&url=https%3A%2F%2Fhanerix.com%2Fstream%2FDuiEtK--aLBvx94_7wcLEg%2Fkjhhiuahiuhgihdf%2F1787644877%2F73983620%2Fmaster.m3u8&ebd=https%3A%2F%2Fhanerix.com";
+let MOVIE_DEMO_URL = "";
+let TRAILER_DEMO_URL = "";
 
-const TRAILER_DEMO_URL = MOVIE_DEMO_URL;
+
 
 let currentMode = "movie";
 let currentQuality = "1080";
@@ -5774,10 +5802,10 @@ document
                 await navigator.share({
 
                     title:
-                        "The Last Journey",
+                        document.querySelector(".movie-title")?.textContent?.trim() || "CINEFLIX",
 
                     text:
-                        "Watch The Last Journey on CINEFLIX.",
+                        "Watch " + (document.querySelector(".movie-title")?.textContent?.trim() || "this movie") + " on CINEFLIX.",
 
                     url:
                         window.location.href
@@ -5969,6 +5997,287 @@ document.addEventListener("fullscreenchange",()=>{
 (function(){
  const btn=document.getElementById("searchBtn"),box=document.getElementById("searchBox"),input=document.getElementById("searchInput");
  if(btn&&box){btn.addEventListener("click",()=>{box.classList.toggle("open");if(box.classList.contains("open")&&input)setTimeout(()=>input.focus(),120);});}
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   CINEFLIX — LOAD THE EXACT MOVIE FROM SUPABASE
+   page.html -> movie.html?id=SUPABASE_MOVIE_ID
+========================================================= */
+(function(){
+    const SUPABASE_URL = "https://bbqaagbypawcpszjwzii.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_dWktR3La6JpSwD32tfSb-Q_a__jx0cO";
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+    function setText(selector, value){
+        const el = $(selector);
+        if(el) el.textContent = value ?? "";
+    }
+
+    function escapeHTML(value){
+        return String(value ?? "").replace(/[&<>"']/g, c => ({
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#39;"
+        })[c]);
+    }
+
+    function formatRuntime(minutes){
+        const n = Number(minutes || 0);
+        if(!n) return "";
+        const h = Math.floor(n/60);
+        const m = n % 60;
+        return h ? `${h}h ${m}m` : `${m}m`;
+    }
+
+    function getYear(movie){
+        return movie.year || String(movie.release_date || "").slice(0,4) || "";
+    }
+
+    function getGenres(movie){
+        return Array.isArray(movie.genres) ? movie.genres : [];
+    }
+
+    function getCast(movie){
+        return Array.isArray(movie.cast_data) ? movie.cast_data : [];
+    }
+
+    function getCrew(movie){
+        return Array.isArray(movie.crew_data) ? movie.crew_data : [];
+    }
+
+    function getSimilar(movie){
+        return Array.isArray(movie.similar_data) ? movie.similar_data : [];
+    }
+
+    function setImage(selector, src, alt){
+        const el=$(selector);
+        if(el && src){
+            el.src=src;
+            if(alt) el.alt=alt;
+        }
+    }
+
+    function renderMovieDetails(movie){
+        const title = movie.title || movie.original_title || "Movie";
+        const year = getYear(movie);
+        const runtime = formatRuntime(movie.runtime);
+        const rating = Number(movie.rating || 0).toFixed(1);
+        const genres = getGenres(movie);
+
+        document.title = `${title} — CINEFLIX`;
+
+        setText(".movie-title", title);
+
+        const meta = $(".movie-meta");
+        if(meta){
+            meta.innerHTML = `
+                <span class="rating">★ ${rating}</span>
+                <span class="dot">•</span>
+                <span>${escapeHTML(year)}</span>
+                ${runtime ? `<span class="dot">•</span><span>${escapeHTML(runtime)}</span>` : ""}
+                <span class="dot">•</span>
+                <span class="age">16+</span>
+                <span class="dot">•</span>
+                <span>HD</span>
+            `;
+        }
+
+        const genreBox=$(".genres");
+        if(genreBox){
+            genreBox.innerHTML=genres.slice(0,8).map(g =>
+                `<span class="genre">${escapeHTML(g)}</span>`
+            ).join("");
+        }
+
+        const description=$(".description");
+        if(description){
+            description.textContent = movie.overview || movie.tagline || "No description available.";
+        }
+
+        // Movie details info card
+        const infoItems=$$(".info-item");
+        infoItems.forEach(item=>{
+            const label=(item.querySelector("small")?.textContent || "").trim().toLowerCase();
+            const strong=item.querySelector("strong");
+            if(!strong) return;
+
+            if(label.includes("release")) strong.textContent=movie.release_date || "—";
+            else if(label==="type") strong.textContent=(movie.media_type||"movie").toUpperCase();
+            else if(label.includes("category")) strong.textContent=genres.join(" / ") || movie.category || "Movie";
+            else if(label.includes("runtime")) strong.textContent=runtime || "—";
+            else if(label.includes("language")) strong.textContent=movie.language ? String(movie.language).toUpperCase() : "—";
+            else if(label.includes("quality")) strong.textContent=
+                [movie.video_1080,movie.video_720,movie.video_480].some(Boolean)
+                ? "1080p • 720p • 480p" : "—";
+        });
+
+        // Player thumbnail = actual TMDB poster/backdrop, never the old demo image.
+        const poster = movie.poster_url || movie.backdrop_url || "";
+        setImage("#initialPoster img", poster, title);
+
+        // Backdrop elements if present.
+        $$("[data-movie-backdrop]").forEach(el=>{
+            if(movie.backdrop_url) el.style.backgroundImage=`url("${movie.backdrop_url}")`;
+        });
+
+        // Cast & Crew
+        const castRow=$(".cast-row");
+        if(castRow){
+            const cast=[...getCast(movie), ...getCrew(movie)].slice(0,10);
+            castRow.innerHTML = cast.length ? cast.map(person => `
+                <div class="cast">
+                    <div class="cast-photo">
+                        ${person.profile ? `<img src="${escapeHTML(person.profile)}" alt="${escapeHTML(person.name||"Cast")}" loading="lazy">` : `
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="8" r="4"/>
+                                <path d="M4 21a8 8 0 0 1 16 0"/>
+                            </svg>
+                        `}
+                    </div>
+                    <div class="cast-name">${escapeHTML(person.name || "Unknown")}</div>
+                    <div class="cast-role">${escapeHTML(person.character || person.job || "")}</div>
+                </div>
+            `).join("") : `
+                <div class="cast">
+                    <div class="cast-photo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+                    <div class="cast-name">No cast data</div>
+                    <div class="cast-role"></div>
+                </div>
+            `;
+        }
+
+        // Similar / recommendations
+        const similarRow=$(".similar-row");
+        if(similarRow){
+            const items=getSimilar(movie);
+            similarRow.innerHTML = items.length ? items.map(item => `
+                <div class="similar-card" data-tmdb-id="${escapeHTML(item.tmdb_id || "")}">
+                    <div class="similar-art" style="${item.poster ? `background-image:url('${escapeHTML(item.poster)}');background-size:cover;background-position:center;` : ""}">
+                        <div class="similar-content">
+                            <div class="similar-title">${escapeHTML(item.title || "Movie")}</div>
+                            <div class="similar-meta">${escapeHTML(item.year || "")} • ★ ${Number(item.rating||0).toFixed(1)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join("") : "";
+        }
+
+        // Trailer button uses the actual TMDB trailer URL when available.
+        const trailerUrl=movie.trailer_url || "";
+        const trailerBtn=$("#trailerToggle");
+        if(trailerBtn){
+            trailerBtn.dataset.trailerUrl=trailerUrl;
+            trailerBtn.disabled=!trailerUrl;
+            trailerBtn.style.opacity=trailerUrl ? "1" : ".55";
+        }
+
+        // Share uses actual movie title.
+        const shareBtn=$("#shareBtn");
+        if(shareBtn){
+            shareBtn.dataset.movieTitle=title;
+        }
+
+        // Real video sources saved by Admin.
+        MOVIE_DEMO_URL = movie.video_1080 || movie.video_720 || movie.video_480 || "";
+        TRAILER_DEMO_URL = movie.trailer_url || "";
+
+        QUALITY_SOURCES.movie = {
+            "480": movie.video_480 || MOVIE_DEMO_URL,
+            "720": movie.video_720 || movie.video_480 || MOVIE_DEMO_URL,
+            "1080": movie.video_1080 || movie.video_720 || movie.video_480 || MOVIE_DEMO_URL
+        };
+        QUALITY_SOURCES.trailer = {
+            "480": TRAILER_DEMO_URL,
+            "720": TRAILER_DEMO_URL,
+            "1080": TRAILER_DEMO_URL
+        };
+
+        // Rebuild the initial player source using the real Admin URL.
+        if(MOVIE_DEMO_URL){
+            destroyHls();
+            video.removeAttribute("src");
+            video.load();
+            initialPoster.classList.remove("hidden");
+            hidePlayerLoading();
+            centerPlay.style.display="grid";
+            setPlayerMode("movie",false);
+            video.pause();
+        }
+
+        window.CINEFLIX_MOVIE=movie;
+    }
+
+    async function getMovie(){
+        const params=new URLSearchParams(window.location.search);
+        const movieId=params.get("id");
+
+        if(!movieId) throw new Error("Movie ID missing from URL.");
+
+        // Supabase v2 client
+        if(!window.supabase){
+            await new Promise((resolve,reject)=>{
+                const script=document.createElement("script");
+                script.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+                script.onload=resolve;
+                script.onerror=()=>reject(new Error("Supabase library failed to load."));
+                document.head.appendChild(script);
+            });
+        }
+
+        const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+        const {data,error}=await client
+            .from("movies")
+            .select("*")
+            .eq("id",movieId)
+            .maybeSingle();
+
+        if(error) throw error;
+        if(!data) throw new Error("This movie was not found in Supabase.");
+
+        return data;
+    }
+
+    async function initMovie(){
+        try{
+            const movie=await getMovie();
+            renderMovieDetails(movie);
+
+            document.body.classList.remove("cineflix-db-loading");
+            document.body.classList.remove("cineflix-db-error");
+        }catch(error){
+            console.error("CINEFLIX movie load failed:",error);
+            document.body.classList.remove("cineflix-db-loading");
+            document.body.classList.add("cineflix-db-error");
+            const msg=$("#cineflixDbMessage");
+            if(msg) msg.textContent="Movie data load failed: " + (error.message || "Unknown error");
+        }
+    }
+
+    // Patch Share button text dynamically without changing its design.
+    document.addEventListener("click", async e=>{
+        const btn=e.target.closest("#shareBtn");
+        if(!btn) return;
+        const title=btn.dataset.movieTitle || document.querySelector(".movie-title")?.textContent?.trim() || "Movie";
+        try{
+            if(navigator.share){
+                await navigator.share({title:`${title} — CINEFLIX`,text:`Watch ${title} on CINEFLIX.`,url:location.href});
+            }else if(navigator.clipboard){
+                await navigator.clipboard.writeText(location.href);
+                if(typeof showToast==="function") showToast("Movie link copied.");
+            }
+        }catch(_){
+        }
+    },true);
+
+    initMovie();
 })();
 </script>
 
