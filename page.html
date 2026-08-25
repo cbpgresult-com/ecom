@@ -1785,8 +1785,20 @@ function createMovieCard(movie){
 
     card.className = "movie-card";
 
-    card.dataset.title = movie.title.toLowerCase();
+    card.dataset.title = String(movie.title || "").toLowerCase();
     if(movie.id) card.dataset.id = movie.id;
+
+    if(movie.id){
+        card.setAttribute(
+            "onclick",
+            "if(!event.target.closest('.card-action')){window.location.href='movie.html?id=" +
+            encodeURIComponent(movie.id) +
+            "';}"
+        );
+        card.setAttribute("role","link");
+        card.setAttribute("tabindex","0");
+        card.setAttribute("aria-label","Open " + movie.title);
+    }
 
     card.innerHTML = `
 
@@ -1800,7 +1812,7 @@ function createMovieCard(movie){
 
         <div class="card-actions">
 
-            <button class="card-action like-btn" aria-label="Like">
+            <button class="card-action like-btn" aria-label="Like" type="button">
 
                 <svg viewBox="0 0 24 24">
                     <path d="M20.8 8.7c0 5.5-8.8 10.2-8.8 10.2S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.5z"/>
@@ -1808,7 +1820,7 @@ function createMovieCard(movie){
 
             </button>
 
-            <button class="card-action" aria-label="Add">
+            <button class="card-action" aria-label="Add" type="button">
 
                 <svg viewBox="0 0 24 24">
                     <path d="M12 5v14M5 12h14"/>
@@ -2010,11 +2022,37 @@ function setupDrag(row){
 
     });
 
-    row.addEventListener("pointerup",()=>{
+    row.addEventListener("pointerup",(e)=>{
+
+        /* The row uses pointer capture for swipe/drag. Because of that,
+           the browser may report the row as the click target instead of
+           the movie card. Resolve the card from the actual screen point. */
+        const wasClick = !moved;
 
         isDown = false;
-
         row.classList.remove("dragging");
+
+        try{
+            if(row.hasPointerCapture(e.pointerId)){
+                row.releasePointerCapture(e.pointerId);
+            }
+        }catch(err){}
+
+        if(!wasClick) return;
+
+        const underPointer = document.elementFromPoint(e.clientX,e.clientY);
+        const card = underPointer ? underPointer.closest(".movie-card") : null;
+
+        if(!card) return;
+        if(underPointer.closest(".card-action")) return;
+
+        const id = card.dataset.id;
+        if(!id){
+            console.warn("CINEFLIX: clicked movie card has no Supabase id",card);
+            return;
+        }
+
+        window.location.href = "movie.html?id=" + encodeURIComponent(id);
 
     });
 
