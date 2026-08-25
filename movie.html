@@ -479,7 +479,7 @@ button{
 .initial-poster{
     position:absolute;
     inset:0;
-    z-index:30;
+    z-index:60;
     overflow:hidden;
     background:#050505;
     opacity:1;
@@ -504,6 +504,7 @@ button{
 }
 .initial-poster-play{
     position:absolute;
+    z-index:61;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
@@ -5115,6 +5116,7 @@ if(playerIntroVideo){
 }
 
 if(initialPosterPlay){
+    initialPosterPlay.style.pointerEvents="auto";
     initialPosterPlay.addEventListener("click",(e)=>{
         e.preventDefault();
         e.stopPropagation();
