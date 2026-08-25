@@ -5002,6 +5002,12 @@ function showToast(message){
 }
 
 
+<style>
+#trailerFrameOverlay{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#000;z-index:8;}
+#trailerFrameOverlay.show{display:block;}
+.video-player{position:relative;}
+</style>
+
 /* =========================================================
    PLAYER + HLS MOVIE / TRAILER SWITCH
 ========================================================= */
@@ -5031,6 +5037,42 @@ const QUALITY_SOURCES = {
     movie: { "480": MOVIE_DEMO_URL, "720": MOVIE_DEMO_URL, "1080": MOVIE_DEMO_URL },
     trailer: { "480": TRAILER_DEMO_URL, "720": TRAILER_DEMO_URL, "1080": TRAILER_DEMO_URL }
 };
+
+let trailerFrame=null;
+function normalizeTrailerUrl(url){
+    if(!url) return "";
+    try{
+        const u=new URL(url);
+        let id="";
+        if(u.hostname.includes("youtu.be")) id=u.pathname.slice(1).split("/")[0];
+        else if(u.hostname.includes("youtube.com")){
+            if(u.pathname==="/watch") id=u.searchParams.get("v")||"";
+            else if(u.pathname.startsWith("/embed/")) id=u.pathname.split("/")[2]||"";
+            else if(u.pathname.startsWith("/shorts/")) id=u.pathname.split("/")[2]||"";
+        }
+        if(id) return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1`;
+    }catch(e){}
+    return url;
+}
+function isYouTubeUrl(url){return /(?:youtube\.com|youtu\.be)/i.test(url||"");}
+function showTrailerFrame(url){
+    if(!trailerFrame){
+        trailerFrame=document.createElement("iframe");
+        trailerFrame.id="trailerFrameOverlay";
+        trailerFrame.setAttribute("allow","autoplay; encrypted-media; picture-in-picture; fullscreen");
+        trailerFrame.setAttribute("allowfullscreen","");
+        document.getElementById("videoPlayer")?.appendChild(trailerFrame);
+    }
+    trailerFrame.src=normalizeTrailerUrl(url);
+    trailerFrame.classList.add("show");
+    initialPoster.classList.add("hidden");
+    hidePlayerLoading();
+    centerPlay.style.display="none";
+}
+function hideTrailerFrame(){
+    if(trailerFrame){trailerFrame.classList.remove("show");trailerFrame.src="about:blank";}
+}
+
 
 function hlsHash(s){
     let h=0;
@@ -5330,38 +5372,43 @@ function hidePlayerLoading(){
 function setPlayerMode(mode,autoPlay=true){
     closeSettings();
     currentMode=mode;
-
     const isTrailer=mode==="trailer";
-    const source=QUALITY_SOURCES[mode]?.[currentQuality] ||
-        (isTrailer ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
+    const source=QUALITY_SOURCES[mode]?.[currentQuality] || (isTrailer ? TRAILER_DEMO_URL : MOVIE_DEMO_URL);
 
     playerModeLabel.textContent=isTrailer ? "TRAILER" : "MOVIE";
     trailerToggleText.textContent=isTrailer ? "Movie" : "Trailer";
-
-    trailerToggleIcon.innerHTML=isTrailer
-        ? `
-            <path d="M4 6h16v12H4z"/>
-            <path d="m8 8 8 4-8 4z"/>
-            <path d="M7 4h10"/>
-          `
-        : `
-            <path d="M4 7h16v10H4z"/>
-            <path d="m10 10 5 2-5 2z"/>
-          `;
+    trailerToggleIcon.innerHTML=isTrailer ? `
+        <path d="M4 6h16v12H4z"/><path d="m8 8 8 4-8 4z"/><path d="M7 4h10"/>` : `
+        <path d="M4 7h16v10H4z"/><path d="m10 10 5 2-5 2z"/>`;
 
     progress.style.width="0%";
     time.textContent="00:00";
+    hideTrailerFrame();
     destroyHls();
+
+    if(isTrailer && source && isYouTubeUrl(source)){
+        try{video.pause();}catch(e){}
+        video.removeAttribute("src");
+        video.load();
+        showTrailerFrame(source);
+        return;
+    }
+
+    if(!source){
+        initialPoster.classList.remove("hidden");
+        hidePlayerLoading();
+        centerPlay.style.display="grid";
+        return;
+    }
 
     if(autoPlay){
         initialPoster.classList.add("hidden");
         showPlayerLoading();
         loadHlsSource(source,true,0);
     }else{
-        /* Keep the existing thumbnail/center-play experience. */
         initialPoster.classList.remove("hidden");
         hidePlayerLoading();
-        centerPlay.style.display="none";
+        centerPlay.style.display="grid";
         loadHlsSource(source,false,0);
     }
 }
@@ -5388,6 +5435,10 @@ playPause.addEventListener("click",togglePlay);
 
 trailerToggle.addEventListener("click",(e)=>{
     e.stopPropagation();
+    if(currentMode==="movie" && !TRAILER_DEMO_URL){
+        showToast("Trailer not available.");
+        return;
+    }
     trailerToggle.classList.remove("mode-active");
     void trailerToggle.offsetWidth;
     trailerToggle.classList.add("mode-active");
@@ -5877,18 +5928,7 @@ document
    TRAILER
 ========================================================= */
 
-document
-.getElementById("trailer")
-.addEventListener(
-    "click",
-    ()=>{
 
-        showToast(
-            "Trailer player will open here."
-        );
-
-    }
-);
 
 
 /* =========================================================
