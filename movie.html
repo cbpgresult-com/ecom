@@ -1654,9 +1654,12 @@ button{
     width:100%;
     height:100%;
     display:block;
-    object-fit:cover;
-    object-position:center;
+    object-fit:contain !important;
+    object-position:center center !important;
     border-radius:50%;
+    background:#17171c;
+    padding:2px;
+    box-sizing:border-box;
 }
 
 .cast-photo svg{
@@ -3015,6 +3018,25 @@ body.cineflix-db-error .cineflix-db-message{
     z-index:2;
 }
 
+</style>
+<style id="tmdb-final-visual-fix">
+.initial-poster img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center center !important;
+}
+.cast-photo{
+    overflow:hidden !important;
+}
+.cast-photo img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:contain !important;
+    object-position:center center !important;
+    padding:2px !important;
+    box-sizing:border-box !important;
+}
 </style>
 </head>
 
@@ -6132,7 +6154,7 @@ document.addEventListener("fullscreenchange",()=>{
         });
 
         // Player thumbnail = actual TMDB poster/backdrop, never the old demo image.
-        const poster = movie.poster_url || movie.backdrop_url || "";
+        const poster = movie.backdrop_url || movie.poster_url || "";
         setImage("#initialPoster img", poster, title);
 
         // Backdrop elements if present.
