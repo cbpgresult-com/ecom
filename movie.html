@@ -5087,7 +5087,7 @@ function normalizeTrailerUrl(url){
 
     // Direct YouTube key from TMDB, e.g. "dQw4w9WgXcQ"
     if(/^[A-Za-z0-9_-]{11}$/.test(raw)){
-        return `https://www.youtube.com/embed/${encodeURIComponent(raw)}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
+        return `https://www.youtube.com/embed/${encodeURIComponent(raw)}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1&controls=1`;
     }
 
     try{
@@ -5107,7 +5107,7 @@ function normalizeTrailerUrl(url){
         }
 
         if(id){
-            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
+            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1&controls=1`;
         }
     }catch(e){}
 
@@ -5121,19 +5121,31 @@ function showTrailerFrame(url){
     if(!trailerFrame){
         trailerFrame=document.createElement("iframe");
         trailerFrame.id="trailerFrameOverlay";
-        trailerFrame.setAttribute("allow","autoplay; encrypted-media; picture-in-picture; fullscreen");
+        trailerFrame.setAttribute(
+            "allow",
+            "autoplay; encrypted-media; picture-in-picture; fullscreen"
+        );
         trailerFrame.setAttribute("allowfullscreen","");
+        trailerFrame.setAttribute("loading","eager");
         document.getElementById("videoPlayer")?.appendChild(trailerFrame);
     }
-    trailerFrame.src=normalizeTrailerUrl(url);
-    trailerFrame.classList.add("show");
-    initialPoster.classList.add("hidden");
+
+    // No CINEFLIX loading spinner for YouTube. YouTube controls/loading UI
+    // belongs to the iframe itself.
     hidePlayerLoading();
     centerPlay.style.display="none";
+    initialPoster.classList.add("hidden");
+
+    trailerFrame.src=normalizeTrailerUrl(url);
+    trailerFrame.classList.add("show");
+
     if(playerModeBadge){
         playerModeBadge.textContent="TRAILER";
         playerModeBadge.classList.add("show");
     }
+
+    // Badge follows the same control visibility timer as the player controls.
+    showPlayerControls(true);
 }
 function hideTrailerFrame(){
     if(trailerFrame){trailerFrame.classList.remove("show");trailerFrame.src="about:blank";}
@@ -5457,6 +5469,7 @@ function setPlayerMode(mode,autoPlay=true){
     destroyHls();
 
     if(isTrailer && source){
+        hidePlayerLoading();
         const normalizedTrailer=normalizeTrailerUrl(source);
 
         // YouTube/TMDB trailers must be played in an iframe, not in <video>.
