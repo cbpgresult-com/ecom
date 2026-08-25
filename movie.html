@@ -6901,105 +6901,126 @@ document.addEventListener("fullscreenchange",()=>{
         }
 
         window.CINEFLIX_MOVIE=movie;
+/* =========================================================
+   CONTINUE WATCHING — ADD-ONLY LOGIC
+   Existing player/source/quality code is untouched.
+   ========================================================= */
+(function(){
+    try{
+        const CW_KEY = "cineflix_continue_watching_v1";
+        const CW_ID = String(movie && movie.id || "");
+        if(!CW_ID || !video) return;
 
-        /* =========================================================
-           CONTINUE WATCHING — SAVE ONLY
-           This is intentionally passive: it never changes the player.
-           ========================================================= */
-        (() => {
-            const CW_KEY = "cineflix_continue_watching_v1";
-            const CW_ID = String(movie && movie.id || "");
-            if(!CW_ID) return;
+        let cwLastSaved = 0;
+        let cwRestored = false;
 
-            let cwLastSaved = 0;
+        function cwItems(){
+            try{
+                const a = JSON.parse(localStorage.getItem(CW_KEY) || "[]");
+                return Array.isArray(a) ? a : [];
+            }catch(e){ return []; }
+        }
 
-            function cwRead(){
-                try{
-                    const value = JSON.parse(
-                        localStorage.getItem(CW_KEY) || "[]"
-                    );
-                    return Array.isArray(value) ? value : [];
-                }catch(e){
-                    return [];
+        function cwSet(a){
+            try{
+                localStorage.setItem(CW_KEY, JSON.stringify(a.slice(0,20)));
+            }catch(e){}
+        }
+
+        function cwRemove(){
+            cwSet(cwItems().filter(x => String(x.id) !== CW_ID));
+        }
+
+        function cwDuration(){
+            const d = Number(video.duration);
+            if(Number.isFinite(d) && d > 0) return d;
+
+            const r = Number(movie.runtime || 0) * 60;
+            return Number.isFinite(r) && r > 0 ? r : 0;
+        }
+
+        function cwSave(force){
+            try{
+                const t = Number(video.currentTime) || 0;
+                const d = cwDuration();
+
+                if(t <= 1 || !d || !Number.isFinite(d)) return;
+
+                if(t >= d - 1){
+                    cwRemove();
+                    return;
                 }
-            }
 
-            function cwWrite(value){
-                try{
-                    localStorage.setItem(
-                        CW_KEY,
-                        JSON.stringify(value.slice(0,20))
-                    );
-                }catch(e){}
-            }
+                if(!force && t - cwLastSaved < 2) return;
+                cwLastSaved = t;
 
-            function cwSave(force){
-                try{
-                    const current = Number(video.currentTime) || 0;
-                    if(current <= 1) return;
+                const item = {
+                    id: movie.id,
+                    title: movie.title || "Untitled",
+                    thumb: movie.backdrop_url || movie.poster_url || "",
+                    poster: movie.poster_url || movie.backdrop_url || "",
+                    currentTime: t,
+                    duration: d,
+                    updatedAt: Date.now()
+                };
 
-                    let duration = Number(video.duration) || 0;
-                    if(!Number.isFinite(duration) || duration <= 0){
-                        duration = Number(movie.runtime || 0) * 60;
-                    }
+                const list = cwItems().filter(
+                    x => String(x.id) !== CW_ID
+                );
+                list.unshift(item);
+                cwSet(list);
+            }catch(e){}
+        }
 
-                    if(!Number.isFinite(duration) || duration <= current){
-                        return;
-                    }
+        function cwRestore(){
+            if(cwRestored) return;
 
-                    if(!force && current - cwLastSaved < 2){
-                        return;
-                    }
+            try{
+                const saved = cwItems().find(
+                    x => String(x.id) === CW_ID
+                );
 
-                    cwLastSaved = current;
-
-                    const item = {
-                        id: movie.id,
-                        title: movie.title || "Untitled",
-                        thumb: movie.backdrop_url || movie.poster_url || "",
-                        poster: movie.poster_url || "",
-                        currentTime: current,
-                        duration: duration,
-                        updatedAt: Date.now()
-                    };
-
-                    const list = cwRead().filter(
-                        x => String(x.id) !== CW_ID
-                    );
-
-                    list.unshift(item);
-                    cwWrite(list);
-                }catch(e){}
-            }
-
-            function cwFinished(){
-                try{
-                    const current = Number(video.currentTime) || 0;
-                    let duration = Number(video.duration) || 0;
-                    if(!Number.isFinite(duration) || duration <= 0){
-                        duration = Number(movie.runtime || 0) * 60;
-                    }
-
-                    if(duration > 0 && current >= duration - 1){
-                        const list = cwRead().filter(
-                            x => String(x.id) !== CW_ID
-                        );
-                        cwWrite(list);
-                    }
-                }catch(e){}
-            }
-
-            video.addEventListener("timeupdate",()=>cwSave(false));
-            video.addEventListener("pause",()=>cwSave(true));
-            video.addEventListener("ended",cwFinished);
-
-            window.addEventListener("pagehide",()=>cwSave(true));
-            document.addEventListener("visibilitychange",()=>{
-                if(document.visibilityState === "hidden"){
-                    cwSave(true);
+                if(!saved){
+                    cwRestored = true;
+                    return;
                 }
-            });
-        })();
+
+                const t = Number(saved.currentTime) || 0;
+                const d = Number(video.duration);
+
+                // Wait until the EXISTING player has its real duration.
+                if(!Number.isFinite(d) || d <= 0) return;
+
+                if(t <= 1 || t >= d - 1){
+                    if(t >= d - 1) cwRemove();
+                    cwRestored = true;
+                    return;
+                }
+
+                // Only seek. Never call play(), load(), src=, or HLS methods.
+                if(Math.abs((Number(video.currentTime)||0) - t) > 1){
+                    video.currentTime = Math.min(t, d - 1);
+                }
+
+                cwRestored = true;
+            }catch(e){
+                cwRestored = true;
+            }
+        }
+
+        video.addEventListener("loadedmetadata", cwRestore);
+        video.addEventListener("durationchange", cwRestore);
+        video.addEventListener("timeupdate", function(){ cwSave(false); });
+        video.addEventListener("pause", function(){ cwSave(true); });
+        video.addEventListener("ended", cwRemove);
+
+        window.addEventListener("pagehide", function(){ cwSave(true); });
+        document.addEventListener("visibilitychange", function(){
+            if(document.visibilityState === "hidden") cwSave(true);
+        });
+    }catch(e){}
+})();
+
     }
 
     async function getMovie(){
