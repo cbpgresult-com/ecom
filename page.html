@@ -1267,6 +1267,161 @@ body{
     }
 }
 </style>
+
+<style id="continue-watching-mobile-tablet">
+/* Continue Watching is intentionally limited to mobile/tablet.
+   Desktop layout is untouched. */
+.continue-watching-section{
+    display:none;
+}
+@media (max-width:1024px){
+    .continue-watching-section{
+        display:block;
+        margin-bottom:20px;
+    }
+    .continue-watching-section[hidden]{
+        display:none !important;
+    }
+    .continue-watching-section .section-header{
+        margin-bottom:10px;
+    }
+    .continue-watching-section .section-title{
+        display:flex;
+        align-items:center;
+        gap:8px;
+    }
+    .continue-watching-section .section-title span{
+        display:none;
+    }
+    .continue-row{
+        display:flex;
+        gap:10px;
+        width:100%;
+        overflow-x:auto;
+        overflow-y:hidden;
+        scroll-snap-type:x mandatory;
+        scroll-behavior:smooth;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;
+        scrollbar-width:none;
+        padding:0 1px 4px;
+        touch-action:pan-x;
+    }
+    .continue-row::-webkit-scrollbar{
+        display:none;
+    }
+    .continue-card{
+        flex:0 0 calc((100% - 10px)/2);
+        min-width:0;
+        scroll-snap-align:start;
+        scroll-snap-stop:always;
+        cursor:pointer;
+        user-select:none;
+        -webkit-user-select:none;
+    }
+    .continue-thumb{
+        position:relative;
+        width:100%;
+        aspect-ratio:16/9;
+        overflow:hidden;
+        border-radius:9px;
+        background:#151518;
+        border:1px solid rgba(255,255,255,.06);
+        box-shadow:0 7px 22px rgba(0,0,0,.25);
+    }
+    .continue-thumb img{
+        width:100%;
+        height:100%;
+        display:block;
+        object-fit:cover;
+    }
+    .continue-thumb::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:linear-gradient(to top,rgba(0,0,0,.48),transparent 55%);
+        pointer-events:none;
+    }
+    .continue-play{
+        position:absolute;
+        left:50%;
+        top:50%;
+        transform:translate(-50%,-50%);
+        width:36px;
+        height:36px;
+        border-radius:50%;
+        display:grid;
+        place-items:center;
+        z-index:2;
+        background:rgba(0,0,0,.50);
+        border:1px solid rgba(255,255,255,.25);
+        box-shadow:0 5px 18px rgba(0,0,0,.35);
+        backdrop-filter:blur(5px);
+    }
+    .continue-play svg{
+        width:17px;
+        height:17px;
+        fill:#fff;
+        margin-left:2px;
+    }
+    .continue-progress{
+        position:absolute;
+        left:7px;
+        right:7px;
+        bottom:6px;
+        height:3px;
+        border-radius:4px;
+        background:rgba(255,255,255,.28);
+        overflow:hidden;
+        z-index:3;
+    }
+    .continue-progress i{
+        display:block;
+        height:100%;
+        border-radius:4px;
+        background:#e50914;
+    }
+    .continue-info{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:7px;
+        margin-top:7px;
+        min-width:0;
+    }
+    .continue-title{
+        min-width:0;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        color:#fff;
+        font-size:13px;
+        line-height:1.25;
+        font-weight:800;
+    }
+    .continue-left{
+        flex:0 0 auto;
+        color:#aaaab2;
+        font-size:11px;
+        line-height:1.3;
+        white-space:nowrap;
+    }
+    @media (max-width:600px){
+        .continue-card{
+            flex-basis:calc((100% - 10px)/2);
+        }
+        .continue-thumb{
+            border-radius:8px;
+        }
+        .continue-title{
+            font-size:12px;
+        }
+        .continue-left{
+            font-size:10px;
+        }
+    }
+}
+</style>
 </head>
 
 <body>
@@ -1504,6 +1659,19 @@ body{
 
 <main class="content" id="mainContent">
 
+
+
+    <!-- CONTINUE WATCHING -->
+    <section class="section continue-watching-section" id="continueWatchingSection" hidden>
+        <div class="section-header">
+            <h2 class="section-title">
+                Continue Watching
+            </h2>
+            <a href="#" class="see-all" id="continueSeeAll">See all</a>
+        </div>
+
+        <div class="continue-row" id="continueWatchingRow"></div>
+    </section>
 
     <!-- TRENDING -->
     <section class="section" id="trending">
@@ -2351,6 +2519,110 @@ document.querySelectorAll(".mobile-nav button")
 });
 
 
+
+/* =========================================================
+   CONTINUE WATCHING
+   Real playback progress is written by the Movie page after
+   the video has actually played for more than 1 second.
+========================================================= */
+const CONTINUE_KEY="cineflix_continue_watching_v1";
+
+function continueFormatTime(seconds){
+    seconds=Math.max(0,Math.floor(Number(seconds)||0));
+    const h=Math.floor(seconds/3600);
+    const m=Math.floor((seconds%3600)/60);
+    const s=seconds%60;
+    if(h>0) return h+"h "+String(m).padStart(2,"0")+"m left";
+    return m+"m "+String(s).padStart(2,"0")+"s left";
+}
+
+function getContinueItems(){
+    try{
+        const value=JSON.parse(localStorage.getItem(CONTINUE_KEY)||"[]");
+        return Array.isArray(value) ? value : [];
+    }catch(e){
+        return [];
+    }
+}
+
+function saveContinueItems(items){
+    try{
+        localStorage.setItem(CONTINUE_KEY,JSON.stringify(items.slice(0,20)));
+    }catch(e){}
+}
+
+function renderContinueWatching(){
+    const section=document.getElementById("continueWatchingSection");
+    const row=document.getElementById("continueWatchingRow");
+    if(!section||!row) return;
+
+    const items=getContinueItems()
+        .filter(item=>
+            item &&
+            item.id &&
+            Number(item.currentTime)>1 &&
+            Number(item.duration)>Number(item.currentTime)+1
+        )
+        .sort((a,b)=>(Number(b.updatedAt)||0)-(Number(a.updatedAt)||0));
+
+    if(!items.length){
+        section.hidden=true;
+        row.innerHTML="";
+        return;
+    }
+
+    section.hidden=false;
+    row.innerHTML="";
+
+    items.forEach(item=>{
+        const current=Number(item.currentTime)||0;
+        const duration=Number(item.duration)||0;
+        const percent=duration ? Math.min(100,Math.max(0,(current/duration)*100)) : 0;
+
+        const card=document.createElement("article");
+        card.className="continue-card";
+        card.setAttribute("role","link");
+        card.setAttribute("tabindex","0");
+        card.innerHTML=`
+            <div class="continue-thumb">
+                <img src="${String(item.thumb||item.poster||"").replace(/"/g,"&quot;")}"
+                     alt="${String(item.title||"").replace(/"/g,"&quot;")}"
+                     loading="lazy">
+                <div class="continue-play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7L8 5z"/>
+                    </svg>
+                </div>
+                <div class="continue-progress">
+                    <i style="width:${percent}%"></i>
+                </div>
+            </div>
+            <div class="continue-info">
+                <div class="continue-title">${item.title||"Untitled"}</div>
+                <div class="continue-left">${continueFormatTime(duration-current)}</div>
+            </div>
+        `;
+
+        const open=()=>{
+            window.location.href="movie.html?id="+encodeURIComponent(item.id);
+        };
+        card.addEventListener("click",open);
+        card.addEventListener("keydown",e=>{
+            if(e.key==="Enter"||e.key===" ") {
+                e.preventDefault();
+                open();
+            }
+        });
+
+        row.appendChild(card);
+    });
+}
+
+window.addEventListener("storage",e=>{
+    if(e.key===CONTINUE_KEY) renderContinueWatching();
+});
+window.addEventListener("pageshow",renderContinueWatching);
+
 /* =========================================================
    LOAD DATABASE MOVIES
 ========================================================= */
@@ -2435,6 +2707,8 @@ async function loadDatabaseMovies(){
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded",()=>{
+
+    renderContinueWatching();
 
     // No demo cards are rendered on startup.
     // Real cards appear only after Supabase responds.
