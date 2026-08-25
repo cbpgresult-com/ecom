@@ -616,6 +616,56 @@ body{
     color:#ffd43b;
 }
 
+.card-actions{
+    position:absolute;
+    top:8px;
+    right:8px;
+    display:flex;
+    gap:5px;
+    opacity:0;
+    transform:translateY(-5px);
+    transition:.25s;
+    z-index:5;
+}
+
+.movie-card:hover .card-actions{
+    opacity:1;
+    transform:none;
+}
+
+.card-action{
+    width:30px;
+    height:30px;
+    border:0;
+    border-radius:50%;
+    background:rgba(0,0,0,.65);
+    color:#fff;
+    backdrop-filter:blur(8px);
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+}
+
+.card-action:hover{
+    background:var(--red);
+}
+
+.card-action svg{
+    width:14px;
+    height:14px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:2;
+}
+
+.card-action.liked{
+    color:#ff3340;
+}
+
+.card-action.liked svg{
+    fill:currentColor;
+}
+
 /* =========================================================
    ROW ARROWS
 ========================================================= */
@@ -1152,6 +1202,58 @@ body{
 }
 
 /* =========================================================
+   MOBILE / TABLET — 3 CARD SLIDER
+   Desktop is intentionally untouched.
+========================================================= */
+
+@media(max-width:1200px){
+
+    .movie-row{
+        gap:10px;
+        padding-right:15px;
+        scroll-snap-type:x proximity;
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .movie-card,
+    .loading-card{
+        /* Exactly 3 complete cards in the visible row. */
+        flex:0 0 calc((100% - 20px)/3);
+        min-width:0;
+        scroll-snap-align:start;
+        scroll-snap-stop:normal;
+    }
+
+    .loading-card{
+        border-radius:8px;
+    }
+
+    .loading-card::before{
+        animation-duration:1.25s;
+    }
+}
+
+@media(max-width:800px){
+
+    .movie-row{
+        gap:9px;
+        padding-right:15px;
+        scroll-snap-type:x mandatory;
+    }
+
+    .movie-card,
+    .loading-card{
+        /* 3 cards + 2 gaps, all fully visible without clipping. */
+        flex:0 0 calc((100% - 18px)/3);
+        scroll-snap-align:start;
+    }
+
+    .loading-card{
+        border-radius:6px;
+    }
+}
+
+/* =========================================================
    REDUCED MOTION
 ========================================================= */
 
@@ -1163,120 +1265,6 @@ body{
         transition:none!important;
         animation:none!important;
     }
-}
-</style>
-
-<style id="mobile-three-grid-fix">
-/* MOBILE + TABLET ONLY — desktop remains untouched */
-@media (max-width: 1024px){
-
-    /* Keep the existing section/row structure, but show 3 equal cards
-       comfortably inside the same viewport. */
-    .movie-row{
-        display:grid !important;
-        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-        gap:10px !important;
-        overflow-x:hidden !important;
-        width:100% !important;
-        padding-right:0 !important;
-    }
-
-    .movie-row .movie-card,
-    .movie-row .loading-card{
-        width:100% !important;
-        min-width:0 !important;
-        max-width:none !important;
-        flex:none !important;
-        flex-basis:auto !important;
-        aspect-ratio:2 / 3 !important;
-        border-radius:8px !important;
-    }
-
-    /* Skeletons use exactly the same 3-card geometry. */
-    .movie-row .loading-card{
-        position:relative !important;
-        overflow:hidden !important;
-        background:#151518 !important;
-    }
-
-    .movie-row .loading-card::before{
-        content:"" !important;
-        position:absolute !important;
-        inset:0 !important;
-        background:linear-gradient(
-            110deg,
-            rgba(255,255,255,0) 25%,
-            rgba(255,255,255,.075) 45%,
-            rgba(255,255,255,0) 65%
-        ) !important;
-        background-size:250% 100% !important;
-        animation:mobileThreeGridShimmer 1.35s ease-in-out infinite !important;
-    }
-
-    .movie-row .loading-card::after{
-        content:"" !important;
-        position:absolute !important;
-        left:8px !important;
-        right:8px !important;
-        bottom:8px !important;
-        height:34px !important;
-        border-radius:5px !important;
-        background:
-            linear-gradient(
-                to bottom,
-                rgba(255,255,255,.10) 0 8px,
-                transparent 8px 14px,
-                rgba(255,255,255,.065) 14px 20px,
-                transparent 20px
-            ) !important;
-    }
-
-    @keyframes mobileThreeGridShimmer{
-        0%{background-position:200% 0}
-        100%{background-position:-50% 0}
-    }
-}
-
-/* Smaller phones: keep 3 columns but make the spacing/card sizing cute. */
-@media (max-width: 480px){
-    .movie-row{
-        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-        gap:8px !important;
-    }
-
-    .movie-row .movie-card,
-    .movie-row .loading-card{
-        border-radius:7px !important;
-    }
-}
-</style>
-
-<style id="cineflix-badge-style">
-.movie-card{position:relative}
-.movie-badge{
-    position:absolute;
-    top:9px;
-    right:0;
-    z-index:7;
-    max-width:72%;
-    padding:5px 8px 5px 10px;
-    font-size:9px;
-    line-height:1;
-    font-weight:900;
-    letter-spacing:.25px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    border-radius:7px 0 0 7px;
-    pointer-events:none;
-    box-shadow:0 3px 12px rgba(0,0,0,.28);
-}
-.badge-style-1{background:#e50914;color:#fff}
-.badge-style-2{background:rgba(255,255,255,.94);color:#111}
-.badge-style-3{background:rgba(0,0,0,.72);color:#fff;border:1px solid rgba(255,255,255,.28)}
-.badge-style-4{background:linear-gradient(135deg,#ff3150,#8b5cf6);color:#fff}
-@media(max-width:1024px){
-    .movie-badge{top:7px;padding:4px 6px 4px 8px;font-size:8px;border-radius:6px 0 0 6px}
 }
 </style>
 </head>
@@ -1752,10 +1740,25 @@ function createMovieCard(movie){
 
         <div class="movie-gradient"></div>
 
-        ${movie.badgeText ? `
-        <div class="movie-badge badge-style-${Math.min(4,Math.max(1,Number(movie.badgeStyle||1)))}">
-            ${escapeHtml(movie.badgeText)}
-        </div>` : ""}
+        <div class="card-actions">
+
+            <button class="card-action like-btn" aria-label="Like" type="button">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M20.8 8.7c0 5.5-8.8 10.2-8.8 10.2S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.5z"/>
+                </svg>
+
+            </button>
+
+            <button class="card-action" aria-label="Add" type="button">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+
+            </button>
+
+        </div>
 
         <div class="movie-info">
 
@@ -2365,7 +2368,7 @@ async function loadDatabaseMovies(){
     try{
         const {data,error}=await supabaseClient
             .from("movies")
-            .select("id,title,year,rating,poster_url,genres,category,is_trending,is_new_release,sort_order,created_at,badge_style,badge_text")
+            .select("id,title,year,rating,poster_url,genres,category,is_trending,is_new_release,sort_order,created_at")
             .order("sort_order",{ascending:true})
             .order("created_at",{ascending:false});
 
@@ -2387,9 +2390,7 @@ async function loadDatabaseMovies(){
             category:m.category || "Movies",
             isTrending:Boolean(m.is_trending),
             isNewRelease:Boolean(m.is_new_release),
-            createdAt:m.created_at || "",
-            badgeStyle:Number(m.badge_style||1),
-            badgeText:String(m.badge_text||"").trim()
+            createdAt:m.created_at || ""
         })).filter(m=>m.id && m.image);
 
         movies=mapped;
