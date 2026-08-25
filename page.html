@@ -543,7 +543,7 @@ body{
 }
 
 .movie-card{
-    flex:0 0 calc((100vw - 44px) / 3);
+    flex:0 0 170px;
     aspect-ratio:2/3;
     border-radius:8px;
     overflow:hidden;
@@ -841,14 +841,13 @@ body{
 }
 
 .loading-card{
-    flex:0 0 calc((100vw - 44px) / 3);
+    flex:0 0 170px;
     aspect-ratio:2/3;
-    border-radius:7px;
+    border-radius:8px;
     position:relative;
     overflow:hidden;
-    background:#17171b;
-    border:1px solid rgba(255,255,255,.055);
-    box-shadow:0 5px 18px rgba(0,0,0,.14);
+    background:#151518;
+    border:1px solid rgba(255,255,255,.04);
 }
 
 .loading-card::before{
@@ -856,15 +855,13 @@ body{
     position:absolute;
     inset:0;
     background:linear-gradient(
-        105deg,
-        rgba(255,255,255,0) 30%,
-        rgba(255,255,255,.055) 43%,
-        rgba(255,255,255,.11) 50%,
-        rgba(255,255,255,.055) 57%,
-        rgba(255,255,255,0) 70%
+        110deg,
+        rgba(255,255,255,0) 25%,
+        rgba(255,255,255,.07) 45%,
+        rgba(255,255,255,0) 65%
     );
-    background-size:280% 100%;
-    animation:cardShimmer 1.25s linear infinite;
+    background-size:250% 100%;
+    animation:cardShimmer 1.35s ease-in-out infinite;
 }
 
 .loading-card::after{
@@ -1096,8 +1093,8 @@ body{
 
     .movie-card,
     .loading-card{
-        flex:0 0 calc((100vw - 44px) / 3);
-        border-radius:7px;
+        flex-basis:125px;
+        border-radius:6px;
     }
 
     .movie-info{
@@ -1215,6 +1212,91 @@ body{
         scroll-behavior:auto!important;
         transition:none!important;
         animation:none!important;
+    }
+}
+</style>
+
+<style id="mobile-three-grid-fix">
+/* MOBILE + TABLET ONLY — desktop remains untouched */
+@media (max-width: 1024px){
+
+    /* Keep the existing section/row structure, but show 3 equal cards
+       comfortably inside the same viewport. */
+    .movie-row{
+        display:grid !important;
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+        gap:10px !important;
+        overflow-x:hidden !important;
+        width:100% !important;
+        padding-right:0 !important;
+    }
+
+    .movie-row .movie-card,
+    .movie-row .loading-card{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        flex:none !important;
+        flex-basis:auto !important;
+        aspect-ratio:2 / 3 !important;
+        border-radius:8px !important;
+    }
+
+    /* Skeletons use exactly the same 3-card geometry. */
+    .movie-row .loading-card{
+        position:relative !important;
+        overflow:hidden !important;
+        background:#151518 !important;
+    }
+
+    .movie-row .loading-card::before{
+        content:"" !important;
+        position:absolute !important;
+        inset:0 !important;
+        background:linear-gradient(
+            110deg,
+            rgba(255,255,255,0) 25%,
+            rgba(255,255,255,.075) 45%,
+            rgba(255,255,255,0) 65%
+        ) !important;
+        background-size:250% 100% !important;
+        animation:mobileThreeGridShimmer 1.35s ease-in-out infinite !important;
+    }
+
+    .movie-row .loading-card::after{
+        content:"" !important;
+        position:absolute !important;
+        left:8px !important;
+        right:8px !important;
+        bottom:8px !important;
+        height:34px !important;
+        border-radius:5px !important;
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(255,255,255,.10) 0 8px,
+                transparent 8px 14px,
+                rgba(255,255,255,.065) 14px 20px,
+                transparent 20px
+            ) !important;
+    }
+
+    @keyframes mobileThreeGridShimmer{
+        0%{background-position:200% 0}
+        100%{background-position:-50% 0}
+    }
+}
+
+/* Smaller phones: keep 3 columns but make the spacing/card sizing cute. */
+@media (max-width: 480px){
+    .movie-row{
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+        gap:8px !important;
+    }
+
+    .movie-row .movie-card,
+    .movie-row .loading-card{
+        border-radius:7px !important;
     }
 }
 </style>
