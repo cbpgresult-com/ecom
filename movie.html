@@ -10,7 +10,6 @@
 
 <style>
 
-/* CINEFLIX: Auto mode starts at 480p (level 0), then adapts to network speed. */
 /* =========================================================
    CINEFLIX MOVIE PAGE
 ========================================================= */
@@ -238,14 +237,10 @@ button{
 }
 
 .video-player video{
-    position:relative;
-    z-index:2;
     width:100%;
     height:100%;
 
-    display:block !important;
-    visibility:visible !important;
-    opacity:1 !important;
+    display:block;
 
     object-fit:contain;
 
@@ -503,41 +498,28 @@ button{
     width:58px;
     height:58px;
     z-index:24;
-    border:0;
+    border:1px solid rgba(255,255,255,.14);
     border-radius:50%;
     display:none;
     place-items:center;
     cursor:pointer;
-    background:transparent;
-    box-shadow:none;
-    backdrop-filter:none;
-    -webkit-backdrop-filter:none;
+    background:rgba(18,18,18,.44);
+    box-shadow:0 8px 28px rgba(0,0,0,.34);
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
     opacity:0;
-    transition:opacity .16s ease, transform .16s ease;
+    transition:opacity .16s ease, transform .16s ease, background .16s ease;
 }
 .center-play-pause.show{
     display:grid;
     opacity:1;
 }
-
-/* Center play/pause follows the same visibility as the player controls. */
-.video-player.controls-visible .center-play-pause{
-    display:grid;
-    opacity:1;
-}
-.video-player.controls-hidden .center-play-pause{
-    display:none !important;
-    opacity:0;
-}
-.video-player.trailer-mode .center-play-pause{
-    display:none !important;
-}
 .center-play-pause:active{
     transform:translate(-50%,-50%) scale(.94);
 }
 .center-play-pause svg{
-    width:34px;
-    height:34px;
+    width:25px;
+    height:25px;
     fill:#fff;
 }
 .center-play-icon,.center-pause-icon{display:none;}
@@ -615,7 +597,6 @@ button{
 /* CENTER PLAY */
 
 .center-play{
-    display:none !important;
     position:absolute;
 
     left:50%;
@@ -1057,7 +1038,7 @@ button{
 
     cursor:pointer;
 
-    margin-bottom:2px;
+    margin-bottom:11px;
 }
 
 .progress{
@@ -1180,35 +1161,12 @@ button{
     stroke-linejoin:round;
 }
 
-.time-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:0;
-    min-height:12px;
-    margin:0 0 3px;
-    padding:0 1px;
-    color:#ddd;
-    font-variant-numeric:tabular-nums;
-}
 .time{
-    color:#e8e8e8;
-    font-size:10px;
-    font-weight:650;
-    line-height:1;
-    font-variant-numeric:tabular-nums;
-}
-.time-separator{
-    display:none;
-}
-.time-total{
-    position:static;
-    color:#bdbdbd;
-    margin-left:auto;
-    font-variant-numeric:tabular-nums;
-}
-.control-row{
-    position:relative;
+    color:#ddd;
+
+    font-size:9px;
+
+    font-weight:600;
 }
 
 .control-spacer{
@@ -2484,17 +2442,13 @@ button{
     visibility:hidden !important;
     pointer-events:none !important;
 }
-.player-video,
-#movieVideo{
+.player-video{
     position:relative !important;
     z-index:2 !important;
     display:block !important;
-    visibility:visible !important;
-    opacity:1 !important;
     width:100% !important;
     height:100% !important;
-    object-fit:contain !important;
-    background:#000 !important;
+    object-fit:cover !important;
 }
 .player-overlay{
     z-index:3 !important;
@@ -2826,112 +2780,6 @@ button{
 }
 
 
-
-/* =========================================================
-   FULL PAGE SKELETON LOADER
-========================================================= */
-.movie-page-skeleton{
-    position:fixed;
-    inset:0;
-    z-index:950;
-    overflow:hidden;
-    background:#050506;
-    color:#fff;
-    opacity:1;
-    visibility:visible;
-    pointer-events:auto;
-}
-body:not(.cineflix-db-loading) .movie-page-skeleton,
-body.cineflix-db-error .movie-page-skeleton{
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-    transition:opacity .12s ease,visibility 0s linear .12s;
-}
-.skeleton-shimmer{
-    position:relative;
-    overflow:hidden;
-    background:#17171b;
-    border-radius:7px;
-}
-.skeleton-shimmer::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    transform:translateX(-100%);
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.065),transparent);
-    animation:skeletonShimmer 1.25s ease-in-out infinite;
-}
-@keyframes skeletonShimmer{100%{transform:translateX(100%);}}
-
-.skeleton-header{
-    height:86px;
-    display:flex;
-    align-items:center;
-    gap:28px;
-    padding:0 54px;
-    border-bottom:1px solid rgba(255,255,255,.035);
-}
-.skeleton-logo{width:142px;height:29px;}
-.skeleton-nav{display:flex;gap:27px;align-items:center;flex:1;}
-.skeleton-nav span{width:54px;height:12px;border-radius:5px;}
-.skeleton-nav span:nth-child(2){width:51px;}
-.skeleton-nav span:nth-child(3){width:51px;}
-.skeleton-nav span:nth-child(4){width:62px;}
-.skeleton-nav span:nth-child(5){width:51px;}
-.skeleton-head-actions{display:flex;gap:18px;align-items:center;}
-.skeleton-icon{width:21px;height:21px;border-radius:50%;}
-.skeleton-profile{width:38px;height:38px;border-radius:50%;}
-
-.skeleton-main{
-    width:100%;
-    max-width:900px;
-    margin:0 auto;
-    padding-top:62px;
-    padding-bottom:90px;
-}
-.skeleton-player{width:100%;aspect-ratio:16/9;border-radius:0;}
-.skeleton-title{width:52%;height:38px;margin-top:29px;}
-.skeleton-meta{display:flex;gap:10px;margin-top:13px;}
-.skeleton-meta span{height:12px;width:40px;border-radius:5px;}
-.skeleton-meta span:nth-child(2),
-.skeleton-meta span:nth-child(4),
-.skeleton-meta span:nth-child(6){width:8px;}
-.skeleton-meta span:nth-child(3){width:42px;}
-.skeleton-meta span:nth-child(5){width:52px;}
-.skeleton-meta span:nth-child(7){width:29px;}
-.skeleton-genres{display:flex;gap:9px;margin-top:16px;}
-.skeleton-genre{width:67px;height:27px;border-radius:16px;}
-.skeleton-genre:nth-child(2){width:58px;}
-.skeleton-genre:nth-child(3){width:91px;}
-.skeleton-actions{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:9px;
-    margin-top:18px;
-    max-width:460px;
-}
-.skeleton-action{height:65px;border:1px solid rgba(255,255,255,.055);border-radius:9px;}
-.skeleton-about{width:170px;height:22px;margin-top:28px;}
-.skeleton-lines{margin-top:14px;display:grid;gap:9px;}
-.skeleton-line{height:12px;width:91%;}
-.skeleton-line:nth-child(2){width:84%;}
-.skeleton-line:nth-child(3){width:72%;}
-
-@media(max-width:700px){
-    .skeleton-header{height:76px;padding:0 17px;gap:15px;}
-    .skeleton-logo{width:119px;height:25px;}
-    .skeleton-nav{display:none;}
-    .skeleton-head-actions{margin-left:auto;gap:15px;}
-    .skeleton-profile{width:34px;height:34px;}
-    .skeleton-main{width:100%;padding-top:0;padding-bottom:80px;}
-    .skeleton-title{width:76%;height:31px;margin:25px 17px 0;}
-    .skeleton-meta{margin-left:17px;margin-right:17px;}
-    .skeleton-genres{margin-left:17px;margin-right:17px;overflow:hidden;}
-    .skeleton-actions{margin-left:17px;margin-right:17px;max-width:none;}
-    .skeleton-about,.skeleton-lines{margin-left:17px;margin-right:17px;}
-}
-
 /* Prevent the old demo content from flashing before Supabase data arrives. */
 body.cineflix-db-loading .page{
     visibility:hidden;
@@ -3236,86 +3084,14 @@ body.cineflix-db-error .cineflix-db-message{
 .video-player.trailer-mode .player-top{
     pointer-events:none;
 }
-#trailerFrameOverlay{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#000;z-index:40;}
+#trailerFrameOverlay{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#000;z-index:8;}
 #trailerFrameOverlay.show{display:block;}
 .video-player{position:relative;}
-/* Only the temporary mode badge is used. Hide the older duplicate label. */
-.player-top{
-    display:none !important;
-}
-
-
-/* =========================================================
-   TRAILER LOAD OVERLAY
-   Covers YouTube's initial black iframe while it buffers.
-   It disappears as soon as YouTube reports PLAYING.
-========================================================= */
-.video-player.trailer-mode .player-loading{
-    z-index:60 !important;
-    background:rgba(0,0,0,.16);
-}
-.video-player.trailer-mode .player-loading.show{
-    opacity:1;
-    visibility:visible;
-}
-.video-player.trailer-mode #trailerFrameOverlay{
-    z-index:40;
-}
-
 </style>
 </head>
 
 
 <body class="cineflix-db-loading">
-
-<div class="movie-page-skeleton" id="moviePageSkeleton" aria-label="Loading movie">
-    <div class="skeleton-header">
-        <div class="skeleton-shimmer skeleton-logo"></div>
-        <div class="skeleton-nav">
-            <span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span>
-            <span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span>
-            <span class="skeleton-shimmer"></span>
-        </div>
-        <div class="skeleton-head-actions">
-            <span class="skeleton-shimmer skeleton-icon"></span>
-            <span class="skeleton-shimmer skeleton-icon"></span>
-            <span class="skeleton-shimmer skeleton-profile"></span>
-        </div>
-    </div>
-
-    <div class="skeleton-main">
-        <div class="skeleton-shimmer skeleton-player"></div>
-        <div class="skeleton-shimmer skeleton-title"></div>
-
-        <div class="skeleton-meta">
-            <span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span>
-            <span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span>
-            <span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span>
-            <span class="skeleton-shimmer"></span>
-        </div>
-
-        <div class="skeleton-genres">
-            <span class="skeleton-shimmer skeleton-genre"></span>
-            <span class="skeleton-shimmer skeleton-genre"></span>
-            <span class="skeleton-shimmer skeleton-genre"></span>
-        </div>
-
-        <div class="skeleton-actions">
-            <span class="skeleton-shimmer skeleton-action"></span>
-            <span class="skeleton-shimmer skeleton-action"></span>
-            <span class="skeleton-shimmer skeleton-action"></span>
-            <span class="skeleton-shimmer skeleton-action"></span>
-        </div>
-
-        <div class="skeleton-shimmer skeleton-about"></div>
-        <div class="skeleton-lines">
-            <span class="skeleton-shimmer skeleton-line"></span>
-            <span class="skeleton-shimmer skeleton-line"></span>
-            <span class="skeleton-shimmer skeleton-line"></span>
-        </div>
-    </div>
-</div>
-
 <div class="cineflix-db-message" id="cineflixDbMessage">Movie could not be loaded.</div>
 
 
@@ -3505,11 +3281,6 @@ body.cineflix-db-error .cineflix-db-message{
 
         </div>
 
-        <div class="time-row" aria-label="Video time">
-            <span class="time time-current" id="time">00:00</span>
-            <span class="time-separator">/</span>
-            <span class="time time-total" id="durationTime">00:00</span>
-        </div>
 
         <div class="control-row">
 
@@ -3540,6 +3311,11 @@ body.cineflix-db-error .cineflix-db-message{
                 </svg>
 
             </button>
+
+
+            <span class="time" id="time">
+                00:00
+            </span>
 
 
             <span class="control-spacer"></span>
@@ -4593,9 +4369,6 @@ const progressArea =
 const time =
     document.getElementById("time");
 
-const durationTime =
-    document.getElementById("durationTime");
-
 const muteBtn =
     document.getElementById("muteBtn");
 
@@ -4845,7 +4618,6 @@ function updateCenterPlayPause(){
 
 function showCenterPlayPause(){
     if(!centerPlayPause) return;
-    if(playerSurface && playerSurface.classList.contains("trailer-mode")) return;
     updateCenterPlayPause();
     centerPlayPause.classList.add("show");
     clearTimeout(window.__centerPlayPauseTimer);
@@ -5206,29 +4978,10 @@ video.addEventListener("ended",()=>{
     }
 });
 
-function syncCenterPlayPauseWithControls(){
-    if(!playerSurface || !centerPlayPause || !playerControls) return;
-    const hidden=playerControls.classList.contains("auto-hidden");
-    if(hidden){
-        playerSurface.classList.remove("controls-visible");
-        playerSurface.classList.add("controls-hidden");
-        centerPlayPause.classList.remove("show");
-    }else{
-        playerSurface.classList.remove("controls-hidden");
-        playerSurface.classList.add("controls-visible");
-        if(!playerSurface.classList.contains("trailer-mode")){
-            updateCenterPlayPause();
-            centerPlayPause.classList.add("show");
-        }
-    }
-}
-
 function showPlayerControls(resetTimer=true){
     playerControls.classList.remove("auto-hidden");
     playerTop.classList.remove("auto-hidden");
-    playerTop.style.display="none";
     if(playerModeBadge) playerModeBadge.classList.add("show");
-    syncCenterPlayPauseWithControls();
 
     clearTimeout(controlsHideTimer);
 
@@ -5244,7 +4997,6 @@ function showPlayerControls(resetTimer=true){
             playerControls.classList.add("auto-hidden");
             playerTop.classList.add("auto-hidden");
             if(playerModeBadge) playerModeBadge.classList.remove("show");
-            syncCenterPlayPauseWithControls();
         },5000);
     }
 }
@@ -5253,9 +5005,7 @@ function hidePlayerControls(){
     clearTimeout(controlsHideTimer);
     playerControls.classList.add("auto-hidden");
     playerTop.classList.add("auto-hidden");
-    playerTop.style.display="none";
     if(playerModeBadge) playerModeBadge.classList.remove("show");
-    syncCenterPlayPauseWithControls();
 }
 
 function handlePlayerInteraction(e){
@@ -5326,14 +5076,6 @@ let currentQualityChoice = "auto";
 let hls = null;
 let hlsLevels = [];
 let hlsReady = false;
-
-/* Slow-network resilience: retry transient stream failures instead of
-   immediately replacing the player with an error state. */
-let hlsNetworkRetryCount = 0;
-let hlsRetryTimer = null;
-let nativeRetryCount = 0;
-let nativeRetryTimer = null;
-const MAX_STREAM_RETRIES = 8;
 let pendingAutoPlay = false;
 let pendingStartTime = 0;
 
@@ -5356,7 +5098,7 @@ function normalizeTrailerUrl(url){
 
     // Direct YouTube key from TMDB, e.g. "dQw4w9WgXcQ"
     if(/^[A-Za-z0-9_-]{11}$/.test(raw)){
-        return `https://www.youtube.com/embed/${encodeURIComponent(raw)}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1&controls=1&enablejsapi=1&origin=https%3A%2F%2Fcbpgresult-com.github.io`;
+        return `https://www.youtube.com/embed/${encodeURIComponent(raw)}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1&controls=1`;
     }
 
     try{
@@ -5376,7 +5118,7 @@ function normalizeTrailerUrl(url){
         }
 
         if(id){
-            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1&controls=1&enablejsapi=1&origin=https%3A%2F%2Fcbpgresult-com.github.io`;
+            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1&controls=1`;
         }
     }catch(e){}
 
@@ -5386,7 +5128,6 @@ function normalizeTrailerUrl(url){
 function isYouTubeUrl(url){
     return /(?:youtube\.com|youtu\.be)/i.test(url||"");
 }
-
 function showTrailerFrame(url){
     if(!trailerFrame){
         trailerFrame=document.createElement("iframe");
@@ -5397,106 +5138,37 @@ function showTrailerFrame(url){
         );
         trailerFrame.setAttribute("allowfullscreen","");
         trailerFrame.setAttribute("loading","eager");
-        trailerFrame.setAttribute("referrerpolicy","strict-origin-when-cross-origin");
         document.getElementById("videoPlayer")?.appendChild(trailerFrame);
     }
 
-    // Keep the CINEFLIX loader above YouTube's black startup frame.
-    initialPoster.classList.add("hidden");
-    initialPoster.setAttribute("aria-hidden","true");
+    // No CINEFLIX loading spinner for YouTube. YouTube controls/loading UI
+    // belongs to the iframe itself.
+    hidePlayerLoading();
     centerPlay.style.display="none";
-    if(centerPlayPause){
-        centerPlayPause.classList.remove("show");
-        centerPlayPause.style.display="none";
-    }
+    initialPoster.classList.add("hidden");
 
+    trailerFrame.src=normalizeTrailerUrl(url);
+    trailerFrame.classList.add("show");
     playerSurface.classList.add("trailer-mode");
 
     if(playerModeBadge){
         playerModeBadge.textContent="TRAILER";
         playerModeBadge.classList.add("show");
-        playerModeBadge.style.opacity="1";
-        playerModeBadge.style.visibility="visible";
     }
 
-    // Start our loader BEFORE assigning the iframe source.
-    showPlayerLoading();
-    playerLoading.style.zIndex="60";
-
-    // Assign only after the overlay is already visible, preventing the
-    // black iframe from being exposed without a loader.
-    trailerFrame.classList.add("show");
-
-    // YouTube does not reliably send its player-state postMessage in every
-    // browser/extension setup. Use the iframe load event as the reliable
-    // hand-off so our loader can NEVER remain stuck over a playing trailer.
-    clearTimeout(window.__cineflixTrailerLoaderFallback);
-    trailerFrame.onload=()=>{
-        // Ignore the intentional about:blank reset.
-        const currentSrc=trailerFrame.src || "";
-        if(currentSrc==="about:blank") return;
-
-        clearTimeout(window.__cineflixTrailerLoaderFallback);
-        requestAnimationFrame(()=>{
-            requestAnimationFrame(()=>{
-                hidePlayerLoading();
-                playerLoading.style.zIndex="";
-            });
-        });
-    };
-
-    // Keep our loader visible BEFORE starting every trailer load.
-    // This also runs on repeated Movie -> Trailer switches.
-    const trailerUrl=normalizeTrailerUrl(url);
-    trailerFrame.src="about:blank";
-
-    // Force a fresh YouTube document on every switch so the old black frame
-    // is never exposed without our loader above it.
-    requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{
-            trailerFrame.src=trailerUrl;
-        });
-    });
-
-    // Safety fallback: if a browser extension blocks iframe load events,
-    // never leave the CINEFLIX loader spinning forever.
-    window.__cineflixTrailerLoaderFallback=setTimeout(()=>{
-        hidePlayerLoading();
-        playerLoading.style.zIndex="";
-    },5000);
-
-    // Trailer uses YouTube's own controls. Keep CINEFLIX controls hidden.
-    hidePlayerControls();
+    // Trailer uses YouTube's own controls; only keep the temporary mode badge.
+    showPlayerControls(false);
     clearTimeout(controlsHideTimer);
-    // Trailer badge stays visible for the entire trailer mode.
-    if(playerModeBadge){
-        playerModeBadge.classList.add("show");
-        playerModeBadge.style.opacity="1";
-        playerModeBadge.style.visibility="visible";
-    }
+    controlsHideTimer=setTimeout(()=>{
+        if(playerModeBadge) playerModeBadge.classList.remove("show");
+    },5000);
 }
-
 function hideTrailerFrame(){
-    clearTimeout(window.__cineflixTrailerLoaderFallback);
-
-    if(playerModeBadge && currentMode !== "trailer"){
-        playerModeBadge.classList.remove("show");
-        playerModeBadge.style.opacity="";
-        playerModeBadge.style.visibility="";
-    }
     if(trailerFrame){
         trailerFrame.classList.remove("show");
         trailerFrame.src="about:blank";
-        trailerFrame.onload=null;
     }
-
     if(playerSurface) playerSurface.classList.remove("trailer-mode");
-
-    // Restore the movie poster/play layer only for Movie mode.
-    if(currentMode !== "trailer" && initialPoster){
-        initialPoster.classList.remove("hidden");
-        initialPoster.setAttribute("aria-hidden","false");
-    }
 }
 
 
@@ -5511,39 +5183,39 @@ function hlsHash(s){
 
 function getHlsConfig(){
     return {
-        /* Adaptive bitrate: HLS.js automatically chooses the quality that
-           fits the measured network speed and available buffer. */
         maxBufferLength:60,
         maxMaxBufferLength:120,
         maxBufferSize:0,
         enableWorker:true,
-        startLevel:-1,
+        startLevel:0,
         autoStartLoad:true,
         startPosition:0,
-        abrEwmaDefaultEstimate:450000,
+        abrEwmaDefaultEstimate:3000000,
         abrEwmaFastLive:3,
         abrEwmaSlowLive:9,
-        abrBandWidthFactor:0.78,
-        abrBandWidthUpFactor:0.55,
+        abrBandWidthFactor:0.8,
+        abrBandWidthUpFactor:0.7,
+        capLevelToPlayerSize:false,
+        abrBandWidthUpFactor:0.4,
         abrMaxWithRealBitrate:true,
         capLevelToPlayerSize:true,
         capLevelOnFPSDrop:true,
         startFragPrefetch:true,
         testBandwidth:true,
         progressive:true,
-        fragLoadingTimeOut:30000,
-        fragLoadingMaxRetry:8,
-        fragLoadingRetryDelay:1000,
-        manifestLoadingTimeOut:30000,
-        manifestLoadingMaxRetry:8,
-        levelLoadingTimeOut:30000,
-        levelLoadingMaxRetry:8,
+        fragLoadingTimeOut:10000,
+        fragLoadingMaxRetry:2,
+        fragLoadingRetryDelay:250,
+        manifestLoadingTimeOut:15000,
+        manifestLoadingMaxRetry:6,
+        levelLoadingTimeOut:15000,
+        levelLoadingMaxRetry:6,
         maxSeekHole:5,
         nudgeOffset:0.5,
         nudgeMaxRetry:10,
         maxBufferHole:1.5,
         lowLatencyMode:false,
-        backBufferLength:90,
+        backBufferLength:120,
         renderTextTracksNatively:true,
         fetchSetup:function(context,initParams){
             initParams.mode="cors";
@@ -5651,15 +5323,7 @@ function applyHlsQuality(choice,showMessage=true){
     }
 }
 
-function clearStreamRetryTimers(){
-    if(hlsRetryTimer){ clearTimeout(hlsRetryTimer); hlsRetryTimer=null; }
-    if(nativeRetryTimer){ clearTimeout(nativeRetryTimer); nativeRetryTimer=null; }
-}
-
 function destroyHls(){
-    clearStreamRetryTimers();
-    if(adaptiveRecoveryTimer){ clearTimeout(adaptiveRecoveryTimer); adaptiveRecoveryTimer=null; }
-    adaptiveRecoveryLevel=-1;
     if(hls){
         try{hls.destroy();}catch(e){}
         hls=null;
@@ -5673,9 +5337,6 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
     pendingStartTime=savedTime||0;
     hlsReady=false;
     hlsLevels=[];
-    hlsNetworkRetryCount=0;
-    nativeRetryCount=0;
-    clearStreamRetryTimers();
 
     try{video.pause();}catch(e){}
     video.removeAttribute("src");
@@ -5692,22 +5353,8 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
             hlsLevels=hls.levels||data.levels||[];
             rebuildQualityButtons();
 
-            if(currentQualityChoice==="auto") {
-                /* Auto always starts from the real 480p level, regardless of
-                   how the HLS manifest orders its quality levels. After the
-                   first buffered segment, ABR is released so it can instantly
-                   move up/down according to the measured connection. */
-                const startup480=findLevelForQuality("480");
-                if(startup480>=0){
-                    try{
-                        hls.startLevel=startup480;
-                        hls.currentLevel=startup480;
-                    }catch(e){}
-                    hls.__cineflixAutoStartup480=true;
-                }else{
-                    hls.currentLevel=-1;
-                }
-            } else {
+            if(currentQualityChoice==="auto") hls.currentLevel=-1;
+            else {
                 const level=findLevelForQuality(currentQuality);
                 if(level>=0) hls.currentLevel=level;
             }
@@ -5732,15 +5379,6 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
             }else{
                 centerPlay.style.display="none";
             }
-        });
-
-        hls.on(Hls.Events.FRAG_BUFFERED,()=>{
-            if(currentQualityChoice!=="auto" || !hls || !hls.__cineflixAutoStartup480) return;
-            /* The first 480p segment is now buffered. Release the temporary
-               startup lock immediately; HLS.js ABR takes over from here. */
-            hls.__cineflixAutoStartup480=false;
-            try{ hls.currentLevel=-1; }catch(e){}
-            try{ hls.nextAutoLevel=-1; }catch(e){}
         });
 
         hls.on(Hls.Events.LEVEL_SWITCHED,(event,data)=>{
@@ -5780,41 +5418,13 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
 
         hls.on(Hls.Events.ERROR,(event,data)=>{
             if(!data.fatal) return;
-
-            /* Media errors are usually recoverable without destroying the
-               current buffer. Give hls.js a chance first. */
             if(data.type===Hls.ErrorTypes.MEDIA_ERROR){
-                try{
-                    hls.recoverMediaError();
-                    showPlayerLoading();
-                    return;
-                }catch(e){}
+                try{hls.recoverMediaError();return;}catch(e){}
             }
-
-            /* Network/manifest/level failures: keep the player alive and
-               quietly retry with exponential backoff. No error screen/toast
-               is shown while retries are still available. */
-            if((data.type===Hls.ErrorTypes.NETWORK_ERROR || data.details) && hlsNetworkRetryCount < MAX_STREAM_RETRIES){
-                hlsNetworkRetryCount++;
-                showPlayerLoading();
-                const delay=Math.min(12000, 700 * Math.pow(1.45, hlsNetworkRetryCount-1));
-                if(hlsRetryTimer) clearTimeout(hlsRetryTimer);
-                hlsRetryTimer=setTimeout(()=>{
-                    hlsRetryTimer=null;
-                    try{
-                        hls.startLoad(-1);
-                    }catch(e){
-                        try{ hls.loadSource(source); }catch(_){}
-                    }
-                },delay);
-                return;
-            }
-
-            /* Only after repeated retries fail do we expose a recoverable
-               player state. The user can press play to try again. */
             hidePlayerLoading();
             playerEmpty.classList.remove("hidden");
             centerPlay.style.display="grid";
+            showToast("Stream could not be loaded.");
         });
 
         hls.loadSource(source);
@@ -5875,13 +5485,10 @@ function setPlayerMode(mode,autoPlay=true){
 
     progress.style.width="0%";
     time.textContent="00:00";
-    if(durationTime) durationTime.textContent="00:00";
     hideTrailerFrame();
     destroyHls();
 
     if(isTrailer && source){
-        initialPoster.classList.add("hidden");
-        initialPoster.setAttribute("aria-hidden","true");
         hidePlayerLoading();
         const normalizedTrailer=normalizeTrailerUrl(source);
 
@@ -5904,12 +5511,10 @@ function setPlayerMode(mode,autoPlay=true){
 
     if(autoPlay){
         initialPoster.classList.add("hidden");
-        initialPoster.setAttribute("aria-hidden","true");
         showPlayerLoading();
         loadHlsSource(source,true,0);
     }else{
         initialPoster.classList.remove("hidden");
-        initialPoster.setAttribute("aria-hidden","false");
         hidePlayerLoading();
         centerPlay.style.display="grid";
         loadHlsSource(source,false,0);
@@ -5973,41 +5578,7 @@ video.addEventListener("loadstart",()=>{
     if(pendingAutoPlay || !video.paused) showPlayerLoading();
 });
 
-/* =========================================================
-   SMART AUTO QUALITY / SLOW NETWORK PROTECTION
-   HLS.js remains in Auto mode and continuously measures throughput.
-   When the buffer gets dangerously low we temporarily ask it to use a
-   lower level for the next segment; once the buffer is healthy, normal
-   adaptive selection takes over again.
-========================================================= */
-let adaptiveRecoveryTimer=null;
-let adaptiveRecoveryLevel=-1;
-
-function protectAdaptivePlayback(){
-    if(currentQualityChoice!=="auto" || !hls || !hls.levels?.length) return;
-    const ahead=getBufferedAheadSeconds();
-    if(ahead<=2){
-        const current=Number.isFinite(hls.currentLevel) ? hls.currentLevel : -1;
-        const active=current>=0 ? current : Number(hls.nextAutoLevel);
-        const lower=Math.max(0,(Number.isFinite(active)&&active>=0?active:1)-1);
-        try{ hls.nextAutoLevel=lower; }catch(e){}
-        adaptiveRecoveryLevel=lower;
-        if(adaptiveRecoveryTimer) clearTimeout(adaptiveRecoveryTimer);
-        adaptiveRecoveryTimer=setTimeout(()=>{
-            adaptiveRecoveryTimer=null;
-            if(hls && currentQualityChoice==="auto" && getBufferedAheadSeconds()>8){
-                try{ hls.nextAutoLevel=-1; }catch(e){}
-                adaptiveRecoveryLevel=-1;
-            }
-        },5000);
-    }else if(ahead>8 && adaptiveRecoveryLevel>=0){
-        try{ hls.nextAutoLevel=-1; }catch(e){}
-        adaptiveRecoveryLevel=-1;
-    }
-}
-
 video.addEventListener("waiting",()=>{
-    protectAdaptivePlayback();
     /*
        If playback has real buffered media at the current point, do not
        flash the loader. Only show it when there is genuinely nothing
@@ -6023,69 +5594,24 @@ video.addEventListener("stalled",()=>{
         showPlayerLoading();
     }
 });
-
-const adaptiveQualityTimer=setInterval(()=>{
-    if(!video.paused) protectAdaptivePlayback();
-},1500);
-
-/* A slow connection may temporarily stop delivery without firing a fatal
-   error. Keep the existing frame visible and only show the loader when the
-   playable buffer is actually exhausted. */
-video.addEventListener("progress",()=>{
-    if(!video.paused && getBufferedAheadSeconds()>0.15){
-        hidePlayerLoading();
-        playerEmpty.classList.add("hidden");
-        video.style.visibility="visible";
-        video.style.opacity="1";
-        video.style.zIndex="2";
-    }
-});
 video.addEventListener("seeking",()=>{ if(!video.paused) showPlayerLoading(); });
 video.addEventListener("canplay",()=>{ /* keep loader until actual playback */ });
 video.addEventListener("loadeddata",()=>{
     playerEmpty.classList.add("hidden");
-    video.style.visibility="visible";
-    video.style.opacity="1";
-    video.style.zIndex="2";
 });
 video.addEventListener("playing",()=>{
     playerEmpty.classList.add("hidden");
-    video.style.visibility="visible";
-    video.style.opacity="1";
-    video.style.zIndex="2";
     hidePlayerLoading();
     showPlayerControls(true);
 });
 video.addEventListener("error",()=>{
     if(typeof Hls!=="undefined" && hls) return;
-    if(!video.src || nativeRetryCount >= MAX_STREAM_RETRIES){
-        hidePlayerLoading();
-        playerEmpty.classList.remove("hidden");
-        centerPlay.style.display="grid";
-        return;
-    }
-
-    nativeRetryCount++;
-    const retrySrc=video.currentSrc || video.src;
-    const retryTime=Number.isFinite(video.currentTime) ? video.currentTime : 0;
-    showPlayerLoading();
-    if(nativeRetryTimer) clearTimeout(nativeRetryTimer);
-    nativeRetryTimer=setTimeout(()=>{
-        nativeRetryTimer=null;
-        try{
-            video.src=retrySrc;
-            video.load();
-            if(retryTime>0) video.currentTime=retryTime;
-            if(pendingAutoPlay) video.play().catch(()=>{});
-        }catch(e){}
-    },Math.min(10000,700*nativeRetryCount));
+    hidePlayerLoading();
+    playerEmpty.classList.remove("hidden");
+    centerPlay.style.display="grid";
+    showToast("Video could not be loaded.");
 });
 video.addEventListener("play",()=>{
-    // A playing video must always be above the empty placeholder.
-    playerEmpty.classList.add("hidden");
-    video.style.visibility="visible";
-    video.style.opacity="1";
-    video.style.zIndex="2";
     centerPlay.style.display="none";
     playIcon.innerHTML=`
         <path d="M7 5.5h3.4v13H7z"/>
@@ -6133,14 +5659,8 @@ video.addEventListener("pause",()=>{
 });
 
 video.addEventListener("progress",updateBufferedProgress);
-video.addEventListener("durationchange",()=>{
-    if(durationTime) durationTime.textContent = formatTime(video.duration);
-    updateBufferedProgress();
-});
-video.addEventListener("loadedmetadata",()=>{
-    if(durationTime) durationTime.textContent = formatTime(video.duration);
-    updateBufferedProgress();
-});
+video.addEventListener("durationchange",updateBufferedProgress);
+video.addEventListener("loadedmetadata",updateBufferedProgress);
 video.addEventListener("canplay",updateBufferedProgress);
 video.addEventListener("playing",updateBufferedProgress);
 
@@ -6182,7 +5702,6 @@ video.addEventListener(
 
         time.textContent=
             formatTime(video.currentTime);
-        if(durationTime) durationTime.textContent = formatTime(video.duration);
 
     }
 );
@@ -6900,7 +6419,111 @@ document.addEventListener("fullscreenchange",()=>{
             video.pause();
         }
 
+
         window.CINEFLIX_MOVIE=movie;
+
+        /* =========================================================
+           CONTINUE WATCHING — REAL PLAYBACK PROGRESS
+           A title appears on Home only after it has actually played
+           for more than 1 second. Progress is kept locally per browser.
+        ========================================================= */
+        const CONTINUE_KEY="cineflix_continue_watching_v1";
+        let continueSaveTimer=null;
+        let continueLastSaved=0;
+
+        function continueRead(){
+            try{
+                const value=JSON.parse(localStorage.getItem(CONTINUE_KEY)||"[]");
+                return Array.isArray(value)?value:[];
+            }catch(e){ return []; }
+        }
+
+        function continueWrite(item){
+            try{
+                const list=continueRead().filter(x=>String(x.id)!==String(item.id));
+                list.unshift(item);
+                localStorage.setItem(CONTINUE_KEY,JSON.stringify(list.slice(0,20)));
+            }catch(e){}
+        }
+
+        function continueRemove(id){
+            try{
+                const list=continueRead().filter(x=>String(x.id)!==String(id));
+                localStorage.setItem(CONTINUE_KEY,JSON.stringify(list));
+            }catch(e){}
+        }
+
+        function continueFrame(){
+            try{
+                if(!video.videoWidth || !video.videoHeight) return "";
+                const canvas=document.createElement("canvas");
+                const maxW=640;
+                const scale=Math.min(1,maxW/video.videoWidth);
+                canvas.width=Math.max(1,Math.round(video.videoWidth*scale));
+                canvas.height=Math.max(1,Math.round(video.videoHeight*scale));
+                const ctx=canvas.getContext("2d",{willReadFrequently:false});
+                ctx.drawImage(video,0,0,canvas.width,canvas.height);
+                return canvas.toDataURL("image/jpeg",.72);
+            }catch(e){
+                return "";
+            }
+        }
+
+        function continueSaveProgress(force=false){
+            if(!video || !window.CINEFLIX_MOVIE) return;
+
+            const current=Number(video.currentTime)||0;
+            const duration=Number(video.duration)||0;
+
+            // Do not show anything before a real second of playback.
+            if(current<=1 || !duration || !isFinite(duration)) return;
+
+            if(!force && current-continueLastSaved<2) return;
+            continueLastSaved=current;
+
+            // Remove completed titles instead of showing "0 min left".
+            if(duration-current<=1){
+                continueRemove(movie.id);
+                return;
+            }
+
+            const poster=movie.poster_url || movie.backdrop_url || "";
+            const frame=continueFrame();
+
+            continueWrite({
+                id:movie.id,
+                title:movie.title || "Untitled",
+                poster:poster,
+                thumb:frame || poster,
+                currentTime:current,
+                duration:duration,
+                updatedAt:Date.now()
+            });
+        }
+
+        video.addEventListener("timeupdate",()=>{
+            continueSaveProgress(false);
+        });
+
+        video.addEventListener("pause",()=>{
+            continueSaveProgress(true);
+        });
+
+        video.addEventListener("pagehide",()=>{
+            continueSaveProgress(true);
+        });
+
+        video.addEventListener("ended",()=>{
+            continueRemove(movie.id);
+        });
+
+        window.addEventListener("beforeunload",()=>{
+            continueSaveProgress(true);
+        });
+
+        // If the video starts, the first save will happen as soon as
+        // currentTime passes 1 second.
+
     }
 
     async function getMovie(){
@@ -6934,22 +6557,11 @@ document.addEventListener("fullscreenchange",()=>{
         return data;
     }
 
-
-window.addEventListener("beforeunload",()=>{
-    clearStreamRetryTimers();
-});
-
     async function initMovie(){
         try{
             const movie=await getMovie();
             renderMovieDetails(movie);
 
-            const pageSkeleton=document.getElementById("moviePageSkeleton");
-            if(pageSkeleton){
-                pageSkeleton.style.opacity="0";
-                pageSkeleton.style.visibility="hidden";
-                pageSkeleton.style.pointerEvents="none";
-            }
             document.body.classList.remove("cineflix-db-loading");
             document.body.classList.remove("cineflix-db-error");
         }catch(error){
