@@ -3269,43 +3269,46 @@ body.cineflix-db-error .cineflix-db-message{
     position:absolute;
     top:0;
     bottom:0;
-    width:38%;
-    z-index:12;
+    width:50%;
+    z-index:45;
     touch-action:none;
     -webkit-user-select:none;
     user-select:none;
     display:none;
-    background:transparent !important;
 }
 .player-gesture-zone.left{left:0;}
 .player-gesture-zone.right{right:0;}
+.player-gesture-zone{pointer-events:none;}
+.video-player.cineflix-gestures-armed .player-gesture-zone{pointer-events:auto;}
+.center-play-pause{z-index:50;}
 
 .gesture-indicator{
     position:absolute;
     top:50%;
     left:50%;
-    transform:translate(-50%,-50%);
+    transform:translate(-50%,-50%) scale(.96);
     min-width:0;
+    width:auto;
     height:auto;
-    border:0 !important;
     border-radius:0;
     display:flex;
-    flex-direction:row;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:7px;
-    background:transparent !important;
-    box-shadow:none !important;
-    backdrop-filter:none !important;
-    -webkit-backdrop-filter:none !important;
+    gap:4px;
+    background:transparent;
+    border:0;
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
     opacity:0;
     visibility:hidden;
     pointer-events:none;
-    transition:opacity .12s ease;
+    transition:opacity .14s ease,transform .14s ease;
 }
 .gesture-indicator.show{
     opacity:1;
     visibility:visible;
+    transform:translate(-50%,-50%) scale(1);
 }
 .gesture-indicator svg{
     width:24px;
@@ -3315,23 +3318,24 @@ body.cineflix-db-error .cineflix-db-message{
     stroke-width:2;
     stroke-linecap:round;
     stroke-linejoin:round;
-    filter:none;
 }
 .gesture-indicator .gesture-value{
-    font-size:12px;
+    font-size:15px;
     line-height:1;
-    font-weight:600;
+    font-weight:700;
     color:#fff;
-    letter-spacing:.1px;
-    text-shadow:0 1px 3px rgba(0,0,0,.65);
 }
 .gesture-indicator .gesture-label{
-    display:none !important;
+    font-size:10px;
+    line-height:1;
+    color:rgba(255,255,255,.72);
+    letter-spacing:.4px;
 }
+
 .player-brightness-layer{
     position:absolute;
     inset:0;
-    z-index:11;
+    z-index:44;
     pointer-events:none;
     background:#000;
     opacity:0;
@@ -3342,17 +3346,6 @@ body.cineflix-db-error .cineflix-db-message{
     .player-gesture-zone{display:block;}
 }
 
-
-@media (max-width:900px), (pointer:coarse){
-    .player-gesture-zone{display:block;}
-    .video-player .center-play,
-    .video-player .center-play-pause,
-    .video-player .player-controls,
-    .video-player .player-top,
-    .video-player .player-mode-badge{
-        z-index:70 !important;
-    }
-}
 </style>
 </head>
 
@@ -3669,9 +3662,9 @@ body.cineflix-db-error .cineflix-db-message{
                 title="Change quality"
                 style="display:none"
             >
-                <option value="480" selected>480p</option>
+                <option value="480">480p</option>
                 <option value="720">720p</option>
-                <option value="1080">1080p</option>
+                <option value="1080" selected>1080p</option>
             </select>
 
             <div class="player-right-icons">
@@ -4938,13 +4931,16 @@ let controlsHideTimer = null;
 
 initialPosterPlay.addEventListener("click",(e)=>{
     e.stopPropagation();
+    window.dispatchEvent(new CustomEvent("cineflix:play-intent"));
+    initialPoster.classList.add("hidden");
+    showPlayerLoading();
 
-    /*
-       Use the exact same playback path as the bottom Play button.
-       This is important on first load because the HLS source may not yet
-       be attached to <video>; calling video.play() directly can do nothing.
-    */
-    togglePlay();
+    video.play().catch(()=>{
+        initialPoster.classList.remove("hidden");
+        hidePlayerLoading();
+        centerPlay.style.display="none";
+    });
+
     showPlayerControls(true);
     updateCenterPlayPause();
 });
@@ -4969,16 +4965,8 @@ function showCenterPlayPause(){
 }
 
 function toggleVideoFromTap(){
-    /*
-       The center button and bottom Play button must use one playback path.
-       If the initial poster is still visible, start the HLS source through
-       togglePlay() instead of calling video.play() on an empty <video>.
-    */
     if(initialPoster && !initialPoster.classList.contains("hidden")){
-        togglePlay();
-        showPlayerControls(true);
-        updateCenterPlayPause();
-        return;
+        return; // Initial thumbnail's own button handles first playback.
     }
 
     if(video.paused || video.ended){
@@ -4995,6 +4983,7 @@ function toggleVideoFromTap(){
 
 centerPlayPause.addEventListener("click",(e)=>{
     e.stopPropagation();
+    window.dispatchEvent(new CustomEvent("cineflix:play-intent"));
 
     if(performance.now() < gestureSuppressClickUntil){
         e.preventDefault();
@@ -5443,7 +5432,7 @@ let TRAILER_DEMO_URL = "";
 
 
 let currentMode = "movie";
-let currentQuality = "480";
+let currentQuality = "1080";
 let currentQualityChoice = "auto";
 let hls = null;
 let hlsLevels = [];
@@ -5639,7 +5628,7 @@ function getHlsConfig(){
         maxMaxBufferLength:120,
         maxBufferSize:0,
         enableWorker:true,
-        startLevel:0,
+        startLevel:-1,
         autoStartLoad:true,
         startPosition:0,
         abrEwmaDefaultEstimate:450000,
@@ -5814,16 +5803,8 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
             hlsLevels=hls.levels||data.levels||[];
             rebuildQualityButtons();
 
-            if(currentQualityChoice==="auto"){
-                /*
-                   Start Auto at the lowest available level (normally 480p).
-                   Keep ABR enabled; nextAutoLevel is only pinned to level 0
-                   for the initial fragment, then released after it buffers.
-                */
-                hls.startLevel=0;
-                try{ hls.nextAutoLevel=0; }catch(e){}
-                hls.currentLevel=-1;
-            }else{
+            if(currentQualityChoice==="auto") hls.currentLevel=-1;
+            else {
                 const level=findLevelForQuality(currentQuality);
                 if(level>=0) hls.currentLevel=level;
             }
@@ -5850,12 +5831,6 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
             }
         });
 
-        hls.on(Hls.Events.FRAG_BUFFERED,()=>{
-            if(currentQualityChoice==="auto" && hls){
-                try{ hls.nextAutoLevel=-1; }catch(e){}
-            }
-        });
-
         hls.on(Hls.Events.LEVEL_SWITCHED,(event,data)=>{
             const level=hls.levels?.[data.level];
             if(!level) return;
@@ -5864,10 +5839,6 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
             const badge=document.getElementById("playerQuality");
 
             if(currentQualityChoice==="auto"){
-                const actualHeight=Number(level.height||0);
-                if(actualHeight>=1000) currentQuality="1080";
-                else if(actualHeight>=650) currentQuality="720";
-                else if(actualHeight>=400) currentQuality="480";
                 if(settingsQualityValue) settingsQualityValue.innerHTML="Auto <b>›</b>";
                 if(badge){
                     badge.textContent=label.toUpperCase();
@@ -6050,14 +6021,8 @@ function togglePlay(){
     }
 }
 
-centerPlay.addEventListener("click",(e)=>{
-    e.stopPropagation();
-    toggleVideoFromTap();
-});
-playPause.addEventListener("click",(e)=>{
-    e.stopPropagation();
-    togglePlay();
-});
+centerPlay.addEventListener("click",togglePlay);
+playPause.addEventListener("click",togglePlay);
 
 if(trailerToggle){
     trailerToggle.addEventListener("click",(e)=>{
@@ -6390,6 +6355,7 @@ function pausePrefetch(){
 }
 
 function playWithoutLoaderIfBuffered(){
+    window.dispatchEvent(new CustomEvent("cineflix:play-intent"));
     const ahead=getBufferedAheadSeconds();
 
     /*
@@ -7105,13 +7071,38 @@ window.addEventListener("beforeunload",()=>{
 </script>
 
 
-
+<script>
+/* =========================================================
+   CINEFLIX AUTO QUALITY START
+   Start at the lowest available quality (typically 480p),
+   then hand control back to adaptive bitrate immediately.
+========================================================= */
+(function(){
+    const originalHlsPlay = window.__cineflixPrepareHlsForPlay;
+    window.__cineflixPrepareHlsForPlay = function(hls){
+        try{
+            if(hls){
+                hls.autoLevelEnabled = true;
+                if(Array.isArray(hls.levels) && hls.levels.length){
+                    hls.startLevel = 0;
+                    hls.currentLevel = 0;
+                }
+            }
+        }catch(e){}
+        return originalHlsPlay ? originalHlsPlay(hls) : hls;
+    };
+})();
+</script>
 
 
 <script>
 /* =========================================================
-   MOBILE BRIGHTNESS / VOLUME SWIPES
-   Gestures become active only after the movie has actually played.
+   CINEFLIX MOBILE BRIGHTNESS / VOLUME SWIPES
+   - Arm immediately when a real Play action starts.
+   - This includes the loading/buffering state.
+   - Left swipe up/down = player brightness.
+   - Right swipe up/down = volume.
+   - Only clean SVG + small percentage are shown.
 ========================================================= */
 (function(){
     function initGestureControls(){
@@ -7128,25 +7119,32 @@ window.addEventListener("beforeunload",()=>{
         if(!video || !player || !left || !right) return;
 
         let brightness=100;
-        let volume=Math.round((video.volume || 1)*100);
+        let volume=Math.round((video.volume ?? 1)*100);
         let active=null;
         let startY=0;
         let startValue=0;
         let hideTimer=0;
-        let hasPlayed=false;
+        let gestureReady=false;
 
-        function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+        function clamp(n,min,max){
+            return Math.max(min,Math.min(max,n));
+        }
+
+        function armGestures(){
+            gestureReady=true;
+            player.classList.add("cineflix-gestures-armed");
+        }
 
         function hideIndicators(){
             bInd?.classList.remove("show");
             vInd?.classList.remove("show");
         }
 
-        function show(ind,val){
+        function show(ind){
             if(!ind) return;
             ind.classList.add("show");
             clearTimeout(hideTimer);
-            hideTimer=setTimeout(hideIndicators,900);
+            hideTimer=setTimeout(hideIndicators,850);
         }
 
         function updateBrightness(value){
@@ -7155,7 +7153,7 @@ window.addEventListener("beforeunload",()=>{
                 bLayer.style.opacity=String(((100-brightness)/100)*.78);
             }
             if(bVal) bVal.textContent=brightness+"%";
-            show(bInd,brightness);
+            show(bInd);
         }
 
         function updateVolume(value){
@@ -7165,26 +7163,27 @@ window.addEventListener("beforeunload",()=>{
                 video.volume=volume/100;
             }catch(e){}
             if(vVal) vVal.textContent=volume+"%";
-            show(vInd,volume);
+            show(vInd);
         }
 
         function begin(zone,e,type){
-            // Never steal the initial Play button interaction.
-            if(!hasPlayed) return;
+            if(!gestureReady) return;
             if(e.pointerType==="mouse" && e.button!==0) return;
 
             active=type;
             startY=e.clientY;
             startValue=type==="brightness" ? brightness : volume;
-            zone.setPointerCapture?.(e.pointerId);
+
+            try{ zone.setPointerCapture?.(e.pointerId); }catch(err){}
+
             e.preventDefault();
             e.stopPropagation();
         }
 
         function move(e){
-            if(!active || !hasPlayed) return;
+            if(!active || !gestureReady) return;
 
-            const delta=startY-e.clientY; // up = positive
+            const delta=startY-e.clientY;
             const next=startValue+(delta/100)*25;
 
             if(active==="brightness") updateBrightness(next);
@@ -7198,24 +7197,20 @@ window.addEventListener("beforeunload",()=>{
             if(!active) return;
             active=null;
             hideIndicators();
-            e.preventDefault();
-            e.stopPropagation();
+            try{ e.preventDefault(); e.stopPropagation(); }catch(err){}
         }
+
+        /* Arm immediately when Play is clicked, before network loading finishes. */
+        window.addEventListener("cineflix:play-intent",armGestures);
+        video.addEventListener("play",armGestures);
+        video.addEventListener("playing",armGestures);
 
         left.addEventListener("pointerdown",e=>begin(left,e,"brightness"),{passive:false});
         right.addEventListener("pointerdown",e=>begin(right,e,"volume"),{passive:false});
+
         window.addEventListener("pointermove",move,{passive:false});
         window.addEventListener("pointerup",end,{passive:false});
         window.addEventListener("pointercancel",end,{passive:false});
-
-        // The first real play unlocks swipe controls.
-        video.addEventListener("playing",()=>{
-            hasPlayed=true;
-        });
-
-        video.addEventListener("play",()=>{
-            hasPlayed=true;
-        });
 
         video.addEventListener("volumechange",()=>{
             if(active===null){
@@ -7227,7 +7222,6 @@ window.addEventListener("beforeunload",()=>{
         if(video.muted) volume=0;
         if(vVal) vVal.textContent=volume+"%";
         if(bVal) bVal.textContent=brightness+"%";
-        hideIndicators();
     }
 
     if(document.readyState==="loading"){
