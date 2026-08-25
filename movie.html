@@ -3390,6 +3390,41 @@ body.cineflix-db-error .cineflix-db-message{
 }
 
 </style>
+
+<style id="cineflix-controls-gesture-layer-fix">
+/* Keep mobile swipe zones active without covering real player controls.
+   Gesture zones stay above the video, while all clickable controls stay
+   above the gesture layer so Settings / PIP / Fullscreen / progress /
+   volume / play-pause continue to receive their normal pointer events. */
+.player-gesture-zone{
+    z-index:45 !important;
+}
+.player-brightness-layer{
+    z-index:44 !important;
+}
+.player-controls{
+    z-index:100 !important;
+    pointer-events:auto !important;
+}
+.player-controls button,
+.player-controls input,
+.player-controls select,
+.settings-panel,
+.settings-panel *{
+    pointer-events:auto !important;
+}
+.settings-panel{
+    z-index:120 !important;
+}
+.center-play-pause{
+    z-index:110 !important;
+    pointer-events:auto !important;
+}
+#centerPlay{
+    z-index:115 !important;
+}
+</style>
+
 </head>
 
 
