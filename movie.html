@@ -2832,6 +2832,17 @@ body.cineflix-db-error .cineflix-db-message{
     visibility:visible;
     transform:translateY(0);
 }
+
+/* Trailer mode uses the CINEFLIX control bar. */
+.player-surface.trailer-mode .player-controls.auto-hidden{
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+}
+.player-surface.trailer-mode .player-controls{
+    display:flex !important;
+}
+
 </style>
 <style>
 
@@ -3087,6 +3098,29 @@ body.cineflix-db-error .cineflix-db-message{
 #trailerFrameOverlay{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#000;z-index:40;}
 #trailerFrameOverlay.show{display:block;}
 .video-player{position:relative;}
+
+/* Trailer: hide the visible YouTube bottom control strip.
+   CINEFLIX controls are rendered above the iframe and remain usable. */
+.player-surface.trailer-mode .ytp-chrome-bottom,
+.player-surface.trailer-mode .ytp-gradient-bottom,
+.player-surface.trailer-mode .ytp-pause-overlay,
+.player-surface.trailer-mode .ytp-watermark,
+.player-surface.trailer-mode .ytp-show-cards-title,
+.player-surface.trailer-mode .ytp-ce-element,
+.player-surface.trailer-mode .ytp-endscreen-content{
+    display:none !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+}
+
+/* Keep the CINEFLIX control bar above the trailer iframe. */
+.player-surface.trailer-mode .player-controls{
+    z-index:100 !important;
+}
+.player-surface.trailer-mode .player-top{
+    z-index:101 !important;
+}
+
 /* Only the temporary mode badge is used. Hide the older duplicate label. */
 .player-top{
     display:none !important;
@@ -6510,6 +6544,45 @@ document.addEventListener("fullscreenchange",()=>{
     },true);
 
     initMovie();
+})();
+</script>
+
+
+<script>
+/* CINEFLIX custom controls <-> YouTube iframe bridge */
+(function(){
+    window.cineflixYTCommand = function(func, args){
+        var frame = document.getElementById("trailerFrameOverlay");
+        if(!frame || !frame.contentWindow) return;
+        frame.contentWindow.postMessage(JSON.stringify({
+            event:"command",
+            func:func,
+            args:args || []
+        }), "*");
+    };
+})();
+</script>
+
+
+<script>
+(function(){
+    function yt(cmd, args){
+        if(window.cineflixYTCommand) window.cineflixYTCommand(cmd, args || []);
+    }
+
+    document.addEventListener("click", function(e){
+        var btn = e.target.closest ? e.target.closest("[data-yt-command]") : null;
+        if(!btn) return;
+        var cmd = btn.getAttribute("data-yt-command");
+        if(cmd) yt(cmd, []);
+    });
+
+    // Expose a safe API for the existing CINEFLIX control handlers.
+    window.playTrailerCustom = function(){ yt("playVideo"); };
+    window.pauseTrailerCustom = function(){ yt("pauseVideo"); };
+    window.seekTrailerCustom = function(seconds){ yt("seekTo", [Number(seconds)||0, true]); };
+    window.muteTrailerCustom = function(){ yt("mute"); };
+    window.unmuteTrailerCustom = function(){ yt("unMute"); };
 })();
 </script>
 
