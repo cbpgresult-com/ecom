@@ -2621,20 +2621,7 @@ function renderContinueWatching(){
 window.addEventListener("storage",e=>{
     if(e.key===CONTINUE_KEY) renderContinueWatching();
 });
-
-/* Reliable refresh after browser Back/Forward and bfcache restore. */
-window.addEventListener("pageshow",()=>{
-    renderContinueWatching();
-    setTimeout(renderContinueWatching,50);
-    setTimeout(renderContinueWatching,250);
-    setTimeout(renderContinueWatching,700);
-});
-
-document.addEventListener("visibilitychange",()=>{
-    if(document.visibilityState==="visible"){
-        renderContinueWatching();
-    }
-});
+window.addEventListener("pageshow",renderContinueWatching);
 
 /* =========================================================
    LOAD DATABASE MOVIES
@@ -2720,8 +2707,6 @@ async function loadDatabaseMovies(){
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded",()=>{
-    renderContinueWatching();
-
 
     renderContinueWatching();
 
