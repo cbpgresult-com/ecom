@@ -237,10 +237,14 @@ button{
 }
 
 .video-player video{
+    position:relative;
+    z-index:2;
     width:100%;
     height:100%;
 
-    display:block;
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
 
     object-fit:contain;
 
@@ -1175,17 +1179,32 @@ button{
     stroke-linejoin:round;
 }
 
-.time{
+.time-row{
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:6px;
+    min-height:14px;
+    margin:0 0 7px;
+    padding-left:1px;
     color:#ddd;
-    font-size:9px;
-    font-weight:600;
+    font-variant-numeric:tabular-nums;
+}
+.time{
+    color:#e8e8e8;
+    font-size:10px;
+    font-weight:650;
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+}
+.time-separator{
+    color:rgba(255,255,255,.48);
+    font-size:10px;
     line-height:1;
 }
 .time-total{
-    position:absolute;
-    right:58px;
-    bottom:0;
-    color:#ddd;
+    position:static;
+    color:#bdbdbd;
     font-variant-numeric:tabular-nums;
 }
 .control-row{
@@ -2465,13 +2484,17 @@ button{
     visibility:hidden !important;
     pointer-events:none !important;
 }
-.player-video{
+.player-video,
+#movieVideo{
     position:relative !important;
     z-index:2 !important;
     display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
     width:100% !important;
     height:100% !important;
-    object-fit:cover !important;
+    object-fit:contain !important;
+    background:#000 !important;
 }
 .player-overlay{
     z-index:3 !important;
@@ -3482,6 +3505,11 @@ body.cineflix-db-error .cineflix-db-message{
 
         </div>
 
+        <div class="time-row" aria-label="Video time">
+            <span class="time time-current" id="time">00:00</span>
+            <span class="time-separator">/</span>
+            <span class="time time-total" id="durationTime">00:00</span>
+        </div>
 
         <div class="control-row">
 
@@ -3513,14 +3541,6 @@ body.cineflix-db-error .cineflix-db-message{
 
             </button>
 
-
-            <span class="time time-current" id="time">
-                00:00
-            </span>
-
-            <span class="time time-total" id="durationTime">
-                00:00
-            </span>
 
             <span class="control-spacer"></span>
 
@@ -5903,9 +5923,15 @@ video.addEventListener("seeking",()=>{ if(!video.paused) showPlayerLoading(); })
 video.addEventListener("canplay",()=>{ /* keep loader until actual playback */ });
 video.addEventListener("loadeddata",()=>{
     playerEmpty.classList.add("hidden");
+    video.style.visibility="visible";
+    video.style.opacity="1";
+    video.style.zIndex="2";
 });
 video.addEventListener("playing",()=>{
     playerEmpty.classList.add("hidden");
+    video.style.visibility="visible";
+    video.style.opacity="1";
+    video.style.zIndex="2";
     hidePlayerLoading();
     showPlayerControls(true);
 });
@@ -5917,6 +5943,11 @@ video.addEventListener("error",()=>{
     showToast("Video could not be loaded.");
 });
 video.addEventListener("play",()=>{
+    // A playing video must always be above the empty placeholder.
+    playerEmpty.classList.add("hidden");
+    video.style.visibility="visible";
+    video.style.opacity="1";
+    video.style.zIndex="2";
     centerPlay.style.display="none";
     playIcon.innerHTML=`
         <path d="M7 5.5h3.4v13H7z"/>
