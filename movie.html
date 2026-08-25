@@ -433,6 +433,51 @@ button{
 }
 
 
+/* =========================================================
+   CINEFLIX INTRO VIDEO
+   First Play click -> intro -> smooth fade -> movie
+========================================================= */
+.player-intro-video{
+    position:absolute;
+    inset:0;
+    z-index:100;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    background:#000;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .55s ease, visibility .55s ease;
+}
+.player-intro-video.active{
+    opacity:1;
+    visibility:visible;
+}
+.player-intro-video.fade-out{
+    opacity:0;
+}
+.video-player.intro-playing #movieVideo{
+    opacity:0 !important;
+    transition:opacity .65s ease;
+}
+.video-player.movie-fade-in #movieVideo{
+    opacity:1 !important;
+    transition:opacity .65s ease;
+}
+.video-player.intro-playing .player-controls,
+.video-player.intro-playing .player-top,
+.video-player.intro-playing .center-play-pause,
+.video-player.intro-playing .player-mode-badge,
+.video-player.intro-playing .player-gesture-zone,
+.video-player.intro-playing .player-gesture-overlay,
+.video-player.intro-playing .player-gesture-scrub{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+}
+
 /* INITIAL THUMBNAIL */
 .initial-poster{
     position:absolute;
@@ -3498,6 +3543,17 @@ body.cineflix-db-error .cineflix-db-message{
 
     <div class="player-mode-badge" id="playerModeBadge" aria-hidden="true">MOVIE</div>
 
+    <video
+        id="cineflixIntroVideo"
+        class="player-intro-video"
+        preload="auto"
+        playsinline
+        muted
+        aria-hidden="true"
+    >
+        <source src="Golden_trail_forms_studio_logo_202608251641.mp4" type="video/mp4">
+    </video>
+
     <div class="initial-poster" id="initialPoster" aria-hidden="false">
         <img
             src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=85"
@@ -4729,6 +4785,9 @@ const downloadClose =
 const initialPoster =
     document.getElementById("initialPoster");
 
+const introVideo =
+    document.getElementById("cineflixIntroVideo");
+
 const initialPosterPlay =
     document.getElementById("initialPosterPlay");
 
@@ -4929,19 +4988,82 @@ pipBtn.addEventListener("click",async e=>{
 
 let controlsHideTimer = null;
 
+let cineflixIntroStarted = false;
+let cineflixIntroFinished = false;
+let cineflixIntroTimer = null;
+
+function resetIntroVideo(){
+    if(!introVideo) return;
+    clearTimeout(cineflixIntroTimer);
+    try{
+        introVideo.pause();
+        introVideo.currentTime=0;
+    }catch(e){}
+    introVideo.classList.remove("active","fade-out");
+    videoPlayer.classList.remove("intro-playing","movie-fade-in");
+    cineflixIntroStarted=false;
+    cineflixIntroFinished=false;
+}
+
+function finishCineflixIntro(){
+    if(!cineflixIntroStarted || cineflixIntroFinished) return;
+    cineflixIntroFinished=true;
+
+    // Fade the intro away first; the movie fades in at the same time.
+    introVideo.classList.add("fade-out");
+    videoPlayer.classList.remove("intro-playing");
+    videoPlayer.classList.add("movie-fade-in");
+
+    // Let the fade begin before starting playback.
+    cineflixIntroTimer=setTimeout(()=>{
+        introVideo.classList.remove("active","fade-out");
+        try{ introVideo.pause(); introVideo.currentTime=0; }catch(e){}
+        videoPlayer.classList.remove("movie-fade-in");
+        showPlayerControls(true);
+        showPlayerLoading();
+        video.play().catch(()=>{
+            hidePlayerLoading();
+            centerPlay.style.display="grid";
+        });
+        updateCenterPlayPause();
+    },420);
+}
+
+function startCineflixIntro(){
+    if(!introVideo || cineflixIntroStarted) return;
+    cineflixIntroStarted=true;
+    cineflixIntroFinished=false;
+    clearTimeout(cineflixIntroTimer);
+
+    initialPoster.classList.add("hidden");
+    initialPoster.setAttribute("aria-hidden","true");
+    hidePlayerLoading();
+    centerPlay.style.display="none";
+    videoPlayer.classList.add("intro-playing");
+    introVideo.classList.remove("fade-out");
+    introVideo.classList.add("active");
+
+    try{
+        introVideo.currentTime=0;
+        const p=introVideo.play();
+        if(p && p.catch){
+            p.catch(()=>finishCineflixIntro());
+        }
+    }catch(e){
+        finishCineflixIntro();
+    }
+}
+
+if(introVideo){
+    introVideo.addEventListener("ended",finishCineflixIntro);
+    introVideo.addEventListener("error",finishCineflixIntro);
+}
+
 initialPosterPlay.addEventListener("click",(e)=>{
     e.stopPropagation();
     window.dispatchEvent(new CustomEvent("cineflix:play-intent"));
-    initialPoster.classList.add("hidden");
-    showPlayerLoading();
-
-    video.play().catch(()=>{
-        initialPoster.classList.remove("hidden");
-        hidePlayerLoading();
-        centerPlay.style.display="none";
-    });
-
-    showPlayerControls(true);
+    startCineflixIntro();
+    showPlayerControls(false);
     updateCenterPlayPause();
 });
 
@@ -6169,6 +6291,10 @@ video.addEventListener("error",()=>{
     },Math.min(10000,700*nativeRetryCount));
 });
 video.addEventListener("play",()=>{
+    // The main movie must stay hidden while the intro is playing.
+    if(cineflixIntroStarted && !cineflixIntroFinished){
+        videoPlayer.classList.add("intro-playing");
+    }
     // A playing video must always be above the empty placeholder.
     playerEmpty.classList.add("hidden");
     video.style.visibility="visible";
@@ -6188,6 +6314,7 @@ video.addEventListener("pause",()=>{
 /* Start with thumbnail first — never autoplay on page open. */
 video.autoplay = false;
 video.removeAttribute("autoplay");
+resetIntroVideo();
 video.muted = false;
 video.volume = 1;
 setPlayerMode("movie",false);
