@@ -6983,10 +6983,30 @@ document.addEventListener("fullscreenchange",()=>{
             if(!video || !movie || !movie.id) return;
 
             const current=Number(video.currentTime)||0;
-            const duration=Number(video.duration)||0;
+
+            /*
+             * Some HLS/native browsers temporarily report duration as
+             * Infinity/0 even though the movie is already playing.
+             * Use the real movie runtime or seekable end as a fallback,
+             * so a 4-second playback is still saved correctly.
+             */
+            let duration=Number(video.duration)||0;
+
+            if(!Number.isFinite(duration) || duration<=0){
+                const runtimeSeconds=Number(movie.runtime||0)*60;
+                if(Number.isFinite(runtimeSeconds) && runtimeSeconds>0){
+                    duration=runtimeSeconds;
+                }else if(video.seekable && video.seekable.length){
+                    try{
+                        duration=Number(
+                            video.seekable.end(video.seekable.length-1)
+                        )||0;
+                    }catch(e){}
+                }
+            }
 
             // IMPORTANT: never add to Continue Watching before 1 real second.
-            if(current<=1 || !Number.isFinite(duration) || duration<=0) return;
+            if(current<=1 || !Number.isFinite(duration) || duration<=current) return;
 
             // Completed playback should not remain in Continue Watching.
             if(duration-current<=1){
@@ -7084,6 +7104,12 @@ document.addEventListener("fullscreenchange",()=>{
             continueSaveTimer=setTimeout(()=>{
                 continueSaveProgress(true);
             },250);
+        });
+
+        document.addEventListener("visibilitychange",()=>{
+            if(document.visibilityState==="hidden"){
+                continueSaveProgress(true);
+            }
         });
 
         window.addEventListener("pagehide",()=>{
