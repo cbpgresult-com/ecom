@@ -543,7 +543,7 @@ body{
 }
 
 .movie-card{
-    flex:0 0 170px;
+    flex:0 0 calc((100vw - 44px) / 3);
     aspect-ratio:2/3;
     border-radius:8px;
     overflow:hidden;
@@ -841,13 +841,14 @@ body{
 }
 
 .loading-card{
-    flex:0 0 170px;
+    flex:0 0 calc((100vw - 44px) / 3);
     aspect-ratio:2/3;
-    border-radius:8px;
+    border-radius:7px;
     position:relative;
     overflow:hidden;
-    background:#151518;
-    border:1px solid rgba(255,255,255,.04);
+    background:#17171b;
+    border:1px solid rgba(255,255,255,.055);
+    box-shadow:0 5px 18px rgba(0,0,0,.14);
 }
 
 .loading-card::before{
@@ -855,13 +856,15 @@ body{
     position:absolute;
     inset:0;
     background:linear-gradient(
-        110deg,
-        rgba(255,255,255,0) 25%,
-        rgba(255,255,255,.07) 45%,
-        rgba(255,255,255,0) 65%
+        105deg,
+        rgba(255,255,255,0) 30%,
+        rgba(255,255,255,.055) 43%,
+        rgba(255,255,255,.11) 50%,
+        rgba(255,255,255,.055) 57%,
+        rgba(255,255,255,0) 70%
     );
-    background-size:250% 100%;
-    animation:cardShimmer 1.35s ease-in-out infinite;
+    background-size:280% 100%;
+    animation:cardShimmer 1.25s linear infinite;
 }
 
 .loading-card::after{
@@ -1093,8 +1096,8 @@ body{
 
     .movie-card,
     .loading-card{
-        flex-basis:125px;
-        border-radius:6px;
+        flex:0 0 calc((100vw - 44px) / 3);
+        border-radius:7px;
     }
 
     .movie-info{
