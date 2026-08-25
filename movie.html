@@ -6903,317 +6903,156 @@ document.addEventListener("fullscreenchange",()=>{
         window.CINEFLIX_MOVIE=movie;
 
         /* =========================================================
-           CINEFLIX — CONTINUE WATCHING
-           SAFE PLAYER-INTEGRATED VERSION
-           - Never changes the video source or playback logic.
-           - Saves only after the movie has actually played > 1 second.
-           - Restores the saved position when this movie is opened again.
-           - Saves the real current video frame when browser CORS permits it.
-           - Falls back to the real TMDB backdrop/poster when frame capture
-             is blocked by cross-origin video.
-           - Removes the item after the movie finishes.
+           CONTINUE WATCHING — ISOLATED / SAFE
+           This block only records playback progress for Home.
+           It does NOT change the existing video source or loader.
            ========================================================= */
-        const CONTINUE_WATCHING_KEY = "cineflix_continue_watching_v1";
+        (() => {
+            const CW_KEY = "cineflix_continue_watching_v1";
+            const CW_MOVIE_ID = String(movie.id || "");
+            if (!CW_MOVIE_ID || !video) return;
 
-        if(window.__CINEFLIX_CONTINUE_MOVIE_ID !== String(movie.id)){
-            window.__CINEFLIX_CONTINUE_MOVIE_ID = String(movie.id);
+            let cwLastSave = 0;
+            let cwRestorePending = true;
 
-            let continueRestoreTime = 0;
-            let continueLastSavedTime = 0;
-            let continueSaveTimer = null;
-
-            function continueReadItems(){
-                try{
-                    const raw = localStorage.getItem(CONTINUE_WATCHING_KEY);
-                    const parsed = JSON.parse(raw || "[]");
-                    return Array.isArray(parsed) ? parsed : [];
-                }catch(e){
+            const cwRead = () => {
+                try {
+                    const x = JSON.parse(localStorage.getItem(CW_KEY) || "[]");
+                    return Array.isArray(x) ? x : [];
+                } catch (_) {
                     return [];
                 }
-            }
+            };
 
-            function continueWriteItems(items){
-                try{
-                    localStorage.setItem(
-                        CONTINUE_WATCHING_KEY,
-                        JSON.stringify(items.slice(0,20))
-                    );
-                }catch(e){
-                    /* Storage/privacy errors must never affect the player. */
-                }
-            }
+            const cwWrite = (items) => {
+                try {
+                    localStorage.setItem(CW_KEY, JSON.stringify(items.slice(0, 20)));
+                } catch (_) {}
+            };
 
-            function continueRemoveItem(id){
-                try{
-                    const items = continueReadItems().filter(
-                        item => String(item.id) !== String(id)
-                    );
-                    continueWriteItems(items);
-                }catch(e){}
-            }
+            const cwRemove = () => {
+                const items = cwRead().filter(
+                    x => String(x.id) !== CW_MOVIE_ID
+                );
+                cwWrite(items);
+            };
 
-            function continueGetSavedItem(id){
-                return continueReadItems().find(
-                    item => String(item.id) === String(id)
-                ) || null;
-            }
+            const cwDuration = () => {
+                let d = Number(video.duration);
+                if (Number.isFinite(d) && d > 0) return d;
 
-            function continueCaptureFrame(){
-                try{
-                    if(!video || !video.videoWidth || !video.videoHeight){
-                        return "";
+                const runtime = Number(movie.runtime) * 60;
+                if (Number.isFinite(runtime) && runtime > 0) return runtime;
+
+                return 0;
+            };
+
+            const cwPoster = () =>
+                movie.backdrop_url ||
+                movie.poster_url ||
+                "";
+
+            const cwSave = (force) => {
+                try {
+                    const current = Number(video.currentTime) || 0;
+                    const duration = cwDuration();
+
+                    // Never create Continue Watching before 1 real second.
+                    if (
+                        current <= 1 ||
+                        !duration ||
+                        !Number.isFinite(duration)
+                    ) return;
+
+                    // Remove completed movies.
+                    if (duration - current <= 1) {
+                        cwRemove();
+                        return;
                     }
 
-                    const maxWidth = 480;
-                    const scale = Math.min(
-                        1,
-                        maxWidth / video.videoWidth
+                    // Save at most every 2 seconds unless forced.
+                    if (!force && current - cwLastSave < 2) return;
+                    cwLastSave = current;
+
+                    const old = cwRead().filter(
+                        x => String(x.id) !== CW_MOVIE_ID
                     );
 
-                    const canvas = document.createElement("canvas");
-                    canvas.width = Math.max(
-                        1,
-                        Math.round(video.videoWidth * scale)
-                    );
-                    canvas.height = Math.max(
-                        1,
-                        Math.round(video.videoHeight * scale)
-                    );
+                    old.unshift({
+                        id: movie.id,
+                        title: movie.title || "Untitled",
+                        thumb: cwPoster(),
+                        poster: movie.poster_url || cwPoster(),
+                        currentTime: current,
+                        duration: duration,
+                        updatedAt: Date.now()
+                    });
 
-                    const ctx = canvas.getContext("2d");
-                    if(!ctx) return "";
-
-                    ctx.drawImage(
-                        video,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                    );
-
-                    return canvas.toDataURL("image/jpeg",0.68);
-                }catch(e){
-                    /* Cross-origin HLS may block canvas extraction. */
-                    return "";
-                }
-            }
-
-            function continueGetDuration(){
-                let duration = Number(video?.duration) || 0;
-
-                if(!Number.isFinite(duration) || duration <= 0){
-                    const runtimeSeconds =
-                        Number(movie.runtime || 0) * 60;
-
-                    if(
-                        Number.isFinite(runtimeSeconds) &&
-                        runtimeSeconds > 0
-                    ){
-                        duration = runtimeSeconds;
-                    }else if(video?.seekable && video.seekable.length){
-                        try{
-                            duration = Number(
-                                video.seekable.end(
-                                    video.seekable.length - 1
-                                )
-                            ) || 0;
-                        }catch(e){}
-                    }
-                }
-
-                return duration;
-            }
-
-            function continueSaveProgress(force=false){
-                if(!video || !movie || !movie.id) return;
-
-                const current = Number(video.currentTime) || 0;
-                const duration = continueGetDuration();
-
-                /*
-                 * IMPORTANT:
-                 * Nothing is added before the video has actually crossed
-                 * the 1-second mark.
-                 */
-                if(
-                    current <= 1 ||
-                    !Number.isFinite(duration) ||
-                    duration <= current
-                ){
-                    return;
-                }
-
-                /*
-                 * Finished movies are removed instead of showing
-                 * "0 min left".
-                 */
-                if(duration - current <= 1){
-                    continueRemoveItem(movie.id);
-                    continueLastSavedTime = 0;
-                    return;
-                }
-
-                /* Do not write localStorage on every tiny timeupdate. */
-                if(
-                    !force &&
-                    current - continueLastSavedTime < 2
-                ){
-                    return;
-                }
-
-                continueLastSavedTime = current;
-
-                const fallbackThumb =
-                    movie.backdrop_url ||
-                    movie.poster_url ||
-                    "";
-
-                const capturedThumb = continueCaptureFrame();
-
-                const item = {
-                    id: movie.id,
-                    title: movie.title || "Untitled",
-                    thumb: capturedThumb || fallbackThumb,
-                    poster: movie.poster_url || fallbackThumb,
-                    currentTime: current,
-                    duration: duration,
-                    updatedAt: Date.now(),
-                    category: movie.category || "Movies",
-                    media_type: movie.media_type || "movie"
-                };
-
-                const items = continueReadItems().filter(
-                    x => String(x.id) !== String(movie.id)
-                );
-
-                items.unshift(item);
-                continueWriteItems(items);
-            }
-
-            function continueRestoreProgress(){
-                const saved = continueGetSavedItem(movie.id);
-                if(!saved) return;
-
-                const savedTime = Number(saved.currentTime) || 0;
-                const savedDuration = Number(saved.duration) || 0;
-
-                if(savedTime <= 1) return;
-
-                /*
-                 * If the stored position is already at the end of the
-                 * currently loaded source, remove the stale entry.
-                 */
-                if(
-                    savedDuration > 0 &&
-                    Number.isFinite(video.duration) &&
-                    video.duration > 0 &&
-                    savedTime >= video.duration - 1
-                ){
-                    continueRemoveItem(movie.id);
-                    return;
-                }
-
-                continueRestoreTime = savedTime;
-            }
-
-            function continueApplyRestore(){
-                if(
-                    !continueRestoreTime ||
-                    !Number.isFinite(video.duration) ||
-                    video.duration <= 0
-                ){
-                    return;
-                }
-
-                const target = Math.min(
-                    Math.max(0, continueRestoreTime),
-                    Math.max(0, video.duration - 1)
-                );
-
-                try{
-                    video.currentTime = target;
-                }catch(e){}
-
-                continueRestoreTime = 0;
-            }
-
-            /*
-             * Restore only after metadata is actually available.
-             * This does NOT autoplay the movie.
-             */
-            video.addEventListener("loadedmetadata",()=>{
-                continueRestoreProgress();
-                continueApplyRestore();
-            });
-
-            video.addEventListener("durationchange",()=>{
-                continueRestoreProgress();
-                continueApplyRestore();
-            });
-
-            video.addEventListener("playing",()=>{
-                continueRestoreProgress();
-                continueApplyRestore();
-            });
-
-            /*
-             * Save only real playback progress.
-             */
-            video.addEventListener("timeupdate",()=>{
-                continueSaveProgress(false);
-            });
-
-            video.addEventListener("pause",()=>{
-                continueSaveProgress(true);
-            });
-
-            video.addEventListener("seeking",()=>{
-                if(continueSaveTimer){
-                    clearTimeout(continueSaveTimer);
-                }
-
-                continueSaveTimer = setTimeout(()=>{
-                    continueSaveTimer = null;
-                    continueSaveProgress(true);
-                },250);
-            });
-
-            video.addEventListener("ended",()=>{
-                continueRemoveItem(movie.id);
-                continueLastSavedTime = 0;
-            });
-
-            /*
-             * Back button / tab close / page navigation.
-             * Saving is wrapped so it can never break navigation.
-             */
-            window.addEventListener("pagehide",()=>{
-                try{
-                    continueSaveProgress(true);
-                }catch(e){}
-            });
-
-            window.addEventListener("beforeunload",()=>{
-                try{
-                    continueSaveProgress(true);
-                }catch(e){}
-            });
-
-            /*
-             * Expose a tiny safe refresh hook for the Home page.
-             * No player state is touched here.
-             */
-            window.CINEFLIX_CONTINUE_WATCHING = {
-                key: CONTINUE_WATCHING_KEY,
-                refresh: function(){
-                    try{
-                        window.dispatchEvent(
-                            new CustomEvent("cineflix:continue-updated")
-                        );
-                    }catch(e){}
+                    cwWrite(old);
+                } catch (_) {
+                    // Continue Watching must NEVER affect video playback.
                 }
             };
-        }
+
+            const cwRestore = () => {
+                if (!cwRestorePending) return;
+
+                try {
+                    const saved = cwRead().find(
+                        x => String(x.id) === CW_MOVIE_ID
+                    );
+
+                    if (!saved) {
+                        cwRestorePending = false;
+                        return;
+                    }
+
+                    const savedTime = Number(saved.currentTime) || 0;
+                    if (savedTime <= 1) {
+                        cwRestorePending = false;
+                        return;
+                    }
+
+                    // Only restore after the player itself has metadata.
+                    const duration = Number(video.duration);
+                    if (!Number.isFinite(duration) || duration <= 0) return;
+
+                    if (savedTime >= duration - 1) {
+                        cwRemove();
+                        cwRestorePending = false;
+                        return;
+                    }
+
+                    // Do NOT call play(). The user's existing play flow stays intact.
+                    if (Math.abs((video.currentTime || 0) - savedTime) > 1) {
+                        video.currentTime = Math.min(
+                            savedTime,
+                            Math.max(0, duration - 1)
+                        );
+                    }
+
+                    cwRestorePending = false;
+                } catch (_) {
+                    cwRestorePending = false;
+                }
+            };
+
+            // Save only; these listeners do not modify the player's source.
+            video.addEventListener("timeupdate", () => cwSave(false));
+            video.addEventListener("pause", () => cwSave(true));
+            video.addEventListener("ended", cwRemove);
+
+            // Restore only when metadata is already ready.
+            video.addEventListener("loadedmetadata", cwRestore);
+            video.addEventListener("durationchange", cwRestore);
+
+            // Browser Back / navigation.
+            document.addEventListener("visibilitychange", () => {
+                if (document.visibilityState === "hidden") cwSave(true);
+            });
+
+            window.addEventListener("pagehide", () => cwSave(true));
+        })();
     }
 
     async function getMovie(){
