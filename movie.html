@@ -5093,30 +5093,24 @@ initialPosterPlay.addEventListener("click",async(e)=>{
     e.stopPropagation();
     window.dispatchEvent(new CustomEvent("cineflix:play-intent"));
 
-    /* Hide the poster and show the real player loader immediately. */
-    initialPoster.classList.add("hidden");
-    showPlayerLoading();
+    /*
+       IMPORTANT:
+       Do not call video.play() directly here. The movie source can be
+       HLS-managed, so video.src may be empty even though the stream is ready
+       to be loaded. Reuse the existing player start pipeline instead.
+       This keeps HLS loading, retry, loader, quality and controls intact.
+    */
+    togglePlay();
 
     /*
-       Start the real video BEFORE/WHILE the cinematic intro is visible.
-       Nothing is changed in the player controls or existing playback logic.
+       The intro runs on top while the REAL player starts loading underneath.
+       It does not replace or modify the existing player controls.
     */
-    const playPromise = video.play().catch(()=>{
-        initialPoster.classList.remove("hidden");
-        hidePlayerLoading();
-        centerPlay.style.display="none";
-        if(cineflixPlayIntro){
-            cineflixPlayIntro.classList.remove("show","finish");
-            cineflixPlayIntro.classList.add("hide");
-        }
-    });
-
     showPlayerControls(true);
     updateCenterPlayPause();
 
     /* Intro runs only for this initial Play action. */
     await runCineflixPlayIntro();
-    await playPromise;
 });
 
 
