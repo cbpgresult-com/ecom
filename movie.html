@@ -3223,52 +3223,6 @@ body.cineflix-db-error .cineflix-db-message{
     box-sizing:border-box !important;
 }
 </style>
-<style id="cineflix-intro-style">
-/* =========================================================
-   CINEFLIX INTRO
-   - Intro media is preloaded only; main movie is not preloaded
-     until the first user Play action.
-   - On Play, the main movie buffers underneath the intro.
-========================================================= */
-.cineflix-intro-overlay{
-    position:absolute;
-    inset:0;
-    z-index:70;
-    display:none;
-    overflow:hidden;
-    background:#000;
-    opacity:1;
-    visibility:hidden;
-    pointer-events:none;
-    transition:opacity .42s ease,visibility 0s linear .42s;
-}
-.cineflix-intro-overlay.show{
-    display:block;
-    visibility:visible;
-    opacity:1;
-}
-.cineflix-intro-overlay.fade-out{
-    opacity:0;
-    visibility:hidden;
-}
-.cineflix-intro-overlay video{
-    width:100%;
-    height:100%;
-    display:block;
-    object-fit:contain;
-    background:#000;
-}
-.video-player.cineflix-intro-active #movieVideo,
-.video-player.cineflix-intro-active .player-empty{
-    opacity:0 !important;
-    visibility:hidden !important;
-}
-.video-player.cineflix-intro-active .player-controls,
-.video-player.cineflix-intro-active .center-play,
-.video-player.cineflix-intro-active .center-play-pause{
-    pointer-events:none !important;
-}
-</style>
 <style>
 /* TRAILER MODE: YouTube iframe owns all playback controls.
    Hide CINEFLIX video controls/center controls while trailer is active. */
@@ -3565,17 +3519,6 @@ body.cineflix-db-error .cineflix-db-message{
         </svg>
     </button>
 
-
-    <!-- CINEFLIX INTRO: preloaded on page open; used only for the first Play click. -->
-    <div class="cineflix-intro-overlay" id="cineflixIntroOverlay" aria-hidden="true">
-        <video
-            id="cineflixIntroVideo"
-            preload="auto"
-            muted
-            playsinline
-            webkit-playsinline
-        ></video>
-    </div>
 
     <video
         id="movieVideo"
@@ -4741,12 +4684,6 @@ body.cineflix-db-error .cineflix-db-message{
 const video =
     document.getElementById("movieVideo");
 
-const cineflixIntroOverlay =
-    document.getElementById("cineflixIntroOverlay");
-
-const cineflixIntroVideo =
-    document.getElementById("cineflixIntroVideo");
-
 const centerPlay =
     document.getElementById("centerPlay");
 
@@ -4992,173 +4929,20 @@ pipBtn.addEventListener("click",async e=>{
 
 let controlsHideTimer = null;
 
-/* =========================================================
-   CINEFLIX INTRO PRELOAD / FIRST-PLAY HANDOFF
-   - Only the intro is preloaded when the page opens.
-   - On the first Play click the intro starts immediately.
-   - The real movie starts loading underneath at the same time.
-   - When the intro ends, the main movie fades in and starts at 0:00.
-========================================================= */
-const CINEFLIX_INTRO_URL =
-    "https://cdn.jumpshare.com/preview/jt9TTKO2PBYxjbnrOF0WILIDCzJ6Rtee6zYQNtDM4_sXzF0uznGAtXzSBdBACQui-A6_Dr6nQdzSuh5p5V9oRCHtd-WtNY9Ze4Oe3ndH5c_DVZn5QXtnKTPw6_BcqekWuHUv8y5dicpMQA9gvCzj-26yjbN-I2pg_cnoHs_AmgI.mp4";
-
-let cineflixIntroStarted = false;
-let cineflixIntroFinished = false;
-let cineflixIntroMainReady = false;
-let cineflixIntroMainStarting = false;
-
-function preloadCineflixIntro(){
-    if(!cineflixIntroVideo) return;
-    if(cineflixIntroVideo.src !== CINEFLIX_INTRO_URL){
-        cineflixIntroVideo.src = CINEFLIX_INTRO_URL;
-    }
-    cineflixIntroVideo.preload = "auto";
-    try{ cineflixIntroVideo.load(); }catch(e){}
-}
-
-/* Preload only the intro as soon as this player script is ready. */
-preloadCineflixIntro();
-
-function startCineflixMainBehindIntro(){
-    const source =
-        QUALITY_SOURCES.movie?.[currentQuality] ||
-        MOVIE_DEMO_URL ||
-        QUALITY_SOURCES.movie?.["480"] ||
-        "";
-
-    if(!source) return;
-
-    cineflixIntroMainReady = false;
-    cineflixIntroMainStarting = false;
-
-    try{
-        initialPoster.classList.add("hidden");
-        initialPoster.setAttribute("aria-hidden","true");
-    }catch(e){}
-
-    showPlayerLoading();
-    loadHlsSource(source,false,0);
-}
-
-function finishCineflixIntro(){
-    if(cineflixIntroFinished) return;
-    cineflixIntroFinished = true;
-
-    const player = playerSurface;
-    if(player) player.classList.remove("cineflix-intro-active");
-
-    if(cineflixIntroOverlay){
-        cineflixIntroOverlay.classList.add("fade-out");
-        setTimeout(()=>{
-            cineflixIntroOverlay.classList.remove("show","fade-out");
-            cineflixIntroOverlay.setAttribute("aria-hidden","true");
-            try{
-                cineflixIntroVideo.pause();
-                cineflixIntroVideo.currentTime=0;
-            }catch(e){}
-        },450);
-    }
-
-    try{ video.currentTime=0; }catch(e){}
-
-    if(!video.paused){
-        hidePlayerLoading();
-        showPlayerControls(true);
-        return;
-    }
-
-    cineflixIntroMainStarting = true;
-    showPlayerLoading();
-
-    const startMain=()=>{
-        if(!cineflixIntroMainStarting) return;
-        try{ video.currentTime=0; }catch(e){}
-        const p=video.play();
-        if(p && p.catch){
-            p.catch(()=>{
-                cineflixIntroMainStarting=false;
-                hidePlayerLoading();
-                centerPlay.style.display="grid";
-            });
-        }
-    };
-
-    if(video.readyState >= 3 || cineflixIntroMainReady){
-        requestAnimationFrame(startMain);
-    }else{
-        const onceReady=()=>{
-            video.removeEventListener("canplay",onceReady);
-            video.removeEventListener("loadeddata",onceReady);
-            requestAnimationFrame(startMain);
-        };
-        video.addEventListener("canplay",onceReady,{once:true});
-        video.addEventListener("loadeddata",onceReady,{once:true});
-    }
-}
-
-function startCineflixIntro(){
-    if(cineflixIntroStarted || cineflixIntroFinished){
-        if(!cineflixIntroFinished) finishCineflixIntro();
-        return;
-    }
-
-    cineflixIntroStarted = true;
-    window.dispatchEvent(new CustomEvent("cineflix:play-intent"));
-
-    if(playerSurface) playerSurface.classList.add("cineflix-intro-active");
-    if(initialPoster){
-        initialPoster.classList.add("hidden");
-        initialPoster.setAttribute("aria-hidden","true");
-    }
-    centerPlay.style.display="none";
-    showPlayerControls(false);
-
-    if(cineflixIntroOverlay){
-        cineflixIntroOverlay.classList.remove("fade-out");
-        cineflixIntroOverlay.classList.add("show");
-        cineflixIntroOverlay.setAttribute("aria-hidden","false");
-    }
-
-    /* Start the movie request immediately behind the intro. */
-    startCineflixMainBehindIntro();
-
-    const beginIntroPlayback=()=>{
-        try{
-            cineflixIntroVideo.currentTime=0;
-            const p=cineflixIntroVideo.play();
-            if(p && p.catch){
-                p.catch(()=>{
-                    finishCineflixIntro();
-                });
-            }
-        }catch(e){
-            finishCineflixIntro();
-        }
-    };
-
-    if(cineflixIntroVideo.readyState >= 2){
-        beginIntroPlayback();
-    }else{
-        showPlayerLoading();
-        cineflixIntroVideo.addEventListener("canplay",()=>{
-            hidePlayerLoading();
-            beginIntroPlayback();
-        },{once:true});
-
-        cineflixIntroVideo.addEventListener("error",()=>{
-            finishCineflixIntro();
-        },{once:true});
-    }
-}
-
-cineflixIntroVideo?.addEventListener("ended",finishCineflixIntro);
-cineflixIntroVideo?.addEventListener("error",()=>{
-    if(cineflixIntroStarted && !cineflixIntroFinished) finishCineflixIntro();
-});
-
 initialPosterPlay.addEventListener("click",(e)=>{
     e.stopPropagation();
-    startCineflixIntro();
+    window.dispatchEvent(new CustomEvent("cineflix:play-intent"));
+    initialPoster.classList.add("hidden");
+    showPlayerLoading();
+
+    video.play().catch(()=>{
+        initialPoster.classList.remove("hidden");
+        hidePlayerLoading();
+        centerPlay.style.display="none";
+    });
+
+    showPlayerControls(true);
+    updateCenterPlayPause();
 });
 
 
@@ -6221,11 +6005,6 @@ function setPlayerMode(mode,autoPlay=true){
 }
 
 function togglePlay(){
-    if(currentMode==="movie" && !cineflixIntroStarted && !cineflixIntroFinished){
-        startCineflixIntro();
-        return;
-    }
-
     if(!hlsReady && !video.src){
         initialPoster.classList.add("hidden");
         showPlayerLoading();
@@ -6350,33 +6129,18 @@ video.addEventListener("progress",()=>{
     }
 });
 video.addEventListener("seeking",()=>{ if(!video.paused) showPlayerLoading(); });
-video.addEventListener("canplay",()=>{
-    if(playerSurface?.classList.contains("cineflix-intro-active")){
-        cineflixIntroMainReady=true;
-    }
-});
+video.addEventListener("canplay",()=>{ /* keep loader until actual playback */ });
 video.addEventListener("loadeddata",()=>{
     playerEmpty.classList.add("hidden");
     video.style.visibility="visible";
     video.style.opacity="1";
     video.style.zIndex="2";
-
-    if(playerSurface?.classList.contains("cineflix-intro-active")){
-        cineflixIntroMainReady=true;
-        return;
-    }
 });
 video.addEventListener("playing",()=>{
     playerEmpty.classList.add("hidden");
     video.style.visibility="visible";
     video.style.opacity="1";
     video.style.zIndex="2";
-
-    if(playerSurface?.classList.contains("cineflix-intro-active")){
-        cineflixIntroMainReady=true;
-        return;
-    }
-
     hidePlayerLoading();
     showPlayerControls(true);
 });
