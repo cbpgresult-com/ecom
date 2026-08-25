@@ -5325,6 +5325,14 @@ let currentQualityChoice = "auto";
 let hls = null;
 let hlsLevels = [];
 let hlsReady = false;
+
+/* Slow-network resilience: retry transient stream failures instead of
+   immediately replacing the player with an error state. */
+let hlsNetworkRetryCount = 0;
+let hlsRetryTimer = null;
+let nativeRetryCount = 0;
+let nativeRetryTimer = null;
+const MAX_STREAM_RETRIES = 8;
 let pendingAutoPlay = false;
 let pendingStartTime = 0;
 
@@ -5502,39 +5510,39 @@ function hlsHash(s){
 
 function getHlsConfig(){
     return {
+        /* Adaptive bitrate: HLS.js automatically chooses the quality that
+           fits the measured network speed and available buffer. */
         maxBufferLength:60,
         maxMaxBufferLength:120,
         maxBufferSize:0,
         enableWorker:true,
-        startLevel:0,
+        startLevel:-1,
         autoStartLoad:true,
         startPosition:0,
-        abrEwmaDefaultEstimate:3000000,
+        abrEwmaDefaultEstimate:450000,
         abrEwmaFastLive:3,
         abrEwmaSlowLive:9,
-        abrBandWidthFactor:0.8,
-        abrBandWidthUpFactor:0.7,
-        capLevelToPlayerSize:false,
-        abrBandWidthUpFactor:0.4,
+        abrBandWidthFactor:0.78,
+        abrBandWidthUpFactor:0.55,
         abrMaxWithRealBitrate:true,
         capLevelToPlayerSize:true,
         capLevelOnFPSDrop:true,
         startFragPrefetch:true,
         testBandwidth:true,
         progressive:true,
-        fragLoadingTimeOut:10000,
-        fragLoadingMaxRetry:2,
-        fragLoadingRetryDelay:250,
-        manifestLoadingTimeOut:15000,
-        manifestLoadingMaxRetry:6,
-        levelLoadingTimeOut:15000,
-        levelLoadingMaxRetry:6,
+        fragLoadingTimeOut:30000,
+        fragLoadingMaxRetry:8,
+        fragLoadingRetryDelay:1000,
+        manifestLoadingTimeOut:30000,
+        manifestLoadingMaxRetry:8,
+        levelLoadingTimeOut:30000,
+        levelLoadingMaxRetry:8,
         maxSeekHole:5,
         nudgeOffset:0.5,
         nudgeMaxRetry:10,
         maxBufferHole:1.5,
         lowLatencyMode:false,
-        backBufferLength:120,
+        backBufferLength:90,
         renderTextTracksNatively:true,
         fetchSetup:function(context,initParams){
             initParams.mode="cors";
@@ -5642,7 +5650,15 @@ function applyHlsQuality(choice,showMessage=true){
     }
 }
 
+function clearStreamRetryTimers(){
+    if(hlsRetryTimer){ clearTimeout(hlsRetryTimer); hlsRetryTimer=null; }
+    if(nativeRetryTimer){ clearTimeout(nativeRetryTimer); nativeRetryTimer=null; }
+}
+
 function destroyHls(){
+    clearStreamRetryTimers();
+    if(adaptiveRecoveryTimer){ clearTimeout(adaptiveRecoveryTimer); adaptiveRecoveryTimer=null; }
+    adaptiveRecoveryLevel=-1;
     if(hls){
         try{hls.destroy();}catch(e){}
         hls=null;
@@ -5656,6 +5672,9 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
     pendingStartTime=savedTime||0;
     hlsReady=false;
     hlsLevels=[];
+    hlsNetworkRetryCount=0;
+    nativeRetryCount=0;
+    clearStreamRetryTimers();
 
     try{video.pause();}catch(e){}
     video.removeAttribute("src");
@@ -5737,13 +5756,41 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
 
         hls.on(Hls.Events.ERROR,(event,data)=>{
             if(!data.fatal) return;
+
+            /* Media errors are usually recoverable without destroying the
+               current buffer. Give hls.js a chance first. */
             if(data.type===Hls.ErrorTypes.MEDIA_ERROR){
-                try{hls.recoverMediaError();return;}catch(e){}
+                try{
+                    hls.recoverMediaError();
+                    showPlayerLoading();
+                    return;
+                }catch(e){}
             }
+
+            /* Network/manifest/level failures: keep the player alive and
+               quietly retry with exponential backoff. No error screen/toast
+               is shown while retries are still available. */
+            if((data.type===Hls.ErrorTypes.NETWORK_ERROR || data.details) && hlsNetworkRetryCount < MAX_STREAM_RETRIES){
+                hlsNetworkRetryCount++;
+                showPlayerLoading();
+                const delay=Math.min(12000, 700 * Math.pow(1.45, hlsNetworkRetryCount-1));
+                if(hlsRetryTimer) clearTimeout(hlsRetryTimer);
+                hlsRetryTimer=setTimeout(()=>{
+                    hlsRetryTimer=null;
+                    try{
+                        hls.startLoad(-1);
+                    }catch(e){
+                        try{ hls.loadSource(source); }catch(_){}
+                    }
+                },delay);
+                return;
+            }
+
+            /* Only after repeated retries fail do we expose a recoverable
+               player state. The user can press play to try again. */
             hidePlayerLoading();
             playerEmpty.classList.remove("hidden");
             centerPlay.style.display="grid";
-            showToast("Stream could not be loaded.");
         });
 
         hls.loadSource(source);
@@ -5902,7 +5949,41 @@ video.addEventListener("loadstart",()=>{
     if(pendingAutoPlay || !video.paused) showPlayerLoading();
 });
 
+/* =========================================================
+   SMART AUTO QUALITY / SLOW NETWORK PROTECTION
+   HLS.js remains in Auto mode and continuously measures throughput.
+   When the buffer gets dangerously low we temporarily ask it to use a
+   lower level for the next segment; once the buffer is healthy, normal
+   adaptive selection takes over again.
+========================================================= */
+let adaptiveRecoveryTimer=null;
+let adaptiveRecoveryLevel=-1;
+
+function protectAdaptivePlayback(){
+    if(currentQualityChoice!=="auto" || !hls || !hls.levels?.length) return;
+    const ahead=getBufferedAheadSeconds();
+    if(ahead<=2){
+        const current=Number.isFinite(hls.currentLevel) ? hls.currentLevel : -1;
+        const active=current>=0 ? current : Number(hls.nextAutoLevel);
+        const lower=Math.max(0,(Number.isFinite(active)&&active>=0?active:1)-1);
+        try{ hls.nextAutoLevel=lower; }catch(e){}
+        adaptiveRecoveryLevel=lower;
+        if(adaptiveRecoveryTimer) clearTimeout(adaptiveRecoveryTimer);
+        adaptiveRecoveryTimer=setTimeout(()=>{
+            adaptiveRecoveryTimer=null;
+            if(hls && currentQualityChoice==="auto" && getBufferedAheadSeconds()>8){
+                try{ hls.nextAutoLevel=-1; }catch(e){}
+                adaptiveRecoveryLevel=-1;
+            }
+        },5000);
+    }else if(ahead>8 && adaptiveRecoveryLevel>=0){
+        try{ hls.nextAutoLevel=-1; }catch(e){}
+        adaptiveRecoveryLevel=-1;
+    }
+}
+
 video.addEventListener("waiting",()=>{
+    protectAdaptivePlayback();
     /*
        If playback has real buffered media at the current point, do not
        flash the loader. Only show it when there is genuinely nothing
@@ -5916,6 +5997,23 @@ video.addEventListener("waiting",()=>{
 video.addEventListener("stalled",()=>{
     if(!video.paused && getBufferedAheadSeconds()<=0.15){
         showPlayerLoading();
+    }
+});
+
+const adaptiveQualityTimer=setInterval(()=>{
+    if(!video.paused) protectAdaptivePlayback();
+},1500);
+
+/* A slow connection may temporarily stop delivery without firing a fatal
+   error. Keep the existing frame visible and only show the loader when the
+   playable buffer is actually exhausted. */
+video.addEventListener("progress",()=>{
+    if(!video.paused && getBufferedAheadSeconds()>0.15){
+        hidePlayerLoading();
+        playerEmpty.classList.add("hidden");
+        video.style.visibility="visible";
+        video.style.opacity="1";
+        video.style.zIndex="2";
     }
 });
 video.addEventListener("seeking",()=>{ if(!video.paused) showPlayerLoading(); });
@@ -5936,10 +6034,27 @@ video.addEventListener("playing",()=>{
 });
 video.addEventListener("error",()=>{
     if(typeof Hls!=="undefined" && hls) return;
-    hidePlayerLoading();
-    playerEmpty.classList.remove("hidden");
-    centerPlay.style.display="grid";
-    showToast("Video could not be loaded.");
+    if(!video.src || nativeRetryCount >= MAX_STREAM_RETRIES){
+        hidePlayerLoading();
+        playerEmpty.classList.remove("hidden");
+        centerPlay.style.display="grid";
+        return;
+    }
+
+    nativeRetryCount++;
+    const retrySrc=video.currentSrc || video.src;
+    const retryTime=Number.isFinite(video.currentTime) ? video.currentTime : 0;
+    showPlayerLoading();
+    if(nativeRetryTimer) clearTimeout(nativeRetryTimer);
+    nativeRetryTimer=setTimeout(()=>{
+        nativeRetryTimer=null;
+        try{
+            video.src=retrySrc;
+            video.load();
+            if(retryTime>0) video.currentTime=retryTime;
+            if(pendingAutoPlay) video.play().catch(()=>{});
+        }catch(e){}
+    },Math.min(10000,700*nativeRetryCount));
 });
 video.addEventListener("play",()=>{
     // A playing video must always be above the empty placeholder.
@@ -6794,6 +6909,11 @@ document.addEventListener("fullscreenchange",()=>{
 
         return data;
     }
+
+
+window.addEventListener("beforeunload",()=>{
+    clearStreamRetryTimers();
+});
 
     async function initMovie(){
         try{
