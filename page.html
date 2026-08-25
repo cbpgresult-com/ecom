@@ -1606,173 +1606,9 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
    MOVIE DATA
 ========================================================= */
 
-let movies = [
+let movies = [];
 
-    {
-        title:"Midnight Run",
-        year:"2026",
-        genre:"Action",
-        rating:"8.8",
-        image:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"The Unknown",
-        year:"2026",
-        genre:"Thriller",
-        rating:"8.6",
-        image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"After Darkness",
-        year:"2026",
-        genre:"Drama",
-        rating:"9.0",
-        image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Last Horizon",
-        year:"2026",
-        genre:"Sci-Fi",
-        rating:"8.9",
-        image:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Lost Kingdom",
-        year:"2025",
-        genre:"Adventure",
-        rating:"8.4",
-        image:"https://images.unsplash.com/photo-1542206395-9feb3edaa68d?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Silent City",
-        year:"2026",
-        genre:"Mystery",
-        rating:"8.7",
-        image:"https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Red Planet",
-        year:"2025",
-        genre:"Sci-Fi",
-        rating:"8.2",
-        image:"https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"The Hunt",
-        year:"2026",
-        genre:"Action",
-        rating:"8.5",
-        image:"https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"No Way Back",
-        year:"2025",
-        genre:"Thriller",
-        rating:"8.3",
-        image:"https://images.unsplash.com/photo-1519638399535-1b036603ac77?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"The Island",
-        year:"2026",
-        genre:"Adventure",
-        rating:"8.8",
-        image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Echoes",
-        year:"2026",
-        genre:"Drama",
-        rating:"8.1",
-        image:"https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Black Night",
-        year:"2025",
-        genre:"Crime",
-        rating:"8.9",
-        image:"https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Wild Fire",
-        year:"2026",
-        genre:"Action",
-        rating:"8.5",
-        image:"https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Deep Blue",
-        year:"2026",
-        genre:"Adventure",
-        rating:"8.6",
-        image:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=700&q=85"
-    }
-
-];
-
-let series = [
-
-    {
-        title:"House of Shadows",
-        year:"2026",
-        genre:"Mystery",
-        rating:"9.2",
-        image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Dark Matter",
-        year:"2026",
-        genre:"Sci-Fi",
-        rating:"9.0",
-        image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"The Survivors",
-        year:"2025",
-        genre:"Drama",
-        rating:"8.8",
-        image:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Night Protocol",
-        year:"2026",
-        genre:"Thriller",
-        rating:"8.9",
-        image:"https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"Beyond Earth",
-        year:"2026",
-        genre:"Sci-Fi",
-        rating:"9.1",
-        image:"https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=700&q=85"
-    },
-
-    {
-        title:"The Code",
-        year:"2025",
-        genre:"Crime",
-        rating:"8.6",
-        image:"https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=85"
-    }
-
-];
+let series = [];
 
 
 /* =========================================================
@@ -2423,6 +2259,16 @@ document.querySelectorAll(".mobile-nav button")
    LOAD DATABASE MOVIES
 ========================================================= */
 async function loadDatabaseMovies(){
+    const trendingRow=document.getElementById("trendingRow");
+    const newRow=document.getElementById("newRow");
+    const seriesRow=document.getElementById("seriesRow");
+
+    // Never render the old demo movies. Show only the normal loading state
+    // until the real Supabase data is available.
+    showSkeleton(trendingRow);
+    showSkeleton(newRow);
+    showSkeleton(seriesRow);
+
     try{
         const {data,error}=await supabaseClient
             .from("movies")
@@ -2431,34 +2277,52 @@ async function loadDatabaseMovies(){
             .order("created_at",{ascending:false});
 
         if(error) throw error;
-        if(!data || !data.length) return;
 
-        const mapped=data.map(m=>({
+        const rows=Array.isArray(data)?data:[];
+
+        const mapped=rows.map(m=>({
             id:m.id,
             title:m.title,
             year:String(m.year||""),
-            genre:Array.isArray(m.genres)&&m.genres.length?m.genres[0]:m.category||"Movie",
+            genre:Array.isArray(m.genres)&&m.genres.length
+                ? (typeof m.genres[0]==="string" ? m.genres[0] : (m.genres[0].name||"Movie"))
+                : (m.category||"Movie"),
             rating:Number(m.rating||0).toFixed(1),
-            image:m.poster_url
-        }));
+            image:m.poster_url || "",
+        })).filter(m=>m.id && m.image);
 
-        movies=mapped.filter(m=>true);
-        series=mapped.filter((m,i)=>data[i].category==="Series");
+        movies=mapped;
+        series=mapped.filter((m,i)=>rows[i]?.category==="Series");
 
-        const movieOnly=mapped.filter((m,i)=>data[i].category!=="Series");
-        const trending=mapped.filter((m,i)=>data[i].is_trending);
-        const fresh=mapped.filter((m,i)=>data[i].is_new_release);
+        const movieOnly=mapped.filter((m,i)=>rows[i]?.category!=="Series");
+        const trending=mapped.filter((m,i)=>rows[i]?.is_trending);
+        const fresh=mapped.filter((m,i)=>rows[i]?.is_new_release);
 
-        document.getElementById("trendingRow").innerHTML="";
-        document.getElementById("newRow").innerHTML="";
-        document.getElementById("seriesRow").innerHTML="";
+        // Exactly one REAL card in each section. Never fall back to demo data.
+        const trendingOne=(trending.length?trending:movieOnly).slice(0,1);
+        const freshOne=(fresh.length?fresh:movieOnly).slice(0,1);
+        const seriesOne=series.slice(0,1);
 
-        loadRow("trendingRow",trending.length?trending:movieOnly);
-        loadRow("newRow",fresh.length?fresh:movieOnly);
-        loadRow("seriesRow",series);
+        trendingRow.innerHTML="";
+        newRow.innerHTML="";
+        seriesRow.innerHTML="";
+
+        if(trendingOne.length) loadRow("trendingRow",trendingOne);
+        else trendingRow.innerHTML="";
+
+        if(freshOne.length) loadRow("newRow",freshOne);
+        else newRow.innerHTML="";
+
+        if(seriesOne.length) loadRow("seriesRow",seriesOne);
+        else seriesRow.innerHTML="";
 
     }catch(error){
-        console.warn("CINEFLIX database load failed:",error);
+        console.error("CINEFLIX database load failed:",error);
+
+        // Do not show demo movies on failure.
+        trendingRow.innerHTML="";
+        newRow.innerHTML="";
+        seriesRow.innerHTML="";
     }
 }
 
@@ -2469,26 +2333,12 @@ async function loadDatabaseMovies(){
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-    loadRow(
-        "trendingRow",
-        movies.slice(0,1)
-    );
-
-    loadRow(
-        "newRow",
-        [...movies].reverse().slice(0,1)
-    );
-
-    loadRow(
-        "seriesRow",
-        series.slice(0,1)
-    );
-    setupRowArrows();
-
-    startHeroTimer();
-
-    // Load real movies from Supabase so every card gets its database UUID.
+    // No demo cards are rendered on startup.
+    // Real cards appear only after Supabase responds.
     loadDatabaseMovies();
+
+    setupRowArrows();
+    startHeroTimer();
 
 });
 </script>
