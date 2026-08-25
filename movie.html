@@ -498,21 +498,34 @@ button{
     width:58px;
     height:58px;
     z-index:24;
-    border:1px solid rgba(255,255,255,.14);
+    border:0;
     border-radius:50%;
     display:none;
     place-items:center;
     cursor:pointer;
-    background:rgba(18,18,18,.44);
-    box-shadow:0 8px 28px rgba(0,0,0,.34);
-    backdrop-filter:blur(5px);
-    -webkit-backdrop-filter:blur(5px);
+    background:transparent;
+    box-shadow:none;
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
     opacity:0;
-    transition:opacity .16s ease, transform .16s ease, background .16s ease;
+    transition:opacity .16s ease, transform .16s ease;
 }
 .center-play-pause.show{
     display:grid;
     opacity:1;
+}
+
+/* Center play/pause follows the same visibility as the player controls. */
+.video-player.controls-visible .center-play-pause{
+    display:grid;
+    opacity:1;
+}
+.video-player.controls-hidden .center-play-pause{
+    display:none !important;
+    opacity:0;
+}
+.video-player.trailer-mode .center-play-pause{
+    display:none !important;
 }
 .center-play-pause:active{
     transform:translate(-50%,-50%) scale(.94);
@@ -4796,6 +4809,7 @@ function updateCenterPlayPause(){
 
 function showCenterPlayPause(){
     if(!centerPlayPause) return;
+    if(playerSurface && playerSurface.classList.contains("trailer-mode")) return;
     updateCenterPlayPause();
     centerPlayPause.classList.add("show");
     clearTimeout(window.__centerPlayPauseTimer);
@@ -5156,11 +5170,29 @@ video.addEventListener("ended",()=>{
     }
 });
 
+function syncCenterPlayPauseWithControls(){
+    if(!playerSurface || !centerPlayPause || !playerControls) return;
+    const hidden=playerControls.classList.contains("auto-hidden");
+    if(hidden){
+        playerSurface.classList.remove("controls-visible");
+        playerSurface.classList.add("controls-hidden");
+        centerPlayPause.classList.remove("show");
+    }else{
+        playerSurface.classList.remove("controls-hidden");
+        playerSurface.classList.add("controls-visible");
+        if(!playerSurface.classList.contains("trailer-mode")){
+            updateCenterPlayPause();
+            centerPlayPause.classList.add("show");
+        }
+    }
+}
+
 function showPlayerControls(resetTimer=true){
     playerControls.classList.remove("auto-hidden");
     playerTop.classList.remove("auto-hidden");
     playerTop.style.display="none";
     if(playerModeBadge) playerModeBadge.classList.add("show");
+    syncCenterPlayPauseWithControls();
 
     clearTimeout(controlsHideTimer);
 
@@ -5176,6 +5208,7 @@ function showPlayerControls(resetTimer=true){
             playerControls.classList.add("auto-hidden");
             playerTop.classList.add("auto-hidden");
             if(playerModeBadge) playerModeBadge.classList.remove("show");
+            syncCenterPlayPauseWithControls();
         },5000);
     }
 }
@@ -5186,6 +5219,7 @@ function hidePlayerControls(){
     playerTop.classList.add("auto-hidden");
     playerTop.style.display="none";
     if(playerModeBadge) playerModeBadge.classList.remove("show");
+    syncCenterPlayPauseWithControls();
 }
 
 function handlePlayerInteraction(e){
