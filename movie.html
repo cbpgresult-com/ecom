@@ -1650,6 +1650,11 @@ button{
 }
 
 /* TMDB cast photos — fill the complete circle with no gray corners. */
+.cast-photo{
+    overflow:hidden;
+    border-radius:50%;
+}
+
 .cast-photo img{
     width:100%;
     height:100%;
@@ -1661,6 +1666,8 @@ button{
     padding:0;
     margin:0;
     box-sizing:border-box;
+    transform:scale(1.22);
+    transform-origin:center center;
 }
 
 .cast-photo svg{
