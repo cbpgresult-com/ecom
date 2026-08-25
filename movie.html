@@ -5517,7 +5517,7 @@ function getHlsConfig(){
         maxMaxBufferLength:120,
         maxBufferSize:0,
         enableWorker:true,
-        startLevel:0,
+        startLevel:-1,
         autoStartLoad:true,
         startPosition:0,
         abrEwmaDefaultEstimate:450000,
@@ -5692,8 +5692,22 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
             hlsLevels=hls.levels||data.levels||[];
             rebuildQualityButtons();
 
-            if(currentQualityChoice==="auto") hls.currentLevel=-1;
-            else {
+            if(currentQualityChoice==="auto") {
+                /* Auto always starts from the real 480p level, regardless of
+                   how the HLS manifest orders its quality levels. After the
+                   first buffered segment, ABR is released so it can instantly
+                   move up/down according to the measured connection. */
+                const startup480=findLevelForQuality("480");
+                if(startup480>=0){
+                    try{
+                        hls.startLevel=startup480;
+                        hls.currentLevel=startup480;
+                    }catch(e){}
+                    hls.__cineflixAutoStartup480=true;
+                }else{
+                    hls.currentLevel=-1;
+                }
+            } else {
                 const level=findLevelForQuality(currentQuality);
                 if(level>=0) hls.currentLevel=level;
             }
@@ -5718,6 +5732,15 @@ function loadHlsSource(source,autoPlay=true,savedTime=0){
             }else{
                 centerPlay.style.display="none";
             }
+        });
+
+        hls.on(Hls.Events.FRAG_BUFFERED,()=>{
+            if(currentQualityChoice!=="auto" || !hls || !hls.__cineflixAutoStartup480) return;
+            /* The first 480p segment is now buffered. Release the temporary
+               startup lock immediately; HLS.js ABR takes over from here. */
+            hls.__cineflixAutoStartup480=false;
+            try{ hls.currentLevel=-1; }catch(e){}
+            try{ hls.nextAutoLevel=-1; }catch(e){}
         });
 
         hls.on(Hls.Events.LEVEL_SWITCHED,(event,data)=>{
