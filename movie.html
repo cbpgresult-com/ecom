@@ -1618,7 +1618,7 @@ button{
 
 .cast{
     flex:0 0 72px;
-
+    width:72px;
     text-align:center;
 }
 
@@ -1644,6 +1644,19 @@ button{
     color:#777;
 
     border:1px solid var(--border);
+
+    overflow:hidden;
+    flex-shrink:0;
+}
+
+/* TMDB cast photos keep the original CINEFLIX circular style. */
+.cast-photo img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+    object-position:center;
+    border-radius:50%;
 }
 
 .cast-photo svg{
