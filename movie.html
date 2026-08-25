@@ -3269,12 +3269,13 @@ body.cineflix-db-error .cineflix-db-message{
     position:absolute;
     top:0;
     bottom:0;
-    width:50%;
-    z-index:45;
+    width:38%;
+    z-index:12;
     touch-action:none;
     -webkit-user-select:none;
     user-select:none;
     display:none;
+    background:transparent !important;
 }
 .player-gesture-zone.left{left:0;}
 .player-gesture-zone.right{right:0;}
@@ -3283,55 +3284,54 @@ body.cineflix-db-error .cineflix-db-message{
     position:absolute;
     top:50%;
     left:50%;
-    transform:translate(-50%,-50%) scale(.92);
-    min-width:92px;
-    height:92px;
-    border-radius:50%;
+    transform:translate(-50%,-50%);
+    min-width:0;
+    height:auto;
+    border:0 !important;
+    border-radius:0;
     display:flex;
-    flex-direction:column;
+    flex-direction:row;
     align-items:center;
     justify-content:center;
-    gap:4px;
-    background:rgba(0,0,0,.46);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
+    gap:7px;
+    background:transparent !important;
+    box-shadow:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
     opacity:0;
     visibility:hidden;
     pointer-events:none;
-    transition:opacity .14s ease,transform .14s ease;
+    transition:opacity .12s ease;
 }
 .gesture-indicator.show{
     opacity:1;
     visibility:visible;
-    transform:translate(-50%,-50%) scale(1);
 }
 .gesture-indicator svg{
-    width:30px;
-    height:30px;
+    width:24px;
+    height:24px;
     fill:none;
     stroke:#fff;
     stroke-width:2;
     stroke-linecap:round;
     stroke-linejoin:round;
+    filter:none;
 }
 .gesture-indicator .gesture-value{
-    font-size:15px;
+    font-size:12px;
     line-height:1;
-    font-weight:700;
+    font-weight:600;
     color:#fff;
+    letter-spacing:.1px;
+    text-shadow:0 1px 3px rgba(0,0,0,.65);
 }
 .gesture-indicator .gesture-label{
-    font-size:10px;
-    line-height:1;
-    color:rgba(255,255,255,.72);
-    letter-spacing:.4px;
+    display:none !important;
 }
-
 .player-brightness-layer{
     position:absolute;
     inset:0;
-    z-index:44;
+    z-index:11;
     pointer-events:none;
     background:#000;
     opacity:0;
@@ -3342,6 +3342,17 @@ body.cineflix-db-error .cineflix-db-message{
     .player-gesture-zone{display:block;}
 }
 
+
+@media (max-width:900px), (pointer:coarse){
+    .player-gesture-zone{display:block;}
+    .video-player .center-play,
+    .video-player .center-play-pause,
+    .video-player .player-controls,
+    .video-player .player-top,
+    .video-player .player-mode-badge{
+        z-index:70 !important;
+    }
+}
 </style>
 </head>
 
@@ -7091,10 +7102,7 @@ window.addEventListener("beforeunload",()=>{
 <script>
 /* =========================================================
    MOBILE BRIGHTNESS / VOLUME SWIPES
-   Brightness is a visual player overlay only: browsers cannot
-   change the phone's hardware screen brightness. Therefore the
-   device brightness itself is untouched and returns naturally
-   when leaving the player.
+   Gestures become active only after the movie has actually played.
 ========================================================= */
 (function(){
     function initGestureControls(){
@@ -7111,51 +7119,53 @@ window.addEventListener("beforeunload",()=>{
         if(!video || !player || !left || !right) return;
 
         let brightness=100;
-        let volume=Math.round((video.volume ?? 1)*100);
+        let volume=Math.round((video.volume || 1)*100);
         let active=null;
         let startY=0;
         let startValue=0;
-        let lastY=0;
         let hideTimer=0;
+        let hasPlayed=false;
 
         function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
-        function show(ind,val,label){
+        function hideIndicators(){
+            bInd?.classList.remove("show");
+            vInd?.classList.remove("show");
+        }
+
+        function show(ind,val){
             if(!ind) return;
             ind.classList.add("show");
-            if(label==="BRIGHTNESS" && bVal) bVal.textContent=val+"%";
-            if(label==="VOLUME" && vVal) vVal.textContent=val+"%";
             clearTimeout(hideTimer);
-            hideTimer=setTimeout(()=>{
-                bInd?.classList.remove("show");
-                vInd?.classList.remove("show");
-            },700);
+            hideTimer=setTimeout(hideIndicators,900);
         }
 
         function updateBrightness(value){
             brightness=clamp(Math.round(value),1,100);
-
-            // 100% = no dark overlay. Lower values darken only the player.
             if(bLayer){
-                bLayer.style.opacity=String((100-brightness)/100 * .78);
+                bLayer.style.opacity=String(((100-brightness)/100)*.78);
             }
-            show(bInd,brightness,"BRIGHTNESS");
+            if(bVal) bVal.textContent=brightness+"%";
+            show(bInd,brightness);
         }
 
         function updateVolume(value){
             volume=clamp(Math.round(value),0,100);
-            try{ video.volume=volume/100; }catch(e){}
-            if(volume===0) video.muted=true;
-            else video.muted=false;
-
-            show(vInd,volume,"VOLUME");
+            try{
+                video.muted=false;
+                video.volume=volume/100;
+            }catch(e){}
+            if(vVal) vVal.textContent=volume+"%";
+            show(vInd,volume);
         }
 
         function begin(zone,e,type){
+            // Never steal the initial Play button interaction.
+            if(!hasPlayed) return;
             if(e.pointerType==="mouse" && e.button!==0) return;
+
             active=type;
             startY=e.clientY;
-            lastY=e.clientY;
             startValue=type==="brightness" ? brightness : volume;
             zone.setPointerCapture?.(e.pointerId);
             e.preventDefault();
@@ -7163,12 +7173,10 @@ window.addEventListener("beforeunload",()=>{
         }
 
         function move(e){
-            if(!active) return;
-            const delta=startY-e.clientY; // swipe up = positive
-            lastY=e.clientY;
+            if(!active || !hasPlayed) return;
 
-            // 100 px vertical movement = 25 percentage points.
-            const next=startValue + (delta/100)*25;
+            const delta=startY-e.clientY; // up = positive
+            const next=startValue+(delta/100)*25;
 
             if(active==="brightness") updateBrightness(next);
             else updateVolume(next);
@@ -7180,29 +7188,37 @@ window.addEventListener("beforeunload",()=>{
         function end(e){
             if(!active) return;
             active=null;
+            hideIndicators();
             e.preventDefault();
             e.stopPropagation();
         }
 
         left.addEventListener("pointerdown",e=>begin(left,e,"brightness"),{passive:false});
         right.addEventListener("pointerdown",e=>begin(right,e,"volume"),{passive:false});
-
         window.addEventListener("pointermove",move,{passive:false});
         window.addEventListener("pointerup",end,{passive:false});
         window.addEventListener("pointercancel",end,{passive:false});
 
-        // Keep the gesture volume synchronized with normal player volume changes.
+        // The first real play unlocks swipe controls.
+        video.addEventListener("playing",()=>{
+            hasPlayed=true;
+        });
+
+        video.addEventListener("play",()=>{
+            hasPlayed=true;
+        });
+
         video.addEventListener("volumechange",()=>{
             if(active===null){
-                volume=Math.round((video.volume||0)*100);
+                volume=video.muted ? 0 : Math.round((video.volume||0)*100);
                 if(vVal) vVal.textContent=volume+"%";
             }
         });
 
-        // If video starts muted, show the actual effective volume as 0.
         if(video.muted) volume=0;
         if(vVal) vVal.textContent=volume+"%";
         if(bVal) bVal.textContent=brightness+"%";
+        hideIndicators();
     }
 
     if(document.readyState==="loading"){
