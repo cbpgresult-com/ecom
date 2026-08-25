@@ -3073,6 +3073,17 @@ body.cineflix-db-error .cineflix-db-message{
 }
 </style>
 <style>
+/* TRAILER MODE: YouTube iframe owns all playback controls.
+   Hide CINEFLIX video controls/center controls while trailer is active. */
+.video-player.trailer-mode .player-controls,
+.video-player.trailer-mode .center-play-pause,
+.video-player.trailer-mode .player-empty,
+.video-player.trailer-mode #movieVideo{
+    display:none !important;
+}
+.video-player.trailer-mode .player-top{
+    pointer-events:none;
+}
 #trailerFrameOverlay{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#000;z-index:8;}
 #trailerFrameOverlay.show{display:block;}
 .video-player{position:relative;}
@@ -5138,17 +5149,26 @@ function showTrailerFrame(url){
 
     trailerFrame.src=normalizeTrailerUrl(url);
     trailerFrame.classList.add("show");
+    playerSurface.classList.add("trailer-mode");
 
     if(playerModeBadge){
         playerModeBadge.textContent="TRAILER";
         playerModeBadge.classList.add("show");
     }
 
-    // Badge follows the same control visibility timer as the player controls.
-    showPlayerControls(true);
+    // Trailer uses YouTube's own controls; only keep the temporary mode badge.
+    showPlayerControls(false);
+    clearTimeout(controlsHideTimer);
+    controlsHideTimer=setTimeout(()=>{
+        if(playerModeBadge) playerModeBadge.classList.remove("show");
+    },5000);
 }
 function hideTrailerFrame(){
-    if(trailerFrame){trailerFrame.classList.remove("show");trailerFrame.src="about:blank";}
+    if(trailerFrame){
+        trailerFrame.classList.remove("show");
+        trailerFrame.src="about:blank";
+    }
+    if(playerSurface) playerSurface.classList.remove("trailer-mode");
 }
 
 
