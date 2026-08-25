@@ -1649,16 +1649,17 @@ button{
     flex-shrink:0;
 }
 
-/* TMDB cast photos keep the original CINEFLIX circular style. */
+/* TMDB cast photos — fill the complete circle with no gray corners. */
 .cast-photo img{
     width:100%;
     height:100%;
     display:block;
-    object-fit:contain !important;
+    object-fit:cover !important;
     object-position:center center !important;
     border-radius:50%;
-    background:#17171c;
-    padding:2px;
+    background:transparent;
+    padding:0;
+    margin:0;
     box-sizing:border-box;
 }
 
