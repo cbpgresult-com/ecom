@@ -3418,6 +3418,38 @@ body.cineflix-db-error .cineflix-db-message{
     ></video>
 
 
+    <!-- =========================================================
+         CINEFLIX EXOCLICK VAST AD OVERLAY — ADD-ONLY
+         Existing movie player remains underneath.
+    ========================================================= -->
+    <div class="cineflix-ad-layer" id="cineflixAdLayer" aria-hidden="true">
+        <video
+            id="cineflixAdVideo"
+            playsinline
+            preload="auto"
+            disablepictureinpicture
+            webkit-playsinline
+        ></video>
+
+        <div class="cineflix-ad-label">Ad</div>
+
+        <div class="cineflix-ad-loading" id="cineflixAdLoading">
+            <span></span><span></span><span></span>
+        </div>
+
+        <button
+            class="cineflix-ad-skip"
+            id="cineflixAdSkip"
+            type="button"
+            disabled
+            aria-label="Skip advertisement"
+        >
+            <span id="cineflixAdSkipText">Skip in 15s</span>
+        </button>
+    </div>
+
+
+
     <div class="player-gesture-overlay" id="gestureOverlay" aria-hidden="true">
         <div class="gesture-seek-card">
             <svg class="gesture-seek-icon" id="gestureSeekIcon" viewBox="0 0 24 24">
@@ -4565,7 +4597,561 @@ body.cineflix-db-error .cineflix-db-message{
 ></div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js">
+
+
+/* =========================================================
+   CINEFLIX EXOCLICK VAST PRE-ROLL — ADD-ONLY
+   ========================================================= */
+const CINEFLIX_VAST_TAG =
+    "https://s.magsrv.com/v1/vast.php?id=6012748";
+
+window.__cineflixAdPlayed = false;
+window.__cineflixAdActive = false;
+
+const cineflixAdLayer = document.getElementById("cineflixAdLayer");
+const cineflixAdVideo = document.getElementById("cineflixAdVideo");
+const cineflixAdSkip = document.getElementById("cineflixAdSkip");
+const cineflixAdSkipText = document.getElementById("cineflixAdSkipText");
+const cineflixAdLoading = document.getElementById("cineflixAdLoading");
+
+let cineflixAdState = null;
+let cineflixAdCountdownTimer = null;
+let cineflixAdStartedAt = 0;
+let cineflixAdFired = {
+    start:false,
+    firstQuartile:false,
+    midpoint:false,
+    thirdQuartile:false,
+    complete:false
+};
+
+function cineflixAdNodeText(node){
+    return node ? String(node.textContent || "").trim() : "";
+}
+
+function cineflixAdUniquePush(arr,value){
+    const v=String(value || "").trim();
+    if(v && !arr.includes(v)) arr.push(v);
+}
+
+function cineflixAdTrackingAdd(target,node){
+    if(!node) return;
+    const event=String(node.getAttribute("event") || "").trim();
+    const url=cineflixAdNodeText(node);
+    if(!event || !url) return;
+    if(!target[event]) target[event]=[];
+    cineflixAdUniquePush(target[event],url);
+}
+
+function cineflixAdParseDuration(value){
+    const raw=String(value || "").trim();
+    const p=raw.split(":").map(Number);
+    if(p.length===3 && p.every(Number.isFinite)){
+        return Math.max(0,p[0]*3600+p[1]*60+p[2]);
+    }
+    const n=parseFloat(raw);
+    return Number.isFinite(n) ? Math.max(0,n) : 0;
+}
+
+function cineflixAdParseSkipOffset(value,duration){
+    const raw=String(value || "").trim();
+    if(!raw) return 15;
+
+    if(raw.endsWith("%")){
+        const pct=parseFloat(raw);
+        if(Number.isFinite(pct) && duration>0){
+            return Math.max(0,Math.min(duration,duration*pct/100));
+        }
+        return 15;
+    }
+
+    const p=raw.split(":").map(Number);
+    if(p.length===3 && p.every(Number.isFinite)){
+        return Math.max(0,p[0]*3600+p[1]*60+p[2]);
+    }
+
+    const n=parseFloat(raw);
+    return Number.isFinite(n) ? Math.max(0,n) : 15;
+}
+
+function cineflixAdPickMedia(nodes){
+    const files=[...nodes].map(n=>({
+        url:cineflixAdNodeText(n),
+        type:String(n.getAttribute("type") || "").toLowerCase(),
+        width:Number(n.getAttribute("width") || 0),
+        height:Number(n.getAttribute("height") || 0),
+        bitrate:Number(n.getAttribute("bitrate") || 0)
+    })).filter(x=>x.url);
+
+    if(!files.length) return null;
+
+    const mp4=files.filter(x=>
+        x.type==="video/mp4" ||
+        x.url.split("?")[0].toLowerCase().endsWith(".mp4")
+    );
+
+    const videoFiles=mp4.length
+        ? mp4
+        : files.filter(x=>x.type.startsWith("video/"));
+
+    const pool=videoFiles.length ? videoFiles : files;
+
+    pool.sort((a,b)=>{
+        const aPixels=(a.width||0)*(a.height||0);
+        const bPixels=(b.width||0)*(b.height||0);
+        return bPixels-aPixels || (b.bitrate||0)-(a.bitrate||0);
+    });
+
+    return pool[0];
+}
+
+async function cineflixAdFetchXml(url){
+    const r=await fetch(url,{
+        method:"GET",
+        mode:"cors",
+        credentials:"omit",
+        cache:"no-store",
+        redirect:"follow",
+        referrerPolicy:"no-referrer"
+    });
+    if(!r.ok) throw new Error("VAST HTTP "+r.status);
+
+    const text=await r.text();
+    if(!text || !/<VAST[\s>]/i.test(text)){
+        throw new Error("Invalid VAST response");
+    }
+
+    const xml=new DOMParser().parseFromString(text,"text/xml");
+    if(xml.querySelector("parsererror")){
+        throw new Error("VAST XML parse error");
+    }
+    return xml;
+}
+
+async function cineflixAdResolveVast(url,depth=0,state=null){
+    if(depth>5) throw new Error("VAST wrapper limit");
+
+    if(!state){
+        state={
+            impressions:[],
+            errors:[],
+            tracking:{},
+            clickTracking:[],
+            clickThrough:"",
+            media:null,
+            duration:0,
+            skipOffset:15
+        };
+    }
+
+    const xml=await cineflixAdFetchXml(url);
+    const ads=[...xml.querySelectorAll("VAST > Ad")];
+
+    if(!ads.length) return null;
+
+    for(const ad of ads){
+        const inline=ad.querySelector(":scope > InLine");
+        const wrapper=ad.querySelector(":scope > Wrapper");
+
+        const impressions=inline
+            ? inline.querySelectorAll("Impression")
+            : wrapper ? wrapper.querySelectorAll("Impression") : [];
+
+        impressions.forEach(n=>cineflixAdUniquePush(
+            state.impressions,cineflixAdNodeText(n)
+        ));
+
+        const errorNode=inline
+            ? inline.querySelector(":scope > Error")
+            : wrapper ? wrapper.querySelector(":scope > Error") : null;
+
+        cineflixAdUniquePush(
+            state.errors,cineflixAdNodeText(errorNode)
+        );
+
+        const tracking=inline
+            ? inline.querySelectorAll("TrackingEvents > Tracking")
+            : wrapper ? wrapper.querySelectorAll("TrackingEvents > Tracking") : [];
+
+        tracking.forEach(n=>cineflixAdTrackingAdd(state.tracking,n));
+
+        const clickTracking=inline
+            ? inline.querySelectorAll("VideoClicks > ClickTracking")
+            : wrapper ? wrapper.querySelectorAll("VideoClicks > ClickTracking") : [];
+
+        clickTracking.forEach(n=>cineflixAdUniquePush(
+            state.clickTracking,cineflixAdNodeText(n)
+        ));
+
+        const clickThrough=inline
+            ? inline.querySelector("VideoClicks > ClickThrough")
+            : wrapper ? wrapper.querySelector("VideoClicks > ClickThrough") : null;
+
+        if(clickThrough && cineflixAdNodeText(clickThrough)){
+            state.clickThrough=cineflixAdNodeText(clickThrough);
+        }
+
+        const linear=inline
+            ? inline.querySelector("Creatives > Creative > Linear")
+            : wrapper ? wrapper.querySelector("Creatives > Creative > Linear") : null;
+
+        if(inline && linear){
+            state.duration=cineflixAdParseDuration(
+                cineflixAdNodeText(linear.querySelector("Duration"))
+            );
+
+            state.skipOffset=cineflixAdParseSkipOffset(
+                linear.getAttribute("skipoffset"),
+                state.duration
+            );
+
+            state.media=cineflixAdPickMedia(
+                linear.querySelectorAll("MediaFiles > MediaFile")
+            );
+
+            if(state.media) return state;
+        }
+
+        if(wrapper){
+            const next=wrapper.querySelector(":scope > VASTAdTagURI");
+            const nextUrl=cineflixAdNodeText(next);
+
+            if(nextUrl){
+                try{
+                    const result=await cineflixAdResolveVast(
+                        nextUrl,depth+1,state
+                    );
+                    if(result?.media) return result;
+                }catch(_){}
+            }
+        }
+    }
+
+    return state.media ? state : null;
+}
+
+function cineflixAdFireUrls(urls){
+    (urls||[]).forEach(url=>{
+        try{
+            const img=new Image();
+            img.referrerPolicy="no-referrer";
+            img.src=url;
+        }catch(_){}
+    });
+}
+
+function cineflixAdFire(event){
+    if(!cineflixAdState) return;
+    cineflixAdFireUrls(cineflixAdState.tracking?.[event]);
+}
+
+function cineflixAdFireImpressions(){
+    if(!cineflixAdState) return;
+    cineflixAdFireUrls(cineflixAdState.impressions);
+}
+
+function cineflixAdFireErrors(){
+    if(!cineflixAdState) return;
+    cineflixAdFireUrls(cineflixAdState.errors);
+}
+
+function cineflixAdCountdownNumber(sec){
+    return Math.max(0,Math.ceil(sec));
+}
+
+function cineflixAdResetUI(){
+    clearInterval(cineflixAdCountdownTimer);
+    cineflixAdCountdownTimer=null;
+
+    if(cineflixAdSkip){
+        cineflixAdSkip.disabled=true;
+        cineflixAdSkipText.textContent="Skip in 15s";
+    }
+
+    cineflixAdLoading?.classList.remove("show");
+}
+
+function cineflixAdOpen(){
+    cineflixAdLayer.classList.add("active");
+    cineflixAdLayer.setAttribute("aria-hidden","false");
+
+    hidePlayerControls();
+    clearTimeout(controlsHideTimer);
+
+    if(settingsPanel && settingsPanel.classList.contains("open")){
+        closeSettings();
+    }
+
+    initialPoster.classList.add("hidden");
+    initialPoster.setAttribute("aria-hidden","true");
+    centerPlay.style.display="none";
+    centerPlayPause?.classList.remove("show");
+
+    cineflixAdLoading?.classList.add("show");
+}
+
+function cineflixAdCloseUI(){
+    cineflixAdLayer.classList.remove("active");
+    cineflixAdLayer.setAttribute("aria-hidden","true");
+    cineflixAdLoading?.classList.remove("show");
+
+    try{
+        cineflixAdVideo.pause();
+        cineflixAdVideo.removeAttribute("src");
+        cineflixAdVideo.load();
+    }catch(_){}
+
+    cineflixAdResetUI();
+}
+
+function cineflixAdStopAndPlayMovie(){
+    if(!window.__cineflixAdActive) return;
+
+    window.__cineflixAdActive=false;
+    window.__cineflixAdPlayed=true;
+
+    cineflixAdCloseUI();
+
+    try{video.pause();}catch(_){}
+    try{video.currentTime=0;}catch(_){}
+
+    initialPoster.classList.add("hidden");
+    initialPoster.setAttribute("aria-hidden","true");
+
+    playWithoutLoaderIfBuffered();
+
+    const p=video.play();
+    if(p?.catch){
+        p.catch(()=>{
+            showPlayerLoading();
+            centerPlay.style.display="grid";
+        });
+    }
+
+    showPlayerControls(true);
+    updateCenterPlayPause();
+}
+
+function cineflixAdAbortToMovie(){
+    cineflixAdFireErrors();
+    cineflixAdStopAndPlayMovie();
+}
+
+function cineflixAdStartCountdown(){
+    const skipAt=Number.isFinite(Number(cineflixAdState?.skipOffset))
+        ? Number(cineflixAdState.skipOffset)
+        : 15;
+
+    clearInterval(cineflixAdCountdownTimer);
+
+    if(skipAt<=0){
+        cineflixAdSkip.disabled=false;
+        cineflixAdSkipText.textContent="Skip";
+        return;
+    }
+
+    cineflixAdSkip.disabled=true;
+    cineflixAdSkipText.textContent=
+        `Skip in ${cineflixAdCountdownNumber(skipAt)}s`;
+
+    cineflixAdCountdownTimer=setInterval(()=>{
+        if(!window.__cineflixAdActive){
+            clearInterval(cineflixAdCountdownTimer);
+            return;
+        }
+
+        const elapsed=Math.max(
+            0,(performance.now()-cineflixAdStartedAt)/1000
+        );
+
+        const left=Math.max(0,skipAt-elapsed);
+
+        if(left<=0){
+            cineflixAdSkip.disabled=false;
+            cineflixAdSkipText.textContent="Skip";
+            clearInterval(cineflixAdCountdownTimer);
+        }else{
+            cineflixAdSkip.disabled=true;
+            cineflixAdSkipText.textContent=
+                `Skip in ${cineflixAdCountdownNumber(left)}s`;
+        }
+    },250);
+}
+
+async function cineflixPrepareMovieInBackground(){
+    const movieSource=
+        QUALITY_SOURCES.movie?.[currentQuality] ||
+        MOVIE_DEMO_URL;
+
+    if(!movieSource) return;
+
+    try{
+        // Existing movie pipeline is reused and kept paused.
+        loadHlsSource(movieSource,false,0);
+        hidePlayerLoading();
+        centerPlay.style.display="none";
+    }catch(_){}
+}
+
+function cineflixAdTrackProgress(){
+    if(!cineflixAdState || !cineflixAdVideo.duration) return;
+
+    const t=Number(cineflixAdVideo.currentTime)||0;
+    const d=Number(cineflixAdVideo.duration)||Number(cineflixAdState.duration)||0;
+    if(!d) return;
+
+    const ratio=t/d;
+
+    if(!cineflixAdFired.start && ratio>=0.001){
+        cineflixAdFired.start=true;
+        cineflixAdFire("start");
+    }
+    if(!cineflixAdFired.firstQuartile && ratio>=0.25){
+        cineflixAdFired.firstQuartile=true;
+        cineflixAdFire("firstQuartile");
+    }
+    if(!cineflixAdFired.midpoint && ratio>=0.50){
+        cineflixAdFired.midpoint=true;
+        cineflixAdFire("midpoint");
+    }
+    if(!cineflixAdFired.thirdQuartile && ratio>=0.75){
+        cineflixAdFired.thirdQuartile=true;
+        cineflixAdFire("thirdQuartile");
+    }
+    if(!cineflixAdFired.complete && ratio>=0.995){
+        cineflixAdFired.complete=true;
+        cineflixAdFire("complete");
+    }
+}
+
+cineflixAdVideo.addEventListener("loadedmetadata",()=>{
+    if(!window.__cineflixAdActive) return;
+
+    cineflixAdLoading?.classList.remove("show");
+    cineflixAdStartedAt=performance.now();
+    cineflixAdStartCountdown();
+});
+
+cineflixAdVideo.addEventListener("canplay",()=>{
+    if(window.__cineflixAdActive){
+        cineflixAdLoading?.classList.remove("show");
+    }
+});
+
+cineflixAdVideo.addEventListener("playing",()=>{
+    if(!window.__cineflixAdActive) return;
+
+    cineflixAdLoading?.classList.remove("show");
+
+    if(!cineflixAdFired.start){
+        cineflixAdFired.start=true;
+        cineflixAdFireImpressions();
+        cineflixAdFire("start");
+    }
+});
+
+cineflixAdVideo.addEventListener("timeupdate",cineflixAdTrackProgress);
+
+cineflixAdVideo.addEventListener("ended",()=>{
+    if(!window.__cineflixAdActive) return;
+
+    if(!cineflixAdFired.complete){
+        cineflixAdFired.complete=true;
+        cineflixAdFire("complete");
+    }
+
+    cineflixAdStopAndPlayMovie();
+});
+
+cineflixAdVideo.addEventListener("error",()=>{
+    if(window.__cineflixAdActive){
+        cineflixAdAbortToMovie();
+    }
+});
+
+cineflixAdSkip.addEventListener("click",e=>{
+    e.preventDefault();
+    e.stopPropagation();
+
+    if(cineflixAdSkip.disabled || !window.__cineflixAdActive) return;
+
+    cineflixAdFire("skip");
+    cineflixAdStopAndPlayMovie();
+});
+
+cineflixAdVideo.addEventListener("click",()=>{
+    if(!window.__cineflixAdActive) return;
+
+    const url=cineflixAdState?.clickThrough || "";
+    if(!url) return;
+
+    cineflixAdFireUrls(cineflixAdState?.clickTracking || []);
+
+    try{
+        window.open(url,"_blank","noopener,noreferrer");
+    }catch(_){}
+});
+
+async function startCineflixAdThenMovie(){
+    if(window.__cineflixAdActive) return;
+
+    if(window.__cineflixAdPlayed){
+        initialPoster.classList.add("hidden");
+        showPlayerLoading();
+        video.play().catch(()=>{});
+        return;
+    }
+
+    window.__cineflixAdActive=true;
+    window.__cineflixAdPlayed=false;
+
+    cineflixAdFired={
+        start:false,
+        firstQuartile:false,
+        midpoint:false,
+        thirdQuartile:false,
+        complete:false
+    };
+
+    cineflixAdState=null;
+    cineflixAdResetUI();
+    cineflixAdOpen();
+
+    try{
+        // Start movie buffering underneath the ad first.
+        const moviePrep=cineflixPrepareMovieInBackground();
+
+        const vast=await cineflixAdResolveVast(CINEFLIX_VAST_TAG);
+
+        // No-fill is normal: close ad layer and start the movie.
+        if(!vast?.media?.url){
+            await moviePrep;
+            cineflixAdStopAndPlayMovie();
+            return;
+        }
+
+        cineflixAdState=vast;
+
+        cineflixAdVideo.src=vast.media.url;
+        cineflixAdVideo.load();
+
+        const p=cineflixAdVideo.play();
+        if(p?.catch){
+            await p.catch(()=>{
+                throw new Error("Ad playback blocked");
+            });
+        }
+
+        await moviePrep;
+    }catch(_){
+        cineflixAdAbortToMovie();
+    }
+}
+
+window.startCineflixAdThenMovie=startCineflixAdThenMovie;
+
+</script>
 <script>
 
 /* =========================================================
@@ -4822,6 +5408,12 @@ let controlsHideTimer = null;
 
 initialPosterPlay.addEventListener("click",(e)=>{
     e.stopPropagation();
+
+    if(typeof startCineflixAdThenMovie === "function"){
+        startCineflixAdThenMovie();
+        return;
+    }
+
     initialPoster.classList.add("hidden");
     showPlayerLoading();
 
@@ -4860,6 +5452,13 @@ function toggleVideoFromTap(){
     }
 
     if(video.paused || video.ended){
+        if(!window.__cineflixAdPlayed && !window.__cineflixAdActive){
+            if(typeof startCineflixAdThenMovie === "function"){
+                startCineflixAdThenMovie();
+                return;
+            }
+        }
+
         playWithoutLoaderIfBuffered();
         video.play().catch(()=>{});
     }else{
@@ -5917,6 +6516,13 @@ function setPlayerMode(mode,autoPlay=true){
 }
 
 function togglePlay(){
+    if(video.paused && !window.__cineflixAdPlayed && !window.__cineflixAdActive){
+        if(typeof startCineflixAdThenMovie === "function"){
+            startCineflixAdThenMovie();
+            return;
+        }
+    }
+
     if(!hlsReady && !video.src){
         initialPoster.classList.add("hidden");
         showPlayerLoading();
