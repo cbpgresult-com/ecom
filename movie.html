@@ -3288,6 +3288,21 @@ body.cineflix-db-error .cineflix-db-message{
     pointer-events:none;
     background:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 24%,transparent 70%,rgba(0,0,0,.28));
 }
+.vast-ad-label{
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:5;
+    padding:5px 8px;
+    border-radius:5px;
+    background:rgba(0,0,0,.72);
+    color:#fff;
+    font:800 10px/1 Inter,Arial,sans-serif;
+    letter-spacing:.2px;
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    pointer-events:none;
+}
 .vast-ad-countdown{
     position:absolute;
     top:10px;
@@ -3467,6 +3482,7 @@ body.cineflix-db-error .cineflix-db-message{
     <div class="vast-ad-overlay" id="vastAdOverlay" aria-hidden="true">
         <video class="vast-ad-video" id="vastAdVideo" playsinline preload="auto"></video>
         <div class="vast-ad-scrim" aria-hidden="true"></div>
+        <div class="vast-ad-label" id="vastAdLabel" aria-hidden="true">Ad</div>
         <div class="vast-ad-countdown" id="vastAdCountdown">Advertisement</div>
         <button class="vast-ad-skip" id="vastAdSkip" type="button" disabled>Skip</button>
         <div class="vast-ad-click" id="vastAdClick" aria-hidden="true"></div>
@@ -6017,6 +6033,13 @@ let vastAdLastShownAt = 0;
 let vastAdTracking = {};
 let vastAdClickUrl = "";
 
+/* Instant-ad preload: fetch the VAST and begin buffering its media as soon
+   as the page is ready, but do not show the ad or fire impression tracking
+   until the user actually presses Play. */
+let vastPreloadPromise = null;
+let vastPreloadedData = null;
+let vastPreloadedMedia = null;
+
 function vastText(node){
     return node ? (node.textContent || "").trim() : "";
 }
@@ -6183,6 +6206,8 @@ function finishVastAd(reason="complete"){
     vastAdSkipAt=null;
     vastAdClickUrl="";
     vastResetUI();
+    /* Re-prime the next ad in the background while the movie plays. */
+    void preloadVastForInstantPlay();
 
     // Always start the main movie from the beginning after the ad.
     if(currentMode==="movie"){
@@ -6237,6 +6262,39 @@ function startVastCountdown(){
     window.__cineflixVastTimer=setInterval(update,250);
 }
 
+async function preloadVastForInstantPlay(){
+    if(vastPreloadedData && vastPreloadedMedia) return {data:vastPreloadedData,media:vastPreloadedMedia};
+    if(vastPreloadPromise) return vastPreloadPromise;
+    if(!HILLTOP_VAST_TAG) return null;
+
+    vastPreloadPromise=(async()=>{
+        try{
+            const data=await fetchVastDocument(HILLTOP_VAST_TAG);
+            const media=chooseVastMedia(data.media);
+            if(!media) throw new Error("No playable ad");
+
+            vastPreloadedData=data;
+            vastPreloadedMedia=media;
+
+            /* Start downloading the actual ad media immediately. */
+            if(vastAdVideo){
+                vastAdVideo.preload="auto";
+                vastAdVideo.src=media.url;
+                try{vastAdVideo.load();}catch(e){}
+            }
+            return {data,media};
+        }catch(err){
+            console.warn("CINEFLIX VAST preload unavailable:",err);
+            vastPreloadedData=null;
+            vastPreloadedMedia=null;
+            return null;
+        }finally{
+            vastPreloadPromise=null;
+        }
+    })();
+    return vastPreloadPromise;
+}
+
 async function playVastAdThenMovie(){
     if(vastAdActive || vastAdLoading) return true;
     if(currentMode!=="movie") return false;
@@ -6260,9 +6318,12 @@ async function playVastAdThenMovie(){
         }
         try{video.currentTime=0;}catch(e){}
 
-        const data=await fetchVastDocument(HILLTOP_VAST_TAG);
-        const media=chooseVastMedia(data.media);
-        if(!media) throw new Error("No playable ad");
+        const preloaded=await preloadVastForInstantPlay();
+        if(!preloaded) throw new Error("No playable ad");
+        const data=preloaded.data;
+        const media=preloaded.media;
+        vastPreloadedData=null;
+        vastPreloadedMedia=null;
         vastAdData=data;
         vastAdTracking=data.tracking||{};
         vastAdClickUrl=data.clickUrl||"";
@@ -6275,7 +6336,12 @@ async function playVastAdThenMovie(){
         vastResetUI();
         if(vastAdSkipAt===null) vastAdSkip.style.display="none";
         else vastAdSkip.style.display="block";
-        vastAdVideo.src=media.url;
+        /* The media was already requested during page preload. Reusing the
+           same source avoids the 2–3 second blank wait after Play. */
+        if(vastAdVideo.src!==media.url){
+            vastAdVideo.src=media.url;
+            try{vastAdVideo.load();}catch(e){}
+        }
         vastShowOverlay();
         vastTrackMany("impression");
         vastTrackMany("creativeView");
@@ -6296,6 +6362,22 @@ async function playVastAdThenMovie(){
         vastAdVideo.ontimeupdate=()=>{vastFireQuartiles();};
         vastAdVideo.onended=()=>finishVastAd("complete");
         vastAdVideo.onerror=()=>finishVastAd("error");
+
+        /*
+           The VAST media is preloaded before Play is clicked. In that case
+           loadedmetadata may have already fired before the handlers above
+           were attached, which could leave the Skip badge stuck on plain
+           "Skip" with no 15s countdown. Start/sync the countdown immediately
+           when metadata is already available, while still respecting the
+           VAST ad's own skipOffset/skippability.
+        */
+        if(vastAdVideo.readyState >= 1){
+            if(data.skipOffset){
+                const parsedSkip=parseVastTime(data.skipOffset,vastAdVideo.duration||0);
+                if(parsedSkip!==null) vastAdSkipAt=parsedSkip;
+            }
+            startVastCountdown();
+        }
 
         vastAdVideo.muted=false;
         const p=vastAdVideo.play();
@@ -6322,6 +6404,14 @@ vastAdSkip?.addEventListener("click",e=>{
     e.stopPropagation();
     if(!vastAdSkip.disabled && vastAdActive) finishVastAd("skip");
 });
+
+/* Begin VAST + media preload quietly after the page has loaded. No loader,
+   overlay, or player state is changed here. */
+if(document.readyState==="loading") {
+    document.addEventListener("DOMContentLoaded",()=>{ void preloadVastForInstantPlay(); },{once:true});
+}else{
+    void preloadVastForInstantPlay();
+}
 
 vastAdClick?.addEventListener("click",e=>{
     e.stopPropagation();
