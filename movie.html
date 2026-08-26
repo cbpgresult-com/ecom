@@ -4713,24 +4713,26 @@ body.cineflix-db-error .cineflix-db-message{
 <script>
 
 /* =========================================================
-   CINEFLIX EXOCLICK VAST PRE-ROLL
-   Overlay only — existing player UI is untouched.
+   CINEFLIX EXOCLICK VAST PRE-ROLL — FIXED
+   First Play -> VAST attempt -> Ad -> Movie
+   Existing CINEFLIX UI/styles are kept untouched.
    ========================================================= */
-const CINEFLIX_VAST_TAG="https://s.magsrv.com/v1/vast.php?id=6012748";
+const CINEFLIX_VAST_TAG = "https://s.magsrv.com/v1/vast.php?id=6012748";
 
-window.__cineflixAdPlayed=false;
-window.__cineflixAdActive=false;
+window.__cineflixAdPlayed = false;
+window.__cineflixAdActive = false;
+window.__cineflixAdRequesting = false;
 
-const cineflixAdLayer=document.getElementById("cineflixAdLayer");
-const cineflixAdVideo=document.getElementById("cineflixAdVideo");
-const cineflixAdSkip=document.getElementById("cineflixAdSkip");
-const cineflixAdSkipText=document.getElementById("cineflixAdSkipText");
-const cineflixAdLoading=document.getElementById("cineflixAdLoading");
+const cineflixAdLayer = document.getElementById("cineflixAdLayer");
+const cineflixAdVideo = document.getElementById("cineflixAdVideo");
+const cineflixAdSkip = document.getElementById("cineflixAdSkip");
+const cineflixAdSkipText = document.getElementById("cineflixAdSkipText");
+const cineflixAdLoading = document.getElementById("cineflixAdLoading");
 
-let cineflixAdState=null;
-let cineflixAdCountdownTimer=null;
-let cineflixAdStartedAt=0;
-let cineflixAdFired={
+let cineflixAdState = null;
+let cineflixAdCountdownTimer = null;
+let cineflixAdStartedAt = 0;
+let cineflixAdFired = {
     start:false,
     firstQuartile:false,
     midpoint:false,
@@ -4739,80 +4741,95 @@ let cineflixAdFired={
 };
 
 function cineflixAdText(n){
-    return n ? String(n.textContent||"").trim() : "";
+    return n ? String(n.textContent || "").trim() : "";
 }
+
 function cineflixAdPush(a,v){
-    v=String(v||"").trim();
+    v = String(v || "").trim();
     if(v && !a.includes(v)) a.push(v);
 }
+
 function cineflixAdDuration(v){
-    const p=String(v||"").trim().split(":").map(Number);
-    if(p.length===3 && p.every(Number.isFinite)){
-        return p[0]*3600+p[1]*60+p[2];
+    const p = String(v || "").trim().split(":").map(Number);
+    if(p.length === 3 && p.every(Number.isFinite)){
+        return p[0]*3600 + p[1]*60 + p[2];
     }
-    const n=parseFloat(v);
-    return Number.isFinite(n)?Math.max(0,n):0;
+    const n = parseFloat(v);
+    return Number.isFinite(n) ? Math.max(0,n) : 0;
 }
+
 function cineflixAdSkipOffset(v,d){
-    const raw=String(v||"").trim();
+    const raw = String(v || "").trim();
     if(!raw) return 15;
 
     if(raw.endsWith("%")){
-        const n=parseFloat(raw);
-        return d>0 && Number.isFinite(n) ? d*n/100 : 15;
+        const n = parseFloat(raw);
+        return d > 0 && Number.isFinite(n) ? d*n/100 : 15;
     }
 
-    const p=raw.split(":").map(Number);
-    if(p.length===3 && p.every(Number.isFinite)){
-        return p[0]*3600+p[1]*60+p[2];
+    const p = raw.split(":").map(Number);
+    if(p.length === 3 && p.every(Number.isFinite)){
+        return p[0]*3600 + p[1]*60 + p[2];
     }
 
-    const n=parseFloat(raw);
-    return Number.isFinite(n)?Math.max(0,n):15;
+    const n = parseFloat(raw);
+    return Number.isFinite(n) ? Math.max(0,n) : 15;
 }
+
 function cineflixAdTrackAdd(target,n){
-    const event=String(n?.getAttribute("event")||"").trim();
-    const url=cineflixAdText(n);
+    const event = String(n?.getAttribute("event") || "").trim();
+    const url = cineflixAdText(n);
     if(!event || !url) return;
-    if(!target[event]) target[event]=[];
+    if(!target[event]) target[event] = [];
     cineflixAdPush(target[event],url);
 }
+
 function cineflixAdPickMedia(nodes){
-    const a=[...nodes].map(n=>({
+    const a = [...nodes].map(n => ({
         url:cineflixAdText(n),
-        type:String(n.getAttribute("type")||"").toLowerCase(),
-        w:Number(n.getAttribute("width")||0),
-        h:Number(n.getAttribute("height")||0)
-    })).filter(x=>x.url);
+        type:String(n.getAttribute("type") || "").toLowerCase(),
+        w:Number(n.getAttribute("width") || 0),
+        h:Number(n.getAttribute("height") || 0)
+    })).filter(x => x.url);
 
-    const mp4=a.filter(x=>x.type==="video/mp4" || /\.mp4(?:$|\?)/i.test(x.url));
-    const pool=mp4.length?mp4:a.filter(x=>x.type.startsWith("video/"));
-    const finalPool=pool.length?pool:a;
+    /* Prefer browser-friendly MP4 first. */
+    const mp4 = a.filter(x =>
+        x.type === "video/mp4" ||
+        /\.mp4(?:$|\?)/i.test(x.url)
+    );
 
-    finalPool.sort((x,y)=>(y.w*y.h)-(x.w*x.h));
-    return finalPool[0]||null;
+    const pool = mp4.length ? mp4 : a.filter(x => x.type.startsWith("video/"));
+    const finalPool = pool.length ? pool : a;
+
+    finalPool.sort((x,y) => (y.w*y.h) - (x.w*x.h));
+    return finalPool[0] || null;
 }
 
 async function cineflixAdFetch(url){
-    const r=await fetch(url,{
+    const r = await fetch(url,{
         method:"GET",
         mode:"cors",
         credentials:"omit",
         cache:"no-store",
-        redirect:"follow"
+        redirect:"follow",
+        headers:{
+            "Accept":"application/xml,text/xml,*/*"
+        }
     });
-    if(!r.ok) throw new Error("VAST "+r.status);
 
-    const text=await r.text();
-    if(!/<VAST[\s>]/i.test(text)) throw new Error("Invalid VAST");
+    if(!r.ok) throw new Error("VAST HTTP " + r.status);
 
-    const xml=new DOMParser().parseFromString(text,"text/xml");
-    if(xml.querySelector("parsererror")) throw new Error("Bad XML");
+    const text = await r.text();
+    if(!/<VAST[\s>]/i.test(text)) throw new Error("Invalid VAST response");
+
+    const xml = new DOMParser().parseFromString(text,"text/xml");
+    if(xml.querySelector("parsererror")) throw new Error("Bad VAST XML");
+
     return xml;
 }
 
 async function cineflixAdResolve(url,depth=0,state=null){
-    if(depth>5) throw new Error("VAST wrapper limit");
+    if(depth > 6) throw new Error("VAST wrapper limit");
 
     state ||= {
         impressions:[],
@@ -4825,110 +4842,138 @@ async function cineflixAdResolve(url,depth=0,state=null){
         skipOffset:15
     };
 
-    const xml=await cineflixAdFetch(url);
-    const ads=[...xml.querySelectorAll("VAST > Ad")];
+    const xml = await cineflixAdFetch(url);
+    const ads = [...xml.querySelectorAll("VAST > Ad")];
 
     for(const ad of ads){
-        const inline=ad.querySelector(":scope > InLine");
-        const wrapper=ad.querySelector(":scope > Wrapper");
-        const root=inline||wrapper;
+        const inline = ad.querySelector(":scope > InLine");
+        const wrapper = ad.querySelector(":scope > Wrapper");
+        const root = inline || wrapper;
         if(!root) continue;
 
-        root.querySelectorAll("Impression").forEach(n=>
+        root.querySelectorAll("Impression").forEach(n =>
             cineflixAdPush(state.impressions,cineflixAdText(n))
         );
 
-        const err=root.querySelector(":scope > Error");
+        const err = root.querySelector(":scope > Error");
         cineflixAdPush(state.errors,cineflixAdText(err));
 
-        root.querySelectorAll("TrackingEvents > Tracking").forEach(n=>
+        root.querySelectorAll("TrackingEvents > Tracking").forEach(n =>
             cineflixAdTrackAdd(state.tracking,n)
         );
 
-        root.querySelectorAll("VideoClicks > ClickTracking").forEach(n=>
+        root.querySelectorAll("VideoClicks > ClickTracking").forEach(n =>
             cineflixAdPush(state.clickTracking,cineflixAdText(n))
         );
 
-        const ct=root.querySelector("VideoClicks > ClickThrough");
-        if(ct && cineflixAdText(ct)) state.clickThrough=cineflixAdText(ct);
+        const ct = root.querySelector("VideoClicks > ClickThrough");
+        if(ct && cineflixAdText(ct)){
+            state.clickThrough = cineflixAdText(ct);
+        }
 
-        const linear=root.querySelector("Creatives > Creative > Linear");
+        const linear = root.querySelector("Creatives > Creative > Linear");
 
         if(inline && linear){
-            state.duration=cineflixAdDuration(
+            state.duration = cineflixAdDuration(
                 cineflixAdText(linear.querySelector("Duration"))
             );
-            state.skipOffset=cineflixAdSkipOffset(
+
+            state.skipOffset = cineflixAdSkipOffset(
                 linear.getAttribute("skipoffset"),
                 state.duration
             );
-            state.media=cineflixAdPickMedia(
+
+            state.media = cineflixAdPickMedia(
                 linear.querySelectorAll("MediaFiles > MediaFile")
             );
+
             if(state.media) return state;
         }
 
         if(wrapper){
-            const tag=wrapper.querySelector(":scope > VASTAdTagURI");
-            const next=cineflixAdText(tag);
+            const tag = wrapper.querySelector(":scope > VASTAdTagURI");
+            const next = cineflixAdText(tag);
+
             if(next){
                 try{
-                    const result=await cineflixAdResolve(next,depth+1,state);
+                    const result = await cineflixAdResolve(next,depth+1,state);
                     if(result?.media) return result;
                 }catch(_){}
             }
         }
     }
 
-    return state.media?state:null;
+    return state.media ? state : null;
 }
 
 function cineflixAdFireUrls(urls){
-    (urls||[]).forEach(url=>{
+    (urls || []).forEach(url => {
         try{
-            const i=new Image();
-            i.src=url;
+            const i = new Image();
+            i.src = url;
         }catch(_){}
     });
 }
+
 function cineflixAdFire(event){
-    if(cineflixAdState) cineflixAdFireUrls(cineflixAdState.tracking?.[event]);
+    if(cineflixAdState){
+        cineflixAdFireUrls(cineflixAdState.tracking?.[event]);
+    }
 }
+
 function cineflixAdFireImpressions(){
-    if(cineflixAdState) cineflixAdFireUrls(cineflixAdState.impressions);
+    if(cineflixAdState){
+        cineflixAdFireUrls(cineflixAdState.impressions);
+    }
 }
+
 function cineflixAdFireErrors(){
-    if(cineflixAdState) cineflixAdFireUrls(cineflixAdState.errors);
+    if(cineflixAdState){
+        cineflixAdFireUrls(cineflixAdState.errors);
+    }
 }
 
 function cineflixAdReset(){
     clearInterval(cineflixAdCountdownTimer);
-    cineflixAdCountdownTimer=null;
-    cineflixAdSkip.disabled=true;
-    cineflixAdSkipText.textContent="Skip in 15s";
-    cineflixAdLoading.classList.remove("show");
+    cineflixAdCountdownTimer = null;
+
+    if(cineflixAdSkip){
+        cineflixAdSkip.disabled = true;
+    }
+
+    if(cineflixAdSkipText){
+        cineflixAdSkipText.textContent = "Skip in 15s";
+    }
+
+    cineflixAdLoading?.classList.remove("show");
 }
 
 function cineflixAdOpen(){
-    cineflixAdLayer.classList.add("active");
-    cineflixAdLayer.setAttribute("aria-hidden","false");
+    cineflixAdLayer?.classList.add("active");
+    cineflixAdLayer?.setAttribute("aria-hidden","false");
 
-    // Only hide the existing player controls while the ad owns the surface.
-    hidePlayerControls();
+    /* IMPORTANT: movie is explicitly paused while ad owns the player. */
+    try{ video.pause(); }catch(_){}
+
+    if(typeof hidePlayerControls === "function"){
+        hidePlayerControls();
+    }
+
     clearTimeout(controlsHideTimer);
 
-    initialPoster.classList.add("hidden");
-    initialPoster.setAttribute("aria-hidden","true");
-    centerPlay.style.display="none";
+    initialPoster?.classList.add("hidden");
+    initialPoster?.setAttribute("aria-hidden","true");
+
+    if(centerPlay) centerPlay.style.display = "none";
     centerPlayPause?.classList.remove("show");
 
-    cineflixAdLoading.classList.add("show");
+    cineflixAdLoading?.classList.add("show");
 }
 
 function cineflixAdClose(){
-    cineflixAdLayer.classList.remove("active");
-    cineflixAdLayer.setAttribute("aria-hidden","true");
-    cineflixAdLoading.classList.remove("show");
+    cineflixAdLayer?.classList.remove("active");
+    cineflixAdLayer?.setAttribute("aria-hidden","true");
+    cineflixAdLoading?.classList.remove("show");
 
     try{
         cineflixAdVideo.pause();
@@ -4942,24 +4987,27 @@ function cineflixAdClose(){
 function cineflixAdPlayMovie(){
     if(!window.__cineflixAdActive) return;
 
-    window.__cineflixAdActive=false;
-    window.__cineflixAdPlayed=true;
+    window.__cineflixAdActive = false;
+    window.__cineflixAdRequesting = false;
+    window.__cineflixAdPlayed = true;
 
     cineflixAdClose();
 
-    // Never carry ad time into the movie.
-    try{video.pause();}catch(_){}
-    try{video.currentTime=0;}catch(_){}
+    try{
+        video.pause();
+        video.currentTime = 0;
+    }catch(_){}
 
-    initialPoster.classList.add("hidden");
-    initialPoster.setAttribute("aria-hidden","true");
+    initialPoster?.classList.add("hidden");
+    initialPoster?.setAttribute("aria-hidden","true");
 
-    playWithoutLoaderIfBuffered();
-    const p=video.play();
+    try{ playWithoutLoaderIfBuffered(); }catch(_){}
+
+    const p = video.play();
     if(p?.catch){
-        p.catch(()=>{
+        p.catch(() => {
             showPlayerLoading();
-            centerPlay.style.display="grid";
+            if(centerPlay) centerPlay.style.display = "grid";
         });
     }
 
@@ -4968,34 +5016,35 @@ function cineflixAdPlayMovie(){
 }
 
 function cineflixAdCountdown(){
-    const skipAt=Number.isFinite(Number(cineflixAdState?.skipOffset))
-        ? Number(cineflixAdState.skipOffset) : 15;
+    const skipAt = Number.isFinite(Number(cineflixAdState?.skipOffset))
+        ? Number(cineflixAdState.skipOffset)
+        : 15;
 
     clearInterval(cineflixAdCountdownTimer);
 
-    if(skipAt<=0){
-        cineflixAdSkip.disabled=false;
-        cineflixAdSkipText.textContent="Skip";
+    if(skipAt <= 0){
+        cineflixAdSkip.disabled = false;
+        cineflixAdSkipText.textContent = "Skip";
         return;
     }
 
-    cineflixAdSkip.disabled=true;
-    cineflixAdSkipText.textContent=`Skip in ${Math.ceil(skipAt)}s`;
+    cineflixAdSkip.disabled = true;
+    cineflixAdSkipText.textContent = `Skip in ${Math.ceil(skipAt)}s`;
 
-    cineflixAdCountdownTimer=setInterval(()=>{
+    cineflixAdCountdownTimer = setInterval(() => {
         if(!window.__cineflixAdActive) return;
 
-        const left=Math.max(
+        const left = Math.max(
             0,
-            skipAt-(performance.now()-cineflixAdStartedAt)/1000
+            skipAt - (performance.now()-cineflixAdStartedAt)/1000
         );
 
-        if(left<=0){
-            cineflixAdSkip.disabled=false;
-            cineflixAdSkipText.textContent="Skip";
+        if(left <= 0){
+            cineflixAdSkip.disabled = false;
+            cineflixAdSkipText.textContent = "Skip";
             clearInterval(cineflixAdCountdownTimer);
         }else{
-            cineflixAdSkipText.textContent=`Skip in ${Math.ceil(left)}s`;
+            cineflixAdSkipText.textContent = `Skip in ${Math.ceil(left)}s`;
         }
     },250);
 }
@@ -5003,40 +5052,45 @@ function cineflixAdCountdown(){
 function cineflixAdProgress(){
     if(!cineflixAdState || !cineflixAdVideo.duration) return;
 
-    const r=cineflixAdVideo.currentTime/cineflixAdVideo.duration;
+    const r = cineflixAdVideo.currentTime / cineflixAdVideo.duration;
 
-    if(!cineflixAdFired.firstQuartile && r>=.25){
-        cineflixAdFired.firstQuartile=true;
+    if(!cineflixAdFired.firstQuartile && r >= .25){
+        cineflixAdFired.firstQuartile = true;
         cineflixAdFire("firstQuartile");
     }
-    if(!cineflixAdFired.midpoint && r>=.50){
-        cineflixAdFired.midpoint=true;
+
+    if(!cineflixAdFired.midpoint && r >= .50){
+        cineflixAdFired.midpoint = true;
         cineflixAdFire("midpoint");
     }
-    if(!cineflixAdFired.thirdQuartile && r>=.75){
-        cineflixAdFired.thirdQuartile=true;
+
+    if(!cineflixAdFired.thirdQuartile && r >= .75){
+        cineflixAdFired.thirdQuartile = true;
         cineflixAdFire("thirdQuartile");
     }
 }
 
 cineflixAdVideo.addEventListener("loadedmetadata",()=>{
     if(!window.__cineflixAdActive) return;
-    cineflixAdLoading.classList.remove("show");
-    cineflixAdStartedAt=performance.now();
+
+    cineflixAdLoading?.classList.remove("show");
+    cineflixAdStartedAt = performance.now();
     cineflixAdCountdown();
 });
 
 cineflixAdVideo.addEventListener("canplay",()=>{
-    if(window.__cineflixAdActive) cineflixAdLoading.classList.remove("show");
+    if(window.__cineflixAdActive){
+        cineflixAdLoading?.classList.remove("show");
+    }
 });
 
 cineflixAdVideo.addEventListener("playing",()=>{
     if(!window.__cineflixAdActive) return;
 
-    cineflixAdLoading.classList.remove("show");
+    cineflixAdLoading?.classList.remove("show");
 
     if(!cineflixAdFired.start){
-        cineflixAdFired.start=true;
+        cineflixAdFired.start = true;
         cineflixAdFireImpressions();
         cineflixAdFire("start");
     }
@@ -5047,7 +5101,7 @@ cineflixAdVideo.addEventListener("timeupdate",cineflixAdProgress);
 cineflixAdVideo.addEventListener("ended",()=>{
     if(!window.__cineflixAdActive) return;
 
-    cineflixAdFired.complete=true;
+    cineflixAdFired.complete = true;
     cineflixAdFire("complete");
     cineflixAdPlayMovie();
 });
@@ -5059,7 +5113,7 @@ cineflixAdVideo.addEventListener("error",()=>{
     }
 });
 
-cineflixAdSkip.addEventListener("click",e=>{
+cineflixAdSkip?.addEventListener("click",e=>{
     e.preventDefault();
     e.stopPropagation();
 
@@ -5072,27 +5126,36 @@ cineflixAdSkip.addEventListener("click",e=>{
 cineflixAdVideo.addEventListener("click",()=>{
     if(!window.__cineflixAdActive) return;
 
-    const url=cineflixAdState?.clickThrough;
+    const url = cineflixAdState?.clickThrough;
     if(!url) return;
 
     cineflixAdFireUrls(cineflixAdState.clickTracking);
 
-    try{window.open(url,"_blank","noopener,noreferrer");}catch(_){}
+    try{
+        window.open(url,"_blank","noopener,noreferrer");
+    }catch(_){}
 });
 
 async function startCineflixAdThenMovie(){
-    if(window.__cineflixAdActive) return;
+    if(window.__cineflixAdActive || window.__cineflixAdRequesting) return;
 
     if(window.__cineflixAdPlayed){
         video.play().catch(()=>{});
         return;
     }
 
-    window.__cineflixAdActive=true;
-    window.__cineflixAdPlayed=false;
-    cineflixAdState=null;
+    window.__cineflixAdRequesting = true;
+    window.__cineflixAdActive = true;
+    window.__cineflixAdPlayed = false;
 
-    cineflixAdFired={
+    /* Do NOT let the movie start before the VAST attempt finishes. */
+    try{
+        video.pause();
+    }catch(_){}
+
+    cineflixAdState = null;
+
+    cineflixAdFired = {
         start:false,
         firstQuartile:false,
         midpoint:false,
@@ -5104,27 +5167,39 @@ async function startCineflixAdThenMovie(){
     cineflixAdOpen();
 
     try{
-        const vast=await cineflixAdResolve(CINEFLIX_VAST_TAG);
+        /*
+         * A cache-buster prevents a stale/no-fill VAST response from
+         * being reused on repeated tests.
+         */
+        const sep = CINEFLIX_VAST_TAG.includes("?") ? "&" : "?";
+        const vastUrl = CINEFLIX_VAST_TAG +
+            sep + "_=" + Date.now();
+
+        const vast = await cineflixAdResolve(vastUrl);
 
         if(!vast?.media?.url){
-            cineflixAdPlayMovie();
-            return;
+            throw new Error("ExoClick returned no playable VAST media");
         }
 
-        cineflixAdState=vast;
-        cineflixAdVideo.src=vast.media.url;
+        cineflixAdState = vast;
+
+        cineflixAdVideo.src = vast.media.url;
         cineflixAdVideo.load();
 
-        const p=cineflixAdVideo.play();
+        const p = cineflixAdVideo.play();
         if(p?.catch) await p;
+
     }catch(err){
-        // If ExoClick blocks the VAST XML with CORS/no-fill,
-        // do not break the movie player: just continue to the movie.
+        /*
+         * No-fill/CORS/media failure: do not falsely claim that an ad
+         * played. Continue to the movie so the user is never trapped.
+         */
+        console.warn("[CINEFLIX VAST] Ad unavailable:",err);
         cineflixAdPlayMovie();
     }
 }
 
-window.startCineflixAdThenMovie=startCineflixAdThenMovie;
+window.startCineflixAdThenMovie = startCineflixAdThenMovie;
 
 </script>
 <script>
